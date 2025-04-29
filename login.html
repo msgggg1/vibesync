@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/favicon.ico" />
+    <title>VibeSync login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Cal Sans', 'National Park';
+            }
+
+        .container{
+            padding: 100px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+        body{
+            /* 상하 100px, 좌우 20px 마진 */
+            margin: 0;
+            text-align: center;
+
+        }
+        
+        #logo, #login{
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        #logo{
+            width: 70%;
+        }
+
+        #login{
+            /* 폼 양식 전체 좌우 20px추가 마진 */
+            text-align: left;
+            padding: 0 20px;
+            /* 폼 양식 각 요소별 간격 20px 마진 */
+        }
+        #findYourVibeSync{
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+
+
+폼 양식 하단 줄 두께 2px, 색상 #313131
+폼 양식 하이라이트 색상 #5DAED7
+
+로그인 폼 하단 Sign Up 텍스트 클릭 시, 회원가입 폼으로 폼 양식 변경.
+
+폰트: 구글폰트에서 Cal Sans, National Park 폰트 CDN(html 소스코드의 head태그 안에 link)으로 사용. 폰트 색상 #313131 -->
+
+<div class="container">
+<div id="logo">
+    <img src="images/logo.png" alt="" width="30%">
+</div>
+
+<div id="login">
+    <div id="findYourVibeSync">find<br>Your<br>VibeSync<br></div>
+<div>
+    <form action="#" method="post">
+    <label for="userId"></label>
+    <input type="email" id="userId" name="userId" placeholder="Email" required>
+    <label for="userPw"></label>
+    <input type="password" id="userPw" name="userPw" placeholder="password" required  pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$" title="8자 이상, 영문자, 숫자, 특수문자를 모두 포함해야 합니다." >
+
+    <button type="submit"id="loginBtn">Login</button>
+    </form>
+</div>
+
+<div>
+    <label for="autoLogin">Auto-Login</label>
+    <input type="checkbox" name="autoLogin" id="autoLogin">
+    <label for="RememEmail">Remember Email</label>
+    <input type="checkbox" name="RememEmail" id="RememEmail">
+</div>
+
+<div>
+    Forget your account?<a href="">Find ID</a> or <a href="">Reset Password</a>
+</div>
+<div>
+    Not a member yet?<a href="">Sign Up</a>
+</div>
+</div>
+
+</div>
+
+</body>
+</html>
