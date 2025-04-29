@@ -154,8 +154,14 @@
       max-width: 1200px;
       display: flex;
       align-items: center;
-      gap: 40px;
       flex-wrap: wrap;
+    }
+    .se2_con{
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 40px;
     }
     #section2 .logo {
       font-family: "Cal Sans", sans-serif;
@@ -345,13 +351,16 @@
   <!-- 두 번째 섹션: 플랫폼 소개 -->
   <section id="section2">
     <div class="content">
-      <img src="./wave.png" alt="Wave img" class="wave" style="opacity: 0.34; position: absolute; max-width: 100%;">
-      <div class="logo" id="logo2"><img src="./logo.png" style="max-width: 250px;"></div>
-      <div class="intro" id="intro2">
-        <h2 data-key="intro.heading">Preference-based Social Matching Platform <span class="highlight">VibeSync</span></h2>
-        <p data-key="intro.paragraph">
-          <span class="highlight">VibeSync</span> is a new form of social platform that connects people around their <span class="highlight">tastes</span> for various content such as movies, dramas, music, and animation. With features like content review and emotion tagging, <span class="highlight">real-time streaming experience sharing</span>, and <span class="highlight">taste-based friend matching</span>, it offers users deep communication and connection opportunities.
-        </p>
+      <p class="Purpose_p" data-key="about.title">About VibeSync</p>
+      <img src="./wave.png" alt="Wave img" class="wave" style="opacity: 0.34; position: absolute; max-width: 100%; z-index: -10;">
+      <div class="se2_con">
+        <div class="logo" id="logo2"><img src="./logo.png" style="max-width: 250px;"></div>
+        <div class="intro" id="intro2">
+          <h2 data-key="intro.heading">Preference-based Social Matching Platform <span class="highlight">VibeSync</span></h2>
+          <p data-key="intro.paragraph">
+            <span class="highlight">VibeSync</span> is a new form of social platform that connects people around their <span class="highlight">tastes</span> for various content such as movies, dramas, music, and animation. With features like content review and emotion tagging, <span class="highlight">real-time streaming experience sharing</span>, and <span class="highlight">taste-based friend matching</span>, it offers users deep communication and connection opportunities.
+          </p>
+        </div>
       </div>
     </div>
   </section>
