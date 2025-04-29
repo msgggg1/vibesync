@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VibeSync Main Page</title>
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: "National Park", sans-serif;
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scroll-snap-type: y mandatory;
+    }
+    body::-webkit-scrollbar {
+      display: none;
+    }
+
+    .highlight {
+      background: linear-gradient(90deg, #9b59b6, #3498db, #2ecc71);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+      font-size: 1.05em;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      z-index: 1000;
+    }
+    @media screen and (max-width: 536px) {
+      nav{
+        flex-direction: column-reverse;
+        gap: 10px;
+      }
+    }
+
+    nav .menu {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+    }
+    nav .menu li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    nav .menu li a:hover {
+      background: linear-gradient(90deg, #9b59b6, #3498db, #2ecc71);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav .auth-buttons button {
+      margin-left: 10px;
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid #fff;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.3s;
+    }
+    nav .auth-buttons button:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    section {
+      width: 100%;
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 80px;
+      scroll-snap-align: start;
+    }
+
+    #section1 {
+      height: 100vh;
+    }
+    #section1 video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    .black_blur {
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      position: absolute;
+      z-index: -1;
+      opacity: 0.4;
+    }
+    #section1 .overlay {
+      max-width: 1200px;
+      text-align: center;
+      color: #fff;
+      padding: 20px;
+    }
+    #slogan {
+      font-weight: bold;
+      font-size: 2rem;
+      white-space: pre-wrap;
+    }
+    #logo1 {
+      font-family: "Cal Sans", sans-serif;
+      margin-top: 20px;
+      font-size: 3rem;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    #section2, #section3, #section4 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .content {
+      width: 90%;
+      max-width: 1200px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    #section2 .logo {
+      font-family: "Cal Sans", sans-serif;
+      font-size: 4rem;
+      font-weight: bold;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 1s, transform 1s;
+      flex: 1 1 300px;
+      text-align: center;
+    }
+    #section2 .intro {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s 0.5s, transform 1s 0.5s;
+      flex: 1 1 400px;
+    }
+    #section2 .intro h2,
+    #section2 .intro p {
+      margin-bottom: 10px;
+    }
+
+    #section3 .text-list {
+      max-width: 600px;
+      margin-bottom: 40px;
+      width: 100%;
+    }
+    #section3 .text-list ul {
+      list-style: disc inside;
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+
+    .se4_con{
+      flex-direction: row;
+      display: flex  ;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #section4 .team-img,
+    #section4 .team-text {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s, transform 1s;
+    }
+
+    .team-img {
+      flex: 1 1 300px;
+      max-width: 500px;
+      width: 50%;
+    }
+    .team-text {
+      text-align: left;
+      flex: 1 1 400px;
+      padding: 20px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .Purpose_p {
+      font-family: "Cal Sans", sans-serif;
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 40px;
+      font-weight: bold;
+    }
+
+    .slider-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    .slider-wrapper::before,
+    .slider-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .slider-wrapper::before {
+      left: 0;
+      background: linear-gradient(to right, #fff, rgba(255,255,255,0));
+    }
+    .slider-wrapper::after {
+      right: 0;
+      background: linear-gradient(to left, #fff, rgba(255,255,255,0));
+    }
+
+    .swiper-container {
+      width: auto;
+    }
+    .swiper-wrapper {
+      align-items: center;
+    }
+    .swiper-slide {
+      flex: 0 0 auto;
+      width: 300px;
+      height: 169px;
+      border-radius: 8px;
+      background: #ccc;
+    }
+
+    footer {
+      padding: 20px;
+      text-align: center;
+      background: #222;
+      color: #fff;
+      scroll-snap-align: start;
+    }
+
+    #language-select {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      z-index: 1001;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    @media screen and (max-width: 675px) {
+      .wave{
+        align-items: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #section2 .logo, #section2 .intro,
+      #section4 .content {
+        flex-direction: column;
+        text-align: center;
+      }
+      #section2 .intro h2 { font-size: 1.5rem; }
+      #section2 .intro p  { font-size: 1rem; }
+      #slogan            { font-size: 1.5rem; }
+      #logo1             { font-size: 2rem; }
+      .swiper-slide {
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 네비게이션 바 -->
+
+  <!-- https://inpa.tistory.com/entry/JS-%F0%9F%93%9A-HTML-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%85%8Bdata-%EC%86%8D%EC%84%B1
+   data- 속성 내용 참고 -->
+  <nav>
+    <ul class="menu">
+      <li><a href="#section1" data-key="nav.home">Home</a></li>
+      <li><a href="#section2" data-key="nav.about">About</a></li>
+      <li><a href="#section3" data-key="nav.purpose">Purpose</a></li>
+      <li><a href="#section4" data-key="nav.team">Team</a></li>
+      <li><a href="#footer" data-key="nav.contact">Contact</a></li>
+    </ul>
+    <div class="auth-buttons">
+      <button>Login</button>
+      <button>Sign Up</button>
+    </div>
+  </nav>
+
+  <!-- 첫 번째 섹션: 비디오 배경과 슬로건 -->
+  <section id="section1">
+    <video autoplay muted playsinline loop>
+      <source src="./video2.mp4" type="video/mp4">
+      동영상을 지원하지 않습니다.
+    </video>
+    <div class="black_blur"></div>
+    <div class="overlay">
+      <div id="slogan" data-key="slogan"></div>
+      <div id="logo1"><img src="./logo1.png" style="max-width: 250px;"></div>
+    </div>
+  </section>
+
+  <!-- 두 번째 섹션: 플랫폼 소개 -->
+  <section id="section2">
+    <div class="content">
+      <img src="./wave.png" alt="Wave img" class="wave" style="opacity: 0.34; position: absolute; max-width: 100%;">
+      <div class="logo" id="logo2"><img src="./logo.png" style="max-width: 250px;"></div>
+      <div class="intro" id="intro2">
+        <h2 data-key="intro.heading">Preference-based Social Matching Platform <span class="highlight">VibeSync</span></h2>
+        <p data-key="intro.paragraph">
+          <span class="highlight">VibeSync</span> is a new form of social platform that connects people around their <span class="highlight">tastes</span> for various content such as movies, dramas, music, and animation. With features like content review and emotion tagging, <span class="highlight">real-time streaming experience sharing</span>, and <span class="highlight">taste-based friend matching</span>, it offers users deep communication and connection opportunities.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 세 번째 섹션: 플랫폼 목적 -->
+  <section id="section3">
+    <div class="content" style="flex-direction: column; align-items: center;">
+      <div class="text-list">
+        <p class="Purpose_p" data-key="purpose.title">Our Purpose</p>
+        <ul>
+          <li data-key="purpose.li1">Provide <span class="highlight">community</span> for users to connect with similar people based on content tastes</li>
+          <li data-key="purpose.li2">Provide <span class="highlight">space</span> to record impressions like a diary after content viewing and organize one's emotions and tastes</li>
+          <li data-key="purpose.li3">Provide <span class="highlight">new social experience</span> of "watching together" through simultaneous viewing/listening and real-time chat</li>
+        </ul>
+      </div>
+      <div class="slider-wrapper">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-color:#e74c3c;"></div>
+            <div class="swiper-slide" style="background-color:#3498db;"></div>
+            <div class="swiper-slide" style="background-color:#2ecc71;"></div>
+            <div class="swiper-slide" style="background-color:#f1c40f;"></div>
+            <div class="swiper-slide" style="background-color:#9b59b6;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 네 번째 섹션: 팀 소개 -->
+  <section id="section4">
+    <div class="content">
+      <p class="Purpose_p" data-key="team.title">Our Team</p>
+      <div class="se4_con">
+        <img src="./team.png" alt="Team Image" class="team-img">
+        <div class="team-text" data-key="team.text">
+          Our <span class="highlight">vision</span> is to harness the power of shared experiences to bring people closer, building a <span class="highlight">global community</span> where everyone finds their perfect <span class="highlight">vibe</span>. We aim to continuously innovate social interaction through <span class="highlight">taste-based matching</span>, shared content, and immersive <span class="highlight">real-time connections</span>, fostering genuine bonds and unforgettable experiences.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 푸터: 연락처 및 저작권 정보 -->
+  <footer id="footer">
+    <p data-key="footer.copy">© 2025 VibeSync. All rights reserved.</p>
+    <br>
+    <p data-key="footer.contact">Contact us: abcde@gmail.com</p>
+  </footer>
+
+  <!-- 언어 선택 드롭다운 -->
+  <select id="language-select">
+    <option value="en">English</option>
+    <option value="ko">한국어</option>
+  </select>
+
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script>
+    // 다국어 번역 데이터
+    const translations = {
+      en: {
+        "nav.home": "Home",
+        "nav.about": "About",
+        "nav.purpose": "Purpose",
+        "nav.team": "Team",
+        "nav.contact": "Contact",
+        "slogan": "A new form of social platform that connects people around 'tastes' for various content such as movies, dramas, music, animation.",
+        "intro.heading": 'Preference-based Social Matching Platform <span class="highlight">VibeSync</span>',
+        "intro.paragraph": `<span class="highlight">VibeSync</span> is a new form of social platform that connects people around their <span class="highlight">tastes</span> for various content such as movies, dramas, music, and animation. With features like content review and emotion tagging, <span class="highlight">real-time streaming experience sharing</span>, and <span class="highlight">taste-based friend matching</span>, it offers users deep communication and connection opportunities.`,
+        "purpose.title": "Our Purpose",
+        "purpose.li1": `Provide <span class="highlight">community</span> for users to connect with similar people based on content tastes`,
+        "purpose.li2": `Provide <span class="highlight">space</span> to record impressions like a diary after content viewing and organize one's emotions and tastes`,
+        "purpose.li3": `Provide <span class="highlight">new social experience</span> of "watching together" through simultaneous viewing/listening and real-time chat`,
+        "team.title": "Our Team",
+        "team.text": `Our <span class="highlight">vision</span> is to harness the power of shared experiences to bring people closer, building a <span class="highlight">global community</span> where everyone finds their perfect <span class="highlight">vibe</span>. We aim to continuously innovate social interaction through <span class="highlight">taste-based matching</span>, shared content, and immersive <span class="highlight">real-time connections</span>, fostering genuine bonds and unforgettable experiences.`,
+        "footer.copy": "© 2025 VibeSync. All rights reserved.",
+        "footer.contact": "Contact us: abcde@gmail.com"
+      },
+      ko: {
+        "nav.home": "홈",
+        "nav.about": "소개",
+        "nav.purpose": "목적",
+        "nav.team": "팀",
+        "nav.contact": "문의",
+        "slogan": "영화, 드라마, 음악, 애니메이션 등 다양한 콘텐츠에 대한 '취향'을 중심으로 사람들을 연결하는 새로운 형태의 소셜 플랫폼입니다.",
+        "intro.heading": '취향 기반 소셜 매칭 플랫폼 <span class="highlight">VibeSync</span>',
+        "intro.paragraph": `<span class="highlight">VibeSync</span>는 영화, 드라마, 음악, 애니메이션 등 다양한 콘텐츠에 대한 <span class="highlight">‘취향’</span>을 중심으로 사람들을 연결하는 새로운 형태의 소셜 플랫폼입니다. 콘텐츠 리뷰 및 감정 태깅, <span class="highlight">실시간 스트리밍 경험 공유</span>, <span class="highlight">취향 기반 친구 매칭</span> 등 기능을 통해 사용자에게 깊이 있는 소통과 연결 기회를 제공합니다.`,
+        "purpose.title": "우리의 목표",
+        "purpose.li1": `사용자에게 콘텐츠 취향을 기반으로 유사한 사람들과 연결될 수 있는 <span class="highlight">커뮤니티</span> 제공`,
+        "purpose.li2": `콘텐츠 시청 후 다이어리처럼 인상을 기록하고 자신의 감정과 취향을 정리할 수 있는 <span class="highlight">공간</span> 제공`,
+        "purpose.li3": `동시 시청/청취 및 실시간 채팅을 통해 <span class="highlight">새로운 소셜 경험</span> 제공`,
+        "team.title": "팀 소개",
+        "team.text": `<span class="highlight">비전</span>은 공유된 경험의 힘을 활용하여 사람들을 더욱 가깝게 연결하고, 모두가 완벽한 <span class="highlight">바이브</span>를 찾을 수 있는 <span class="highlight">글로벌 커뮤니티</span>를 구축하는 것입니다. 우리는 <span class="highlight">취향 기반 매칭</span>, 공유 콘텐츠, 몰입형 <span class="highlight">실시간 연결</span>을 통해 소셜 상호작용을 지속적으로 혁신하여 진정한 유대감과 잊지 못할 경험을 만들어가고자 합니다.`,
+        "footer.copy": "© 2025 VibeSync. 무단 전재 및 재배포 금지.",
+        "footer.contact": "문의: abcde@gmail.com"
+      }
+    };
+    let typed;
+    let currentLang = 'en';
+    // Typed.js 초기화 함수
+    function initTyped() {
+      typed = new Typed('#slogan', {
+        strings: [translations[currentLang].slogan],
+        typeSpeed: 30,
+        showCursor: false,
+        onComplete: () => {
+          document.getElementById('logo1').style.opacity = 1;
+        }
+      });
+    }
+    // 언어 설정 함수
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.dataset.key;
+        el.innerHTML = translations[lang][key];
+      });
+      if (typed) typed.destroy();
+      initTyped();
+    }
+    // 언어 선택 이벤트 리스너
+    document.getElementById('language-select').addEventListener('change', e => {
+      setLanguage(e.target.value);
+    });
+
+    //https://www.heropy.dev/p/ydKoQO 참고
+    // 섹션 애니메이션을 위한 IntersectionObserver
+    //Intersection observer는 브라우저 뷰포트(Viewport)와 설정한 요소(Element)의 교차점을 관찰. 
+    // 요소가 뷰포트에 포함되는지 포함되지 않는지, 더 쉽게는 사용자 화면에 지금 보이는 요소인지 아닌지를 구별하는 기능을 제공.
+    const observer = new IntersectionObserver(entries => {
+      //entries는 IntersectionObserverEntry 인스턴스의 배열로, .observe() 메소드로 관찰하는 대상들을 의미.
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          document.getElementById('logo2').style.opacity = 1;
+          document.getElementById('logo2').style.transform = 'translateY(0)';
+          document.getElementById('intro2').style.opacity = 1;
+          document.getElementById('intro2').style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.5 });
+    observer.observe(document.getElementById('section2'));
+
+    const observer4 = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          document.querySelector('#section4 .team-img').style.opacity = 1;
+          document.querySelector('#section4 .team-img').style.transform = 'translateY(0)';
+          document.querySelector('#section4 .team-text').style.opacity = 1;
+          document.querySelector('#section4 .team-text').style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.5 });
+    observer4.observe(document.getElementById('section4'));
+
+    // Swiper 슬라이더 초기화
+    new Swiper('.swiper-container', {
+      loop: true,
+      speed: 800,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false
+      },
+      slidesPerView: 3,
+      spaceBetween: 20,
+      slidesPerGroup: 1,
+      centeredSlides: false
+    });
+
+    // 전체 페이지 스크롤 이벤트 처리
+    let isScrolling = false;
+    const sections = [...document.querySelectorAll('section'), document.getElementById('footer')];
+    window.addEventListener('wheel', e => {
+      if (isScrolling) return;
+      const delta = e.deltaY;
+      const viewportHeight = window.innerHeight;
+      let currentIndex = sections.findIndex(sec => {
+        const rect = sec.getBoundingClientRect();
+        return rect.top >= -10 && rect.top < viewportHeight / 2;
+      });
+      if (delta > 0) {
+        if (currentIndex < sections.length - 1) {
+          isScrolling = true;
+          sections[currentIndex + 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        if (currentIndex > 0) {
+          isScrolling = true;
+          sections[currentIndex - 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+      setTimeout(() => { isScrolling = false; }, 1000);
+    });
+
+    // 초기 Typed.js 실행
+    initTyped();
+  </script>
+</body>
+</html>
