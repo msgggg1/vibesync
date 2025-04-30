@@ -36,7 +36,7 @@
 ![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) <img src="https://img.shields.io/badge/Teleparty-FF0000?style=for-the-badge&logoColor=white">
 
 
-
+# Project Team
 
 
 
