@@ -67,6 +67,40 @@
 ![usage](readme_img/index2.gif)
 
 - 우측 하단 언어 번경 기능을 통해 페이지 내 언어를 변경할 수 있습니다. 변경 가능 언어는 영어/한국어 입니다.
+- 번역은 데이터를 js로 작성하고 선택에 맞게 내용을 출력하는 형태 입니다.<br>
+\<예시\>
+```html
+
+  <!-- 언어 선택 드롭다운 -->
+  <select id="language-select">
+    <option value="en">English</option>
+    <option value="ko">한국어</option>
+  </select>
+
+```
+
+
+```javascript
+
+    // 번역 데이터
+    const translations = {
+      en: {
+        "data-key": "contents",
+        "data-key": "contents",
+        .
+        .
+        .
+   },
+      ko: {
+        "data-key": "contents",
+        "data-key": "contents",
+        .
+        .
+        .
+   }
+}
+
+```
 
 
 
