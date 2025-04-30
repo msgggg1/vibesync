@@ -13,6 +13,7 @@
 # 목차
 - [[1] About the Project](#1-about-the-project)
   - [Technologies](#technologies)
+- [[2] Project Team](#2-Project-Team)
 
 
  <!--목차 끝-->
