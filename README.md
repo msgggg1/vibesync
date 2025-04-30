@@ -59,8 +59,14 @@
 
 <h2>Index Page</h2>
 
+![usage](readme_img/index1.gif)
 
+- **Index Page**으 최초 로드 모습입니다. 해당 페이지는 페이지 초기 로드시 나타나며, 간단한 애니메이션을 포함하고 있습니다.
+<img src="https://img.shields.io/badge/Typed.js-5DAED7?style=for-the-badge&logoColor=white"> <img src="https://img.shields.io/badge/Swiper-5DAED7?style=for-the-badge&logoColor=white">
 
+![usage](readme_img/index2.gif)
+
+- 우측 하단 언어 번경 기능을 통해 페이지 내 언어를 변경할 수 있습니다. 변경 가능 언어는 영어/한국어 입니다.
 
 
 
