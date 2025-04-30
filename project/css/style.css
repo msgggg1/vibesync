@@ -703,10 +703,10 @@ input:focus {
 #signUp {
   width: 100%;
   height: 100%;
-  padding: 100px 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-left: 2px solid black;
 }
 
 #signup_form_wrapper {
@@ -716,7 +716,9 @@ input:focus {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 50px;
+  gap: 20px;
+  padding-inline: 20px;
+  margin-bottom: 10px;
 }
 
 #signup_form_wrapper>input {
@@ -727,9 +729,13 @@ input:focus {
   border-bottom: 2px solid black;
 }
 
+#signUp>p {
+  padding-bottom: 40px;
+}
+
 @media (max-width:700px) {
   #login_wrapper {flex-direction: column; margin-top: 150px;}
-  #login_signup_form {border-left: none;}
+  #login_signup_form, #signUp {border-left: none;}
   #login { padding-block: 40px;}
   #login .login_title>p {width: 100%; flex-direction: row; gap: 10px; justify-content: center;}
   #postview_Wrapper .writer_info { flex-direction: column; align-items: start; gap: 8px; height: 86px; }
