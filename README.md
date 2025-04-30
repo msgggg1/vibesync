@@ -12,15 +12,22 @@
  <!--목차-->
 # 목차
 - [[1] About the Project](#1-about-the-project)
-  - [Features](#features)
   - [Technologies](#technologies)
 
 
  <!--목차 끝-->
 
 # [1] About the Project
+- 취향 기반 소셜 매칭 플랫폼 **VibeSync**
+- **VibeSync**는 영화, 드라마, 음악, 애니메이션 등 다양한 콘텐츠에 대한 ***취향***을 중심으로 사람들을 연결하는 새로운 형태의 ***소셜 플랫폼***입니다.
+- 콘텐츠 리뷰 및 감정 태깅, 실시간 스트리밍 경험 공유, 취향 기반 친구 매칭 등 기능을 통해 사용자에게 깊이 있는 소통과 연결 기회를 제공합니다.
 
-
+## Technologies
+- [HTML5], [CSS3], [JAVASCRIPT]
+- [JAVA]
+- [ORACLE SQL]
+- [Visual Studio Code]
+- [Adobe Photoshop], [Adobe XD]
 
 
 
