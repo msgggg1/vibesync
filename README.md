@@ -15,16 +15,19 @@
   - [Technologies](#technologies)
   - [Reference site](#Reference-site)
 - [[2] Project Team](#2-Project-Team)
+- [[3] Usage](#3-usage)
 
 
  <!--목차 끝-->
 
 # [1] About the Project
+
 - 취향 기반 소셜 매칭 플랫폼 **VibeSync**
 - **VibeSync**는 영화, 드라마, 음악, 애니메이션 등 다양한 콘텐츠에 대한 ***취향***을 중심으로 사람들을 연결하는 새로운 형태의 ***소셜 플랫폼***입니다.
 - 콘텐츠 리뷰 및 감정 태깅, 실시간 스트리밍 경험 공유, 취향 기반 친구 매칭 등 기능을 통해 사용자에게 깊이 있는 소통과 연결 기회를 제공합니다.
 
 ## Technologies
+
 - **Front-End**: ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 - **Back-End**: ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 - **Database**: ![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
@@ -33,14 +36,19 @@
 - **Version Control**: ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
 ## Reference site
+
 ![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) <img src="https://img.shields.io/badge/Teleparty-FF0000?style=for-the-badge&logoColor=white">
 
 
 # [2] Project Team
+
 |<img src="https://avatars.githubusercontent.com/u/147032519?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/180395275?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547917?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/186297935?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547900?v=4" width="150" height="150"/>|
 |:-:|:-:|:-:|:-:|:-:|
 |KimHS<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management<br>UI/UX Design<br>FE/BE Development|duck_hammer<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**<br>Overall FE/BE Development|[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|Yeji Kim<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
 
+# [3] Usage
+
+<h2>Index Page</h2>
 
 
 
