@@ -24,7 +24,7 @@
 - 콘텐츠 리뷰 및 감정 태깅, 실시간 스트리밍 경험 공유, 취향 기반 친구 매칭 등 기능을 통해 사용자에게 깊이 있는 소통과 연결 기회를 제공합니다.
 
 ## Technologies
-- [HTML5], [CSS3], [JAVASCRIPT]
+- ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white), [CSS3], [JAVASCRIPT]
 - [JAVA]
 - [ORACLE SQL]
 - [Visual Studio Code]
