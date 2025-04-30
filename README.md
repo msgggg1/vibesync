@@ -15,7 +15,8 @@
   - [Technologies](#technologies)
   - [Reference site](#Reference-site)
 - [[2] Project Team](#2-Project-Team)
-- [[3] Usage](#3-usage)
+- [[3] Design](#3-Design)
+- [[4] Usage](#4-usage)
 
 
  <!--목차 끝-->
@@ -46,7 +47,9 @@
 |:-:|:-:|:-:|:-:|:-:|
 |KimHS<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management<br>UI/UX Design<br>FE/BE Development|duck_hammer<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**<br>Overall FE/BE Development|[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|Yeji Kim<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
 
-# [3] Usage
+# [3] Design
+
+# [4] Usage
 
 <h2>Index Page</h2>
 
