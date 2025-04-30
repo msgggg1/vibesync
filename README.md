@@ -39,7 +39,7 @@
 # [2] Project Team
 |<img src="https://avatars.githubusercontent.com/u/147032519?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/180395275?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547917?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/186297935?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547900?v=4" width="150" height="150"/>|
 |:-:|:-:|:-:|:-:|:-:|
-|KimHS<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management, Design, Frontend & Backend Development|duck_hammer<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**|[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|Yeji Kim<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
+|KimHS<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<hr heigth="1px"><br>Planning/Management, Design, Frontend & Backend Development|duck_hammer<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**|[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|Yeji Kim<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
 
 <sub>[Table made by TIT](https://team-info-table.seondal.kr/)</sub>
 
