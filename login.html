@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VibeSync Login&Sign Up Page</title>
+    <title>VibeSync Login & Sign Up Page</title>
     <link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
     
@@ -73,7 +73,7 @@
         .form-group input, .form-group select {
           border: none;
           width: 100%;
-          font-size: 1em;
+          font-size: 1.3em;
           padding: 10px 0;
           background: none;
           outline: none;
@@ -83,11 +83,12 @@
           display: flex;
           gap: 10px;
           align-items: center;
-          font-size: 0.9em;
+          font-size: 1.2em;
         }
     
         .form-links {
-          font-size: 0.8em;
+          font-size: 1.2em;
+          align-self: center;
         }
     
         .form-links a {
@@ -99,15 +100,16 @@
           background-color: var(--highlight-color);
           color: white;
           border: none;
-          padding: 12px 0;
-          font-weight: bold;
+          padding: 1.2em 0;
+          /* font-weight: bold; */
           cursor: pointer;
+          font-size: 1.2em;
         }
     
         .toggle-link {
           text-align: center;
           margin-top: 10px;
-          font-size: 0.9em;
+          font-size: 1.2em;
         }
     
         .toggle-link a {
@@ -116,8 +118,8 @@
         }
     
         .small-text {
-          font-size: 0.7em;
-          color: #999;
+          font-size: 0.8em;
+          align-self: center;
         }
     
         /* 숨김 처리 */
@@ -138,7 +140,7 @@
         <div class="right">
           <!-- 로그인 폼 -->
           <form id="loginForm">
-            <div style="font-weight: bold; line-height: 1.2; margin-bottom: 10px;">
+            <div style="font-size: 2.5em; line-height: 1.2; margin-bottom: 10px;">
               Find<br>Your<br>VibeSync
             </div>
     
@@ -194,8 +196,10 @@
             <div class="form-group">
               <select required>
                 <option value="">Select Category</option>
-                <option value="listener">Listener</option>
-                <option value="creator">Creator</option>
+                <option value="movie">Movie</option>
+                <option value="drama">Drama</option>
+                <option value="music">Music</option>
+                <option value="animation">Animation</option>
               </select>
             </div>
     
