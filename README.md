@@ -49,7 +49,7 @@
 |KimHS<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management<br>UI/UX Design<br>FE/BE Development|duck_hammer<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**<br>Overall FE/BE Development|[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|Yeji Kim<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
 
 # [3] Logo CI
-![Logo CI](logo.png)
+![Logo CI](readme_img/logo.jpeg)
 - **Vibe(감성, 파장)**와 **Sync(동기화)**의 결합으로, 사용자 간의 감성과 경험을 연결한다는 의미를 담고 있습니다.
 - 외각 원형: 글로벌 커뮤니티의 확장성과 끊김 없는 연결을 상징
 - 중앙 사운드 웨이브 그래픽: 실시간 경험 공유, 감정의 파동(바이브)을 시각화
