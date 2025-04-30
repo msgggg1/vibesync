@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeSync</title> <!-- 페이지 제목 수정 -->
+    <link rel="shortcut icon" type="image/x-icon" href="http://localhost/webPro/images/SiSt.ico">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+
+        body {
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 메인 컨테이너 스타일 */
+        .container {
+            
+            display: flex;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 8px;
+            /*로고 크기 조절*/
+        }
+
+        /* 왼쪽 섹션 (로고 영역) 스타일 */
+        .logo-section {
+            flex: 7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            border-right: 1px solid #eee; /* 구분선 */
+        }
+
+        .logo-section img {
+            max-width: 300px;
+            height: auto;
+        }
+
+        /* 오른쪽 섹션 (폼 영역) 스타일 */
+        .form-section {
+            flex: 3;
+            background-color: #ffffff;
+            padding: 20px;
+            /* 요구사항 2: 폼 영역 좌우 추가 여백 -> padding으로 적용 */
+        }
+
+        /* 폼 컨테이너 내부 제목(h2) 스타일 */
+        .form-container h2 {
+            margin-bottom: 30px; /* 제목 아래 여백만 설정 */
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* 폼 그룹(라벨 + 입력 필드) 스타일 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* 라벨 스타일 (현재 숨김) */
+        .form-group label {
+            display: block;
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        /* 입력 필드, 선택 상자 공통 스타일 */
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group input[type="text"],
+        .form-group select {
+            width: 100%;
+            border: none;
+            /* 요구사항 3: 폼 하단 줄 스타일 */
+            border-bottom: 2px solid #313131;
+            font-size: 1em;
+            background-color: transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group select {
+             /* appearance: none; */ /* 기본 화살표 보이도록 주석 처리 또는 제거 */
+             /* -webkit-appearance: none; */
+             /* -moz-appearance: none; */
+             /* background 관련 속성 제거 */
+             padding-right: 5px; /* 기본 패딩으로 복원 */
+        }
+
+        /* 입력 필드, 선택 상자 포커스 시 스타일 */
+        /* 요구사항 4: 폼 하이라이트 색상 #5DAED7 적용 */
+        .form-group input[type="email"]:focus,
+        .form-group input[type="password"]:focus,
+        .form-group input[type="text"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-bottom-color: #5DAED7;
+        }
+
+        /* 카테고리 설명 텍스트 스타일 */
+        .category-description {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+            padding-left: 5px;
+        }
+
+        /* 자동 로그인, 이메일 기억 등 옵션 영역 스타일 */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        /* 옵션 영역 내 라벨 스타일 */
+        .form-options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* 체크박스, 라디오 버튼 스타일 */
+         .form-options input[type="checkbox"],
+         .form-options input[type="radio"] {
+             margin-right: 5px;
+             accent-color: #5DAED7; /* 체크 시 하이라이트 색상 */
+         }
+
+        /* 제출 버튼 스타일 */
+        .btn-submit {
+            width: 100%;
+           
+            background-color: #5DAED7;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .btn-submit:hover {
+            background-color: #4a9bc4;
+        }
+
+        /* 계정 찾기/비밀번호 재설정 링크 영역 스타일 */
+        .form-links {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        /* 링크(a 태그) 공통 스타일 */
+        .form-links a {
+            color: #5DAED7;
+            text-decoration: none;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+        .form-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* 로그인/회원가입 전환 링크 영역 스타일 */
+        .switch-form-link {
+            display: block;
+            margin-top: 20px; /* 여백 조정됨 */
+            text-align: right;
+        }
+
+        /* 요소를 숨기기 위한 유틸리티 클래스 */
+        .hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo-section">
+            <img src="./index/logo.png" alt="VibeSync Logo">
+        </div> <div class="form-section">
+
+            <div id="login-form" class="form-container">
+                <h2>Find <br> Your <br> VibeSync</h2> <form action="loginProcess.jsp" method="post">
+                    <div class="form-group">
+                        <input type="email" id="login-email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="login-password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="form-options">
+                        <label>
+                            <input type="checkbox" name="auto-login"> Auto-Login
+                        </label>
+                        <label>
+                            <input type="checkbox" name="remember-email"> Remember Email
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-submit">Login</button>
+                    <div class="form-links">
+                        Forgot your account? <a href="#">Find ID</a> or <a href="#">Reset Password</a>
+                    </div>
+                    <div class="form-links switch-form-link">
+                        Not a member yet? <a href="#" id="show-signup">Sign Up &gt;&gt;</a>
+                    </div>
+                </form>
+            </div> <div id="signup-form" class="form-container hidden">
+                    <div class="form-group">
+                        <input type="text" id="signup-name" name="name" placeholder="Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="signup-nickname" name="nickname" placeholder="Nick Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="signup-email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signup-password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signup-confirm-password" name="confirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <div class="form-group">
+                        <select id="signup-category" name="category" required>
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="music">Music Enthusiast</option>
+                            <option value="artist">Artist</option>
+                            <option value="producer">Producer</option>
+                            <option value="listener">General Listener</option>
+                        </select>
+                        <p class="category-description">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                    </div>
+                    <button type="submit" class="btn-submit">Sign Up</button>
+                    <div class="form-links switch-form-link">
+                        Already a member? <a href="#" id="show-login">Login &gt;&gt;</a>
+                    </div>
+                </form>
+            </div> </div> </div> <script>
+        $(document).ready(function() {
+            // Sign Up 링크 클릭 시
+            $('#show-signup').on('click', function(e) {
+                e.preventDefault(); // 기본 동작 방지
+                $('#login-form').addClass('hidden'); // 로그인 폼 숨김
+                $('#signup-form').removeClass('hidden'); // 회원가입 폼 보임
+            });
+
+            // Login 링크 클릭 시
+            $('#show-login').on('click', function(e) {
+                e.preventDefault(); // 기본 동작 방지
+                $('#signup-form').addClass('hidden'); // 회원가입 폼 숨김
+                $('#login-form').removeClass('hidden'); // 로그인 폼 보임
+            });
+
+            // 페이지 로드 시 초기 상태 설정 (로그인 폼 보이기)
+            // (HTML에서 signup-form에 hidden 클래스가 이미 있으므로 아래 코드는 안전장치 역할)
+            if (!$('#signup-form').hasClass('hidden')) {
+                 $('#signup-form').addClass('hidden');
+            }
+            if ($('#login-form').hasClass('hidden')) {
+                 $('#login-form').removeClass('hidden');
+            }
+        });
+    </script>
+
+</body>
+</html>
