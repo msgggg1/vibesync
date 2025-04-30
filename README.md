@@ -71,13 +71,13 @@
 
 ***\<예시\>***
 ```html
-  <section id="section1">
+
+  <section id="section2">
+    <div class="content">
+      <p class="Purpose_p" data-key="about.title">About VibeSync</p>
     .
     .
     .
-    <div class="overlay">
-      <div id="slogan" data-key="slogan"></div>
-      <div id="logo">...</div>
     </div>
   </section>
   .
@@ -97,15 +97,15 @@
     // 번역 데이터
     const translations = {
       en: {
-        "data-key": "contents",
-        "data-key": "contents",
+        "data-key_name": "contents",
+        "data-key_name": "contents",
         .
         .
         .
    },
       ko: {
-        "data-key": "contents",
-        "data-key": "contents",
+        "data-key_name": "contents",
+        "data-key_name": "contents",
         .
         .
         .
