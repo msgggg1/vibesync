@@ -61,7 +61,7 @@
 
 ![usage](readme_img/index1.gif)
 
-- **Index Page**으 최초 로드 모습입니다. 해당 페이지는 페이지 초기 로드시 나타나며, 간단한 애니메이션을 포함하고 있습니다.
+- **Index Page**으 최초 로드 모습입니다. 해당 페이지는 페이지 초기 로드시 나타나며, 간단한 애니메이션을 포함하고 있습니다.<br>
 <img src="https://img.shields.io/badge/Typed.js-5DAED7?style=for-the-badge&logoColor=white"> <img src="https://img.shields.io/badge/Swiper-5DAED7?style=for-the-badge&logoColor=white">
 
 ![usage](readme_img/index2.gif)
