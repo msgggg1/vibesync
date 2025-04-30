@@ -728,7 +728,7 @@ input:focus {
   #login_wrapper {flex-direction: column; margin-top: 150px;}
   #login {border-left: none; border-top: 2px solid black; padding-block: 40px;}
   #postview_Wrapper .writer_info { flex-direction: column; align-items: start; gap: 8px; height: 86px; }
-  #userInfo {flex-direction: column;}
+  #userInfo {flex-direction: column; margin-bottom: 30px;}
 }
 
 @media (max-width:600px) {
