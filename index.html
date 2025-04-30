@@ -60,6 +60,15 @@
         flex-direction: column-reverse;
         gap: 10px;
       }
+      .auth-buttons{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        border-bottom: solid 2px #fff;
+      }
+      .auth-buttons button{
+        width: 100%;
+      }
     }
 
     nav .menu {
@@ -81,19 +90,17 @@
     }
 
     nav .auth-buttons button {
-      margin-left: 10px;
       padding: 6px 12px;
       background: transparent;
-      border: 1px solid #fff;
+      border: none;
       color: #fff;
       border-radius: 5px;
       cursor: pointer;
       font-size: 0.9rem;
-      transition: background 0.3s;
+      font-family: "Cal Sans", sans-serif;
     }
     nav .auth-buttons button:hover {
-      background: #fff;
-      color: #000;
+      background: linear-gradient(90deg, #9b59b6, #3498db, #2ecc71);
     }
 
     section {
@@ -285,7 +292,7 @@
     }
 
     .footer_member_warpper{
-      margin-top: 20px;
+      margin-top: 40px;
       display: flex;
       flex-wrap: wrap;
       flex-direction: row;
@@ -357,8 +364,7 @@
       <li><a href="#footer" data-key="nav.contact">Contact</a></li>
     </ul>
     <div class="auth-buttons">
-      <button>Login</button>
-      <button>Sign Up</button>
+      <button>Get Start</button>
     </div>
   </nav>
 
@@ -432,6 +438,7 @@
 
   <!-- 푸터: 연락처 및 저작권 정보 -->
   <footer id="footer">
+    <img src="./footer_logo.png" alt="Footer Logo" style="max-width: 300px; margin-bottom: 20px;">
     <p data-key="footer.copy">© 2025 VibeSync. All rights reserved.</p>
     <br>
     <p data-key="footer.contact">Contact us: abcde@gmail.com</p>
