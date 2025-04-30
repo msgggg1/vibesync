@@ -69,9 +69,20 @@
 - 우측 하단 언어 번경 기능을 통해 페이지 내 언어를 변경할 수 있습니다. 변경 가능 언어는 영어/한국어 입니다.
 - 번역은 데이터를 js로 작성하고 선택에 맞게 내용을 변경하는 형태 입니다.<br><br>
 
-\<예시\>
+***\<예시\>***
 ```html
-
+  <section id="section1">
+    .
+    .
+    .
+    <div class="overlay">
+      <div id="slogan" data-key="slogan"></div>
+      <div id="logo">...</div>
+    </div>
+  </section>
+  .
+  .
+  .
   <!-- 언어 선택 드롭다운 -->
   <select id="language-select">
     <option value="en">English</option>
