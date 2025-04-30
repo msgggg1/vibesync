@@ -3,210 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VibeSync</title> <!-- 페이지 제목 수정 -->
-    <link rel="shortcut icon" type="image/x-icon" href="http://localhost/webPro/images/SiSt.ico">
+    <title>VibeSync</title>
+    <link rel="shortcut icon" type="image/x-icon" href="http://localhost/webPro/images/SiSt.ico"> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
+        /* CSS 변수 정의 */
+        :root {
+            --clr-text: #313131;
+            --clr-primary: #5DAED7;
+            --clr-primary-dark: #4a9bc4;
+            --clr-bg-light: #ffffff;
+            --clr-bg-page: #f0f0f0;
+            --clr-border-light: #eee;
+            --clr-border-dark: #313131;
+            --clr-placeholder: #aaa;
+            --clr-description: #888;
+            --font-main: 'Cal Sans', 'National Park', 'Poppins', sans-serif;
+            --fs-h2: 2.2em;
+            --fs-base: 1em;
+            --fs-small: 0.9em;
+            --fs-smaller: 0.8em;
+            --fs-btn: 1.1em;
+            --fs-back-arrow: 2em;
+            --space-xxs: 2px;
+            --space-xs: 5px;
+            --space-s: 8px;
+            --space-m: 15px;
+            --space-l: 20px;
+            --space-xl: 25px;
+            --space-xxl: 30px;
+            --space-xxxl: 40px;
+            --space-gutter-h-desktop: 20px;
+            --space-gutter-v-desktop: 100px;
+            --space-gutter-h-mobile: 15px;
+            --space-gutter-v-mobile: 40px;
+            --space-gutter-h-mobile-s: 10px;
+            --space-gutter-v-mobile-s: 20px;
+            --transition-speed: 0.3s;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
 
         body {
-            font-family: sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
+            font-family: var(--font-main);
+            margin: 0;
+            padding: var(--space-gutter-v-desktop) var(--space-gutter-h-desktop); /* 데스크탑 기준 여백 */
+            min-height: 100vh;
+            background-color: var(--clr-bg-page);
+            color: var(--clr-text);
+            display: flex; /* 컨테이너 중앙 정렬 */
             justify-content: center;
             align-items: center;
+            transition: padding var(--transition-speed) ease;
         }
 
-        /* 메인 컨테이너 스타일 */
+        /* 컨테이너 */
         .container {
-            
+            /* position: relative; */ /* 화살표 기준점 아님 */
             display: flex;
-            width: 100%;
-            background-color: #ffffff;
-            border-radius: 8px;
-            /*로고 크기 조절*/
+            width: 100%; /* Body padding 내부 가로 꽉 채움 */
+            height: 100%; /* Body padding 내부 세로 꽉 채움 */
+            /* === 제거: max-width 제거 === */
+            /* max-width: 1200px; */
+            min-height: 500px;
+            background-color: var(--clr-bg-light);
+            border-radius: var(--space-s);
         }
 
-        /* 왼쪽 섹션 (로고 영역) 스타일 */
+         /* 뒤로가기 버튼 */
+         .back-arrow {
+            position: absolute;
+            /* === 수정: .logo-section 내부 좌상단 기준 위치 === */
+            top: var(--space-l);  /* 로고 섹션 상단 패딩 안쪽 */
+            left: var(--space-l); /* 로고 섹션 좌측 패딩 안쪽 */
+            font-size: var(--fs-back-arrow);
+            color: var(--clr-text);
+            text-decoration: none;
+            z-index: 10;
+            transition: top var(--transition-speed) ease, left var(--transition-speed) ease;
+        }
+        .back-arrow:hover { color: var(--clr-primary); }
+
         .logo-section {
-            flex: 7;
+            position: relative; /* === 추가: 화살표 위치 기준점 === */
+            flex: 7; /* 비율 유지 */
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #fff;
-            border-right: 1px solid #eee; /* 구분선 */
+            padding: var(--space-xxxl); /* 내부 패딩 */
+            transition: padding var(--transition-speed) ease;
         }
-
         .logo-section img {
             max-width: 300px;
             height: auto;
+            transition: max-width var(--transition-speed) ease;
         }
 
-        /* 오른쪽 섹션 (폼 영역) 스타일 */
         .form-section {
-            flex: 3;
-            background-color: #ffffff;
-            padding: 20px;
-            /* 요구사항 2: 폼 영역 좌우 추가 여백 -> padding으로 적용 */
-        }
-
-        /* 폼 컨테이너 내부 제목(h2) 스타일 */
-        .form-container h2 {
-            margin-bottom: 30px; /* 제목 아래 여백만 설정 */
-            color: #333;
-            font-weight: 600;
-        }
-
-        /* 폼 그룹(라벨 + 입력 필드) 스타일 */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        /* 라벨 스타일 (현재 숨김) */
-        .form-group label {
-            display: block;
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 8px;
-        }
-
-        /* 입력 필드, 선택 상자 공통 스타일 */
-        .form-group input[type="email"],
-        .form-group input[type="password"],
-        .form-group input[type="text"],
-        .form-group select {
-            width: 100%;
-            border: none;
-            /* 요구사항 3: 폼 하단 줄 스타일 */
-            border-bottom: 2px solid #313131;
-            font-size: 1em;
-            background-color: transparent;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group select {
-             /* appearance: none; */ /* 기본 화살표 보이도록 주석 처리 또는 제거 */
-             /* -webkit-appearance: none; */
-             /* -moz-appearance: none; */
-             /* background 관련 속성 제거 */
-             padding-right: 5px; /* 기본 패딩으로 복원 */
-        }
-
-        /* 입력 필드, 선택 상자 포커스 시 스타일 */
-        /* 요구사항 4: 폼 하이라이트 색상 #5DAED7 적용 */
-        .form-group input[type="email"]:focus,
-        .form-group input[type="password"]:focus,
-        .form-group input[type="text"]:focus,
-        .form-group select:focus {
-            outline: none;
-            border-bottom-color: #5DAED7;
-        }
-
-        /* 카테고리 설명 텍스트 스타일 */
-        .category-description {
-            font-size: 0.8em;
-            color: #888;
-            margin-top: 5px;
-            padding-left: 5px;
-        }
-
-        /* 자동 로그인, 이메일 기억 등 옵션 영역 스타일 */
-        .form-options {
+            flex: 3; /* 비율 유지 */
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            margin-bottom: 30px;
-            font-size: 0.9em;
-            color: #555;
+            padding: var(--space-xxxl); /* 내부 패딩 */
+            border-left: 1px solid var(--clr-border-light);
+            transition: padding var(--transition-speed) ease;
         }
 
-        /* 옵션 영역 내 라벨 스타일 */
-        .form-options label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        /* 체크박스, 라디오 버튼 스타일 */
-         .form-options input[type="checkbox"],
-         .form-options input[type="radio"] {
-             margin-right: 5px;
-             accent-color: #5DAED7; /* 체크 시 하이라이트 색상 */
-         }
-
-        /* 제출 버튼 스타일 */
-        .btn-submit {
+        .form-container {
             width: 100%;
-           
-            background-color: #5DAED7;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 30px;
+            max-width: 320px; /* 폼 자체의 최대 너비는 유지 */
+            margin: 0 auto;
+            padding: var(--space-l) 0; /* 폼 상하 내부 여백 */
+            transition: padding var(--transition-speed) ease;
+        }
+        /* ... 이하 스타일 동일 ... */
+        .form-container h2 { margin-bottom: var(--space-xxxl); font-size: var(--fs-h2); line-height: 1.3; font-weight: 700; transition: font-size var(--transition-speed) ease, margin-bottom var(--transition-speed) ease; }
+        .form-group { margin-bottom: var(--space-xl); }
+        .form-input { width: 100%; border: none; border-bottom: 2px solid var(--clr-border-dark); font-size: var(--fs-base); padding: var(--space-s) var(--space-xxs); background-color: transparent; transition: border-color var(--transition-speed) ease; color: var(--clr-text); font-family: inherit; }
+        .form-input::placeholder { color: var(--clr-placeholder); }
+        .form-input:focus { outline: none; border-bottom-color: var(--clr-primary); }
+        select.form-input { padding-right: var(--space-xs); }
+        select.form-input:invalid { color: var(--clr-placeholder); }
+        .category-description { font-size: var(--fs-smaller); color: var(--clr-description); margin-top: var(--space-s); padding-left: var(--space-xxs); }
+        .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xxl); font-size: var(--fs-small); }
+        .form-options label { display: flex; align-items: center; cursor: pointer; }
+        .form-options input[type="radio"] { margin-right: var(--space-xs); accent-color: var(--clr-primary); cursor: pointer; }
+        .btn-submit { width: 100%; padding: var(--space-m) var(--space-l); background-color: var(--clr-primary); border: none; border-radius: var(--space-xs); color: var(--clr-bg-light); font-size: var(--fs-btn); font-weight: bold; cursor: pointer; transition: background-color var(--transition-speed) ease, padding var(--transition-speed) ease, font-size var(--transition-speed) ease; margin-top: var(--space-m); }
+        .btn-submit:hover { background-color: var(--clr-primary-dark); }
+        .form-links { margin-top: var(--space-xl); text-align: center; font-size: var(--fs-small); transition: margin-top var(--transition-speed) ease, font-size var(--transition-speed) ease; }
+        .form-links a { color: var(--clr-primary); text-decoration: none; margin: 0 var(--space-xs); cursor: pointer; }
+        .form-links a:hover { text-decoration: underline; }
+        .switch-form-link { display: block; margin-top: var(--space-xxl); text-align: right; transition: margin-top var(--transition-speed) ease; }
+        .hidden { display: none; }
+
+
+        /* --- 반응형 디자인 --- */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--space-gutter-v-mobile) var(--space-gutter-h-mobile); /* 반응형 Body padding */
+                align-items: flex-start;
+                height: auto;
+            }
+            /* 반응형 .back-arrow 위치 (logo-section 기준) */
+            .back-arrow {
+                 top: var(--space-l);
+                 left: var(--space-l);
+                font-size: 1.8em;
+            }
+            .container {
+                flex-direction: column;
+                height: auto;
+                min-height: auto;
+            }
+            .logo-section {
+                order: 1; padding: var(--space-xxl) var(--space-l); border-right: none;
+                justify-content: center; max-height: none; flex: none; width: 100%;
+                /* position: relative; 유지 */
+            }
+            .logo-section img { max-width: 180px; }
+            .form-section {
+                order: 2; padding: var(--space-xxl) var(--space-gutter-h-mobile); border-left: none;
+                border-top: 1px solid var(--clr-border-light); flex: none; width: 100%;
+            }
+            .form-container { max-width: 100%; padding: 0; }
+             .form-container h2 { font-size: 1.8em; margin-bottom: var(--space-xxl); }
+             .form-group { margin-bottom: var(--space-l); }
+             .btn-submit { padding: var(--space-m) var(--space-m); font-size: var(--fs-base); }
+             .form-links { margin-top: var(--space-l); font-size: 0.85em; }
+             .switch-form-link { margin-top: var(--space-xl); }
         }
 
-        .btn-submit:hover {
-            background-color: #4a9bc4;
-        }
-
-        /* 계정 찾기/비밀번호 재설정 링크 영역 스타일 */
-        .form-links {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 0.9em;
-        }
-
-        /* 링크(a 태그) 공통 스타일 */
-        .form-links a {
-            color: #5DAED7;
-            text-decoration: none;
-            margin: 0 5px;
-            cursor: pointer;
-        }
-
-        .form-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* 로그인/회원가입 전환 링크 영역 스타일 */
-        .switch-form-link {
-            display: block;
-            margin-top: 20px; /* 여백 조정됨 */
-            text-align: right;
-        }
-
-        /* 요소를 숨기기 위한 유틸리티 클래스 */
-        .hidden {
-            display: none;
+        @media (max-width: 480px) {
+             body { padding: var(--space-gutter-v-mobile-s) var(--space-gutter-h-mobile-s); }
+              /* 반응형 .back-arrow 위치 (logo-section 기준) */
+             .back-arrow {
+                  top: var(--space-m);
+                  left: var(--space-m);
+             }
+             .logo-section { padding: var(--space-xxl) var(--space-l); }
+             .form-section { padding: var(--space-xxl) var(--space-gutter-h-mobile-s); }
+             .form-container h2 { font-size: 1.6em; }
+             .logo-section img { max-width: 150px; }
+             .form-options { font-size: var(--fs-smaller); }
+             .form-links { font-size: var(--fs-smaller); }
         }
 
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="logo-section">
-            <img src="./index/logo.png" alt="VibeSync Logo">
-        </div> <div class="form-section">
-
+            <a href="javascript:history.back()" class="back-arrow">&larr;</a>
+            <img src="./index/logo.png" alt="VibeSync Logo"> </div>
+        <div class="form-section">
             <div id="login-form" class="form-container">
-                <h2>Find <br> Your <br> VibeSync</h2> <form action="loginProcess.jsp" method="post">
-                    <div class="form-group">
-                        <input type="email" id="login-email" name="email" placeholder="Email" required>
+                <h2>Find <br> Your <br> VibeSync</h2>
+                <form action="loginProcess.jsp" method="post"> <div class="form-group">
+                        <input type="email" id="login-email" name="email" placeholder="Email" required class="form-input">
                     </div>
                     <div class="form-group">
-                        <input type="password" id="login-password" name="password" placeholder="Password" required>
+                        <input type="password" id="login-password" name="password" placeholder="Password" required class="form-input">
                     </div>
                     <div class="form-options">
-                        <label>
-                            <input type="checkbox" name="auto-login"> Auto-Login
-                        </label>
-                        <label>
-                            <input type="checkbox" name="remember-email"> Remember Email
-                        </label>
+                        <label><input type="radio" name="login-option" value="auto-login" checked> Auto-Login</label>
+                        <label><input type="radio" name="login-option" value="remember-email"> Remember Email</label>
                     </div>
                     <button type="submit" class="btn-submit">Login</button>
                     <div class="form-links">
@@ -216,61 +220,49 @@
                         Not a member yet? <a href="#" id="show-signup">Sign Up &gt;&gt;</a>
                     </div>
                 </form>
-            </div> <div id="signup-form" class="form-container hidden">
-                    <div class="form-group">
-                        <input type="text" id="signup-name" name="name" placeholder="Name" required>
+            </div>
+
+            <div id="signup-form" class="form-container hidden">
+                 <form action="signupProcess.jsp" method="post"> <div class="form-group">
+                        <input type="text" id="signup-name" name="name" placeholder="Name" required class="form-input">
                     </div>
                     <div class="form-group">
-                        <input type="text" id="signup-nickname" name="nickname" placeholder="Nick Name" required>
+                        <input type="text" id="signup-nickname" name="nickname" placeholder="Nick Name" required class="form-input">
                     </div>
                     <div class="form-group">
-                        <input type="email" id="signup-email" name="email" placeholder="Email" required>
+                        <input type="email" id="signup-email" name="email" placeholder="Email" required class="form-input">
                     </div>
                     <div class="form-group">
-                        <input type="password" id="signup-password" name="password" placeholder="Password" required>
+                        <input type="password" id="signup-password" name="password" placeholder="Password" required class="form-input">
                     </div>
                     <div class="form-group">
-                        <input type="password" id="signup-confirm-password" name="confirmPassword" placeholder="Confirm Password" required>
+                        <input type="password" id="signup-confirm-password" name="confirmPassword" placeholder="Confirm Password" required class="form-input">
                     </div>
                     <div class="form-group">
-                        <select id="signup-category" name="category" required>
+                        <select id="signup-category" name="category" required class="form-input">
                             <option value="" disabled selected>Select Category</option>
                             <option value="music">Music Enthusiast</option>
                             <option value="artist">Artist</option>
                             <option value="producer">Producer</option>
                             <option value="listener">General Listener</option>
                         </select>
-                        <p class="category-description">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                        <p class="category-description">Select the category that best describes you.</p>
                     </div>
                     <button type="submit" class="btn-submit">Sign Up</button>
                     <div class="form-links switch-form-link">
                         Already a member? <a href="#" id="show-login">Login &gt;&gt;</a>
                     </div>
                 </form>
-            </div> </div> </div> <script>
-        $(document).ready(function() {
-            // Sign Up 링크 클릭 시
-            $('#show-signup').on('click', function(e) {
-                e.preventDefault(); // 기본 동작 방지
-                $('#login-form').addClass('hidden'); // 로그인 폼 숨김
-                $('#signup-form').removeClass('hidden'); // 회원가입 폼 보임
-            });
+            </div>
+        </div>
+    </div>
 
-            // Login 링크 클릭 시
-            $('#show-login').on('click', function(e) {
-                e.preventDefault(); // 기본 동작 방지
-                $('#signup-form').addClass('hidden'); // 회원가입 폼 숨김
-                $('#login-form').removeClass('hidden'); // 로그인 폼 보임
-            });
-
-            // 페이지 로드 시 초기 상태 설정 (로그인 폼 보이기)
-            // (HTML에서 signup-form에 hidden 클래스가 이미 있으므로 아래 코드는 안전장치 역할)
-            if (!$('#signup-form').hasClass('hidden')) {
-                 $('#signup-form').addClass('hidden');
-            }
-            if ($('#login-form').hasClass('hidden')) {
-                 $('#login-form').removeClass('hidden');
-            }
+    <script>
+        // jQuery 폼 전환 스크립트
+        $(document).ready(function () {
+            $('#show-signup').on('click', function (e) { e.preventDefault(); $('#login-form').addClass('hidden'); $('#signup-form').removeClass('hidden'); });
+            $('#show-login').on('click', function (e) { e.preventDefault(); $('#signup-form').addClass('hidden'); $('#login-form').removeClass('hidden'); });
+            if (!$('#login-form').hasClass('hidden') && $('#signup-form').hasClass('hidden')) {} else { $('#signup-form').addClass('hidden'); $('#login-form').removeClass('hidden'); }
         });
     </script>
 
