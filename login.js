@@ -65,7 +65,7 @@ $(function() {
             $confirmPasswordInput.css('border-bottom-color', ''); // 인라인 스타일 제거하여 CSS 기본값으로 복원
             return true;
         }
-    }
+    } 
 
 
     // 회원가입 폼 제출 시 최종 검증 (.on('submit', ...) 사용)
