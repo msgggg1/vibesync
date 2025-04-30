@@ -22,6 +22,7 @@
  <!--목차 끝-->
 
 # [1] About the Project
+**“취향을 공유하고, 바이브를 연결하다”**
 
 - 취향 기반 소셜 매칭 플랫폼 **VibeSync**
 - **VibeSync**는 영화, 드라마, 음악, 애니메이션 등 다양한 콘텐츠에 대한 ***취향***을 중심으로 사람들을 연결하는 새로운 형태의 ***소셜 플랫폼***입니다.
@@ -47,7 +48,12 @@
 |:-:|:-:|:-:|:-:|:-:|
 |KimHS<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management<br>UI/UX Design<br>FE/BE Development|duck_hammer<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**<br>Overall FE/BE Development|[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|Yeji Kim<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
 
-# [3] Design
+# [3] Logo CI
+![Logo CI](logo1.png)
+- ‘Vibe(감성, 파장)’와 ‘Sync(동기화)’의 결합으로, 사용자 간의 감성과 경험을 연결한다는 의미를 담고 있습니다.
+- 외각 원형: 글로벌 커뮤니티의 확장성과 끊김 없는 연결을 상징
+- 중앙 사운드 웨이브 그래픽: 실시간 경험 공유, 감정의 파동(바이브)을 시각화
+- 보라(#AA42E9)→파랑(#609FDD)→초록(#2ecc71) 그라데이션: 다양한 취향과 감정 스펙트럼을 표현
 
 # [4] Usage
 
