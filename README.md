@@ -15,7 +15,7 @@
   - [Technologies](#technologies)
   - [Reference site](#Reference-site)
 - [[2] Project Team](#2-Project-Team)
-- [[3] Design](#3-Design)
+- [[3] Logo CI](#3-Logo-CI)
 - [[4] Usage](#4-usage)
 
 
@@ -56,9 +56,9 @@
 - 보라→파랑→초록 그라데이션: 다양한 취향과 감정 스펙트럼을 표현
 
 # [4] Usage
-*★는 해당 작업 주 작업자*<<br><br>
+*★는 해당 작업 주 작업자*<br><br>
 
-<h2>Index Page_제작: 김현수★,서재웅</h2>
+<h2>Index Page_제작: ★김현수,서재웅</h2>
 
 ![usage](readme_img/index1.gif)
 
@@ -115,7 +115,7 @@
 
 ```
 <br><br>
-<h2>Login Page_제작: 김민선★, 김현수</h2>
+<h2>Login Page_제작: ★김민선, 김현수</h2>
 
 ![usage](readme_img/login.gif)
 ![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
