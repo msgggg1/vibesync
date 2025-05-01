@@ -61,8 +61,8 @@
 
 ![usage](readme_img/index1.gif)
 
-- **Index Page**의 최초 로드 모습입니다. 해당 페이지는 페이지 초기 로드시 나타나며, 간단한 애니메이션을 포함하고 있습니다.<br>
 <img src="https://img.shields.io/badge/Typed.js-5DAED7?style=for-the-badge&logoColor=white"> <img src="https://img.shields.io/badge/Swiper-5DAED7?style=for-the-badge&logoColor=white">
+- **Index Page**의 최초 로드 모습입니다. 해당 페이지는 페이지 초기 로드시 나타나며, 간단한 애니메이션을 포함하고 있습니다.<br>
 
 ![usage](readme_img/index2.gif)
 
@@ -183,61 +183,6 @@
 }
 
 ```
-
-<h2>Login Page</h2>
-
-![usage](readme_img/login.gif)
-![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
-- **Login Page**입니다. **Index Page**의 nav 우측 Get Start버튼을 눌러 진입합니다.
-- 반응형으로 디자인 되었으며, 한 페이지 내에서 폼 양식 전환으로 로그인/회원가입을 처리합니다.
-- 비밀번호 패턴이 존재하여 사용자에게 해당 패턴에 맞는 입력을 유도합니다.
-<패턴>
-```html
-    
-<label for="userPw" class="sr-only">비밀번호</label> <input type="password" id="userPw" name="userPw" placeholder="Password" required pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$" title="8자 이상, 영문자, 숫자, 특수문자를 모두 포함해야 합니다.">
-
-```
-
-<폼 전환>
-```javascript
-
-    // 회원가입 폼 보여주기
-    function showSignupForm() {
-        // .length를 확인하여 요소 존재 여부 체크
-        if ($loginFormContainer.length && $signupFormContainer.length && $switchFormLinkContainer.length) {
-            $loginFormContainer.hide(); // 로그인 폼 숨기기
-            $signupFormContainer.css('display', 'flex'); // 회원가입 폼 보이기 
-            $switchFormLinkContainer.hide(); // '아직 회원이 아니신가요?' 링크 숨기기
-        }
-    }
-
-    // 로그인 폼 보여주기
-    function showLoginForm() {
-        if ($loginFormContainer.length && $signupFormContainer.length && $switchFormLinkContainer.length) {
-            $loginFormContainer.css('display', 'flex'); // 로그인 폼 보이기 
-            $signupFormContainer.hide(); // 회원가입 폼 숨기기
-            $switchFormLinkContainer.show(); // '아직 회원이 아니신가요?' 링크 보이기 (기본 display block)
-        }
-    }
-
-    // '회원가입' 링크 클릭 이벤트 (.on() 사용)
-    if ($switchToSignupLink.length) {
-        $switchToSignupLink.on('click', function(event) {
-            event.preventDefault(); // 링크 기본 동작 중단
-            showSignupForm();
-        });
-    }
-
-    // '로그인' 링크(회원가입 폼 내부) 클릭 이벤트
-    if ($switchToLoginLink.length) {
-        $switchToLoginLink.on('click', function(event) {
-            event.preventDefault();
-            showLoginForm();
-        });
-    }
-
-```
-
 
 
 <!--Url for Badges-->
