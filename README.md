@@ -1,4 +1,4 @@
-# vibesync
+# VibeSync_작성: 김현수
 
 <!--배지-->
 ![MIT License][license-shield] ![Repository Size][repository-size-shield] ![Issue Closed][issue-closed-shield]
@@ -46,7 +46,7 @@
 
 |<img src="https://avatars.githubusercontent.com/u/147032519?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/180395275?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547917?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/186297935?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547900?v=4" width="150" height="150"/>|
 |:-:|:-:|:-:|:-:|:-:|
-|김현수<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management<br>UI/UX Design<br>FE/BE Development|서재웅<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**<br>Overall FE/BE Development|박지웅<br/>[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|김민선<br/>[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|김예지<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
+|**김현수**<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management<br>UI/UX Design<br>FE/BE Development|**서재웅**<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**<br>Overall FE/BE Development|**박지웅**<br/>[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|**김민선**<br/>[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|**김예지**<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
 
 # [3] Logo CI
 ![Logo CI](readme_img/ci.jpeg)
@@ -114,7 +114,7 @@
 
 ```
 <br><br>
-<h2>Login Page_김민선 제작</h2>
+<h2>Login Page_제작: 김민선</h2>
 
 ![usage](readme_img/login.gif)
 ![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
