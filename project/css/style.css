@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=National+Park:wght@200..800&display=swap');
 
 :root {
-  --sidebar-color : #E4EFE7;
+  --sidebar-color : linear-gradient(180deg, #ffffff 8%, #c1f9fc 80%, #b7fdff 100%);
   --content-area-color : #FDFAF6;
   --font-color : #313131;
 }
@@ -68,9 +68,10 @@ p {
 
 /* sidebar */
 .notion-app-inner .notion-sidebar-container {
+  box-shadow: -8px 0 20px 0px #000;
   position: fixed;
   height: 100vh;
-  background-color: var(--sidebar-color);
+  background: var(--sidebar-color);
   width: 200px;
   overflow: hidden;
   white-space: nowrap;
