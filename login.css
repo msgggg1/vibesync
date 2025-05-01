@@ -24,7 +24,8 @@ body {
 
 /* 레이아웃 컨테이너 */
 .container {
-    padding: 100px 100px;
+    background: linear-gradient(90deg, #b7fdff -30%, #c1f9fc 12%, #fff 70%); /* 배경 그라데이션 */
+    padding: 100px 20px;
     display: flex;
     justify-content: flex-start; /* 왼쪽 정렬 */
     align-items: stretch;     /* 세로 늘리기 */
@@ -187,6 +188,7 @@ body {
 /* --- 모바일 ( 화면 너비 1024px 이하) --- */
 @media (max-width: 1024px) {
     .container {
+        background: linear-gradient(180deg, #b7fdff -30%, #c1f9fc 12%, #fff 70%); /* 배경 그라데이션 */
         flex-direction: column; /* 세로로 쌓기 */
         padding: 7vh 2vw;   /* 상하 패딩 줄이기 */
         align-items: center;  /* 가운데 정렬 */

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"> <head>
+<html lang="en" style="background: #fff;"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -8,7 +8,7 @@
     <link rel="icon" href="images/favicon.ico" />
     <title>VibeSync Login</title> <link rel="stylesheet" href="login.css"> </head>   
 
-<body>
+<body ondragstart="return false" ondrop="return false" onselectstart="return false"><!-- Prevent drag and drop actions -->
 
 <div class="container">
     <div id="logo">
@@ -42,7 +42,7 @@
                 <label for="signupEmail" class="sr-only">이름</label>
                 <input type="text" id="signupName" name="signupName" placeholder="Name" required>
 
-                <label for="signupEmail" class="sr-only">닉네임임</label>
+                <label for="signupEmail" class="sr-only">닉네임</label>
                 <input type="text" id="signupNickname" name="signupNickname" placeholder="NickName" required>
 
                 <label for="signupEmail" class="sr-only">이메일</label>
