@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en"> <head>
+<html lang="en" style="background: #fff;"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
-    <link rel="icon" href="images/favicon.ico" />
+    <link rel="icon" href="./favicon.ico" />
     <title>VibeSync Login</title> <link rel="stylesheet" href="login.css"> </head>   
 
-<body>
+<body ondragstart="return false" ondrop="return false" onselectstart="return false"><!-- Prevent drag and drop actions -->
 
 <div class="container">
     <div id="logo">
-        <img src="images/logo.png" alt="VibeSync 로고" width="30%"> </div>
+        <img src="./assets/logo.png" alt="VibeSync 로고" width="30%"> </div>
 
-    <div id="login">
+    <div id="login"> 
         <div id="findYourVibeSync">Find<br>Your<br>VibeSync<br></div>
 
         <div id="loginFormContainer">
@@ -42,7 +42,7 @@
                 <label for="signupEmail" class="sr-only">이름</label>
                 <input type="text" id="signupName" name="signupName" placeholder="Name" required>
 
-                <label for="signupEmail" class="sr-only">닉네임임</label>
+                <label for="signupEmail" class="sr-only">닉네임</label>
                 <input type="text" id="signupNickname" name="signupNickname" placeholder="NickName" required>
 
                 <label for="signupEmail" class="sr-only">이메일</label>
