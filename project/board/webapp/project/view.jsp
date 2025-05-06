@@ -1,10 +1,11 @@
-<%@ page import="java.sql.*" %>
+<%-- view.jsp --%>
+<%@ page import="java.sql.*, java.util.Arrays" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%
     int id = 0;
     try { id = Integer.parseInt(request.getParameter("id")); } catch(Exception e) {}
     String title="", content="", images="", createdAt="";
-    String absoluteImagePath = "";
+    String[] imagePaths = null;
 
     try {
         try (Connection conn = DriverManager.getConnection(
@@ -16,16 +17,24 @@
                     title   = rs.getString("title");
                     content = rs.getString("content");
                     images = rs.getString("images");
-
-                    if (images != null && !images.isEmpty()) {
-                        // save.jsp에서 이미지를 저장한 실제 경로를 기반으로 절대 경로 생성
-                        String webAppRoot = application.getRealPath("/project"); // 변경된 부분
-                        String relativeImagePath = images.replaceFirst("^\\./", ""); // "./" 제거
-                        java.io.File imageFile = new java.io.File(webAppRoot, relativeImagePath);
-                        absoluteImagePath = imageFile.getAbsolutePath();
-                    }
-
                     createdAt = rs.getString("created_at");
+                    if (images != null && !images.isEmpty()) {
+                        imagePaths = images.split("\\|"); // 구분자로 분리
+                    }
+                    // content 내의 이미지 src를 실제 경로로 변경
+                    if (imagePaths != null && imagePaths.length > 0) {
+                        String[] contentImageTags = content.split("<img[^>]*>");
+                        StringBuilder newContent = new StringBuilder();
+                        int imageIndex = 0;
+                        for (String part : contentImageTags) {
+                            newContent.append(part);
+                            if (imageIndex < imagePaths.length) {
+                                newContent.append("<img src=\"./" + imagePaths[imageIndex] + "\">");
+                                imageIndex++;
+                            }
+                        }
+                        content = newContent.toString();
+                    }
                 }
             }
         }
@@ -38,9 +47,16 @@
     <h2><%= title %></h2>
     <div><%= content %></div>
     <div>
-        <% if (images != null && !images.isEmpty()) { %>
-            <img src="./<%= images %>" alt="첨부 이미지">
-            <p>이미지 저장 위치 (전체 경로): <%= absoluteImagePath %></p>
+        <% if (imagePaths != null && imagePaths.length > 0) { %>
+            <h3>첨부 이미지</h3>
+            <ul>
+            <% for (String imagePath : imagePaths) { %>
+                <li>
+                    <img src="./<%= imagePath %>" alt="첨부 이미지">
+                    <p>이미지 저장 위치: <%= application.getRealPath("/project/") + imagePath %></p>
+                </li>
+            <% } %>
+            </ul>
         <% } else { %>
             <p>첨부 이미지 없음</p>
         <% } %>

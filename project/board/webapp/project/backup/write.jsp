@@ -1,11 +1,12 @@
-<%-- write.jsp --%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>글 작성</title>
+    <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Summernote CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
 </head>
 <body>
@@ -19,6 +20,7 @@
     </form>
 </div>
 
+<!-- jQuery, Bootstrap JS, Summernote JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
@@ -28,43 +30,23 @@ $(function() {
         height: 300,
         callbacks: {
             onImageUpload: function(files) {
-                for (let i = 0; i < files.length; i++) {
-                    sendFile(files[i], this);
-                }
+                // 이미지 미리보기만 처리
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#summernote').summernote('insertImage', e.target.result);
+                };
+                reader.readAsDataURL(files[0]);
             }
         }
     });
-
-    function sendFile(file, editor) {
-        const reader = new FileReader();
-        reader.onloadend = function() {
-            const base64Data = reader.result;
-            // 에디터에 이미지 삽입 (src는 Base64)
-            $('#summernote').summernote('insertImage', base64Data);
-        }
-        reader.readAsDataURL(file);
-    }
 
     $('#saveBtn').click(function() {
         var markup = $('#summernote').summernote('code');
         var tempDiv = $('<div>').html(markup);
-        var imgElements = tempDiv.find('img');
-        var base64SrcArray = [];
-
-        imgElements.each(function() {
-            var src = $(this).attr('src');
-            if (src.startsWith('data:image/')) {
-                base64SrcArray.push(src);
-                $(this).attr('src', './source/temp_filename.jpg'); // 임시 src로 변경 (save.jsp에서 실제 경로로 변경)
-            }
-        });
-
-        $('#images').val(base64SrcArray.join('|')); // Base64 데이터들을 |로 연결하여 hidden 필드에 저장
-        $('textarea[name=content]').val(tempDiv.html()); // 변경된 content 저장
+        var imgSrc = tempDiv.find('img').attr('src') || '';
+        $('#images').val(imgSrc);
+        $('textarea[name=content]').val(markup);
         $('#postForm').submit();
     });
 });
 </script>
-
-</body>
-</html>
