@@ -11,22 +11,13 @@
 
  <!--목차-->
 # 목차
-<details>
-- <summary>🔽 [1 About the Project](#1-about-the-project)</summary>
-
-- [Background & Problem Statement](#Background-&-Problem-Statement)  
-- [Goals & Value Proposition](#Goals-&-Value-Proposition)  
-- [Key Performance Indicators (KPI)](#Key-Performance-Indicators-(KPI))  
-- [Technologies](#technologies)  
-
-<details>
-<summary>🔽 [Reference site](#Reference-site)</summary>
-
-- [Reference Insights](#Reference-Insights)
-
-</details>
-
-</details>
+- [[1] About the Project](#1-about-the-project)
+  - [Background & Problem Statement](#Background-&-Problem-Statement)
+  - [Goals & Value Proposition](#Goals-&-Value-Proposition)
+  - [Key Performance Indicators (KPI)](#Key-Performance-Indicators-(KPI))
+  - [Technologies](#technologies)
+  - [Reference site](#Reference-site)
+    - [Reference Insights](#Reference-Insights)
 - [[2] Project Team](#2-Project-Team)
 - [[3] Logo CI](#3-Logo-CI)
 - [[4] Usage](#4-usage)
