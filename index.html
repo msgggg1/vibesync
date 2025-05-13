@@ -30,10 +30,10 @@
       display: none;
     }
     body {
-      background-color: #fff;
-      background-image: linear-gradient(#eee 2px, transparent 2px);
-      background-size: 100% 20px;
+    background-color: #000310;
+    color: #fff;
     }
+
 
     .highlight {
       background: linear-gradient(90deg, #9b59b6, #3498db, #2ecc71);
@@ -48,6 +48,7 @@
       top: 0; left: 0;
       width: 100%;
       background: rgba(0,0,0,0.7);
+      box-shadow: 0px 0px 14px #ffffff91;
       color: #fff;
       display: flex;
       justify-content: space-between;
@@ -116,6 +117,7 @@
 
     #section1 {
       height: 100vh;
+      z-index: 1;
     }
     #section1 video {
       position: absolute;
@@ -262,11 +264,11 @@
     }
     .slider-wrapper::before {
       left: 0;
-      background: linear-gradient(to right, #fff, rgba(255,255,255,0));
+      background: linear-gradient(to right, #000310, rgba(255,255,255,0));
     }
     .slider-wrapper::after {
       right: 0;
-      background: linear-gradient(to left, #fff, rgba(255,255,255,0));
+      background: linear-gradient(to left, #000310, rgba(255,255,255,0));
     }
 
     .swiper-container {
@@ -319,6 +321,7 @@
       right: 10px;
       z-index: 1001;
       background: rgba(0,0,0,0.7);
+      box-shadow: 0px 0px 14px #ffffff91;
       color: #fff;
       border: none;
       padding: 5px 10px;
@@ -347,9 +350,37 @@
         width: 80%;
       }
     }
+    #starfield {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .shooting-star {
+      position: absolute;
+      width: 120px;           /* 꼬리 길이를 충분히 길게 */
+      height: 4px;            /* 얇은 줄 모양 */
+      background: linear-gradient(to left, white, rgba(255,255,255,0));
+      opacity: 0.8;
+      pointer-events: none;
+      transform-origin: 0 0;  /* 왼쪽 위(시작점) 기준 회전 */
+      animation: shoot 1s ease-out forwards;
+    }
+
+    @keyframes shoot {
+      to {
+        transform: rotate(45deg) translate(600px, 0) scale(0.5);
+        /* 45°로 회전한 뒤, x축(회전된 축)으로만 600px 이동 */
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
+    <canvas id="starfield"></canvas>
 
   <!-- 네비게이션 바 -->
 
@@ -387,7 +418,7 @@
       <p class="Purpose_p" data-key="about.title">About VibeSync</p>
       <img src="./assets/wave.png" alt="Wave img" class="wave" style="opacity: 0.34; position: absolute; max-width: 100%; z-index: -10;">
       <div class="se2_con">
-        <div class="logo" id="logo2"><img src="./assets/logo.png" style="max-width: 250px;"></div>
+        <div class="logo" id="logo2"><img src="./assets/logo1.png" style="max-width: 250px;"></div>
         <div class="intro" id="intro2">
           <h2 data-key="intro.heading">Preference-based Social Matching Platform <span class="highlight">VibeSync</span></h2>
           <p data-key="intro.paragraph">
@@ -619,6 +650,117 @@
 
     // 초기 Typed.js 실행
     initTyped();
+    
+    const starCanvas = document.getElementById('starfield');
+    const starCtx    = starCanvas.getContext('2d');
+    let stars = [];
+
+    function initStars() {
+      starCanvas.width  = window.innerWidth - 100;
+      starCanvas.height = window.innerHeight - 100;
+      stars = [];
+      for (let i = 0; i < 200; i++) {
+        stars.push({
+          x: Math.random() * starCanvas.width,
+          y: Math.random() * starCanvas.height,
+          r: Math.random() * 1.2 + 0.3
+        });
+      }
+    }
+    function drawStars() {
+      starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+      stars.forEach(s => {
+        starCtx.globalAlpha = Math.random() * 0.6 + 0.4;
+        starCtx.beginPath();
+        starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        starCtx.fillStyle = 'white';
+        starCtx.fill();
+      });
+    }
+    // 초기화 및 주기적 트윙클
+    initStars();
+    drawStars();
+    window.addEventListener('resize', () => { initStars(); drawStars(); });
+    setInterval(drawStars, 800);
+
+    // 별똥별 생성
+    function createShootingStar() {
+      const star = document.createElement('div');
+      star.classList.add('shooting-star');
+      // 상단 랜덤 x 위치에서 시작
+      star.style.top  = '0px';
+      star.style.left = Math.random() * window.innerWidth + 'px';
+      // 회전각각
+      star.style.transform = 'rotate(45deg)';
+      document.body.appendChild(star);
+      // 애니메이션 끝나면 제거
+      star.addEventListener('animationend', () => star.remove());
+    }
+    // 3초마다 별똥별 생성
+    setInterval(createShootingStar, 3000);
+
+    // 커서 따라 파티클
+    const particles = [];
+    const mouse = { x: 0, y: 0 };
+    const particleCanvas = document.createElement('canvas');
+    particleCanvas.id = 'particle-canvas';
+    particleCanvas.style.position = 'fixed';
+    particleCanvas.style.top = '0'; particleCanvas.style.left = '0';
+    particleCanvas.style.width = '100vw'; particleCanvas.style.height = '100vh';
+    particleCanvas.style.zIndex = '-1';
+    particleCanvas.style.pointerEvents = 'none';
+    document.body.appendChild(particleCanvas);
+    const ctx = particleCanvas.getContext('2d');
+    particleCanvas.width = window.innerWidth;
+    particleCanvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      particleCanvas.width = window.innerWidth;
+      particleCanvas.height = window.innerHeight;
+    });
+
+    // 파티클 객체
+    class Particle {
+      constructor(x, y) {
+        this.x = x; this.y = y;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2;
+        this.alpha = 1;
+        this.size = Math.random() * 3 + 1;
+      }
+      update() {
+        this.x += this.vx; this.y += this.vy;
+        this.alpha -= 0.02;
+      }
+      draw() {
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+      }
+    }
+
+    // 마우스 이동 시 파티클 추가
+    window.addEventListener('mousemove', e => {
+      for (let i = 0; i < 3; i++) {
+        particles.push(new Particle(e.clientX, e.clientY));
+      }
+    });
+
+    // 애니메이션 루프
+    function animate() {
+      ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        if (p.alpha <= 0) particles.splice(i, 1);
+        else p.draw();
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
   </script>
 </body>
 </html>
