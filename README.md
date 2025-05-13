@@ -17,7 +17,7 @@
   - [Key Performance Indicators (KPI)](#Key-Performance-Indicators-(KPI))
   - [Technologies](#technologies)
   - [Reference site](#Reference-site)
-  - [Reference Insights](#Reference-Insights)
+    - [Reference Insights](#Reference-Insights)
 - [[2] Project Team](#2-Project-Team)
 - [[3] Logo CI](#3-Logo-CI)
 - [[4] Usage](#4-usage)
