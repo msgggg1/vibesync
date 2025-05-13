@@ -12,6 +12,9 @@
  <!--목차-->
 # 목차
 - [[1] About the Project](#1-about-the-project)
+  - [Background & Problem Statement](#Background-&-Problem-Statement)
+  - [Goals & Value Proposition](#Goals-&-Value-Proposition)
+  - [Key Performance Indicators (KPI)](#Key-Performance-Indicators-(KPI))
   - [Technologies](#technologies)
   - [Reference site](#Reference-site)
 - [[2] Project Team](#2-Project-Team)
@@ -28,6 +31,24 @@
 - **VibeSync**는 영화, 드라마, 음악, 애니메이션 등 다양한 콘텐츠에 대한 ***취향***을 중심으로 사람들을 연결하는 새로운 형태의 ***소셜 플랫폼***입니다.
 - 콘텐츠 리뷰 및 감정 태깅, 실시간 스트리밍 경험 공유, 취향 기반 친구 매칭 등 기능을 통해 사용자에게 깊이 있는 소통과 연결 기회를 제공합니다.
 
+## Background & Problem Statement
+
+- SNS는 **양적 연결**(팔로워, 친구 수)에 집중되어 있어, 유사한 **취향** 기반의 깊이 있는 소통이 부족합니다.
+- 사용자마다 선호하는 **미디어**(영화, 드라마, 음악, 애니 등)에 대한 **경험을 공유**할 공간이 제한적이며, 함께 실시간 시청할 플랫폼이 **분산**되어 있습니다.
+
+## Goals & Value Proposition
+
+1.	**취향 기반 매칭**: 사용자의 리뷰, 좋아요, 스크랩 포스트 등을 분석해 *공통 관심사*를 가진 사용자 간 **추천 및 매칭**을 제공합니다.
+2.	**실시간 워치파티 기능**: 동기화된 *스트리밍 시청 경험*과 채팅·이모티콘 반응을 통해 물리적 거리를 넘어선 **라이브 커뮤니케이션**을 지원합니다.
+3.	**개인 워크스페이스**: 일정 관리, 포스트(리스트) 컬렉션, 메모 기능으로 *개인화된 탐색 과정*을 체계적으로 관리할 수 있습니다. 워크스페이스는 **사용자별로 독립 운영**됩니다.
+4.	**다목적 활용**: SNS 소셜 용도뿐만 아니라 *개인 업무 관리*, *기업 마케팅 캠페인* 등 다양한 목적에 맞춘 **유연한 플랫폼 활용**이 가능합니다.
+5.	**다국어 지원 & 반응형 UI/UX**: 기본 영어 UI에 한국어를 추가 지원하고, PC·모바일 일관된 경험을 보장하는 **반응형 디자인**을 적용합니다.
+
+## Key Performance Indicators (KPI)
+
+-	주간 활성 사용자(WAU)
+-	워치파티 참여 횟수 및 평균 시청 지속 시간
+
 ## Technologies
 
 - **Front-End**: ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
@@ -39,7 +60,19 @@
 
 ## Reference site
 
-![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) <img src="https://img.shields.io/badge/Teleparty-FF0000?style=for-the-badge&logoColor=white">
+![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) <img src="https://img.shields.io/badge/Teleparty-FF0000?style=for-the-badge&logoColor=white"><br>
+| 서비스명 | 주요기능 | 강점 | 한계점 |
+| --- | :--- | :--- | :--- |
+| Notion | 개인 워크스페이스, 협업 문서 | 유연한 커스터마이징, 쉽게 조직화 | 미디어 리뷰·스트리밍 통합 기능 부족 |
+| Instagram | 피드, 스토리, DM, 해시태그 기반 탐색 | 방대한 사용자풀, 쉬운 콘텐츠 공유 | 실시간 동시 시청, 취향 태깅 기능 부재 |
+| Teleparty | 동기화 스트리밍, 채팅·이모티콘 반응 | 다양한 스트리밍 플랫폼 지원 | 별도 브라우저 확장 설치 필요, SNS 기능 미흡 |
+<br>
+**Reference Insights**<br><br>
+
+-	**원스톱 플랫폼**으로서 리뷰·매칭·스트리밍·워크스페이스를 통합 제공
+-	**플러그인 불필요:** 브라우저 기반으로 별도 설치 없이 즉시 사용 가능
+-	감정 태그·분석을 통한 세분화된 **추천 경험** 필수
+-	**채팅 기반 커뮤니티:** 실시간 텍스트·이모티콘 소통 기능 강화 필요
 
 
 # [2] Project Team
