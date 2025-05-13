@@ -1,0 +1,202 @@
+-- ////////////////////////////////////////////////////////////////////////////////
+-- // 계정 생성 및 권한 부여 스크립트 (이미 제공됨 - 필요시 주석 해제 후 사용)
+-- ////////////////////////////////////////////////////////////////////////////////
+/*
+-- 새 계정 생성
+CREATE USER MYNEWUSER IDENTIFIED BY newpassword;
+
+-- 생성된 계정에 기본 권한 부여
+GRANT CREATE SESSION TO MYNEWUSER;
+GRANT CREATE TABLE TO MYNEWUSER;
+GRANT CREATE PROCEDURE TO MYNEWUSER;
+GRANT CREATE TRIGGER TO MYNEWUSER;
+GRANT CREATE VIEW TO MYNEWUSER;
+GRANT CREATE SEQUENCE TO MYNEWUSER;
+GRANT UNLIMITED TABLESPACE TO MYNEWUSER;
+*/
+
+-- ////////////////////////////////////////////////////////////////////////////////
+-- // 테이블 생성 쿼리 (MYNEWUSER 계정으로 접속 후 실행)
+-- ////////////////////////////////////////////////////////////////////////////////
+
+-- Users (회원)
+CREATE TABLE Users (
+    user_id NUMBER PRIMARY KEY,
+    email VARCHAR2(100) NOT NULL UNIQUE,
+    password VARCHAR2(255) NOT NULL, -- 해시된 비밀번호 저장
+    nickname VARCHAR2(50) NOT NULL UNIQUE,
+    profile_img_url VARCHAR2(255),
+    created_at DATE DEFAULT SYSDATE,
+    updated_at DATE DEFAULT SYSDATE
+);
+
+-- Genres (장르)
+CREATE TABLE Genres (
+    genre_id NUMBER PRIMARY KEY,
+    name VARCHAR2(50) NOT NULL UNIQUE
+);
+
+-- Artists (아티스트)
+CREATE TABLE Artists (
+    artist_id NUMBER PRIMARY KEY,
+    name VARCHAR2(100) NOT NULL,
+    debut_date DATE,
+    bio CLOB, -- 긴 텍스트
+    artist_img_url VARCHAR2(255)
+);
+
+-- Albums (앨범)
+CREATE TABLE Albums (
+    album_id NUMBER PRIMARY KEY,
+    title VARCHAR2(100) NOT NULL,
+    artist_id NUMBER, -- 주 아티스트. 그룹 앨범 등 고려 필요
+    release_date DATE,
+    cover_img_url VARCHAR2(255),
+    CONSTRAINT fk_album_artist FOREIGN KEY (artist_id) REFERENCES Artists(artist_id)
+);
+
+-- Content (콘텐츠 - 음악의 상위 개념 또는 음악 정보를 직접 포함)
+-- 스키마에 따라 Content 테이블이 별도로 있을 수도 있고, Music 테이블이 Content 역할을 할 수도 있습니다.
+-- 여기서는 Music 테이블이 핵심 역할을 한다고 가정하고, 필요시 Content 테이블 추가 정의
+CREATE TABLE Music (
+    music_id NUMBER PRIMARY KEY,
+    title VARCHAR2(100) NOT NULL,
+    album_id NUMBER,
+    artist_id NUMBER, -- 대표 아티스트 (아래 Artist_Music으로 다대다 관계 표현)
+    genre_id NUMBER,
+    duration_seconds NUMBER, -- 초 단위
+    lyrics CLOB,
+    stream_url VARCHAR2(255),
+    preview_url VARCHAR2(255),
+    release_date DATE, -- 곡 자체의 발매일 (앨범 발매일과 다를 수 있음)
+    play_count NUMBER DEFAULT 0,
+    created_at DATE DEFAULT SYSDATE,
+    CONSTRAINT fk_music_album FOREIGN KEY (album_id) REFERENCES Albums(album_id),
+    CONSTRAINT fk_music_artist FOREIGN KEY (artist_id) REFERENCES Artists(artist_id),
+    CONSTRAINT fk_music_genre FOREIGN KEY (genre_id) REFERENCES Genres(genre_id)
+);
+
+-- Artist_Music (아티스트 - 음악 M:N 관계 테이블, 피처링 등 다수 아티스트 참여 표현)
+CREATE TABLE Artist_Music (
+    artist_music_id NUMBER PRIMARY KEY,
+    artist_id NUMBER NOT NULL,
+    music_id NUMBER NOT NULL,
+    role VARCHAR2(50), -- 예: 'main', 'featuring', 'composer', 'lyricist'
+    CONSTRAINT fk_am_artist FOREIGN KEY (artist_id) REFERENCES Artists(artist_id),
+    CONSTRAINT fk_am_music FOREIGN KEY (music_id) REFERENCES Music(music_id),
+    CONSTRAINT uq_artist_music UNIQUE (artist_id, music_id, role) -- 역할별 중복 방지
+);
+
+
+-- Reviews (리뷰)
+CREATE TABLE Reviews (
+    review_id NUMBER PRIMARY KEY,
+    user_id NUMBER NOT NULL,
+    music_id NUMBER, -- 음악에 대한 리뷰 (또는 content_id)
+    album_id NUMBER, -- 앨범에 대한 리뷰
+    rating NUMBER(2,1) CHECK (rating >= 0.5 AND rating <= 5.0), -- 0.5 ~ 5.0 사이, 0.5 단위
+    comment_text CLOB,
+    created_at DATE DEFAULT SYSDATE,
+    updated_at DATE DEFAULT SYSDATE,
+    CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    CONSTRAINT fk_review_music FOREIGN KEY (music_id) REFERENCES Music(music_id),
+    CONSTRAINT fk_review_album FOREIGN KEY (album_id) REFERENCES Albums(album_id),
+    CONSTRAINT chk_review_target CHECK ( (music_id IS NOT NULL AND album_id IS NULL) OR (music_id IS NULL AND album_id IS NOT NULL) ) -- 음악 또는 앨범 중 하나만 리뷰
+);
+
+-- Playlists (플레이리스트)
+CREATE TABLE Playlists (
+    playlist_id NUMBER PRIMARY KEY,
+    user_id NUMBER NOT NULL,
+    name VARCHAR2(100) NOT NULL,
+    description VARCHAR2(500),
+    is_public CHAR(1) DEFAULT 'N' CHECK (is_public IN ('Y', 'N')), -- 공개 여부
+    created_at DATE DEFAULT SYSDATE,
+    updated_at DATE DEFAULT SYSDATE,
+    CONSTRAINT fk_playlist_user FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+-- Playlist_Items (플레이리스트 항목 - M:N 관계)
+CREATE TABLE Playlist_Items (
+    playlist_item_id NUMBER PRIMARY KEY,
+    playlist_id NUMBER NOT NULL,
+    music_id NUMBER NOT NULL,
+    added_at DATE DEFAULT SYSDATE,
+    track_order NUMBER, -- 플레이리스트 내 순서
+    CONSTRAINT fk_pi_playlist FOREIGN KEY (playlist_id) REFERENCES Playlists(playlist_id) ON DELETE CASCADE, -- 플레이리스트 삭제 시 항목도 삭제
+    CONSTRAINT fk_pi_music FOREIGN KEY (music_id) REFERENCES Music(music_id),
+    CONSTRAINT uq_playlist_music UNIQUE (playlist_id, music_id) -- 한 플레이리스트에 같은 곡 중복 방지 (필요시 제거)
+);
+
+-- Likes (좋아요 - 음악, 앨범, 플레이리스트 등에 대한 '좋아요')
+CREATE TABLE Likes (
+    like_id NUMBER PRIMARY KEY,
+    user_id NUMBER NOT NULL,
+    music_id NUMBER,
+    album_id NUMBER,
+    playlist_id NUMBER,
+    -- review_id NUMBER, -- 리뷰에 대한 좋아요도 가능하다면
+    created_at DATE DEFAULT SYSDATE,
+    CONSTRAINT fk_like_user FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    CONSTRAINT fk_like_music FOREIGN KEY (music_id) REFERENCES Music(music_id),
+    CONSTRAINT fk_like_album FOREIGN KEY (album_id) REFERENCES Albums(album_id),
+    CONSTRAINT fk_like_playlist FOREIGN KEY (playlist_id) REFERENCES Playlists(playlist_id),
+    CONSTRAINT chk_like_target CHECK (
+        (music_id IS NOT NULL AND album_id IS NULL AND playlist_id IS NULL) OR
+        (music_id IS NULL AND album_id IS NOT NULL AND playlist_id IS NULL) OR
+        (music_id IS NULL AND album_id IS NULL AND playlist_id IS NOT NULL)
+    ), -- 대상 중 하나만 선택
+    CONSTRAINT uq_user_like UNIQUE (user_id, music_id, album_id, playlist_id) -- 한 사용자가 같은 대상에 중복 좋아요 방지
+);
+
+-- Bookmarks (찜하기 - 음악, 앨범, 플레이리스트 등에 대한 '찜')
+CREATE TABLE Bookmarks (
+    bookmark_id NUMBER PRIMARY KEY,
+    user_id NUMBER NOT NULL,
+    music_id NUMBER,
+    album_id NUMBER,
+    playlist_id NUMBER,
+    created_at DATE DEFAULT SYSDATE,
+    CONSTRAINT fk_bookmark_user FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    CONSTRAINT fk_bookmark_music FOREIGN KEY (music_id) REFERENCES Music(music_id),
+    CONSTRAINT fk_bookmark_album FOREIGN KEY (album_id) REFERENCES Albums(album_id),
+    CONSTRAINT fk_bookmark_playlist FOREIGN KEY (playlist_id) REFERENCES Playlists(playlist_id),
+    CONSTRAINT chk_bookmark_target CHECK (
+        (music_id IS NOT NULL AND album_id IS NULL AND playlist_id IS NULL) OR
+        (music_id IS NULL AND album_id IS NOT NULL AND playlist_id IS NULL) OR
+        (music_id IS NULL AND album_id IS NULL AND playlist_id IS NOT NULL)
+    ),
+    CONSTRAINT uq_user_bookmark UNIQUE (user_id, music_id, album_id, playlist_id)
+);
+
+
+-- Watch_History (청취 기록)
+CREATE TABLE Watch_History (
+    history_id NUMBER PRIMARY KEY,
+    user_id NUMBER NOT NULL,
+    music_id NUMBER NOT NULL,
+    watched_at DATE DEFAULT SYSDATE,
+    progress_seconds NUMBER DEFAULT 0, -- 어디까지 들었는지 (초 단위)
+    CONSTRAINT fk_wh_user FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    CONSTRAINT fk_wh_music FOREIGN KEY (music_id) REFERENCES Music(music_id)
+);
+
+-- 시퀀스 생성 (각 테이블의 PK 자동 증가를 위해)
+CREATE SEQUENCE seq_users START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_genres START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_artists START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_albums START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_music START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_artist_music START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_reviews START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_playlists START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_playlist_items START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_likes START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_bookmarks START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_watch_history START WITH 1 INCREMENT BY 1;
+
+-- (선택적) 인덱스 생성 (자주 검색되는 컬럼에 대해 성능 향상)
+CREATE INDEX idx_music_title ON Music(title);
+CREATE INDEX idx_artists_name ON Artists(name);
+CREATE INDEX idx_albums_title ON Albums(title);
+CREATE INDEX idx_playlists_name ON Playlists(name);

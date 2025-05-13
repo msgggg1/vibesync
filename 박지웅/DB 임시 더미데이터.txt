@@ -1,0 +1,117 @@
+-- ////////////////////////////////////////////////////////////////////////////////
+-- // 계정 생성 및 권한 부여 스크립트
+-- ////////////////////////////////////////////////////////////////////////////////
+
+-- 새 계정 생성
+CREATE USER MYNEWUSER IDENTIFIED BY newpassword;
+
+-- 생성된 계정에 기본 권한 부여
+GRANT CREATE SESSION TO MYNEWUSER;
+GRANT CREATE TABLE TO MYNEWUSER;
+GRANT CREATE PROCEDURE TO MYNEWUSER;
+GRANT CREATE TRIGGER TO MYNEWUSER;
+GRANT CREATE VIEW TO MYNEWUSER;
+GRANT CREATE SEQUENCE TO MYNEWUSER;
+-- 개발 환경에서는 UNLIMITED TABLESPACE 권한을 부여할 수 있지만, 운영 환경에서는 특정 테이블스페이스에 대한 할당량을 설정하는 것이 좋습니다.
+GRANT UNLIMITED TABLESPACE TO MYNEWUSER;
+
+-- 특정 테이블에 대한 권한 부여 (HR 스키마의 EMPLOYEES 테이블에 SELECT, INSERT 권한 부여 예시)
+-- 필요에 따라 스키마명과 테이블명을 변경하고 필요한 권한을 추가하십시오.
+-- GRANT SELECT, INSERT ON HR.EMPLOYEES TO MYNEWUSER;
+
+-- ////////////////////////////////////////////////////////////////////////////////
+-- // 테이블 생성, 삭제, 수정 쿼리
+-- ////////////////////////////////////////////////////////////////////////////////
+
+-- MYNEWUSER 계정으로 접속한 후 실행할 테이블 관련 쿼리입니다.
+
+-- 테이블 생성
+CREATE TABLE MY_NEW_TABLE (
+    ID NUMBER PRIMARY KEY,
+    NAME VARCHAR2(50) NOT NULL,
+    CREATED_DATE DATE DEFAULT SYSDATE
+);
+
+-- 테이블 수정 (컬럼 추가)
+ALTER TABLE MY_NEW_TABLE ADD EMAIL VARCHAR2(100);
+
+-- 테이블 수정 (컬럼 수정 - 데이터 타입 변경)
+ALTER TABLE MY_NEW_TABLE MODIFY NAME VARCHAR2(100);
+
+-- 테이블 수정 (컬럼 삭제)
+ALTER TABLE MY_NEW_TABLE DROP COLUMN EMAIL;
+
+-- 테이블 삭제
+DROP TABLE MY_NEW_TABLE;
+
+-- ////////////////////////////////////////////////////////////////////////////////
+-- // 프로시저 생성, 삭제 및 실행 권한 부여 쿼리
+-- ////////////////////////////////////////////////////////////////////////////////
+
+-- MYNEWUSER 계정으로 접속한 후 실행할 프로시저 관련 쿼리입니다.
+
+-- 프로시저 생성
+CREATE OR REPLACE PROCEDURE MY_NEW_PROCEDURE (p_name IN VARCHAR2)
+IS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Hello from procedure, ' || p_name || '!');
+END;
+/
+
+-- 프로시저 삭제
+DROP PROCEDURE MY_NEW_PROCEDURE;
+
+-- 다른 사용자에게 프로시저 실행 권한 부여 (관리자 계정에서 실행)
+-- GRANT EXECUTE ON MYNEWUSER.MY_NEW_PROCEDURE TO ANOTHERUSER;
+
+-- ////////////////////////////////////////////////////////////////////////////////
+-- // 트리거 생성 및 삭제 쿼리
+-- ////////////////////////////////////////////////////////////////////////////////
+
+-- MYNEWUSER 계정으로 접속한 후 실행할 트리거 관련 쿼리입니다.
+
+-- 트리거 생성 (MY_NEW_TABLE에 INSERT 작업 후 메시지 출력)
+CREATE OR REPLACE TRIGGER MY_NEW_TABLE_AFTER_INSERT
+AFTER INSERT ON MY_NEW_TABLE
+FOR EACH ROW
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('New row inserted in MY_NEW_TABLE with ID: ' || :NEW.ID);
+END;
+/
+
+-- 트리거 삭제
+DROP TRIGGER MY_NEW_TABLE_AFTER_INSERT;
+
+-- ////////////////////////////////////////////////////////////////////////////////
+-- // 뷰 생성, 삭제 및 조회 권한 부여 쿼리
+-- ////////////////////////////////////////////////////////////////////////////////
+
+-- MYNEWUSER 계정으로 접속한 후 실행할 뷰 관련 쿼리입니다.
+
+-- 뷰 생성 (MY_NEW_TABLE에서 ID와 NAME만 보여주는 뷰)
+CREATE OR REPLACE VIEW MY_NEW_VIEW AS
+SELECT ID, NAME
+FROM MY_NEW_TABLE;
+
+-- 뷰 삭제
+DROP VIEW MY_NEW_VIEW;
+
+-- 다른 사용자에게 뷰 조회 권한 부여 (관리자 계정에서 실행)
+-- GRANT SELECT ON MYNEWUSER.MY_NEW_VIEW TO ANOTHERUSER;
+
+-- ////////////////////////////////////////////////////////////////////////////////
+-- // 계정 연결 Lock 해제 쿼리 (관리자 계정에서 실행)
+-- ////////////////////////////////////////////////////////////////////////////////
+
+-- 잠긴 사용자 확인
+SELECT username, account_status
+FROM dba_users
+WHERE account_status = 'LOCKED(TIMED)';
+
+-- 특정 계정 잠금 해제 (MYNEWUSER 계정 잠금 해제)
+ALTER USER MYNEWUSER ACCOUNT UNLOCK;
+
+-- 계정 비밀번호 재설정 (선택 사항)
+-- ALTER USER MYNEWUSER IDENTIFIED BY new_password_reset;
+
+-- ////////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,81 @@
+테이블 속성 보완/추가 제안
+
+1. 계정 (Users / user_accounts)
+status: 'active', 'inactive', 'suspended', 'deleted' 등 계정 상태 관리.
+auth_provider: 'local', 'google' 등 인증 제공자 구분.
+provider_id : 소셜 로그인 시 해당 서비스의 사용자 ID.
+bio : 자기소개.
+updated_at 
+last_login_at: 마지막 로그인 일시.
+
+2. 글 (Posts / posts)
+title
+view_count 
+is_pinned 
+created_at, updated_at.
+status : 'published', 'draft', 'deleted' 등 게시글 상태.
+
+3. 댓글 (Comments / comments)
+댓글 좋아요를 위한 테이블 별도 생성?
+- 게시물 좋아요(post_likes)
+- 댓글 좋아요 (comment_likes):
+user_id (FK, Users 참조).
+comment_id (FK, Comments 참조).
+
+4. 팔로우 목록 (Follows / follows)
+컬럼명을 follower_id, following_id로 명확히.
+is_vibe_syncer 
+created_at 
+
+5. 알람 (Notifications / notifications)
+actor_user_id - 알림 유발자.
+notification_type - 'new_comment', 'new_like', 'new_follower' 등.
+target_entity_type - 'post', 'comment', 'user' 등 알림 대상 타입.
+
+6. 설정 (Settings)
+사용자별 알림 수신 설정이나 개인정보 공개 범위 설정 구체화
+- (user_notification_settings):
+on_new_comment 
+on_new_like 
+on_new_follower 
+on_syncplay_event 
+on_dm_received 
+
+- (user_privacy_settings):
+profile_visibility - 'public', 'followers_only'
+follow_list_visibility 
+
+7. 워치파티 (SyncPlay / syncplay_rooms)
+title
+media_url
+password 
+visibility  - 'public', 'followers_only', 'private'.
+playback_control_permission 
+status - 'scheduled', 'ongoing', 'ended'
+scheduled_start_time 
+updated_at.
+
+별도 테이블 필요:
+syncplay_participants: room_id (FK), user_id (FK), joined_at, has_playback_control.
+syncplay_chat_messages: message_id (PK), room_id (FK), user_id (FK), content, created_at.
+
+8. todolist (Todos / todos)
+구현 방법 2가지
+1) Workspace_Blocks 테이블의 한 종류로 통합 관리
+   -> Workspace_Blocks 테이블 내 block_type='todo_list'이고 content (JSON)에 할 일 목록 데이터를 저장하는 방식.
+
+2) user_id (ac_fk)와 직접 연결되는 독립적인 할 일 목록 기능
+   -> 현재 구조도 가능하나 is_completed (BOOLEAN), due_date (DATE), order (INT), created_at, updated_at 등이 추가
+
+9. 메시지 (Direct Messages / direct_messages)
+dm_rooms (또는 conversations): dm_room_id (PK), created_at.
+dm_room_participants: dm_room_id (FK), user_id (FK)
+dm_messages: dm_message_id (PK), dm_room_id (FK), sender_user_id (FK), content (TEXT), created_at, read_at (NULLABLE).
+
+10. 페이지 권한
+permission_level ('view', 'edit', 'comment').
+
+11. 핵심적으로 추가되어야 하는 테이블 (이전 제안에도 있었음):
+Workspaces 및 Workspace_Blocks: 사용자의 Notion형 워크스페이스와 그 안의 커스텀 블록(위젯)을 관리. todolist는 이의 한 예시일 수 있음.
+Reports: 사용자 또는 콘텐츠 신고 기능.
+User_Blocks: 사용자 간 차단 기능.
