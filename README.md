@@ -17,6 +17,7 @@
   - [Key Performance Indicators (KPI)](#Key-Performance-Indicators-(KPI))
   - [Technologies](#technologies)
   - [Reference site](#Reference-site)
+  - [Reference Insights](#Reference-Insights)
 - [[2] Project Team](#2-Project-Team)
 - [[3] Logo CI](#3-Logo-CI)
 - [[4] Usage](#4-usage)
@@ -66,7 +67,7 @@
 | Notion | 개인 워크스페이스, 협업 문서 | 유연한 커스터마이징, 쉽게 조직화 | 미디어 리뷰·스트리밍 통합 기능 부족 |
 | Instagram | 피드, 스토리, DM, 해시태그 기반 탐색 | 방대한 사용자풀, 쉬운 콘텐츠 공유 | 실시간 동시 시청, 취향 태깅 기능 부재 |
 | Teleparty | 동기화 스트리밍, 채팅·이모티콘 반응 | 다양한 스트리밍 플랫폼 지원 | 별도 브라우저 확장 설치 필요, SNS 기능 미흡 |
-<br>
+
 ## Reference Insights
 
 -	**원스톱 플랫폼**으로서 리뷰·매칭·스트리밍·워크스페이스를 통합 제공
