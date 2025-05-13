@@ -12,9 +12,9 @@
  <!--목차-->
 # 목차
 - [[1] About the Project](#1-about-the-project)
-  - [Background & Problem Statement](#Background-&-Problem-Statement)
-  - [Goals & Value Proposition](#Goals-&-Value-Proposition)
-  - [Key Performance Indicators (KPI)](#Key-Performance-Indicators-(KPI))
+  - [Background & Problem Statement](#Background-\&-Problem-Statement)
+  - [Goals & Value Proposition](#Goals-\&-Value-Proposition)
+  - [Key Performance Indicators (KPI)](#Key-Performance-Indicators-\(KPI\))
   - [Technologies](#technologies)
   - [Reference site](#Reference-site)
     - [Reference Insights](#Reference-Insights)
