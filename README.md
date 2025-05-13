@@ -18,9 +18,9 @@
   - [Technologies](#technologies)
   - [Reference site](#Reference-site)
     - [Reference Insights](#Reference-Insights)
+  - [Logo CI](Logo-CI)
 - [[2] Project Team](#2-Project-Team)
-- [[3] Logo CI](#3-Logo-CI)
-- [[4] Usage](#4-usage)
+- [[3] Usage](#3-usage)
 
 
  <!--목차 끝-->
@@ -75,20 +75,21 @@
 -	감정 태그·분석을 통한 세분화된 **추천 경험** 필수
 -	**채팅 기반 커뮤니티:** 실시간 텍스트·이모티콘 소통 기능 강화 필요
 
-# [2] Project Team
-
-|<img src="https://avatars.githubusercontent.com/u/147032519?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/180395275?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547917?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/186297935?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547900?v=4" width="150" height="150"/>|
-|:-:|:-:|:-:|:-:|:-:|
-|**김현수**<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management<br>UI/UX Design<br>FE/BE Development|**서재웅**<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**<br>Overall FE/BE Development|**박지웅**<br/>[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|**김민선**<br/>[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|**김예지**<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
-
-# [3] Logo CI
+## Logo CI
 ![Logo CI](readme_img/ci.jpeg)
 - **Vibe**(감성, 파장)와 **Sync**(동기화)의 결합으로, 사용자 간의 감성과 경험을 연결한다는 의미를 담고 있습니다.
 - 외각 원형: 글로벌 커뮤니티의 확장성과 끊김 없는 연결을 상징
 - 중앙 사운드 웨이브 그래픽: 실시간 경험 공유, 감정의 파동(바이브)을 시각화
 - 보라→파랑→초록 그라데이션: 다양한 취향과 감정 스펙트럼을 표현
 
-# [4] Usage
+# [2] Project Team
+
+|<img src="https://avatars.githubusercontent.com/u/147032519?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/180395275?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547917?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/186297935?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547900?v=4" width="150" height="150"/>|
+|:-:|:-:|:-:|:-:|:-:|
+|**김현수**<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management<br>UI/UX Design<br>FE/BE Development|**서재웅**<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**<br>Overall FE/BE Development|**박지웅**<br/>[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|**김민선**<br/>[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|**김예지**<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
+
+
+# [3] Usage
 *★는 해당 작업 주 작업자*<br>
 *전체 공동 개발로 구분 불가일 경우 총괄만 ★로 표시*<br><br>
 
