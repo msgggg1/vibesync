@@ -168,6 +168,7 @@
       max-width: 1200px;
       display: flex;
       align-items: center;
+      justify-content: center;
       flex-wrap: wrap;
     }
     .se2_con{
@@ -278,11 +279,14 @@
       align-items: center;
     }
     .swiper-slide {
+      display: flex;
+      align-items: center;
       flex: 0 0 auto;
       width: 300px;
       height: 169px;
       border-radius: 8px;
       background: #ccc;
+      overflow: hidden;
     }
 
     footer {
@@ -361,25 +365,24 @@
 
     .shooting-star {
       position: absolute;
-      width: 120px;           /* 꼬리 길이를 충분히 길게 */
-      height: 4px;            /* 얇은 줄 모양 */
+      width: 120px;
+      height: 4px; 
       background: linear-gradient(to left, white, rgba(255,255,255,0));
       opacity: 0.8;
       pointer-events: none;
-      transform-origin: 0 0;  /* 왼쪽 위(시작점) 기준 회전 */
+      transform-origin: 0 0;
       animation: shoot 1s ease-out forwards;
     }
 
     @keyframes shoot {
       to {
         transform: rotate(45deg) translate(600px, 0) scale(0.5);
-        /* 45°로 회전한 뒤, x축(회전된 축)으로만 600px 이동 */
         opacity: 0;
       }
     }
   </style>
 </head>
-<body>
+<body ondragstart="return false" ondrop="return false" onselectstart="return false">
     <canvas id="starfield"></canvas>
 
   <!-- 네비게이션 바 -->
@@ -443,7 +446,7 @@
       <div class="slider-wrapper">
         <div class="swiper-container">
           <div class="swiper-wrapper">
-            <div class="swiper-slide" style="background-color:#e74c3c;"></div>
+            <div class="swiper-slide"><img src="assets/sil/sil1.jpeg" style="width: 100%;"></div>
             <div class="swiper-slide" style="background-color:#3498db;"></div>
             <div class="swiper-slide" style="background-color:#2ecc71;"></div>
             <div class="swiper-slide" style="background-color:#f1c40f;"></div>
