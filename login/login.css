@@ -216,7 +216,7 @@
             max-width: 500px;
             width: 100%;
             min-width: 300px;
-            box-shadow: 0 0 80px #5daed7;
+            box-shadow: -10px -5px 50px #f069ff, 5px 10px 50px #40c9ff;
             padding: 20px;       /* 내부 좌우 패딩 제거 또는 조절 */
             border-radius: 4px;
             display: flex;
