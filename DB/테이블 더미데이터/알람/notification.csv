@@ -1,0 +1,191 @@
+notifi_idx,time,text,chk,ac_idx,setting_idx
+1,2025-05-15 15:45:00,노트에 새 댓글! 확인해보세요 📬,0,1,1
+2,2025-05-15 15:45:00,락스타님이 팔로우했어요 😊,1,3,3
+3,2025-05-15 15:45:00,워치파티 시작! 참여하세요 🎉,0,2,2
+4,2025-05-16 09:00:00,새 힙합 노트 업로드! 🎤,1,4,4
+5,2025-05-17 10:15:00,클래식 앨범 추천받았어요 🎻,0,5,5
+6,2025-05-18 11:30:00,EDM 워치파티 초대! 🕺,1,6,6
+7,2025-05-19 12:45:00,팝 곡 좋아요 받았어요 💖,0,7,7
+8,2025-05-20 14:00:00,락 노트에 댓글 달렸어요 ⚡,1,8,8
+9,2025-05-21 15:15:00,재즈 플레이리스트 공유됨 🌙,0,9,9
+10,2025-05-22 16:30:00,힙합 신곡 좋아요! 🎵,1,10,10
+11,2025-05-23 17:45:00,클래식 노트 업로드됨 🎹,0,11,11
+12,2025-05-24 19:00:00,EDM 비트 공유됨 🌌,1,12,12
+13,2025-05-25 20:15:00,팝 댄스 곡 추천! 💃,0,13,13
+14,2025-05-26 21:30:00,락 레전드 노트 업로드 🎸,1,14,14
+15,2025-05-27 22:45:00,재즈 소울 좋아요 받음 🎷,0,15,15
+16,2025-05-28 08:00:00,힙합 플로우 공유됨 🎙️,1,16,16
+17,2025-05-29 09:15:00,클래식 오케스트라 추천 🎼,0,17,17
+18,2025-05-30 10:30:00,EDM 드림 노트 업로드 ✨,1,18,18
+19,2025-05-31 11:45:00,팝 히트곡 좋아요! 🎉,0,19,19
+20,2025-06-01 13:00:00,락 파워 노트 공유됨 🔥,1,20,20
+21,2025-06-02 14:15:00,재즈 라운지 추천 🍸,0,21,21
+22,2025-06-03 15:30:00,힙합 스트리트 좋아요 🛹,1,22,22
+23,2025-06-04 16:45:00,클래식 바이올린 노트 업로드 🎻,0,23,23
+24,2025-06-05 18:00:00,EDM 웨이브 공유됨 🌊,1,24,24
+25,2025-06-06 19:15:00,팝 러브 곡 추천 💕,0,25,25
+26,2025-06-07 20:30:00,락 소울 노트 좋아요 🎵,1,26,26
+27,2025-06-08 21:45:00,재즈 블루스 공유됨 🎸,0,27,27
+28,2025-06-09 23:00:00,힙합 에너지 노트 업로드 ⚡,1,28,28
+29,2025-06-10 08:15:00,클래식 심포니 추천 🎼,0,29,29
+30,2025-06-11 09:30:00,EDM 파티 노트 공유 🎈,1,30,30
+31,2025-06-12 integration into your workflow easier.
+
+---
+
+### 4. **엑셀에서 시트로 변환 방법**
+To integrate the provided CSV data into an Excel workbook with multiple sheets, follow these steps:
+
+#### (1) **Save CSV Files**
+- Copy each `<xaiArtifact>` content into a separate `.csv` file (e.g., `userAccount.csv`, `category.csv`).
+- Ensure UTF-8 encoding:
+  - Use a text editor like Notepad: Paste the CSV content, then save as `filename.csv` with UTF-8 encoding.
+  - In VS Code, use "Save with Encoding" → select UTF-8.
+- Save all 17 CSV files in a single directory for easy access.
+
+#### (2) **Import into Excel**
+- **Manual Import**:
+  - Open Excel and create a new workbook.
+  - For each CSV file:
+    - Go to `Data > From Text/CSV`.
+    - Select the `.csv` file (e.g., `userAccount.csv`).
+    - In the Text Import Wizard:
+      - Choose **File Origin: UTF-8 (65001)** to ensure proper handling of Korean characters and emojis.
+      - Set **Delimiter: Comma**.
+    - Load the data into a new sheet.
+    - Rename the sheet to match the table name (e.g., `userAccount`).
+  - Repeat for all 17 CSV files, creating a separate sheet for each.
+- **Alternative: Open Directly**:
+  - Double-click each `.csv` file to open in Excel.
+  - Copy the data and paste into a new sheet in a single workbook.
+  - Ensure UTF-8 encoding is maintained (check for Korean text/emoji rendering).
+
+#### (3) **Automate with Python (Recommended for Efficiency)**
+- Use Python with `pandas` and `openpyxl` to combine all CSVs into a single Excel workbook:
+  ```python
+  import pandas as pd
+  import openpyxl
+
+  # Dictionary of CSV files
+  csv_files = {
+      'userAccount': 'userAccount.csv',
+      'category': 'category.csv',
+      'genre': 'genre.csv',
+      'contents': 'contents.csv',
+      'userPage': 'userPage.csv',
+      'setting': 'setting.csv',
+      'note': 'note.csv',
+      'genrePerUser': 'genrePerUser.csv',
+      'watchParty': 'watchParty.csv',
+      'message': 'message.csv',
+      'todolist': 'todolist.csv',
+      'notification': 'notification.csv',
+      'follows': 'follows.csv',
+      'likes': 'likes.csv',
+      'noteAccess': 'noteAccess.csv',
+      'comment': 'comment.csv',
+      'bookmark': 'bookmark.csv'
+  }
+
+  # Create Excel workbook
+  with pd.ExcelWriter('vibesync_data.xlsx', engine='openpyxl') as writer:
+      for sheet_name, csv_file in csv_files.items():
+          df = pd.read_csv(csv_file, encoding='utf-8')
+          df.to_excel(writer, sheet_name=sheet_name, index=False)
+  ```
+- **Prerequisites**:
+  - Install required libraries:
+    ```bash
+    pip install pandas openpyxl
+    ```
+  - Save all CSV files in the same directory as the Python script.
+- **Output**: A single `vibesync_data.xlsx` file with 17 sheets, each named after the corresponding table.
+
+#### (4) **Save Excel Workbook**
+- After importing all CSVs, save the workbook as `.xlsx`:
+  - `File > Save As > Excel Workbook (*.xlsx)`.
+- Verify that Korean text (e.g., `김민수`, `음악팬1`) and emojis (e.g., `🎵`, `🤘`) are displayed correctly.
+
+---
+
+### 5. **UTF-8 and Data Integrity**
+- **UTF-8 Compliance**:
+  - All CSV files include Korean text (e.g., `김민수`, `팝 히트곡`), English, and emojis (e.g., `🎤`, `🌌`), encoded in UTF-8.
+  - When opening CSVs in Excel, ensure UTF-8 is selected to prevent character corruption.
+- **FK/PK Integrity**:
+  - **PK**: Each table’s primary key (e.g., `ac_idx`, `note_idx`) is unique, with values ranging from 1 to 33 (or 32 for some tables).
+  - **FK**: Foreign keys reference valid PK values:
+    - E.g., `note.userPg_idx` references `userPage.userPg_idx` (1-33).
+    - E.g., `message.ac_receiver` and `ac_sender` reference `userAccount.ac_idx` (1-33).
+  - **Validation**: The data respects all FK constraints, and NULLable fields (e.g., `userPage.re_userPg_idx`, `message.img`) are handled appropriately.
+- **Testing**:
+  - Open each CSV in Excel and check for proper rendering of Korean text and emojis.
+  - Verify FK relationships by cross-referencing values (e.g., ensure `note.userPg_idx` exists in `userPage`).
+
+---
+
+### 6. **Additional Considerations**
+- **Expanding Data**:
+  - If more than 33 records are needed, additional records can be generated by extending the CSV files:
+    ```python
+    import pandas as pd
+    import random
+    data = []
+    for i in range(34, 50):
+        data.append([i, f'user{i}@example.com', f'pw{i:03d}!김', f'유저{i}', f'user{i}.jpg', f'이름{i}', f'2025-06-{i-30:02d}'])
+    df = pd.DataFrame(data, columns=['ac_idx', 'email', 'pw', 'nickname', 'img', 'name', 'created_at'])
+    df.to_csv('userAccount.csv', mode='a', encoding='utf-8', index=False)
+    ```
+- **Using in Java/Spring**:
+  - Read the Excel file using `Apache POI` for testing in your Vibesync application:
+    ```java
+    import org.apache.poi.ss.usermodel.*;
+    import java.io.FileInputStream;
+
+    public class ExcelReader {
+        public static void main(String[] args) throws Exception {
+            Workbook workbook = WorkbookFactory.create(new FileInputStream("vibesync_data.xlsx"));
+            Sheet sheet = workbook.getSheet("userAccount");
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // Skip header
+                System.out.println(row.getCell(1).getStringCellValue()); // email
+            }
+            workbook.close();
+        }
+    }
+    ```
+- **Backup**:
+  - Save the Excel file and CSV files to a GitHub repository for version control.
+  - Back up the Oracle DB to ensure consistency:
+    ```bash
+    expdp system/password@orcl schemas=VIBESYNC directory=DATA_PUMP_DIR dumpfile=vibesync.dmp
+    ```
+- **Toy Project Tips**:
+  - Use the Excel sheets to test core Vibesync features (e.g., note creation, commenting, watch parties).
+  - Focus on key tables (`userAccount`, `note`, `comment`) for initial testing.
+  - If specific tables need more data (e.g., `message` for chat testing), request additional records.
+
+---
+
+### 7. **Conclusion and Next Steps**
+- **Completed**: Provided CSV files for all 17 Vibesync tables, each with ~33 records (existing 3-4 + ~30 new random records), in UTF-8 encoding.
+- **Next Steps**:
+  1. Save each `<xaiArtifact>` content as a `.csv` file with UTF-8 encoding.
+  2. Import CSVs into Excel, creating a separate sheet for each table (manual or Python script).
+  3. Verify Korean text and emojis in Excel.
+  4. Use the Excel data in your Java/Spring application for testing (e.g., via `Apache POI`).
+  5. Insert the CSV data into Oracle DB using SQL scripts if needed:
+     ```sql
+     -- Example for userAccount
+     DELETE FROM userAccount;
+     INSERT INTO userAccount (ac_idx, email, pw, nickname, img, name, created_at)
+     VALUES (1, 'user1@example.com', 'pw123!김', '음악팬1', 'user1.jpg', '김민수', TO_DATE('2025-05-01', 'YYYY-MM-DD'));
+     -- Add remaining records from userAccount.csv
+     COMMIT;
+     ```
+- **Recommendations**:
+  - Use the Python script to automate CSV-to-Excel conversion.
+  - Test Vibesync features with the expanded dataset (e.g., user interactions, note likes, watch parties).
+  - Request additional records or specific data formats if needed.
+
+If you have further questions (e.g., more records for specific tables, Java code to read Excel, SQL scripts to insert CSV data, etc.), please let me know!

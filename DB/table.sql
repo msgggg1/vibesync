@@ -1,6 +1,4 @@
--- VibeSync Table 
-
--- userAccount (계정)
+-- 1. userAccount (계정)
 CREATE TABLE userAccount (
     ac_idx INT PRIMARY KEY,
     email VARCHAR2(255) NOT NULL UNIQUE,
@@ -11,19 +9,19 @@ CREATE TABLE userAccount (
     created_at DATE
 );
 
--- category (카테고리)
+-- 2. category (카테고리)
 CREATE TABLE category (
     category_idx INT PRIMARY KEY,
     c_name VARCHAR2(100) NOT NULL
 );
     
--- genre (장르)
+-- 3. genre (장르)
 CREATE TABLE genre (
     genre_idx INT PRIMARY KEY,
     gen_name VARCHAR2(100) NOT NULL
 );
 
--- contents (콘텐츠)
+-- 4. contents (콘텐츠)
 CREATE TABLE contents (
     content_idx INT PRIMARY KEY,
     title VARCHAR2(255),
@@ -33,7 +31,7 @@ CREATE TABLE contents (
     CONSTRAINT FK_contents_TO_category FOREIGN KEY (category_idx) REFERENCES category(category_idx) 
 );
 
--- userPage (페이지)
+-- 5. userPage (페이지)
 CREATE TABLE userPage (
     userPg_idx INT PRIMARY KEY,
     subject VARCHAR2(100),
@@ -45,7 +43,7 @@ CREATE TABLE userPage (
     CONSTRAINT FK_userPage_TO_userPage FOREIGN KEY (re_userPg_idx) REFERENCES userPage(userPg_idx) 
 );
 
--- setting (설정)
+-- 6. setting (설정)
 CREATE TABLE setting (
     setting_idx INT PRIMARY KEY,
     font VARCHAR2(100) NOT NULL,
@@ -55,22 +53,7 @@ CREATE TABLE setting (
     CONSTRAINT FK_setting_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount (ac_idx) 
 );
 
--- note (글)
-CREATE TABLE note (
-    note_idx INT PRIMARY KEY,
-    text CLOB,
-    img VARCHAR2(255),
-    userPg_idx INT NOT NULL,
-    content_idx INT NOT NULL,
-    genre_idx INT NOT NULL,
-    category_idx INT NOT NULL,
-    CONSTRAINT FK_note_TO_userPage FOREIGN KEY (userPg_idx) REFERENCES userPage(userPg_idx),
-    CONSTRAINT FK_note_TO_contents FOREIGN KEY (content_idx) REFERENCES contents(content_idx), 
-    CONSTRAINT FK_note_TO_genre FOREIGN KEY (genre_idx) REFERENCES genre(genre_idx), 
-    CONSTRAINT FK_note_TO_category FOREIGN KEY (category_idx) REFERENCES category(category_idx) 
-);
-
--- genrePerUser (유저별 장르 목록)
+-- 7. genrePerUser (유저별 장르 목록)
 CREATE TABLE genrePerUser (
     ac_gen_idx INT PRIMARY KEY,
     ac_idx INT NOT NULL,
@@ -79,7 +62,7 @@ CREATE TABLE genrePerUser (
     CONSTRAINT FK_genrePerUser_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount (ac_idx) 
 );
 
--- watchParty (워치파티)
+-- 8. watchParty (워치파티)
 CREATE TABLE watchParty (
     watchParty_idx INT PRIMARY KEY,
     video_id VARCHAR2(255) NOT NULL,
@@ -88,7 +71,7 @@ CREATE TABLE watchParty (
     CONSTRAINT FK_watchParty_TO_userAccount FOREIGN KEY (host) REFERENCES userAccount (ac_idx) 
 );
 
--- message (메시지)
+-- 9. message (메시지)
 CREATE TABLE message (
     msg_idx INT PRIMARY KEY,
     text CLOB NOT NULL,
@@ -101,10 +84,10 @@ CREATE TABLE message (
     CONSTRAINT FK_message_TO_userAccount_sndr FOREIGN KEY (ac_sender) REFERENCES userAccount (ac_idx) 
 );
 
--- todolist (투두리스트)
+-- 10. todolist (투두리스트)
 CREATE TABLE todolist (
     todo_idx INT PRIMARY KEY,
-    datetime TIMESTAMP NOT NULL, 
+    created_at TIMESTAMP NOT NULL, 
     text CLOB NOT NULL,
     todo_group VARCHAR2(100) NOT NULL,
     color VARCHAR2(100) NOT NULL,
@@ -112,7 +95,29 @@ CREATE TABLE todolist (
     CONSTRAINT FK_todolist_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount (ac_idx) 
 );
 
--- notification (알람)
+-- 11. follows (팔로우목록)
+CREATE TABLE follows (
+    follows_idx INT PRIMARY KEY,
+    ac_follow INT NOT NULL,
+    ac_following INT NOT NULL,
+    CONSTRAINT FK_follows_TO_userAccountFw FOREIGN KEY (ac_follow) REFERENCES userAccount (ac_idx), 
+    CONSTRAINT FK_follows_TO_userAccountFwing FOREIGN KEY (ac_following) REFERENCES userAccount (ac_idx) 
+);
+
+-- 12. note (글)
+CREATE TABLE note (
+    note_idx INT PRIMARY KEY,
+    text CLOB,
+    img CLOB,
+    create_at TIMESTAMP,
+    edit_at TIMESTAMP,
+    content_idx INT NOT NULL,
+    genre_idx INT NOT NULL,
+    CONSTRAINT FK_note_TO_contents FOREIGN KEY (content_idx) REFERENCES contents(content_idx), 
+    CONSTRAINT FK_note_TO_genre FOREIGN KEY (genre_idx) REFERENCES genre(genre_idx)
+);
+
+-- 13. notification (알람)
 CREATE TABLE notification (
     notifi_idx INT PRIMARY KEY,
     time TIMESTAMP NOT NULL,
@@ -124,34 +129,38 @@ CREATE TABLE notification (
     CONSTRAINT FK_notification_TO_setting FOREIGN KEY (setting_idx) REFERENCES setting (setting_idx) 
 );
 
--- follows (팔로우목록)
-CREATE TABLE follows (
-    follows_idx INT PRIMARY KEY,
-    ac_follow INT NOT NULL,
-    ac_following INT NOT NULL,
-    CONSTRAINT FK_follows_TO_userAccountFw FOREIGN KEY (ac_follow) REFERENCES userAccount (ac_idx), 
-    CONSTRAINT FK_follows_TO_userAccountFwing FOREIGN KEY (ac_following) REFERENCES userAccount (ac_idx) 
+-- 14. bookmark (북마크)
+CREATE TABLE bookmark (
+    bkmark_idx INT PRIMARY KEY,
+    userPg_idx INT NOT NULL,
+    ac_idx INT NOT NULL,
+    created_at TIMESTAMP,
+    CONSTRAINT FK_bookmark_TO_userPage FOREIGN KEY (userPg_idx) REFERENCES userPage(userPg_idx), 
+    CONSTRAINT FK_bookmark_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) 
 );
 
--- likes (좋아요)
+-- 15. likes (좋아요)
 CREATE TABLE likes (
     likes_idx INT PRIMARY KEY,
+    created_at TIMESTAMP,
     note_idx INT NOT NULL,
     ac_idx INT NOT NULL,
     CONSTRAINT FK_likes_TO_note FOREIGN KEY (note_idx) REFERENCES note(note_idx), 
     CONSTRAINT FK_likes_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) 
 );
 
--- noteAccess(페이지 권한 리스트) 
+-- 16. noteAccess(페이지(노트) 권한 리스트) 
 CREATE TABLE noteAccess (
-    pgGrant_idx INT PRIMARY KEY,
+    ntGrant_idx INT PRIMARY KEY,
+    ntGrant CHAR(3),
+    created_at TIMESTAMP,
     note_idx INT NOT NULL,
     ac_idx INT NOT NULL,
     CONSTRAINT FK_noteAccess_TO_note FOREIGN KEY (note_idx) REFERENCES note(note_idx), 
     CONSTRAINT FK_noteAccess_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) 
 );
 
--- comment (댓글)
+-- 17. coment (댓글)
 CREATE TABLE coment (
     coment_idx INT PRIMARY KEY,
     text CLOB NOT NULL,
@@ -163,61 +172,57 @@ CREATE TABLE coment (
     CONSTRAINT FK_coment_TO_coment FOREIGN KEY (re_coment_idx) REFERENCES coment(coment_idx), 
     CONSTRAINT FK_coment_TO_note FOREIGN KEY (note_idx) REFERENCES note(note_idx), 
     CONSTRAINT FK_coment_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) 
-);    
-
--- bookmark (북마크)
-CREATE TABLE bookmark (
-    bkmark_idx INT PRIMARY KEY,
-    userPg_idx INT NOT NULL,
-    ac_idx INT NOT NULL,
-    CONSTRAINT FK_bookmark_TO_userPage FOREIGN KEY (userPg_idx) REFERENCES userPage(userPg_idx), 
-    CONSTRAINT FK_bookmark_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) 
 );
 
-
----------------------------------------------------------------------------------
--- 외래 키 제약 조건 삭제
-ALTER TABLE message DROP CONSTRAINT FK_message_TO_userAccount_rcvr;
-ALTER TABLE message DROP CONSTRAINT FK_message_TO_userAccount_sndr;
-ALTER TABLE noteAccess DROP CONSTRAINT FK_noteAccess_TO_note;
-ALTER TABLE noteAccess DROP CONSTRAINT FK_noteAccess_TO_userAccount;
-ALTER TABLE follows DROP CONSTRAINT FK_follows_TO_userAccountFw;
-ALTER TABLE follows DROP CONSTRAINT FK_follows_TO_userAccountFwing;
-ALTER TABLE likes DROP CONSTRAINT FK_likes_TO_note;
-ALTER TABLE likes DROP CONSTRAINT FK_likes_TO_userAccount;
-ALTER TABLE note DROP CONSTRAINT FK_note_TO_userPage;
-ALTER TABLE note DROP CONSTRAINT FK_note_TO_contents;
-ALTER TABLE note DROP CONSTRAINT FK_note_TO_genre;
-ALTER TABLE note DROP CONSTRAINT FK_note_TO_category;
-ALTER TABLE setting DROP CONSTRAINT FK_setting_TO_userAccount;
-ALTER TABLE userPage DROP CONSTRAINT FK_userPage_TO_userAccount;
-ALTER TABLE userPage DROP CONSTRAINT FK_userPage_TO_userPage;
-ALTER TABLE genrePerUser DROP CONSTRAINT FK_genrePerUser_TO_genre;
-ALTER TABLE genrePerUser DROP CONSTRAINT FK_genrePerUser_TO_userAccount;
-ALTER TABLE watchParty DROP CONSTRAINT FK_watchParty_TO_userAccount;
-ALTER TABLE notification DROP CONSTRAINT FK_notification_TO_userAccount;
-ALTER TABLE notification DROP CONSTRAINT FK_notification_TO_setting;
-ALTER TABLE coment DROP CONSTRAINT FK_coment_TO_coment;
-ALTER TABLE coment DROP CONSTRAINT FK_coment_TO_note;
-ALTER TABLE coment DROP CONSTRAINT FK_coment_TO_userAccount;
-ALTER TABLE bookmark DROP CONSTRAINT FK_bookmark_TO_userPage;
-ALTER TABLE bookmark DROP CONSTRAINT FK_bookmark_TO_userAccount;
-ALTER TABLE contents DROP CONSTRAINT FK_contents_TO_category;
-
+--------------------------------------------------------------------------------
 -- 테이블 삭제
-DROP TABLE message;
-DROP TABLE notification;
-DROP TABLE noteAccess;
-DROP TABLE follows;
-DROP TABLE likes;
-DROP TABLE note;
-DROP TABLE setting;
-DROP TABLE userPage;
-DROP TABLE genrePerUser;
-DROP TABLE watchParty;
+-- 17. coment (댓글)
 DROP TABLE coment;
+
+-- 16. noteAccess(페이지(노트) 권한 리스트) 
+DROP TABLE noteAccess;
+
+-- 15. likes (좋아요)
+DROP TABLE likes;
+
+-- 14. bookmark (북마크)
 DROP TABLE bookmark;
+
+-- 13. notification (알람)
+DROP TABLE notification;
+
+-- 12. note (글)
+DROP TABLE note;
+
+-- 11. follows (팔로우목록)
+DROP TABLE follows;
+
+-- 10. todolist (투두리스트)
+DROP TABLE todolist;
+
+-- 9. message (메시지)
+DROP TABLE message;
+
+-- 8. watchParty (워치파티)
+DROP TABLE watchParty;
+
+-- 7. genrePerUser (유저별 장르 목록)
+DROP TABLE genrePerUser;
+
+-- 6. setting (설정)
+DROP TABLE setting;
+
+-- 5. userPage (페이지)
+DROP TABLE userPage;
+
+-- 4. contents (콘텐츠)
 DROP TABLE contents;
+
+-- 3. genre (장르)
 DROP TABLE genre;
+
+-- 2. category (카테고리)
 DROP TABLE category;
+
+-- 1. userAccount (계정)
 DROP TABLE userAccount;
