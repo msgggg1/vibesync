@@ -1,0 +1,11 @@
+note_idx,subject,text,img,genre_idx,contents_idx
+1,"영화 감상 노트","러브 액츄얼리의 크리스마스 장면이 정말 따뜻했어요! 🎄","https://example.com/note1.jpg",1,1
+2,"액션 영화 분석","다크 나이트의 조커 연기가 압권이었습니다! 💥","https://example.com/note2.jpg",2,2
+3,"프렌즈 에피소드 정리","시즌 1 에피소드 3에서 로스가 레이첼에게 고백하는 장면 😂","https://example.com/note3.jpg",3,3
+4,"애니메이션 추천","센과 치히로의 행방불명은 꼭 봐야 할 작품! ✨","https://example.com/note4.jpg",6,4
+5,"음악 영화 기록","Bohemian Rhapsody의 라이브 에이드 장면이 최고! 🎵","https://example.com/note5.jpg",10,5
+6,"기생충 리뷰","사회적 메시지가 강렬했던 영화 🎬","https://example.com/note6.jpg",4,6
+7,"드라마 메모","브레이킹 배드의 주인공 월터 화이트의 변화가 인상적 🔥","https://example.com/note7.jpg",7,7
+8,"토이 스토리 감상","우디와 버즈의 우정이 정말 감동적! 🎮","https://example.com/note8.jpg",3,8
+9,"라라랜드 노트","마지막 장면의 몽환적인 분위기가 잊히지 않아요 💕","https://example.com/note9.jpg",1,9
+10,"인터스텔라 기록","우주 장면의 과학적 고증이 놀라웠어요! 🌌","https://example.com/note10.jpg",5,10

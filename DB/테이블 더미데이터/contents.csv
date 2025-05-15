@@ -1,0 +1,31 @@
+contents_idx,title,img,dsc,category_idx,genre_idx
+1,"러브 액츄얼리","https://example.com/love_actually.jpg","크리스마스 시즌을 배경으로 한 로맨틱 코미디 영화 🎄",1,1
+2,"다크 나이트","https://example.com/dark_knight.jpg","배트맨과 조커의 대결을 그린 액션 영화 💥",1,2
+3,"프렌즈","https://example.com/friends.jpg","뉴욕에 사는 친구들의 일상을 그린 시트콤 😂",2,3
+4,"센과 치히로의 행방불명","https://example.com/spirited_away.jpg","신비로운 세계로 떠나는 소녀의 모험 ✨",3,6
+5,"Bohemian Rhapsody","https://example.com/bohemian_rhapsody.jpg","퀸의 음악과 프레디 머큐리의 삶을 그린 영화 🎵",1,10
+6,"기생충","https://example.com/parasite.jpg","가난한 가족과 부유한 가족의 이야기를 그린 영화 🎬",1,4
+7,"브레이킹 배드","https://example.com/breaking_bad.jpg","화학 교사가 마약 제조자가 되는 이야기 🔥",2,7
+8,"토이 스토리","https://example.com/toy_story.jpg","장난감들의 모험을 그린 애니메이션 🎮",3,3
+9,"라라랜드","https://example.com/lalaland.jpg","꿈을 좇는 두 사람의 사랑 이야기 💕",1,1
+10,"인터스텔라","https://example.com/interstellar.jpg","우주 탐사를 통해 인류의 미래를 찾는 SF 영화 🌌",1,5
+11,"셜록","https://example.com/sherlock.jpg","현대적으로 재해석된 셜록 홈즈 이야기 🔍",2,4
+12,"너의 이름은","https://example.com/your_name.jpg","몸이 바뀌는 두 소년소녀의 이야기 💞",3,1
+13,"라이온 킹","https://example.com/lion_king.jpg","사자 심바의 성장 이야기를 그린 애니메이션 🦁",3,7
+14,"오펜하이머","https://example.com/oppenheimer.jpg","핵폭탄 개발에 관여한 과학자의 이야기 ⚛️",1,7
+15,"빌리빈","https://example.com/billie_jean.jpg","마이클 잭슨의 대표곡 🎤",4,10
+16,"더 위쳐","https://example.com/the_witcher.jpg","괴물 사냥꾼의 모험을 그린 판타지 드라마 🗡️",2,6
+17,"해리 포터와 마법사의 돌","https://example.com/harry_potter.jpg","마법 세계로 들어가는 소년의 이야기 🧙‍♂️",1,6
+18,"주토피아","https://example.com/zootopia.jpg","동물들이 살아가는 도시에서의 모험 🐰",3,3
+19,"이태원 클라쓰","https://example.com/itaewon_class.jpg","복수를 위해 사업을 시작하는 청년의 이야기 💼",2,7
+20,"공각기동대","https://example.com/ghost_in_the_shell.jpg","사이버펑크 배경의 애니메이션 🤖",3,5
+21,"Yesterday","https://example.com/yesterday.jpg","비틀즈 음악을 아는 유일한 남자의 이야기 🎸",1,10
+22,"스트레인저 띵스","https://example.com/stranger_things.jpg","초자연적 현상을 겪는 아이들의 이야기 👽",2,5
+23,"알라딘","https://example.com/aladdin.jpg","마법의 램프를 찾는 모험 🪔",3,6
+24,"어바웃 타임","https://example.com/about_time.jpg","시간 여행 능력을 가진 남자의 사랑 이야기 ⏳",1,1
+25,"마션","https://example.com/the_martian.jpg","화성에 홀로 남겨진 우주인의 생존기 🚀",1,5
+26,"하울의 움직이는 성","https://example.com/howls_castle.jpg","마법과 사랑이 얽힌 애니메이션 🏰",3,6
+27,"에브리씽 에브리웨어 올 앳 원스","https://example.com/everything.jpg","다중우주를 넘나드는 모험 🌍",1,5
+28,"더 오피스","https://example.com/the_office.jpg","사무실에서 벌어지는 코미디 드라마 😂",2,3
+29,"Shape of You","https://example.com/shape_of_you.jpg","에드 시런의 히트곡 🎶",4,10
+30,"파라노이드 안드로이드","https://example.com/paranoid_android.jpg","라디오헤드의 대표곡 🎧",4,10

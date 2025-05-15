@@ -1,0 +1,11 @@
+ac_idx,email,pw,nickname,img,name,created_at
+1,"user1@example.com","hashedpw1","user1","https://example.com/user1.jpg","김민수","2025-05-01"
+2,"user2@example.com","hashedpw2","user2","https://example.com/user2.jpg","이서연","2025-05-02"
+3,"user3@example.com","hashedpw3","user3","https://example.com/user3.jpg","박지훈","2025-05-03"
+4,"user4@example.com","hashedpw4","user4","https://example.com/user4.jpg","최은비","2025-05-04"
+5,"user5@example.com","hashedpw5","user5","https://example.com/user5.jpg","정민재","2025-05-05"
+6,"user6@example.com","hashedpw6","user6","https://example.com/user6.jpg","한수진","2025-05-06"
+7,"user7@example.com","hashedpw7","user7","https://example.com/user7.jpg","강태영","2025-05-07"
+8,"user8@example.com","hashedpw8","user8","https://example.com/user8.jpg","오지민","2025-05-08"
+9,"user9@example.com","hashedpw9","user9","https://example.com/user9.jpg","류하영","2025-05-09"
+10,"user10@example.com","hashedpw10","user10","https://example.com/user10.jpg","윤석호","2025-05-10"

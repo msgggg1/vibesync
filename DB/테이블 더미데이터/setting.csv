@@ -1,0 +1,11 @@
+setting_idx,font,theme,noti,ac_idx
+1,"Noto Sans","dark","on",1
+2,"Arial","light","off",2
+3,"Times New Roman","dark","on",3
+4,"Roboto","light","off",4
+5,"Helvetica","dark","on",5
+6,"Noto Sans","light","off",6
+7,"Arial","dark","on",7
+8,"Times New Roman","light","off",8
+9,"Roboto","dark","on",9
+10,"Helvetica","light","off",10
