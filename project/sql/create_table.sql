@@ -113,7 +113,7 @@ CREATE TABLE watchParty (
 --------------------------------------------------------------------------------
 CREATE TABLE message (
     msg_idx INT PRIMARY KEY,
-    text CLOB,
+    text CLOB not null,
     time TIMESTAMP NOT NULL,
     img VARCHAR2(255),
     chk NUMBER(1) NOT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE message (
 CREATE TABLE todolist (
     todo_idx INT PRIMARY KEY,
     created_at TIMESTAMP NOT NULL,
-    text CLOB,
+    text CLOB not null,
     todo_group VARCHAR2(100) NOT NULL,
     color VARCHAR2(100) NOT NULL,
     ac_idx INT NOT NULL,
@@ -153,7 +153,7 @@ CREATE TABLE follows (
 CREATE TABLE note (
     note_idx INT PRIMARY KEY,
     title varchar2(2000),
-    text CLOB,
+    text CLOB not null,
     img CLOB,
     create_at TIMESTAMP,
     edit_at TIMESTAMP,
@@ -170,7 +170,7 @@ CREATE TABLE note (
 CREATE TABLE notification (
     notifi_idx INT PRIMARY KEY,
     time TIMESTAMP NOT NULL,
-    text CLOB,
+    text CLOB not null,
     chk NUMBER(1) NOT NULL,
     ac_idx INT NOT NULL,
     setting_idx INT,
@@ -220,7 +220,7 @@ CREATE TABLE noteAccess (
 --------------------------------------------------------------------------------
 CREATE TABLE commentlist (
     commentlist_idx INT PRIMARY KEY,
-    text CLOB,
+    text CLOB not null,
     like_count INT,
     create_at TIMESTAMP DEFAULT SYSDATE,
     re_commentlist_idx INT,
