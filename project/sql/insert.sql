@@ -1,54 +1,3 @@
--- (선택 사항) 데이터 삽입 전 기존 데이터 삭제 (테이블이 비어있지 않은 경우)
--- 참조 무결성 제약조건에 따라 DROP 순서 또는 DELETE 순서 주의
--- 예:
--- DELETE FROM coment;
--- DELETE FROM noteAccess;
--- DELETE FROM likes;
--- DELETE FROM bookmark;
--- DELETE FROM notification;
--- DELETE FROM note;
--- DELETE FROM follows;
--- DELETE FROM todolist;
--- DELETE FROM message;
--- DELETE FROM watchParty;
--- DELETE FROM genrePerUser;
--- DELETE FROM setting;
--- DELETE FROM userPage;
--- DELETE FROM contents;
--- DELETE FROM userAccount;
--- DELETE FROM genre;
--- DELETE FROM category;
--- 또는 TRUNCATE TABLE table_name; (단, FK 제약이 있는 경우 주의)
-
--- (선택 사항) 대량 INSERT 시 외래 키 제약 조건 임시 비활성화
-/*
-ALTER TABLE contents DISABLE CONSTRAINT FK_contents_TO_category;
-ALTER TABLE userPage DISABLE CONSTRAINT FK_userPage_TO_userAccount;
-ALTER TABLE userPage DISABLE CONSTRAINT FK_userPage_TO_userPage;
-ALTER TABLE setting DISABLE CONSTRAINT FK_setting_TO_userAccount;
-ALTER TABLE genrePerUser DISABLE CONSTRAINT FK_genrePerUser_TO_genre; -- 수정된 DDL 기준 (genre_idx 사용)
-ALTER TABLE genrePerUser DISABLE CONSTRAINT FK_genrePerUser_TO_userAccount;
-ALTER TABLE watchParty DISABLE CONSTRAINT FK_watchParty_TO_userAccount;
-ALTER TABLE message DISABLE CONSTRAINT FK_message_TO_userAccount_rcvr;
-ALTER TABLE message DISABLE CONSTRAINT FK_message_TO_userAccount_sndr;
-ALTER TABLE todolist DISABLE CONSTRAINT FK_todolist_TO_userAccount;
-ALTER TABLE follows DISABLE CONSTRAINT FK_follows_TO_userAccountFw;
-ALTER TABLE follows DISABLE CONSTRAINT FK_follows_TO_userAccountFwing;
-ALTER TABLE note DISABLE CONSTRAINT FK_note_TO_contents;
-ALTER TABLE note DISABLE CONSTRAINT FK_note_TO_genre;
-ALTER TABLE notification DISABLE CONSTRAINT FK_notification_TO_userAccount;
-ALTER TABLE notification DISABLE CONSTRAINT FK_notification_TO_setting;
-ALTER TABLE bookmark DISABLE CONSTRAINT FK_bookmark_TO_userPage;
-ALTER TABLE bookmark DISABLE CONSTRAINT FK_bookmark_TO_userAccount;
-ALTER TABLE likes DISABLE CONSTRAINT FK_likes_TO_note;
-ALTER TABLE likes DISABLE CONSTRAINT FK_likes_TO_userAccount;
-ALTER TABLE noteAccess DISABLE CONSTRAINT FK_noteAccess_TO_note;
-ALTER TABLE noteAccess DISABLE CONSTRAINT FK_noteAccess_TO_userAccount;
-ALTER TABLE coment DISABLE CONSTRAINT FK_coment_TO_coment;
-ALTER TABLE coment DISABLE CONSTRAINT FK_coment_TO_note;
-ALTER TABLE coment DISABLE CONSTRAINT FK_coment_TO_userAccount;
-*/
-
 -- 1. category 테이블 데이터 삽입
 INSERT INTO category (category_idx, c_name) VALUES (1, '영화');
 INSERT INTO category (category_idx, c_name) VALUES (2, '드라마');
@@ -235,19 +184,6 @@ INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (347, 324, 2);
 INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (348, 324, 5);
 INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (349, 325, 7);
 INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (350, 325, 11);
-
-
--- 8. watchParty 테이블 데이터 삽입 (host는 ac_idx 참조, 10000번대로 수정)
--- INSERT INTO watchParty (watchParty_idx, video_id, created_at, host) VALUES (1101, '201', TO_TIMESTAMP('2024-04-10 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), 10002);
--- INSERT INTO watchParty (watchParty_idx, video_id, created_at, host) VALUES (1102, '203', TO_TIMESTAMP('2024-04-11 21:00:00', 'YYYY-MM-DD HH24:MI:SS'), 10007);
--- INSERT INTO watchParty (watchParty_idx, video_id, created_at, host) VALUES (1103, '206', TO_TIMESTAMP('2024-04-12 19:30:00', 'YYYY-MM-DD HH24:MI:SS'), 10006);
--- INSERT INTO watchParty (watchParty_idx, video_id, created_at, host) VALUES (1104, '210', TO_TIMESTAMP('2024-04-13 22:00:00', 'YYYY-MM-DD HH24:MI:SS'), 10001);
--- INSERT INTO watchParty (watchParty_idx, video_id, created_at, host) VALUES (1105, '204', TO_TIMESTAMP('2024-04-14 18:00:00', 'YYYY-MM-DD HH24:MI:SS'), 10004);
--- INSERT INTO watchParty (watchParty_idx, video_id, created_at, host) VALUES (1106, '211', TO_TIMESTAMP('2024-04-16 20:30:00', 'YYYY-MM-DD HH24:MI:SS'), 10011);
--- INSERT INTO watchParty (watchParty_idx, video_id, created_at, host) VALUES (1107, '215', TO_TIMESTAMP('2024-04-17 21:30:00', 'YYYY-MM-DD HH24:MI:SS'), 10013);
--- INSERT INTO watchParty (watchParty_idx, video_id, created_at, host) VALUES (1108, '220', TO_TIMESTAMP('2024-04-18 19:00:00', 'YYYY-MM-DD HH24:MI:SS'), 10015);
--- INSERT INTO watchParty (watchParty_idx, video_id, created_at, host) VALUES (1109, '223', TO_TIMESTAMP('2024-04-19 22:30:00', 'YYYY-MM-DD HH24:MI:SS'), 10017);
--- INSERT INTO watchParty (watchParty_idx, video_id, created_at, host) VALUES (1110, '208', TO_TIMESTAMP('2024-04-20 18:30:00', 'YYYY-MM-DD HH24:MI:SS'), 10019);
 
 -- 9. message 테이블 데이터 삽입 (msg_idx: 351 ~ 398)
 INSERT INTO message (msg_idx, text, time, img, chk, ac_receiver, ac_sender) VALUES (351, '주말에 뭐 재미있는 거 없을까? 🤔 영화라도 보러 갈까?', TO_TIMESTAMP('2024-06-01 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), NULL, 0, 302, 301);
@@ -650,7 +586,3 @@ INSERT INTO coment (coment_idx, text, like_count, create_at, re_coment_idx, note
 
 rollback;
 COMMIT;
-
--- (선택 사항) 임시 비활성화 했던 외래 키 제약 조건 다시 활성화
--- ALTER TABLE contents ENABLE CONSTRAINT FK_contents_TO_category;
--- (모든 비활성화 했던 제약 조건에 대해 ENABLE 실행)
