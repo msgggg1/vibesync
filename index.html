@@ -30,10 +30,11 @@
       display: none;
     }
     body {
-      background-color: #fff;
-      background-image: linear-gradient(#eee 2px, transparent 2px);
-      background-size: 100% 20px;
+    background-color: #000310;
+    color: #fff;
+    overflow: hidden;
     }
+
 
     .highlight {
       background: linear-gradient(90deg, #9b59b6, #3498db, #2ecc71);
@@ -43,11 +44,18 @@
       font-size: 1.05em;
     }
 
+    .slo_highlight {
+      background: linear-gradient(90deg, #9b59b6, #3498db, #2ecc71);
+      font-weight: bold;
+      border-radius: 8px;
+    }
+
     nav {
       position: fixed;
       top: 0; left: 0;
       width: 100%;
       background: rgba(0,0,0,0.7);
+      box-shadow: 0px 0px 14px #ffffff91;
       color: #fff;
       display: flex;
       justify-content: space-between;
@@ -116,8 +124,9 @@
 
     #section1 {
       height: 100vh;
+      z-index: 1;
     }
-    #section1 video {
+    #section1 #background_interaction {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -166,6 +175,7 @@
       max-width: 1200px;
       display: flex;
       align-items: center;
+      justify-content: center;
       flex-wrap: wrap;
     }
     .se2_con{
@@ -173,12 +183,8 @@
       align-items: center;
       flex-direction: row;
       flex-wrap: wrap;
-      gap: 40px;
     }
     #section2 .logo {
-      font-family: "Cal Sans", sans-serif;
-      font-size: 4rem;
-      font-weight: bold;
       opacity: 0;
       transform: translateY(-20px);
       transition: opacity 1s, transform 1s;
@@ -203,7 +209,7 @@
     }
     #section3 .text-list ul {
       list-style: disc inside;
-      font-size: 1.2rem;
+      font-size: min(16px, 3.6vw);
       line-height: 1.6;
     }
 
@@ -224,22 +230,22 @@
 
     .team-img {
       flex: 1 1 300px;
-      max-width: 500px;
+      max-width: min(500px,76vw);
       width: 50%;
     }
     .team-text {
       text-align: left;
       flex: 1 1 400px;
       padding: 20px;
-      font-size: 1.1rem;
+      font-size: min(16px, 3.6vw);
       line-height: 1.6;
     }
 
     .Purpose_p {
       font-family: "Cal Sans", sans-serif;
       text-align: center;
-      font-size: 3rem;
-      margin-bottom: 40px;
+      font-size: min(40px, 10vw);
+      margin-bottom: 20px;
       font-weight: bold;
     }
 
@@ -262,37 +268,49 @@
     }
     .slider-wrapper::before {
       left: 0;
-      background: linear-gradient(to right, #fff, rgba(255,255,255,0));
+      background: linear-gradient(to right, #000310, rgba(255,255,255,0));
     }
     .slider-wrapper::after {
       right: 0;
-      background: linear-gradient(to left, #fff, rgba(255,255,255,0));
+      background: linear-gradient(to left, #000310, rgba(255,255,255,0));
     }
 
     .swiper-container {
-      width: auto;
+      width: 100%;
     }
     .swiper-wrapper {
       align-items: center;
     }
     .swiper-slide {
-      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
       width: 300px;
       height: 169px;
       border-radius: 8px;
-      background: #ccc;
+      overflow: hidden;
+    }
+
+    .swiper-slide img{
+      width: 100%;
+      border-radius: 8px;
     }
 
     footer {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       padding: 20px;
       text-align: center;
-      background: #222;
       color: #fff;
       scroll-snap-align: start;
+      z-index: 1;
     }
 
     .footer_member_warpper{
-      margin-top: 40px;
+      margin-top: 20px;
       display: flex;
       flex-wrap: wrap;
       flex-direction: row;
@@ -319,6 +337,7 @@
       right: 10px;
       z-index: 1001;
       background: rgba(0,0,0,0.7);
+      box-shadow: 0px 0px 14px #ffffff91;
       color: #fff;
       border: none;
       padding: 5px 10px;
@@ -339,17 +358,44 @@
         flex-direction: column;
         text-align: center;
       }
-      #section2 .intro h2 { font-size: 1.5rem; }
-      #section2 .intro p  { font-size: 1rem; }
+      #section2 .intro h2 { font-size: min(24px, 5vw); }
+      #section2 .intro p  { font-size: min(16px, 3.6vw); }
       #slogan            { font-size: 1.5rem; }
       #logo1             { font-size: 2rem; }
       .swiper-slide {
         width: 80%;
       }
     }
+    #starfield {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .shooting-star {
+      position: fixed;
+      width: 120px;
+      height: 4px; 
+      background: linear-gradient(to left, white, rgba(255,255,255,0));
+      opacity: 0.8;
+      pointer-events: none;
+      transform-origin: 0 0;
+      animation: shoot 1s ease-out forwards;
+    }
+
+    @keyframes shoot {
+      to {
+        transform: rotate(45deg) translate(600px, 0) scale(0.5);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
-<body>
+<body ondragstart="return false" ondrop="return false" onselectstart="return false">
+    <canvas id="starfield"></canvas>
 
   <!-- 네비게이션 바 -->
 
@@ -364,20 +410,17 @@
       <li><a href="#footer" data-key="nav.contact">Contact</a></li>
     </ul>
     <div class="auth-buttons">
-      <button>Get Start</button>
+      <button  type="button" onclick="location.href='./login.html'">Get Start</button>
     </div>
   </nav>
 
   <!-- 첫 번째 섹션: 비디오 배경과 슬로건 -->
   <section id="section1">
-    <video autoplay muted playsinline loop>
-      <source src="./video2.mp4" type="video/mp4">
-      동영상을 지원하지 않습니다.
-    </video>
+<div id="background_interaction"></div>
     <div class="black_blur"></div>
     <div class="overlay">
       <div id="slogan" data-key="slogan"></div>
-      <div id="logo1"><img src="./logo1.png" style="max-width: 250px;"></div>
+      <div id="logo1"><img src="./assets/logo1.png" style="max-width: 250px;"></div>
     </div>
   </section>
 
@@ -385,9 +428,9 @@
   <section id="section2">
     <div class="content">
       <p class="Purpose_p" data-key="about.title">About VibeSync</p>
-      <img src="./wave.png" alt="Wave img" class="wave" style="opacity: 0.34; position: absolute; max-width: 100%; z-index: -10;">
+      <img src="./assets/wave.png" alt="Wave img" class="wave" style="opacity: 0.34; position: absolute; max-width: 100%; z-index: -10;">
       <div class="se2_con">
-        <div class="logo" id="logo2"><img src="./logo.png" style="max-width: 250px;"></div>
+        <div class="logo" id="logo2"><img src="./assets/logo1.png" style="max-width: min(250px,40vw);"></div>
         <div class="intro" id="intro2">
           <h2 data-key="intro.heading">Preference-based Social Matching Platform <span class="highlight">VibeSync</span></h2>
           <p data-key="intro.paragraph">
@@ -412,11 +455,11 @@
       <div class="slider-wrapper">
         <div class="swiper-container">
           <div class="swiper-wrapper">
-            <div class="swiper-slide" style="background-color:#e74c3c;"></div>
-            <div class="swiper-slide" style="background-color:#3498db;"></div>
-            <div class="swiper-slide" style="background-color:#2ecc71;"></div>
-            <div class="swiper-slide" style="background-color:#f1c40f;"></div>
-            <div class="swiper-slide" style="background-color:#9b59b6;"></div>
+            <div class="swiper-slide"><img src="assets/sil/sil1.jpeg"></div>
+            <div class="swiper-slide"><img src="assets/sil/sil1.jpeg"></div>
+            <div class="swiper-slide"><img src="assets/sil/sil1.jpeg"></div>
+            <div class="swiper-slide"><img src="assets/sil/sil1.jpeg"></div>
+            <div class="swiper-slide"><img src="assets/sil/sil1.jpeg"></div>
           </div>
         </div>
       </div>
@@ -428,7 +471,7 @@
     <div class="content">
       <p class="Purpose_p" data-key="team.title">Our Team</p>
       <div class="se4_con">
-        <img src="./team.png" alt="Team Image" class="team-img">
+        <img src="./assets/team.png" alt="Team Image" class="team-img">
         <div class="team-text" data-key="team.text">
           Our <span class="highlight">vision</span> is to harness the power of shared experiences to bring people closer, building a <span class="highlight">global community</span> where everyone finds their perfect <span class="highlight">vibe</span>. We aim to continuously innovate social interaction through <span class="highlight">taste-based matching</span>, shared content, and immersive <span class="highlight">real-time connections</span>, fostering genuine bonds and unforgettable experiences.
         </div>
@@ -438,7 +481,7 @@
 
   <!-- 푸터: 연락처 및 저작권 정보 -->
   <footer id="footer">
-    <img src="./footer_logo.png" alt="Footer Logo" style="max-width: 300px; margin-bottom: 20px;">
+    <img src="./assets/footer_logo.png" alt="Footer Logo" style="max-width: 300px; margin-bottom: 20px;">
     <p data-key="footer.copy">© 2025 VibeSync. All rights reserved.</p>
     <br>
     <p data-key="footer.contact">Contact us: abcde@gmail.com</p>
@@ -479,6 +522,40 @@
 
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js" integrity="sha512-334uBDwY0iZ2TklV1OtDtBW9vp7jjP7SWRzT7Ehu1fdtPIjTpCwTSFb8HI/YBau9L1/kRBEOALrS229Kry4yFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.globe.min.js" integrity="sha512-cfeQlKIIaFDUyrmXLF3uv1DSprgNRSSptQF6lyPPmsnXhR2M8qtQ4B6pMQJE3BePiGHRefNCVO4u5/FUSzMkbQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.dots.min.js" integrity="sha512-fq89yHimK/w687Yjr89Vml8ax1HBNfN1k9IRi/nu91AmCrIWc/yQz5jkJKHoUWxGnuMcMwm7vRY50S7rZsXoDA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+  VANTA.GLOBE({
+    el: "#background_interaction",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    scale: 1.00,
+    scaleMobile: 1.00,
+    color: 0x3fff8e,
+    color2: 0x289ec3,
+    size: 0.60,
+    backgroundColor: 0x00000000
+  })
+
+  VANTA.DOTS({
+    el: "#footer",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    scale: 1.00,
+    scaleMobile: 1.00,
+    color: 0x7b20ff,
+    backgroundColor: 0x00000000,
+    showLines: false
+  })
+
+  </script>
   <script>
     // 다국어 번역 데이터
     const translations = {
@@ -488,7 +565,7 @@
         "nav.purpose": "Purpose",
         "nav.team": "Team",
         "nav.contact": "Contact",
-        "slogan": "A new form of social platform that connects people around 'tastes' for various content such as movies, dramas, music, animation.",
+        "slogan": 'A new form of social platform that connects people around <span class="slo_highlight">tastes</span> for various content such as movies, dramas, music, animation.',
         "about.title": "About VibeSync",
         "intro.heading": 'Preference-based Social Matching Platform <span class="highlight">VibeSync</span>',
         "intro.paragraph": `<span class="highlight">VibeSync</span> is a new form of social platform that connects people around their <span class="highlight">tastes</span> for various content such as movies, dramas, music, and animation. With features like content review and emotion tagging, <span class="highlight">real-time streaming experience sharing</span>, and <span class="highlight">taste-based friend matching</span>, it offers users deep communication and connection opportunities.`,
@@ -507,7 +584,7 @@
         "nav.purpose": "목적",
         "nav.team": "팀",
         "nav.contact": "문의",
-        "slogan": "영화, 드라마, 음악, 애니메이션 등 다양한 콘텐츠에 대한 '취향'을 중심으로 사람들을 연결하는 새로운 형태의 소셜 플랫폼입니다.",
+        "slogan": '영화, 드라마, 음악, 애니메이션 등 다양한 콘텐츠에 대한 <span class="slo_highlight">취향</span>을 중심으로 사람들을 연결하는 새로운 형태의 소셜 플랫폼입니다.',
         "about.title": "VibeSync 소개",
         "intro.heading": '취향 기반 소셜 매칭 플랫폼 <span class="highlight">VibeSync</span>',
         "intro.paragraph": `<span class="highlight">VibeSync</span>는 영화, 드라마, 음악, 애니메이션 등 다양한 콘텐츠에 대한 <span class="highlight">‘취향’</span>을 중심으로 사람들을 연결하는 새로운 형태의 소셜 플랫폼입니다. 콘텐츠 리뷰 및 감정 태깅, <span class="highlight">실시간 스트리밍 경험 공유</span>, <span class="highlight">취향 기반 친구 매칭</span> 등 기능을 통해 사용자에게 깊이 있는 소통과 연결 기회를 제공합니다.`,
@@ -584,14 +661,26 @@
       speed: 800,
       autoplay: {
         delay: 5000,
-        disableOnInteraction: false
+        disableOnInteraction: false,
       },
-      slidesPerView: 3,
-      spaceBetween: 20,
-      slidesPerGroup: 1,
-      centeredSlides: false
-    });
 
+      // ① 기본을 1로 (424px 이하)
+      slidesPerView: 1,
+      spaceBetween: 10,
+
+      // ② 뷰포트 ≥426px → 2개
+      //    뷰포트 ≥701px → 3개
+      breakpoints: {
+        426: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        701: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        }
+      }
+    });
     // 전체 페이지 스크롤 이벤트 처리
     let isScrolling = false;
     const sections = [...document.querySelectorAll('section'), document.getElementById('footer')];
@@ -619,6 +708,117 @@
 
     // 초기 Typed.js 실행
     initTyped();
+    
+    const starCanvas = document.getElementById('starfield');
+    const starCtx    = starCanvas.getContext('2d');
+    let stars = [];
+
+    function initStars() {
+      starCanvas.width  = window.innerWidth;
+      starCanvas.height = window.innerHeight;
+      stars = [];
+      for (let i = 0; i < 200; i++) {
+        stars.push({
+          x: Math.random() * starCanvas.width,
+          y: Math.random() * starCanvas.height,
+          r: Math.random() * 1.2 + 0.3
+        });
+      }
+    }
+    function drawStars() {
+      starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+      stars.forEach(s => {
+        starCtx.globalAlpha = Math.random() * 0.6 + 0.4;
+        starCtx.beginPath();
+        starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        starCtx.fillStyle = 'white';
+        starCtx.fill();
+      });
+    }
+    // 초기화 및 주기적 트윙클
+    initStars();
+    drawStars();
+    window.addEventListener('resize', () => { initStars(); drawStars(); });
+    setInterval(drawStars, 800);
+
+    // 별똥별 생성
+    function createShootingStar() {
+      const star = document.createElement('div');
+      star.classList.add('shooting-star');
+      // 상단 랜덤 x 위치에서 시작
+      star.style.top  = '0px';
+      star.style.left = Math.random() * (window.innerWidth -100) + 'px'; // 여유 100px
+      // 회전각각
+      star.style.transform = 'rotate(45deg)';
+      document.body.appendChild(star);
+      // 애니메이션 끝나면 제거
+      star.addEventListener('animationend', () => star.remove());
+    }
+    // 3초마다 별똥별 생성
+    setInterval(createShootingStar, 3000);
+
+    // 커서 따라 파티클
+    const particles = [];
+    const mouse = { x: 0, y: 0 };
+    const particleCanvas = document.createElement('canvas');
+    particleCanvas.id = 'particle-canvas';
+    particleCanvas.style.position = 'fixed';
+    particleCanvas.style.top = '0'; particleCanvas.style.left = '0';
+    particleCanvas.style.width = '100vw'; particleCanvas.style.height = '100vh';
+    particleCanvas.style.zIndex = '-1';
+    particleCanvas.style.pointerEvents = 'none';
+    document.body.appendChild(particleCanvas);
+    const ctx = particleCanvas.getContext('2d');
+    particleCanvas.width = window.innerWidth;
+    particleCanvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      particleCanvas.width = window.innerWidth;
+      particleCanvas.height = window.innerHeight;
+    });
+
+    // 파티클 객체
+    class Particle {
+      constructor(x, y) {
+        this.x = x; this.y = y;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2;
+        this.alpha = 1;
+        this.size = Math.random() * 3 + 1;
+      }
+      update() {
+        this.x += this.vx; this.y += this.vy;
+        this.alpha -= 0.02;
+      }
+      draw() {
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+      }
+    }
+
+    // 마우스 이동 시 파티클 추가
+    window.addEventListener('mousemove', e => {
+      for (let i = 0; i < 3; i++) {
+        particles.push(new Particle(e.clientX, e.clientY));
+      }
+    });
+
+    // 애니메이션 루프
+    function animate() {
+      ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        if (p.alpha <= 0) particles.splice(i, 1);
+        else p.draw();
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
   </script>
 </body>
 </html>
