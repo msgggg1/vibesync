@@ -1,9 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=National+Park:wght@200..800&display=swap');
 
+:root[color-theme='dark'] {
+  --icon-filter: invert(1);
+  --font-color: #fff;
+  --sidebar-color : #202020;
+  --background-color : #191919;
+  --border-color: #fff
+}
+:root[color-theme='light']{
+  --icon-filter: invert(0);
+  --font-color: #000;
+  --sidebar-color : #f8f8f8;
+  --background-color : #f1f1f1;
+  --border-color: #000
+}
+
 :root {
-  --sidebar-color : linear-gradient(180deg, #ffffff 8%, #c1f9fc 80%, #b7fdff 100%);
-  --content-area-color : #FDFAF6;
-  --font-color : #313131;
+  /* global colors */
+  --w-fff : #fff;
+  --b-000 : #000;
+
+  /* default style */
+  --icon-filter: invert(0);
+  --font-color: #000;
+  --sidebar-color : #f8f8f8;
+  --background-color : #f1f1f1;
+  --border-color: #000
 }
 * {
   box-sizing: border-box;
@@ -18,7 +40,7 @@ body {
   font-family: "Cal Sans", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: var(--content-area-color);
+  background-color: var(--background-color);
 }
 a {
   text-decoration: none;
@@ -37,7 +59,8 @@ p {
   width: 100%;
   height: 4px;
   min-height: 4px;
-  background-color: black;
+  margin-bottom: 30px;
+  background-color: var(--font-color);
 }
 
 #notion-app {
@@ -55,24 +78,28 @@ p {
 #toggle-btn {
   display: none;
   position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 30px;
-  height: 30px;
-  background-color: #5DAED7;
+  font-size: 24px;
+  font-weight: bold;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
   border: none;
-  color: white;
-  border-radius: 50%;
+  color: var(--font-color);
   z-index: 112;
   cursor: pointer;
 }
 
 /* sidebar */
+.sidebar_icon{
+  filter: var(--icon-filter);
+}
+
 .notion-app-inner .notion-sidebar-container {
-  box-shadow: -8px 0 10px 0px #000;
+  /* box-shadow: -8px 0 10px 0px #000; */
   position: fixed;
   height: 100%;
   background: var(--sidebar-color);
+  background-image: url(./back4.png);
   width: 200px;
   overflow: hidden;
   white-space: nowrap;
@@ -119,10 +146,9 @@ p {
   width: 100px;
   height: 22px;
   background: none;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: 2px solid #313131;
+  border: none;
+  border-bottom: var(--border-color) 2px solid;
+  color: var(--font-color);
 }
 
 input:focus {
@@ -142,9 +168,6 @@ input:focus {
   text-decoration: none;
   color: var(--font-color);
   cursor: pointer;
-}
-.follow_list label:hover {
-  background-color: #ddd;
 }
 
 /* 체크박스 숨김 */
@@ -193,7 +216,7 @@ input:focus {
   font-size: 14px;
   text-transform: uppercase;
   font-weight: bold;
-  color: white;
+  color: var(--w-fff);
 }
 
 #content_wrapper {
@@ -227,7 +250,7 @@ input:focus {
   background-color: #6e6e6e;
   font-size: 20px;
   font-weight: bold;
-  color: white;
+  color: var(--w-fff);
   transition: transform 0.3s, opacity 0.3s;
   z-index: 10 !important;
 }
@@ -239,20 +262,47 @@ input:focus {
 
 .category_btn_group {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: center;
   margin-bottom: 40px;
+  flex-wrap: wrap;
 }
 
+
 .category_btn_group>button {
-  width: min(16vw, 180px);
-  height: 50px;
-  font-size: min(2.6vw,16px);
+  width: min(32vw, 280px);
+  height: min(18vw, 158px);
+  font-size: 16px;
   font-weight: bold;
-  border: none;
-  background: #99bc85;
-  color: white;
+  background: transparent;
+  color: var(--w-fff);
   cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1174px) {
+  .category_btn_group > button {
+    /* 50% 너비에서 gap을 뺀 값 */
+    flex: 0 0 calc(50% - 8px);
+  }
+}
+
+.category_btn_group>button>p{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #1919195e;
+}
+
+.category_btn_group>button>p:hover{
+  backdrop-filter: blur(5px);
+  scale: 1.3;
+  transition: backdrop-filter 0.4s ease-in-out, scale 0.4s ease-in-out;
+
 }
 
 .grid_wrapper {
@@ -264,10 +314,10 @@ input:focus {
 }
 
 .grid_wrapper .grid_item {
-  background-color: black;
+  background-color: var(--b-000);
   height: 300px;
   border-radius: 20px;
-  color: white;
+  color: var(--w-fff);
 }
 
 #swiper2 {
@@ -280,7 +330,7 @@ input:focus {
   align-items: center;
   font-size: 18px;
   font-weight: bold;
-  color: white;
+  color: var(--w-fff);
   background-color: #6e6e6e;
 }
 .swiper-button-disabled {
@@ -288,7 +338,7 @@ input:focus {
 }
 
 .swiper-button-next:after, .swiper-button-prev:after {
-  color: black;
+  color: var(--font-color);
   font-weight: bold;
 }
 
@@ -297,19 +347,17 @@ input:focus {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 60px;
 }
 
 #userInfo {
   width: 100%;
-  height: 160px;
   display: flex;
   gap: 22px;
+  margin-bottom: 30px;
 }
 
 .user_profile_img {
   width: 160px;
-  height: 160px;
   display: flex;
   align-items: center;
 }
@@ -346,7 +394,7 @@ input:focus {
   padding-inline: 10px;
   font-size: min(3vw,18px);
   font-weight: bold;
-  color: white;
+  color: var(--w-fff);
   border: none;
   border-radius: 5px;
 }
@@ -440,13 +488,15 @@ input:focus {
   font-size: 70px;
   font-weight: bold;
   text-align: center;
-  color: white;
+  color: var(--w-fff);
   cursor: pointer;
 }
 
 /* post view */
 .back_icon {
+  filter: var(--icon-filter);
   height: 30px;
+  width: 30px;
   margin-bottom: 20px;
 }
 .back_icon a img {
@@ -454,6 +504,7 @@ input:focus {
 }
 
 #postview_Wrapper {
+  color: var(--font-color);
   width: 100%;
   display: flex;
   align-items: start;
@@ -462,7 +513,7 @@ input:focus {
 }
 
 #postview_Wrapper>p {
-  font-size: min(6.2vw, 34px);
+  font-size: min(6.2vw, 26px);
   font-weight: bold;
   text-transform: uppercase;
 
@@ -485,25 +536,25 @@ input:focus {
 }
 
 .writer_info .writer img {
-  width: min(13.2vw, 60px);
-  height: min(13.2vw, 60px);
+  width: min(12.2vw, 50px);
+  height: min(12.2vw, 50px);
   background-color: red;
   border-radius: 50px;
 }
 .writer_info .writer p {
-  font-size: min(4vw, 24px);
+  font-size: min(4vw, 16px);
   font-weight: bold;
 }
 
 .writer button {
-  height: 40px;
+  height: min(10vw, 40px);
   padding-inline: 24px;
-  font-size: min(3vw, 16px);
+  font-size: min(3.6vw, 16px);
   font-weight: bold;
-  color: white;
+  color: var(--w-fff);
   border: none;
   border-radius: 10px;
-  background-color: #99bc85;
+  background-color: red;
 }
 
 .like_share {
@@ -524,13 +575,14 @@ input:focus {
 }
 
 .like_share .like img {
-  width: min(10vw, 40px);
-  height: min(10vw, 40px);
+  filter: var(--icon-filter);
+  width: min(8vw, 30px);
+  height: min(8vw, 30px);
   object-fit: contain;
 }
 
 .like_share .like p {
-  font-size: min(4vw, 22px);
+  font-size: min(4.4vw, 16px);
   font-weight: bold;
 }
 
@@ -539,8 +591,8 @@ input:focus {
 }
 
 #postview_Wrapper .text_content p {
-  font-size: 36px;
-  font-weight: bold;
+  font-size: min(5vw, 20px);
+
 }
 
 /* list */
@@ -570,7 +622,7 @@ input:focus {
 #page-board-full .full-post{ display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #666; cursor: pointer; }
 #page-board-full .full-post:last-child{ border-bottom: none; }
 #page-board-full .pagination{ display: flex; justify-content: center; margin-block: 20px; gap: 2vw; }
-#page-board-full .pagination button{ background: none;  border: none;  color: black;  cursor: pointer;  border-radius: 3px;  font-size: 14px; }
+#page-board-full .pagination button{ background: none;  border: none;  color: var(--b-000);  cursor: pointer;  border-radius: 3px;  font-size: 14px; }
 
 /* login */
 #login_wrapper {
@@ -638,7 +690,7 @@ input:focus {
   height: 20px;
   border: 2px solid #ccc;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: var(--w-fff);
   cursor: pointer;
   outline: none;
 }
@@ -674,7 +726,7 @@ input:focus {
   border: none;
   font-weight: bold;
   font-size: 20px;
-  color: white;
+  color: var(--w-fff);
 }
 
 .login_form>p {
@@ -760,5 +812,7 @@ input:focus {
   #sidebar.collapsed + #content {
     margin-left: 0;
   }
-  #content_wrapper {padding-top: 50px; margin-left: 0px;}
+  #content_wrapper {padding-top: 80px; margin-left: 0px;}
 }
+
+

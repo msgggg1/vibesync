@@ -129,57 +129,57 @@ INSERT INTO setting (setting_idx, font, theme, noti, ac_idx) VALUES (23, 'Comic 
 INSERT INTO setting (setting_idx, font, theme, noti, ac_idx) VALUES (24, 'Lobster', '라이트', '활성화', 24);
 INSERT INTO setting (setting_idx, font, theme, noti, ac_idx) VALUES (25, 'Pacifico', '시스템기본', '중요알림만', 25);
 
--- 7. genrePerUser 테이블 데이터 삽입 (ac_gen_idx: 1 ~ 50)
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (1, 1, 1);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (2, 1, 5);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (3, 2, 2);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (4, 2, 4);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (5, 3, 5);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (6, 3, 6);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (7, 4, 7);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (8, 4, 3);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (9, 5, 2);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (10, 5, 8);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (11, 6, 9);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (12, 6, 1);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (13, 7, 10);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (14, 7, 5);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (15, 8, 1);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (16, 8, 4);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (17, 9, 2);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (18, 9, 6);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (19, 10, 5);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (20, 10, 10);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (21, 11, 1);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (22, 11, 3);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (23, 12, 2);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (24, 12, 7);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (25, 13, 3);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (26, 13, 9);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (27, 14, 4);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (28, 14, 8);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (29, 15, 5);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (30, 15, 1);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (31, 16, 6);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (32, 16, 2);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (33, 17, 7);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (34, 17, 10);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (35, 18, 1);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (36, 18, 8);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (37, 19, 3);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (38, 19, 5);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (39, 20, 4);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (40, 20, 2);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (41, 21, 9);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (42, 21, 6);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (43, 22, 8);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (44, 22, 1);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (45, 23, 10);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (46, 23, 4);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (47, 24, 2);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (48, 24, 5);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (49, 25, 7);
-INSERT INTO genrePerUser (ac_gen_idx, ac_idx, genre_idx) VALUES (50, 25, 11);
+-- 7. categoryPerUser 테이블 데이터 삽입 (ca_ac_idx: 1 ~ 50)
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (1, 1, 1);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (2, 1, 5);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (3, 2, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (4, 2, 4);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (5, 3, 5);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (6, 3, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (7, 4, 3);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (8, 4, 3);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (9, 5, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (10, 5, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (11, 6, 4);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (12, 6, 1);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (13, 7, 5);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (14, 7, 5);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (15, 8, 1);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (16, 8, 4);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (17, 9, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (18, 9, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (19, 10, 3);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (20, 10, 1);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (21, 11, 1);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (22, 11, 3);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (23, 12, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (24, 12, 4);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (25, 13, 3);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (26, 13, 5);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (27, 14, 4);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (28, 14, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (29, 15, 5);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (30, 15, 1);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (31, 16, 4);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (32, 16, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (33, 17, 5);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (34, 17, 1);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (35, 18, 1);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (36, 18, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (37, 19, 3);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (38, 19, 5);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (39, 20, 4);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (40, 20, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (41, 21, 4);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (42, 21, 5);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (43, 22, 1);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (44, 22, 1);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (45, 23, 3);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (46, 23, 4);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (47, 24, 2);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (48, 24, 5);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (49, 25, 4);
+INSERT INTO categoryPerUser (ca_ac_idx, ac_idx, category_idx) VALUES (50, 25, 2);
 
 
 -- 9. message 테이블 데이터 삽입 (msg_idx: 351 ~ 398)
@@ -581,5 +581,19 @@ INSERT INTO commentlist (commentlist_idx, text, like_count, create_at, re_commen
 INSERT INTO commentlist (commentlist_idx, text, like_count, create_at, re_commentlist_idx, note_idx, ac_idx) VALUES (48, '역시 믿고 듣는 아이돌! 이번 앨범도 전곡 다 좋아요! 💯', 30, TO_TIMESTAMP('2024-05-26 12:05:00', 'YYYY-MM-DD HH24:MI:SS'), NULL, 18, 23);
 INSERT INTO commentlist (commentlist_idx, text, like_count, create_at, re_commentlist_idx, note_idx, ac_idx) VALUES (49, '이 웹툰 완결나면 한번에 정주행 하려고 기다리고 있어요! 너무 기대돼요! 🎉', 20, TO_TIMESTAMP('2024-05-26 13:05:00', 'YYYY-MM-DD HH24:MI:SS'), NULL, 14, 25);
 INSERT INTO commentlist (commentlist_idx, text, like_count, create_at, re_commentlist_idx, note_idx, ac_idx) VALUES (50, '이런 애니메이션 더 많이 나왔으면 좋겠어요! 힐링 그 자체! 😌', 12, TO_TIMESTAMP('2024-05-26 14:05:00', 'YYYY-MM-DD HH24:MI:SS'), NULL, 15, 2);
+
+
+
+CREATE SEQUENCE useraccount_seq
+    START WITH 26
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
+
+CREATE SEQUENCE categoryperuser_seq
+    START WITH 51
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
 
 COMMIT;

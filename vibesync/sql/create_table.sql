@@ -11,7 +11,7 @@ DROP TABLE follows;
 DROP TABLE todolist;
 DROP TABLE message;
 DROP TABLE watchParty;
-DROP TABLE genrePerUser;
+DROP TABLE categoryPerUser;
 DROP TABLE setting;
 DROP TABLE userPage;
 DROP TABLE contents;
@@ -26,10 +26,10 @@ CREATE TABLE userAccount (
     ac_idx INT PRIMARY KEY,
     email VARCHAR2(255) NOT NULL UNIQUE,
     pw VARCHAR2(255) NOT NULL,
-    nickname VARCHAR2(50) NOT NULL UNIQUE,
+    nickname VARCHAR2(50) NOT NULL,
     img VARCHAR2(255),
     name VARCHAR2(100) NOT NULL,
-    created_at TIMESTAMP
+    created_at TIMESTAMP default sysdate
 );
 
 --------------------------------------------------------------------------------
@@ -89,12 +89,12 @@ CREATE TABLE setting (
 --------------------------------------------------------------------------------
 -- 7. genrePerUser (유저별 장르 목록)
 --------------------------------------------------------------------------------
-CREATE TABLE genrePerUser (
-    ac_gen_idx INT PRIMARY KEY,
+CREATE TABLE categoryPerUser (
+    ca_ac_idx INT PRIMARY KEY,
     ac_idx INT NOT NULL,
-    genre_idx INT NOT NULL,
-    CONSTRAINT FK_genrePerUser_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) ON DELETE CASCADE,
-    CONSTRAINT FK_genrePerUser_TO_genre FOREIGN KEY (genre_idx) REFERENCES genre(genre_idx) ON DELETE CASCADE
+    category_idx INT NOT NULL,
+    CONSTRAINT FK_CPU_UA  FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) ON DELETE CASCADE,
+    CONSTRAINT FK_CPU_CAT  FOREIGN KEY (category_idx) REFERENCES category(category_idx) ON DELETE CASCADE
 );
 
 --------------------------------------------------------------------------------

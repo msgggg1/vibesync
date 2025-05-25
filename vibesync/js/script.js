@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (sidebar != null) {
     const btn = document.getElementById('toggle-btn');
     sidebar.classList.add('collapsed');
-    btn.textContent = '>';
+    btn.textContent = '✖';
 
     function checkWidth() {
       if (window.innerWidth <= 1000) {
@@ -19,12 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.style.position = 'fixed';
         // collapsed 상태이면 content margin 0
         if (sidebar.classList.contains('collapsed')) {
-          btn.textContent = '>';
+          btn.textContent = '☰';
         }
       } else {
         btn.style.display = 'none';
         sidebar.classList.remove('collapsed');
-        btn.textContent = '<';
+        btn.textContent = '✖';
       }
     }
 
@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // toggle에 따라 content margin 동기화
       const content = document.getElementById('content');
       if (sidebar.classList.contains('collapsed')) {
-        btn.textContent = '>';
+        btn.textContent = '☰';
       } else {
-        btn.textContent = '<';
+        btn.textContent = '✖';
       }
     });
 
@@ -131,99 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     checkItemCount();
-  } else if (mode.value === 'board') {
-    loadFullBoardData(10);
-    function loadFullBoardData(maxPage) {
-      const posts = [];
-      for (let i = 1; i <= 150; i++) {
-        posts.push({ id: i, title: "Dummy Title" + i });
-      }
-      
-      const postsPerPage = maxPage;
-      let currentPage = 1;
-      const totalPages = Math.ceil(posts.length / postsPerPage);
-      const fullListEl = document.getElementById('full-list');
-      const paginationEl = document.getElementById('pagination');
-      
-      function renderPage(page) {
-        currentPage = page;
-        fullListEl.innerHTML = '';
-        const start = (page - 1) * postsPerPage;
-        const end = start + postsPerPage;
-        const pagePosts = posts.slice(start, end);
-        
-        pagePosts.forEach(post => {
-          const postDiv = document.createElement('div');
-          postDiv.className = 'full-post';
-          postDiv.setAttribute('data-post-id', post.id);
-          postDiv.innerHTML = `<div class="post-index">${post.id}</div><div class="post-title">${post.title}</div>`;
-          fullListEl.appendChild(postDiv);
-        });
-        renderPagination();
-      }
-      
-      function renderPagination() {
-        paginationEl.innerHTML = '';
-      
-        // "<<" First-page button
-        const firstBtn = document.createElement('button');
-        firstBtn.classList.add('subfont');
-        firstBtn.textContent = '<<';
-        // hide on first page
-        firstBtn.style.display = currentPage === 1 ? 'none' : '';
-        firstBtn.addEventListener('click', () => renderPage(1));
-        paginationEl.appendChild(firstBtn);
-      
-        // Prev button
-        const prevBtn = document.createElement('button');
-        prevBtn.classList.add('subfont');
-        prevBtn.textContent = 'prev';
-        prevBtn.disabled = currentPage === 1;
-        prevBtn.style.display = currentPage === 1 ? 'none' : '';
-        prevBtn.addEventListener('click', () => {
-          if (currentPage > 1) renderPage(currentPage - 1);
-        });
-        paginationEl.appendChild(prevBtn);
-      
-        // Page-number buttons (window of 5)
-        const pageGroupSize = 5;
-        const groupStart = Math.floor((currentPage - 1) / pageGroupSize) * pageGroupSize + 1;
-        const groupEnd = Math.min(groupStart + pageGroupSize - 1, totalPages);
-        for (let i = groupStart; i <= groupEnd; i++) {
-          const pageBtn = document.createElement('button');
-          pageBtn.textContent = i;
-          if (i === currentPage) {
-            pageBtn.disabled = true;
-            pageBtn.style.fontWeight = 'bold';
-            pageBtn.style.fontSize = '18px';
-          }
-          pageBtn.addEventListener('click', () => renderPage(i));
-          paginationEl.appendChild(pageBtn);
-        }
-      
-        // Next button
-        const nextBtn = document.createElement('button');
-        nextBtn.classList.add('subfont');
-        nextBtn.textContent = 'next';
-        nextBtn.disabled = currentPage === totalPages;
-        nextBtn.style.display = currentPage === totalPages ? 'none' : '';
-        nextBtn.addEventListener('click', () => {
-          if (currentPage < totalPages) renderPage(currentPage + 1);
-        });
-        paginationEl.appendChild(nextBtn);
-      
-        // ">>" Last-page button
-        const lastBtn = document.createElement('button');
-        lastBtn.classList.add('subfont');
-        lastBtn.textContent = '>>';
-        // hide on last page
-        lastBtn.style.display = currentPage === totalPages ? 'none' : '';
-        lastBtn.addEventListener('click', () => renderPage(totalPages));
-        paginationEl.appendChild(lastBtn);
-      }
-      
-      renderPage(1);
-    }
   } else if (mode.value === 'user') {
     setOffsetHeight();
     function setOffsetHeight() {
