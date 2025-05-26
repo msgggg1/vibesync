@@ -8,15 +8,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 String action = request.getParameter("mode");
-out.print("action : " + action);
-Connection conn = DBConn_vibesync.getConnection();
 
 if (action != null && !action.trim().isEmpty()) {
 	// 값이 있을 때
-    PreparedStatement pstmt = null;
-    ResultSet rs = null;
-
     if ("signup".equals(action)) {
+    	Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
 
         String name = request.getParameter("signupName");
         String nickname = request.getParameter("signupNickname");
@@ -89,14 +87,18 @@ if (action != null && !action.trim().isEmpty()) {
         } finally {
             if (rs != null) try { rs.close(); } catch (Exception e) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception e) {}
-            if (conn != null) try { conn.close(); } catch (Exception e) {}
         }
   
     } else if ("login".equals(action)) {
+    	Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        
         String email = request.getParameter("userId");
         String password = request.getParameter("userPw");
 
         try {
+        	conn = DBConn_vibesync.getConnection();
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(password.getBytes());
             String encryptedPassword = new BigInteger(1, md.digest()).toString(16);
@@ -118,7 +120,6 @@ if (action != null && !action.trim().isEmpty()) {
         } finally {
             if (rs != null) try { rs.close(); } catch (Exception e) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception e) {}
-            if (conn != null) try { conn.close(); } catch (Exception e) {}
         }
     }
 }

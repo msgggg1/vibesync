@@ -20,7 +20,16 @@ DROP TABLE category;
 DROP TABLE userAccount;
 
 --------------------------------------------------------------------------------
--- 1. userAccount (계정)
+-- 1. category (카테고리)
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+CREATE TABLE category (
+    category_idx INT PRIMARY KEY,
+    c_name VARCHAR2(100) NOT NULL
+);
+
+--------------------------------------------------------------------------------
+-- 2. userAccount (계정)
 --------------------------------------------------------------------------------
 CREATE TABLE userAccount (
     ac_idx INT PRIMARY KEY,
@@ -29,17 +38,10 @@ CREATE TABLE userAccount (
     nickname VARCHAR2(50) NOT NULL,
     img VARCHAR2(255),
     name VARCHAR2(100) NOT NULL,
-    created_at TIMESTAMP default sysdate
+    created_at TIMESTAMP default sysdate,
+    category_idx int not null,
+    CONSTRAINT fk_uc FOREIGN KEY (category_idx) REFERENCES category(category_idx) ON DELETE CASCADE
 );
-
---------------------------------------------------------------------------------
--- 2. category (카테고리)
---------------------------------------------------------------------------------
-CREATE TABLE category (
-    category_idx INT PRIMARY KEY,
-    c_name VARCHAR2(100) NOT NULL
-);
-
 --------------------------------------------------------------------------------
 -- 3. genre (장르)
 --------------------------------------------------------------------------------
@@ -87,18 +89,7 @@ CREATE TABLE setting (
 );
 
 --------------------------------------------------------------------------------
--- 7. genrePerUser (유저별 장르 목록)
---------------------------------------------------------------------------------
-CREATE TABLE categoryPerUser (
-    ca_ac_idx INT PRIMARY KEY,
-    ac_idx INT NOT NULL,
-    category_idx INT NOT NULL,
-    CONSTRAINT FK_CPU_UA  FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) ON DELETE CASCADE,
-    CONSTRAINT FK_CPU_CAT  FOREIGN KEY (category_idx) REFERENCES category(category_idx) ON DELETE CASCADE
-);
-
---------------------------------------------------------------------------------
--- 8. watchParty (워치파티)
+-- 7. watchParty (워치파티)
 --------------------------------------------------------------------------------
 CREATE TABLE watchParty (
     watchParty_idx INT PRIMARY KEY,
@@ -109,7 +100,7 @@ CREATE TABLE watchParty (
 );
 
 --------------------------------------------------------------------------------
--- 9. message (메시지)
+-- 8. message (메시지)
 --------------------------------------------------------------------------------
 CREATE TABLE message (
     msg_idx INT PRIMARY KEY,
@@ -124,7 +115,7 @@ CREATE TABLE message (
 );
 
 --------------------------------------------------------------------------------
--- 10. todolist (투두리스트)
+-- 9. todolist (투두리스트)
 --------------------------------------------------------------------------------
 CREATE TABLE todolist (
     todo_idx INT PRIMARY KEY,
@@ -137,7 +128,7 @@ CREATE TABLE todolist (
 );
 
 --------------------------------------------------------------------------------
--- 11. follows (팔로우목록)
+-- 10. follows (팔로우목록)
 --------------------------------------------------------------------------------
 CREATE TABLE follows (
     follows_idx INT PRIMARY KEY,
@@ -148,7 +139,7 @@ CREATE TABLE follows (
 );
 
 --------------------------------------------------------------------------------
--- 12. note (글)
+-- 11. note (글)
 --------------------------------------------------------------------------------
 CREATE TABLE note (
     note_idx INT PRIMARY KEY,
@@ -160,12 +151,14 @@ CREATE TABLE note (
     view_count INT DEFAULT 0,
     content_idx INT NOT NULL,
     genre_idx INT NOT NULL,
+    category_idx int not null,
     CONSTRAINT FK_note_TO_contents FOREIGN KEY (content_idx) REFERENCES contents(content_idx) ON DELETE CASCADE,
-    CONSTRAINT FK_note_TO_genre FOREIGN KEY (genre_idx) REFERENCES genre(genre_idx) ON DELETE CASCADE
+    CONSTRAINT FK_note_TO_genre FOREIGN KEY (genre_idx) REFERENCES genre(genre_idx) ON DELETE CASCADE,
+    CONSTRAINT FK_nc FOREIGN KEY (category_idx) REFERENCES category(category_idx) ON DELETE CASCADE
 );
 
 --------------------------------------------------------------------------------
--- 13. notification (알람)
+-- 12. notification (알람)
 --------------------------------------------------------------------------------
 CREATE TABLE notification (
     notifi_idx INT PRIMARY KEY,
@@ -179,7 +172,7 @@ CREATE TABLE notification (
 );
 
 --------------------------------------------------------------------------------
--- 14. bookmark (북마크)
+-- 13. bookmark (북마크)
 --------------------------------------------------------------------------------
 CREATE TABLE bookmark (
     bkmark_idx INT PRIMARY KEY,
@@ -191,7 +184,7 @@ CREATE TABLE bookmark (
 );
 
 --------------------------------------------------------------------------------
--- 15. likes (좋아요)
+-- 14. likes (좋아요)
 --------------------------------------------------------------------------------
 CREATE TABLE likes (
     likes_idx INT PRIMARY KEY,
@@ -203,7 +196,7 @@ CREATE TABLE likes (
 );
 
 --------------------------------------------------------------------------------
--- 16. noteAccess (노트 권한 리스트)
+-- 15. noteAccess (노트 권한 리스트)
 --------------------------------------------------------------------------------
 CREATE TABLE noteAccess (
     ntGrant_idx INT PRIMARY KEY,
@@ -216,7 +209,7 @@ CREATE TABLE noteAccess (
 );
 
 --------------------------------------------------------------------------------
--- 17. commentlist (댓글)
+-- 16. commentlist (댓글)
 --------------------------------------------------------------------------------
 CREATE TABLE commentlist (
     commentlist_idx INT PRIMARY KEY,
