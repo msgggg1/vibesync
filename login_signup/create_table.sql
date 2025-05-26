@@ -30,7 +30,8 @@ CREATE TABLE userAccount (
     img VARCHAR2(255),
     name VARCHAR2(100) NOT NULL,
     created_at TIMESTAMP,
-    salt VARCHAR2(45) NOT NULL
+    salt VARCHAR2(45) NOT NULL,
+    auto_login_token VARCHAR(128)
 );
 
 --------------------------------------------------------------------------------
