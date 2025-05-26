@@ -139,9 +139,8 @@
 			
 			if (result > 0) {
 	            conn.commit(); // 트랜잭션 성공
-	            if (handleErrorAndRedirect(session, response, "회원가입 중 오류가 발생했습니다. (DB 저장 실패)", name, nickname, email)) {
-	                return;
-	            }
+	            session.setAttribute("signupSuccessMsg", "회원가입이 성공적으로 완료되었습니다. 로그인해주세요.");
+	            response.sendRedirect("login.jsp");
 	        } else {
 	            conn.rollback(); // 트랜잭션 실패
 	            session.setAttribute("signupErrorMsg", "회원가입 중 오류가 발생했습니다.");

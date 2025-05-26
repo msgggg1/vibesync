@@ -1,3 +1,4 @@
+<%@page import="java.util.UUID"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="com.util.PasswordMigrator"%>
 <%@page import="com.util.DBConn"%>
@@ -9,6 +10,7 @@
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
@@ -54,99 +56,135 @@
 	String formToShow = request.getParameter("formToShow");
 
 %>
+
 <%
-	// 이메일 기억하기
-    String rememberedEmail = ""; // 기본값은 빈 문자열
-    Cookie[] cookies = request.getCookies();
-    if (cookies != null) {
-        for (Cookie cookie : cookies) {
-            if ("rememberedUserEmail".equals(cookie.getName())) {
-                rememberedEmail = cookie.getValue();
-                break; // 쿠키를 찾았으면 반복 중단
-            }
-        }
-    } 
-    // 이 rememberedEmail 변수를 아래 HTML의 email input 태그의 value로 사용
-%>
-<%
+	String tokenFromCookie =""; // 자동로그인 토큰 : 기본값은 빈 문자열
+	String rememberedEmail = ""; // 이메일 기억하기 : 기본값은 빈 문자열
+	
+	Cookie[] cookies = request.getCookies();
+	if (cookies != null) {
+	    for (Cookie cookie : cookies) {
+	        if ("autoLoginToken".equals(cookie.getName())) {
+	            tokenFromCookie = cookie.getValue();
+	        } else if ("rememberedUserEmail".equals(cookie.getName())) {
+	            rememberedEmail = cookie.getValue();
+	        }
+	    }
+	    } 
+	if (tokenFromCookie != null && !tokenFromCookie.isBlank()) { // 쿠키에 자동 로그인 토큰값 존재 여부
+		// 로그인 여부 (session.getAttribute("loggedInUserEmail") == null && )	
+		
+	    try (Connection conn = DBConn.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement("SELECT email FROM userAccount WHERE auto_login_token = ?");) {
+	
+	        pstmt.setString(1, tokenFromCookie);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) { // 자동 로그인 성공
+	                session.setAttribute("loggedInUserEmail", rs.getString("email"));
+	                response.sendRedirect("main.jsp");
+	                return;
+	            } else { // 자동 로그인 실패 : 잘못된 토큰이므로 삭제
+	                Cookie invalidCookie = new Cookie("autoLoginToken", "");
+	                invalidCookie.setMaxAge(0);
+	                invalidCookie.setPath("/");
+	                response.addCookie(invalidCookie);
+	                // tokenLoginAttempted = true;
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	if ("POST".equalsIgnoreCase(request.getMethod())) { // 요청 방식이 POST인지 확인
 	    String emailParam = request.getParameter("userId"); // 폼에서 전달된 이메일
-	    String pwParam = request.getParameter("userPw");    // 폼에서 전달된 비밀번호 (평문)
-	    
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		boolean loginSuccess = false;
-		boolean emailFound = false;
+	    String pwParam = request.getParameter("userPw"); // 폼에서 전달된 비밀번호 (평문)
+	    boolean loginSuccess = false;
+	    boolean emailFound = false;
 	
-	 try{
-		   conn = DBConn.getConnection();
-		   String sql = "SELECT pw, name, salt FROM userAccount WHERE email = ?";
-		   pstmt = conn.prepareStatement(sql);
-		   pstmt.setString(1, emailParam);
-		   rs = pstmt.executeQuery();
-		   
-		   if( rs.next() ){
-			   emailFound = true;
-			   String storedHashedPassword = rs.getString("pw"); 
-			   String storedSalt = rs.getString("salt"); 
-				// 사용자가 입력한 평문 비밀번호와 DB에서 가져온 salt를 사용하여 해시값 생성
-			   String hashedInputPassword = PasswordMigrator.hashPassword(pwParam, storedSalt);
-
-               // 생성된 해시값과 DB에 저장된 해시값 비교
-               if (hashedInputPassword != null && hashedInputPassword.equals(storedHashedPassword)) {
-                   loginSuccess = true;
-                   session.setAttribute("loggedInUserEmail", emailParam); // 세션에 사용자 이메일 저장
-
-                   // "Remember Email" 기능 처리
-                   String rememberEmail = request.getParameter("RememEmail"); // 체크박스 값 가져오기
-                   if ("on".equals(rememberEmail)) { // 체크박스가 선택되었다면 (HTML에서 checkbox가 check되면 "on" 값을 가짐)
-                       Cookie emailCookie = new Cookie("rememberedUserEmail", emailParam);
-                       emailCookie.setMaxAge(60 * 60 * 24 * 30); // 쿠키 유효 기간: 30일 (초 단위)
-                       emailCookie.setPath("/"); // 웹 애플리케이션 전체 경로에서 사용 가능하도록 설정
-                       response.addCookie(emailCookie);
-                   } else { // 체크박스가 선택되지 않았다면 기존 쿠키 삭제
-                       Cookie emailCookie = new Cookie("rememberedUserEmail", "");
-                       emailCookie.setMaxAge(0); // 쿠키 즉시 만료
-                       emailCookie.setPath("/");
-                       response.addCookie(emailCookie);
-                   }
-                   
-               }
-		   }
-
-		   if (loginSuccess) {
-               response.sendRedirect("main.jsp"); // 로그인 성공 시 이동할 페이지
-               return; // login.jsp의 나머지 부분 처리를 중단
-           } else {
-        	   if (!emailFound) { // ★ 이메일이 DB에 존재하지 않는 경우
-                   session.setAttribute("sessionLoginError", "존재하지 않는 이메일 입니다.");
-               } else { // 이메일은 존재하지만 비밀번호가 틀린 경우
-                   session.setAttribute("sessionLoginError", "비밀번호가 일치하지 않습니다.");
-               }
-               		response.sendRedirect("login.jsp");
-               return;
-               }
-			   
-	   }catch(Exception e){
-		   e.printStackTrace();
-		   session.setAttribute("sessionLoginError", "로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
-           response.sendRedirect("login.jsp"); 
-           return;
-	   }finally{
-		   try{
-			 rs.close();
-			 pstmt.close();  
-		     DBConn.close(); 
-		   }catch(Exception e){
-			   e.printStackTrace();
-		   }
-	   } // try 
-	 
+	    try (Connection conn = DBConn.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement("SELECT pw, salt FROM userAccount WHERE email = ?");) {
+	
+	        pstmt.setString(1, emailParam);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                String storedHashedPassword = rs.getString("pw");
+	                String storedSalt = rs.getString("salt");
+	                
+	             	// 사용자가 입력한 평문 비밀번호와 DB에서 가져온 salt를 사용하여 해시값 생성
+	                String hashedInputPassword = PasswordMigrator.hashPassword(pwParam, storedSalt);
+	
+	             	// 생성된 해시값과 DB에 저장된 해시값 비교
+	                if (hashedInputPassword != null && storedHashedPassword.equals(hashedInputPassword)) {
+	                    session.setAttribute("loggedInUserEmail", emailParam); // 세션에 사용자 이메일 저장
+	
+	                 	// [1] "auto-Login" 기능 처리
+	                    if ("on".equals(request.getParameter("autoLogin"))) { // 체크박스가 선택되었다면 (JSP/HTML에서 checkbox가 check되면 "on" 값을 가짐)
+	                    	// 토큰 생성 (UUID)
+	                    	String token = UUID.randomUUID().toString(); 
+	                    
+	                    	// DB에 저장
+	                        try (PreparedStatement updateStmt = conn.prepareStatement("UPDATE userAccount SET auto_login_token = ? WHERE email = ?")) {
+	                            updateStmt.setString(1, token);
+	                            updateStmt.setString(2, emailParam);
+	                            updateStmt.executeUpdate();
+	                        }
+	                     	// 쿠키에 토큰 저장
+	                        Cookie tokenCookie = new Cookie("autoLoginToken", token);
+	                        tokenCookie.setMaxAge(60 * 60 * 24 * 30); // 쿠키 유효 기간: 30일 (초 단위)
+	                        tokenCookie.setPath("/"); // 웹 애플리케이션 전체 경로에서 사용 가능하도록 설정
+	                        response.addCookie(tokenCookie);
+	                    } else { // 체크박스가 선택되지 않았다면 기존 쿠키 삭제
+	                        Cookie tokenCookie = new Cookie("autoLoginToken", "");
+	                        tokenCookie.setMaxAge(0); // 쿠키 즉시 만료
+	                        tokenCookie.setPath("/"); 
+	                        response.addCookie(tokenCookie);
+	                    }
+	
+	                    
+	                 	// [2] "Remember Email" 기능 처리
+	                    if ("on".equals(request.getParameter("RememEmail"))) { // 체크박스가 선택되었다면 (JSP/HTML에서 checkbox가 check되면 "on" 값을 가짐)
+	                        Cookie emailCookie = new Cookie("rememberedUserEmail", emailParam);
+	                        emailCookie.setMaxAge(60 * 60 * 24 * 30);
+	                        emailCookie.setPath("/");
+	                        response.addCookie(emailCookie);
+	                    } else {
+	                        Cookie emailCookie = new Cookie("rememberedUserEmail", "");
+	                        emailCookie.setMaxAge(0);
+	                        emailCookie.setPath("/");
+	                        response.addCookie(emailCookie);
+	                    }
+	                 	
+	                 	// 로그인 성공 시 main.jsp 이동
+	                    response.sendRedirect("main.jsp");
+	                    return; // login.jsp의 나머지 부분 처리를 중단
+	                    
+	                } else { // 이메일은 존재하지만 비밀번호가 틀린 경우
+	                    session.setAttribute("sessionLoginError", "비밀번호가 일치하지 않습니다.");
+	                    response.sendRedirect("login.jsp");
+	                    return;
+	                }
+	            } else { // ★ 이메일이 DB에 존재하지 않는 경우
+	                session.setAttribute("sessionLoginError", "존재하지 않는 이메일 입니다.");
+	                response.sendRedirect("login.jsp");
+	                return;
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        session.setAttribute("sessionLoginError", "로그인 중 오류가 발생했습니다.");
+	        response.sendRedirect("login.jsp");
+	        return;
+	    }
 	}
-%>   
+%>
 
-	   
+<%-- <%
+    System.out.println("tokenFromCookie: " + tokenFromCookie);
+    System.out.println("rememberedEmail: " + rememberedEmail);
+    System.out.println("session email: " + session.getAttribute("loggedInUserEmail"));
+%> --%>
+
 <!DOCTYPE html>
 <html lang="en"> <head>
     <meta charset="UTF-8">
@@ -154,7 +192,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
-    <link rel="icon" href="./favicon.ico" />
+    <link rel="icon" href="../favicon.ico">
     <title>VibeSync Login</title> <link rel="stylesheet" href="../css/login.css"> </head>   
 
 <body ondragstart="return false" ondrop="return false" onselectstart="return false"><!-- Prevent drag and drop actions -->
@@ -231,7 +269,7 @@
     </div>
 </div>
 
-<script src="../js/login.js"></script> 
+<script src="../js/login.js"></script>
 
 <script>
 

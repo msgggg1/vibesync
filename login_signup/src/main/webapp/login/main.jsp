@@ -1,4 +1,12 @@
+<%@page import="java.sql.PreparedStatement"%>
+<%@page import="com.util.DBConn"%>
+<%@page import="java.sql.Connection"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+
+	session.setAttribute("loggedInUserEmail", session.getAttribute("loggedInUserEmail"));
+
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,6 +14,9 @@
 <title>main page</title>
 </head>
 <body>
-    <h1>로그인 성공!</h1>
+
+	<h1>로그인 성공!</h1>
+	<a href="logout.jsp">로그아웃</a>
+
 </body>
 </html>
