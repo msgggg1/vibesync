@@ -1,4 +1,4 @@
-<%@page import="java.util.Objects"%>
+<%@page import="java.util.Objects"%>command:workbench.trust.manage
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
     boolean wasAutoLoginActive = false; // 자동 로그인이 활성화되어 있었는지 여부를 판단하는 플래그

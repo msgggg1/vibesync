@@ -2,6 +2,11 @@
 <%@page import="com.util.DBConn"%>
 <%@page import="java.sql.Connection"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+
+	session.setAttribute("loggedInUserEmail", session.getAttribute("loggedInUserEmail"));
+
+%>
 <!DOCTYPE html>
 <html>
 <head>
