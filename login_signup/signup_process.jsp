@@ -43,7 +43,7 @@
 	
 	// 유효성 검사 1. 모든 필수 항목 입력
 	if(name == null || name.trim().isEmpty() ||  nickname == null || nickname.trim().isEmpty() ||
-	        email == null || email.trim().isEmpty() || // 이메일 형식 검사도 추가하면 좋음
+	        email == null || email.trim().isEmpty() || 
 	        pw == null || pw.isEmpty() ||
 	        cpw == null || cpw.isEmpty()){
 		if (handleErrorAndRedirect(session, response, "모든 필수 항목을 입력해주세요.", name, nickname, email)) {
@@ -58,9 +58,7 @@
             return;
         }
 	  }
-	// 비밀번호 복잡도 검사 (HTML pattern과 동일하거나 더 강화된 검사 - 선택 사항)
-    // 예: if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{8,}$")) { ... }
-		
+
 	// 유효성 검사 3. 이메일 형식 검사
 	String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     if (!email.matches(emailRegex)) {
