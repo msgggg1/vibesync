@@ -75,7 +75,7 @@
     String prevSignupNickname = (String) session.getAttribute("prevSignupNickname");
     String prevSignupEmail = (String) session.getAttribute("prevSignupEmail");
 
-    //사용 후 세션에서 제거
+    // 사용 후 세션에서 제거
     if (prevSignupName != null) session.removeAttribute("prevSignupName");
     if (prevSignupNickname != null) session.removeAttribute("prevSignupNickname");
     if (prevSignupEmail != null) session.removeAttribute("prevSignupEmail");

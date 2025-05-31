@@ -18,7 +18,9 @@ public class NoteVO {
 	private int note_idx;
 	private String title;
 	private String text;
+	private String img;
 	private String create_at;
+	private String edit_at;
 	private int view_count;
 	private int content_idx;
 	private int genre_idx;

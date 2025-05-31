@@ -1,9 +1,9 @@
 -- 1. category 테이블 데이터 삽입
-INSERT INTO category (category_idx, c_name, img) VALUES (1, '영화', './sources/button_bg/movie.jpg');
-INSERT INTO category (category_idx, c_name, img) VALUES (2, '드라마', './sources/button_bg/drama.jpg');
-INSERT INTO category (category_idx, c_name, img) VALUES (3, '음악', './sources/button_bg/music.jpg');
-INSERT INTO category (category_idx, c_name, img) VALUES (4, '애니메이션', './sources/button_bg/anime.jpg');
-INSERT INTO category (category_idx, c_name, img) VALUES (5, '일상', './sources/button_bg/daily.jpg');
+INSERT INTO category (category_idx, c_name, img) VALUES (1, '영화', 'movie.jpg');
+INSERT INTO category (category_idx, c_name, img) VALUES (2, '드라마', 'drama.jpg');
+INSERT INTO category (category_idx, c_name, img) VALUES (3, '음악', 'music.jpg');
+INSERT INTO category (category_idx, c_name, img) VALUES (4, '애니메이션', 'anime.jpg');
+INSERT INTO category (category_idx, c_name, img) VALUES (5, '일상', 'daily.jpg');
 
 
 -- 2. genre 테이블 데이터 삽입 (사용자 제공 데이터 기준으로 수정)

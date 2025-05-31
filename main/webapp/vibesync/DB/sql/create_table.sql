@@ -18,6 +18,9 @@ DROP TABLE genre;
 DROP TABLE userAccount;
 DROP TABLE category;
 
+DROP SEQUENCE useraccount_seq;
+DROP SEQUENCE categoryperuser_seq;
+
 --------------------------------------------------------------------------------
 -- 1. category (카테고리)
 --------------------------------------------------------------------------------
