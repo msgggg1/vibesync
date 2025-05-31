@@ -1,8 +1,8 @@
+<%@page import="com.util.ConnectionProvider"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="com.util.PasswordMigrator"%>
 <%@page import="java.util.Base64"%>
 <%@page import="java.security.SecureRandom"%>
-<%@page import="com.util.DBConn"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
@@ -84,7 +84,7 @@
 		ResultSet rsChk = null;
 	
 	 try{
-		   conn = DBConn.getConnection();
+		   conn = ConnectionProvider.getConnection();
 		   conn.setAutoCommit(false); // 트랜잭션 관리
 		   
 		   // 이메일 중복 확인
@@ -168,10 +168,20 @@
 			 rsChk.close();
 			 pstmtChk.close();
 			 pstmtInsert.close();  
-		     DBConn.close(); 
+		     conn.close(); 
 		   }catch(Exception e){
 			   e.printStackTrace();
 		   }
 	   } // try 
 	 
 %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+</body>
+</html>

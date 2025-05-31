@@ -42,8 +42,8 @@ CREATE TABLE userAccount (
     nickname VARCHAR2(50) NOT NULL,
     img VARCHAR2(255),
     name VARCHAR2(100) NOT NULL,
-    created_at TIMESTAMP default sysdate,
-    category_idx int not null,
+    created_at TIMESTAMP DEFAULT SYSDATE,
+    category_idx INT NOT NULL,
     CONSTRAINT fk_uc FOREIGN KEY (category_idx) REFERENCES category(category_idx) ON DELETE CASCADE
 );
 --------------------------------------------------------------------------------

@@ -1,6 +1,4 @@
-package org.doit.domain;
-
-import java.sql.Date;
+package mvc.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,16 +9,13 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserVO {
+@ToString
+public class UserDTO {
 	private int ac_idx;
-	private String email;
-	private String nickname;
-	private String img;
-	private String name;
-	private Date created_at;
-	private int category_idx;
+    private String nickname;
+    private String img;
+    private int popularityScore;
 }

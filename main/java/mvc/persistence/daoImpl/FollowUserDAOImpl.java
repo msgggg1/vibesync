@@ -1,4 +1,4 @@
-package org.doit.dao;
+package mvc.persistence.daoImpl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,9 +6,11 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import com.util.DBConn_vibesync;
-import org.doit.domain.UserVO;
 
-public class FollowUserDAO {
+import mvc.domain.vo.UserVO;
+import mvc.persistence.dao.FollowUserDAO;
+
+public class FollowUserDAOImpl implements FollowUserDAO {
 
     /**
      * 지정한 카테고리 내에서 팔로우를 가장 많이 받은 사용자들 상위 limit 만큼 가져온다.
@@ -17,7 +19,7 @@ public class FollowUserDAO {
      * @param limit       최대 반환할 사용자 수
      * @return            UserVO를 담은 ArrayList
      */
-    public static ArrayList<UserVO> getTopFollowed(int categoryIdx, int limit) {
+    public ArrayList<UserVO> getTopFollowed(int categoryIdx, int limit) {
         ArrayList<UserVO> list = null;
         Connection conn = null;
         PreparedStatement pstmt = null;

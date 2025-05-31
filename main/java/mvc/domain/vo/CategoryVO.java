@@ -1,4 +1,4 @@
-package org.doit.domain;
+package mvc.domain.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

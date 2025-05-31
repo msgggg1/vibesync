@@ -1,0 +1,31 @@
+package mvc.command.service;
+
+import mvc.persistence.dao.UserDAO;
+import mvc.persistence.daoImpl.UserDAOImpl;
+import mvc.domain.dto.LoginDTO;
+import mvc.domain.vo.UserVO;
+import mvc.domain.vo.UserSessionVO;
+
+public class LoginService {
+    private UserDAO userAccountDAO;
+
+    public LoginService(UserDAO userAccountDAO) {
+    	this.userAccountDAO = userAccountDAO;
+	}
+
+    // 로그인 : 이메일, 비밀번호 활용
+	public UserSessionVO login(LoginDTO dto) throws Exception {
+		UserSessionVO userSessionVO = null;
+		userSessionVO = userAccountDAO.login(dto);
+		
+        return userSessionVO;
+    }
+	
+	// 자동로그인 : 쿠키의 사용자 이메일 정보 활용
+	public UserSessionVO autoLogin(String email) throws Exception {
+		UserSessionVO userSessionVO = null;
+		userSessionVO = userAccountDAO.findByEmail(email);
+		
+        return userSessionVO;
+    }
+}

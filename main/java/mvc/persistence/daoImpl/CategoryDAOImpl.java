@@ -1,13 +1,16 @@
-package org.doit.dao;
+package mvc.persistence.daoImpl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import org.doit.domain.CategoryVO;
+
 import com.util.DBConn_vibesync;
 
-public class CategoryDAO {
+import mvc.domain.vo.CategoryVO;
+import mvc.persistence.dao.CategoryDAO;
+
+public class CategoryDAOImpl implements CategoryDAO {
 
     /**
      * 주어진 category_idx를 제외한 모든 카테고리 정보를 조회하여
@@ -16,7 +19,7 @@ public class CategoryDAO {
      * @param category_idx 제외할 카테고리 인덱스
      * @return ArrayList<CategoryVO>
      */
-    public static ArrayList<CategoryVO> CategoryAll(int category_idx) {
+    public ArrayList<CategoryVO> CategoryAll(int category_idx) {
         ArrayList<CategoryVO> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement pstmt = null;

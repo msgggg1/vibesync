@@ -1,5 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.net.URLEncoder" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -15,8 +13,6 @@
   />
   <!-- css,js -->
   <link rel="stylesheet" href="./css/style.css">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
   <script defer src="./js/script.js"></script>
 </head>
 <body>
@@ -102,31 +98,11 @@
   
           <!-- grid -->
           <div class="grid_wrapper">
-            <div class="grid_item" id="recent_posts_container" >
-	            <c:forEach items="${recentPostsList}" var="post" varStatus="status">
-	            <div class="list-entry" data-id="${post.note_idx}">
-	                <%-- <img class="entry-image" src="<c:url value='${post.img}'/>" alt="${post.title}" style="display: none;"> --%>
-	                <img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
-	                <span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
-	            </div>
-        		</c:forEach>
+            <div class="grid_item">
             </div>
-            <div class="grid_item" id="popular_posts_container">
-	             <c:forEach items="${popularPostsList}" var="post" varStatus="status">
-	            	<div class="list-entry" data-id="${post.note_idx}">
-	                	<img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
-	                	<span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
-	            	</div>
-	        	</c:forEach>
+            <div class="grid_item">
             </div>
-            <div class="grid_item" id="popular_users_container">
-            	  <c:forEach items="${popularUsersList}" var="user" varStatus="status">
-            		<div class="list-entry" data-id="${user.ac_idx}">
-               	 		<img class="entry-image" src="https://placehold.co/100x100.png?text=${user.nickname}" alt="${user.nickname}">
-                		<span class="entry-number">${status.count}.</span>
-                		<span class="entry-title">${user.nickname}</span>
-            		</div>
-        		 </c:forEach>
+            <div class="grid_item">
             </div>
           </div>
   
@@ -150,11 +126,5 @@
 
     </div>
   </div>
-  
-  <script>
-  	$("#logout > button").on("click", function(){
-  		location.href="./logout.jsp";
-  	});
-  </script>
 </body>
 </html>

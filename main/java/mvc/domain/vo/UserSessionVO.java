@@ -1,4 +1,4 @@
-package org.doit.domain;
+package mvc.domain.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,20 +9,15 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NoteVO {
-	
-	private int note_idx;
-	private String title;
-	private String text;
+@ToString
+public class UserSessionVO {
+
+	private String email;
+	private String nickname;
 	private String img;
-	private String create_at;
-	private String edit_at;
-	private int view_count;
-	private int content_idx;
-	private int genre_idx;
 	private int category_idx;
+	
 }

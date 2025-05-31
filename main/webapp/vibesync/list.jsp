@@ -1,6 +1,6 @@
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="org.doit.domain.NoteVO"%>
+<%@page import="mvc.domain.vo.NoteVO"%>
 <%@page import="com.util.DBConn_vibesync"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
