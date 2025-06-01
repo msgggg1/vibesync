@@ -46,69 +46,69 @@
 		
 		// userInfo : 회원정보
 		if(session.getAttribute("userInfo")==null) {
-	if(loggedInUserEmail.isEmpty()){ // 로그인이 되어있지 않을 때
-		uvo = new UserVO().builder()
-		 .nickname("Guest")
-		 .img("guest_profile.jpg")
-		 .category_idx(1)
-		 .build();
-	} else {
-		// UserVO에 회원 정보 불러와서 브라우저(session)에 저장 : 닉네임, 선호 카테고리 등 파악 의도
-		sql = "SELECT nickname, img, category_idx FROM userAccount WHERE email = ? ";
-		pstmt = conn.prepareStatement(sql);
-		pstmt.setString(1, loggedInUserEmail);
-		rs = pstmt.executeQuery();
-		
-		if(rs.next()){
-	String nickname = rs.getString("nickname");
-	String img = rs.getString("img");
-	int category_idx = rs.getInt("category_idx");
-	
-	uvo = new UserVO().builder()
-					 .nickname(nickname)
-					 .img(img)
-					 .category_idx(category_idx)
-					 .build();
-	
-	session.setAttribute("userInfo", uvo);
-	
-	rs.close();
-	pstmt.close();
-		}
-	}
+			if(loggedInUserEmail.isEmpty()){ // 로그인이 되어있지 않을 때
+				uvo = new UserVO().builder()
+				 .nickname("Guest")
+				 .img("guest_profile.jpg")
+				 .category_idx(1)
+				 .build();
+			} else {
+				// UserVO에 회원 정보 불러와서 브라우저(session)에 저장 : 닉네임, 선호 카테고리 등 파악 의도
+				sql = "SELECT nickname, img, category_idx FROM userAccount WHERE email = ? ";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, loggedInUserEmail);
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()){
+			String nickname = rs.getString("nickname");
+			String img = rs.getString("img");
+			int category_idx = rs.getInt("category_idx");
+			
+			uvo = new UserVO().builder()
+							 .nickname(nickname)
+							 .img(img)
+							 .category_idx(category_idx)
+							 .build();
+			
+			session.setAttribute("userInfo", uvo);
+			
+			rs.close();
+			pstmt.close();
+				}
+			}
 	
 		} else {
-	uvo = (UserVO) session.getAttribute("userInfo");
+			uvo = (UserVO) session.getAttribute("userInfo");
 		}
 		
 		if(session.getAttribute("categoryInfo")==null){
-	// Category 정보 브라우저(sessoion)에 저장 : 카테고리 index와 카테고리명 매치 목적
-	sql = "SELECT category_idx, c_name, img FROM category ORDER BY category_idx ASC ";
-	pstmt = conn.prepareStatement(sql);
-	rs = pstmt.executeQuery();
-	if(rs.next()){
-		clist = new ArrayList<CategoryVO>();
-		do{
-	int category_idx = rs.getInt("category_idx");
-	String c_name = rs.getString("c_name");
-	String img = rs.getString("img");
-	
-	cvo = new CategoryVO().builder()
-						.category_idx(category_idx)
-						.c_name(c_name)
-						.img(img)
-						.build();
-	
-	clist.add(cvo);
-		} while(rs.next());
-		
-		session.setAttribute("categoryInfo", clist);
-		
-		rs.close();
-		pstmt.close();
-	}
+			// Category 정보 브라우저(sessoion)에 저장 : 카테고리 index와 카테고리명 매치 목적
+			sql = "SELECT category_idx, c_name, img FROM category ORDER BY category_idx ASC ";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				clist = new ArrayList<CategoryVO>();
+				do{
+			int category_idx = rs.getInt("category_idx");
+			String c_name = rs.getString("c_name");
+			String img = rs.getString("img");
+			
+			cvo = new CategoryVO().builder()
+								.category_idx(category_idx)
+								.c_name(c_name)
+								.img(img)
+								.build();
+			
+			clist.add(cvo);
+				} while(rs.next());
+				
+				session.setAttribute("categoryInfo", clist);
+				
+				rs.close();
+				pstmt.close();
+			}
 		} else {
-	clist = (ArrayList<CategoryVO>) session.getAttribute("categoryInfo");
+			clist = (ArrayList<CategoryVO>) session.getAttribute("categoryInfo");
 		}
 		
 		// 카테고리별 인기 게시글 조회
@@ -126,33 +126,33 @@
 		+ " ORDER BY rnk.rn ";
 		
 		for(int i = 0; i < clist.size(); i++){
-	cvo = clist.get(i);
-	int category_idx = cvo.getCategory_idx();
-	
-	pstmt = conn.prepareStatement(sql);
-	pstmt.setInt(1, category_idx);
-	rs = pstmt.executeQuery();
-	
-	if(rs.next()){
-		nlist = new ArrayList<NoteVO>();
-		do{
-	int note_idx = rs.getInt("note_idx");
-	String title = rs.getString("title");
-	String img = rs.getString("img");
-	
-	nvo = new NoteVO().builder()
-					  .note_idx(note_idx)
-					  .title(title)
-					  .img(img)
-					  .build();
-	nlist.add(nvo);
-		} while(rs.next());
-	
-		nmap.put(category_idx, nlist);
-		
-		rs.close();
-		pstmt.close();
-	}
+			cvo = clist.get(i);
+			int category_idx = cvo.getCategory_idx();
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, category_idx);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()){
+				nlist = new ArrayList<NoteVO>();
+				do{
+					int note_idx = rs.getInt("note_idx");
+					String title = rs.getString("title");
+					String img = rs.getString("img");
+					
+					nvo = new NoteVO().builder()
+									  .note_idx(note_idx)
+									  .title(title)
+									  .img(img)
+									  .build();
+					nlist.add(nvo);
+				} while(rs.next());
+			
+				nmap.put(category_idx, nlist);
+				
+				rs.close();
+				pstmt.close();
+			}
 		}
 		
 	} catch (Exception e) {
@@ -177,8 +177,8 @@
     href="https://unpkg.com/swiper/swiper-bundle.min.css"
   />
   <!-- css,js -->
-  <link rel="stylesheet" href="./css/style.css">
-  <script defer src="./js/script.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script defer src="../js/script.js"></script>
   
 </head>
 <body>
@@ -191,37 +191,37 @@
         <div class="notion-sidebar">
           <div class="menu_content">
 
-            <a class="nickname icon_wrap" href="./user.html">
+            <a class="nickname icon_wrap" href="../html/user.html">
               <span><%= uvo.getNickname() %></span>
             </a>
 
             <div class="search icon_wrap">
-              <img src="./sources/icons/search.svg" alt="search icon" class="sidebar_icon">
+              <img src="../sources/icons/search.svg" alt="search icon" class="sidebar_icon">
               <input type="text" class="search-input" placeholder="Search…">
             </div>
 
-            <a href="./main.html" class="home icon_wrap">
-              <img src="./sources/icons/home.svg" alt="" class="sidebar_icon">
+            <a href="../html/main.html" class="home icon_wrap">
+              <img src="../sources/icons/home.svg" alt="" class="sidebar_icon">
               <span>HOME</span>
             </a>
 
-            <a href="./workspace.html" class="workspace icon_wrap">
-              <img src="./sources/icons/work.svg" alt="" class="sidebar_icon">
+            <a href="../html/workspace.html" class="workspace icon_wrap">
+              <img src="../sources/icons/work.svg" alt="" class="sidebar_icon">
               <span>WORKSPACE</span>
             </a>
 
             <div id="follow">
               <div class="follow_list">
                 <div class="follow_tag icon_wrap">
-                  <img src="./sources/icons/follow.svg" alt="follow icon" class="sidebar_icon">
+                  <img src="../sources/icons/follow.svg" alt="follow icon" class="sidebar_icon">
                   <!-- label 클릭 시 체크박스 토글 -->
                   <label for="follow_toggle">FOLLOW</label>
                 </div>
                 <!-- 체크박스를 follow_items 형제 요소로 이동 -->
                 <input type="checkbox" id="follow_toggle">
                 <ul class="follow_items">
-                  <li><a href="postView.html">PostView</a></li>
-                  <li><a href="list.html">List</a></li>
+                  <li><a href="../html/postView.html">PostView</a></li>
+                  <li><a href="../html/list.html">List</a></li>
                 </ul>
               </div>
             </div>
@@ -260,7 +260,7 @@
           	for (CategoryVO ca : clist) {
           		if(ca.getCategory_idx() != uvo.getCategory_idx()){
           		%>
-          		<button style="background-image: url(./sources/button_bg/<%= ca.getImg() %>); background-size: cover;">
+          		<button style="background-image: url(../sources/button_bg/<%= ca.getImg() %>); background-size: cover;">
           			<p><%= ca.getC_name() %></p>
           		</button>
           		<%

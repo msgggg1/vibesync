@@ -20,10 +20,10 @@ public interface UserDAO {
 	UserSessionVO findByEmail(String email);
 	
 	// 회원가입 시 중복 검사
-	// 이메일 중복 검사
-	boolean isEmailExists(String email);
 	// 닉네임 중복 검사
 	boolean isNicknameExists(String nickname);
+	// 이메일 중복 검사
+	boolean isEmailExists(String email);
 	
 	// 인기 유저 조회
 	List<UserDTO> findPopularUsers(int limit) throws SQLException;

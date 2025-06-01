@@ -160,35 +160,7 @@ public class UserDAOImpl implements UserDAO {
 		return userInfo;
 	}
 	
-	// 이메일 중복 검사
-	@Override
-	public boolean isEmailExists(String email) {
-		Boolean isEmailExists = false;
-		
-		String sql = "SELECT COUNT(ac_idx) ac_idx FROM userAccount WHERE email = ? ";
-		try {
-			pstmt = conn.prepareStatement(sql);
-	 		pstmt.setString(1, email);
-	 		rs = pstmt.executeQuery();
-	 		
-	 		if (rs.next()) {
-	 			int ac_idx = rs.getInt("ac_idx");
-	 			if (ac_idx > 0) isEmailExists = true;
-	 		}
-	 		
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null) rs.close();
-				if (pstmt != null) pstmt.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return isEmailExists;
-	}
+	// 중복 검사 : 닉네임, 이메일
 	
 	// 닉네임 중복 검사
 	@Override
@@ -218,6 +190,36 @@ public class UserDAOImpl implements UserDAO {
 		}
 		
 		return isNicknameExists;
+	}
+	
+	// 이메일 중복 검사
+	@Override
+	public boolean isEmailExists(String email) {
+		Boolean isEmailExists = false;
+		
+		String sql = "SELECT COUNT(ac_idx) ac_idx FROM userAccount WHERE email = ? ";
+		try {
+			pstmt = conn.prepareStatement(sql);
+	 		pstmt.setString(1, email);
+	 		rs = pstmt.executeQuery();
+	 		
+	 		if (rs.next()) {
+	 			int ac_idx = rs.getInt("ac_idx");
+	 			if (ac_idx > 0) isEmailExists = true;
+	 		}
+	 		
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return isEmailExists;
 	}
 	
 	// 인기 유저 조회

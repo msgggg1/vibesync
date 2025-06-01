@@ -49,9 +49,9 @@ int count = list.size();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>list</title>
 
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="icon" href="./sources/favicon.ico" />
-  <script defer src="./js/script.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="../sources/favicon.ico" />
+  <script defer src="../js/script.js"></script>
 </head>
 <body>
   <div id="notion-app">
@@ -66,32 +66,32 @@ int count = list.size();
             </a>
 
             <div class="search icon_wrap">
-              <img src="./sources/icons/search.svg" alt="search icon" class="sidebar_icon">
+              <img src="../sources/icons/search.svg" alt="search icon" class="sidebar_icon">
               <input type="text" class="search-input" placeholder="Search…">
             </div>
 
-            <a href="./main.html" class="home icon_wrap">
+            <a href="../html/main.html" class="home icon_wrap">
               <img src="./sources/icons/home.svg" alt="" class="sidebar_icon">
               <span>HOME</span>
             </a>
 
-            <a href="./workspace.html" class="workspace icon_wrap">
-              <img src="./sources/icons/work.svg" alt="" class="sidebar_icon">
+            <a href="../html/workspace.html" class="workspace icon_wrap">
+              <img src="../sources/icons/work.svg" alt="" class="sidebar_icon">
               <span>WORKSPACE</span>
             </a>
 
             <div id="follow">
               <div class="follow_list">
                 <div class="follow_tag icon_wrap">
-                  <img src="./sources/icons/follow.svg" alt="follow icon" class="sidebar_icon">
+                  <img src="../sources/icons/follow.svg" alt="follow icon" class="sidebar_icon">
                   <!-- label 클릭 시 체크박스 토글 -->
                   <label for="follow_toggle">FOLLOW</label>
                 </div>
                 <!-- 체크박스를 follow_items 형제 요소로 이동 -->
                 <input type="checkbox" id="follow_toggle">
                 <ul class="follow_items">
-                  <li><a href="postView.html">PostView</a></li>
-                  <li><a href="list.html">List</a></li>
+                  <li><a href="../html/postView.html">PostView</a></li>
+                  <li><a href="../html/list.html">List</a></li>
                 </ul>
               </div>
             </div>
@@ -109,7 +109,7 @@ int count = list.size();
       <div id="content_wrapper">
         <section id="content">
           <div class="back_icon">
-            <a href="#"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
+            <a href="#"><img src="../sources/icons/arrow_back.svg" alt="arrow_back"></a>
           </div>
           
           <!-- top -->

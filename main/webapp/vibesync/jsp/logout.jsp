@@ -33,17 +33,5 @@
     session.invalidate();
 
     // 로그아웃 후 login.jsp로 리디렉션
-    response.sendRedirect("login.jsp"); 
+    response.sendRedirect("login.jsp");
 %>
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>로그아웃</title>
-</head>
-<body>
-    <h3>로그아웃 되었습니다.</h3>
-    <a href="login.jsp">로그인 페이지로 돌아가기</a>
-</body>
-</html>

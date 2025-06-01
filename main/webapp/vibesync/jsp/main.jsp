@@ -14,10 +14,10 @@
     href="https://unpkg.com/swiper/swiper-bundle.min.css"
   />
   <!-- css,js -->
-  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="../css/style.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-  <script defer src="./js/script.js"></script>
+  <script defer src="../js/script.js"></script>
 </head>
 <body>
   <div id="notion-app">
@@ -34,32 +34,32 @@
             </a>
 
             <div class="search icon_wrap">
-              <img src="./sources/icons/search.svg" alt="search icon" class="sidebar_icon">
+              <img src="../sources/icons/search.svg" alt="search icon" class="sidebar_icon">
               <input type="text" class="search-input" placeholder="Search…">
             </div>
 
-            <a href="./main.html" class="home icon_wrap">
-              <img src="./sources/icons/home.svg" alt="" class="sidebar_icon">
+            <a href="../html/main.html" class="home icon_wrap">
+              <img src="../sources/icons/home.svg" alt="" class="sidebar_icon">
               <span>HOME</span>
             </a>
 
-            <a href="./workspace.html" class="workspace icon_wrap">
-              <img src="./sources/icons/work.svg" alt="" class="sidebar_icon">
+            <a href="../html/workspace.html" class="workspace icon_wrap">
+              <img src="../sources/icons/work.svg" alt="" class="sidebar_icon">
               <span>WORKSPACE</span>
             </a>
 
             <div id="follow">
               <div class="follow_list">
                 <div class="follow_tag icon_wrap">
-                  <img src="./sources/icons/follow.svg" alt="follow icon" class="sidebar_icon">
+                  <img src="../sources/icons/follow.svg" alt="follow icon" class="sidebar_icon">
                   <!-- label 클릭 시 체크박스 토글 -->
                   <label for="follow_toggle">FOLLOW</label>
                 </div>
                 <!-- 체크박스를 follow_items 형제 요소로 이동 -->
                 <input type="checkbox" id="follow_toggle">
                 <ul class="follow_items">
-                  <li><a href="postView.html">PostView</a></li>
-                  <li><a href="list.html">List</a></li>
+                  <li><a href="../html/postView.html">PostView</a></li>
+                  <li><a href="../html/list.html">List</a></li>
                 </ul>
               </div>
             </div>
@@ -94,10 +94,10 @@
   
           <!-- category btn -->
           <div class="category_btn_group">
-            <button style="background-image: url(./sources/button_bg/movie.jpg); background-size: cover;"><p>Movie</p></button>
-            <button style="background-image: url(./sources/button_bg/drama.jpg); background-size: cover;"><p>Drama</p></button>
-            <button style="background-image: url(./sources/button_bg/music.jpg); background-size: cover;"><p>Music</p></button>
-            <button style="background-image: url(./sources/button_bg/anime.jpg); background-size: cover;"><p>Animation</p></button>
+            <button style="background-image: url(../sources/button_bg/movie.jpg); background-size: cover;"><p>Movie</p></button>
+            <button style="background-image: url(../sources/button_bg/drama.jpg); background-size: cover;"><p>Drama</p></button>
+            <button style="background-image: url(../sources/button_bg/music.jpg); background-size: cover;"><p>Music</p></button>
+            <button style="background-image: url(../sources/button_bg/anime.jpg); background-size: cover;"><p>Animation</p></button>
           </div>
   
           <!-- grid -->

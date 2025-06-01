@@ -15,12 +15,12 @@ public class SignUpService {
     public UserSessionVO register(SignUpDTO dto) {
     	UserSessionVO userInfo = null;
     	
-    	Boolean isEmailExists = userAccountDAO.isEmailExists(dto.getEmail());
     	Boolean isNicknameExists = userAccountDAO.isNicknameExists(dto.getNickname());
+    	Boolean isEmailExists = userAccountDAO.isEmailExists(dto.getEmail());
     	
-    	if (isEmailExists || isNicknameExists) {
-    		if (isEmailExists) throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+    	if (isNicknameExists || isEmailExists) {
     		if (isNicknameExists) throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+    		if (isEmailExists) throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
     	} else {
     		userInfo = userAccountDAO.insertUser(dto);
     	}
