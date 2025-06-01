@@ -16,7 +16,7 @@ import mvc.domain.vo.UserSessionVO;
 import mvc.persistence.dao.UserDAO;
 
 public class UserDAOImpl implements UserDAO {
-    private Connection conn;
+    private Connection conn = null;
     private PreparedStatement pstmt = null;
     ResultSet rs = null;
     
@@ -40,17 +40,15 @@ public class UserDAOImpl implements UserDAO {
     		String nickname = dto.getNickname();
     		String img = null;
     		String name = dto.getName();
+    		String salt = null;
     		int category_idx = 1;
     		
-    		String salt;
     		try {
     			salt = PasswordMigrator.generateSalt();
+    			hashedPw = PasswordMigrator.hashPassword(dto.getPassword(), salt);
     		} catch (Exception e) {
     			e.printStackTrace();
-    			salt = null;
     		}
-    		
-    		hashedPw = PasswordMigrator.hashPassword(dto.getPassword(), salt);
     		
     		pstmt.setString(1, email);
     		pstmt.setString(2, hashedPw);
@@ -70,7 +68,7 @@ public class UserDAOImpl implements UserDAO {
     		}
     		
     	} catch (SQLException e) {
-    		throw new RuntimeException(e);
+    		throw new RuntimeException("회원가입 과정에서 오류가 발생했습니다.");
     	} finally {
     		try {
     			if (pstmt != null) pstmt.close();
@@ -87,7 +85,7 @@ public class UserDAOImpl implements UserDAO {
     public UserSessionVO login(LoginDTO dto) {
     	UserSessionVO userInfo = null;
     	
-    	String sql = "SELECT pw, name, salt FROM userAccount WHERE email = ? ";
+    	String sql = "SELECT pw, salt FROM userAccount WHERE email = ? ";
     	
     	try {
 			pstmt = conn.prepareStatement(sql);
@@ -226,9 +224,10 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public List<UserDTO> findPopularUsers(int limit) throws SQLException {
 		 List<UserDTO> users = new ArrayList<>();
-	        // 인기 유저: (받은 좋아요 수 + 팔로워 수) 합산 기준, Oracle TOP-N 쿼리
-	        String sql = "SELECT ac_idx, nickname, img, popularity_score " +
-	                "FROM ( " +
+		 
+	     // 인기 유저: (받은 좋아요 수 + 팔로워 수) 합산 기준, Oracle TOP-N 쿼리
+	     String sql = "SELECT ac_idx, nickname, img, popularity_score " +
+	                " FROM ( " +
 	                "    SELECT " +
 	                "        ua.ac_idx, " +
 	                "        ua.nickname, " +
@@ -241,32 +240,31 @@ public class UserDAOImpl implements UserDAO {
 	                "        (SELECT ac_following, COUNT(follows_idx) AS total_followers " +
 	                "         FROM follows " +
 	                "         GROUP BY ac_following) follower_counts ON ua.ac_idx = follower_counts.ac_following " +
-	                ") " +
-	                "WHERE rn <= ?";
-	        PreparedStatement pstmt = null;
-	        ResultSet rs = null;
+	                " ) " +
+	                " WHERE rn <= ? ";
 
-	        try {
-	            pstmt = this.conn.prepareStatement(sql);
-	            pstmt.setInt(1, limit);
-	            rs = pstmt.executeQuery();
+	     try {
+	    	 pstmt = this.conn.prepareStatement(sql);
+	         pstmt.setInt(1, limit);
+	         rs = pstmt.executeQuery();
 
-	            while (rs.next()) {
-	                UserDTO user = new UserDTO();
-	                user.setAc_idx(rs.getInt("ac_idx"));
-	                user.setNickname(rs.getString("nickname"));
-	                user.setImg(rs.getString("img"));
-	                user.setPopularityScore(rs.getInt("popularity_score")); // UserDTO에 필드가 있다면 설정
-	                users.add(user);
-	            }
-	        } catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-	        	rs.close();
-	        	pstmt.close();
-	        }
+	         while (rs.next()) {
+	        	 UserDTO user = new UserDTO();
+	             user.setAc_idx(rs.getInt("ac_idx"));
+	             user.setNickname(rs.getString("nickname"));
+	             user.setImg(rs.getString("img"));
+	             user.setPopularityScore(rs.getInt("popularity_score")); // UserDTO에 필드가 있다면 설정
+	             users.add(user);
+	         }
+	      
+	      } catch (Exception e) {
+	    	  e.printStackTrace();
+	      } finally {
+	    	  if (rs != null) rs.close();
+	    	  if (pstmt != null) pstmt.close();
+	      }
 	        
-	        return users;
-	    }
+	      return users;
+	}
 
 }

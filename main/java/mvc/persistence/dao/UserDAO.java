@@ -19,7 +19,7 @@ public interface UserDAO {
 	// 이메일로 계정 정보 조회
 	UserSessionVO findByEmail(String email);
 	
-	// 중복 검사
+	// 회원가입 시 중복 검사
 	// 이메일 중복 검사
 	boolean isEmailExists(String email);
 	// 닉네임 중복 검사

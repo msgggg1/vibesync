@@ -28,13 +28,15 @@
             	Find<br>Your<br><span class="highlight">VibeSync</span><br>
             </div>
 
-            <div id="loginFormContainer">
+            <!-- <div id="loginFormContainer"> -->
+            <div id="loginFormContainer" style="${formToShow eq 'signUp' ? 'display: none;' : 'display: block;'}">
                 <form action="<%= request.getContextPath() %>/vibesync/user.do" method="post" id="loginForm"> <%-- action을 login.jsp 또는 현재 페이지로 명시 --%>
+                	<%-- POST 요청 시 login/signup 구분 --%>
                 	<input type="hidden" name="accessType" value="login">
                 	
                     <%-- 회원가입 성공 메시지 --%>
                     <c:if test="${ signupSuccessForDisplay != null && !signupSuccessForDisplay.isEmpty()}">
-                    	<p style="color: green; text-align: left; margin: 0px;">${ signupSuccessForDisplay }</p>
+                    	<div style="color: green; text-align: left; margin: 0px;">${ signupSuccessForDisplay }</div>
                     </c:if>
                     
                     <label for="userId" class="sr-only">이메일</label> 
@@ -44,16 +46,16 @@
                     
                     <%-- 로그인 에러 메시지 --%>
                     <c:if test="${ loginErrorForDisplay != null && !loginErrorForDisplay.isEmpty() }">
-                    	<p style="color: red; text-align: left; margin:0; font-size: 0.8em">${ loginErrorForDisplay }</p>
+                    	<div style="color: red; text-align: left; margin:0;">${ loginErrorForDisplay }</div>
                     </c:if>
 
                     <div class="checkbox-group">
                         <div class="checkbox-pair">
-	                        <input type="checkbox" name="autoLogin" id="autoLogin" <c:if test="${ autoLoginUserEmail != null && !autoLoginUserEmail.isEmpty() }">checked</c:if>>
+	                        <input type="checkbox" name="autoLogin" id="autoLogin">
 	                        <label for="autoLogin">Auto-Login</label>
                         </div>
                         <div class="checkbox-pair">
-	                        <input type="checkbox" name="RememEmail" id="RememEmail" <c:if test="${ rememberEmail != null && !rememberEmail.isEmpty() }">checked</c:if>>
+	                        <input type="checkbox" name="RememEmail" id="RememEmail" <c:if test="${ rememberedEmail != null && !rememberedEmail.isEmpty() }">checked</c:if>>
 	                        <label for="RememEmail">Remember Email</label>
                         </div>
                     </div>
@@ -61,18 +63,22 @@
                     <button type="submit" id="loginBtn">Login</button> 
                     </form>
                 <div class="links">
-                    Forget your account? <a href="#">Find ID</a> or <a href="#">Reset Password</a> </div>
+                    Forget your account? <a href="#">Find ID</a> or <a href="#">Reset Password</a>
+                </div>
             </div>
 
-            <div id="signupFormContainer" style="display: none;">
-                <input type="hidden" name="accessType" value="signUp">
-                
-                <%-- 회원가입 에러 메시지 --%>
-                <c:if test="${ signupErrorForDisplay != null && !signupErrorForDisplay.isEmpty() }">
-                	<p style="color: red; text-align: left; margin: 0px;">${ signupErrorForDisplay }</p>
-                </c:if>
+            <!-- <div id="signupFormContainer" style="display: none;"> -->
+            <div id="signupFormContainer" style="${formToShow eq 'signUp' ? 'display: flex;' : 'display: none;'}">
                     
                 <form action="user.do" method="post" id="signupForm">
+                	<%-- POST 요청 시 login/signup 구분 --%>
+                	<input type="hidden" name="accessType" value="signUp">
+                	
+	                <%-- 회원가입 에러 메시지 --%>
+	                <c:if test="${ signupErrorForDisplay != null && !signupErrorForDisplay.isEmpty() }">
+	                	<div style="color: red; text-align: left; margin: 0px;">${ signupErrorForDisplay }</div>
+	                </c:if>
+                	
                     <label for="signupName" class="sr-only">이름</label>
                     <input type="text" id="signupName" name="signupName" placeholder="Name" value="${ prevSignupName }" required>
 
@@ -91,35 +97,27 @@
                     
                     <label for="category" class="sr-only">관심 카테고리</label>
                     <select id="category" name="category">
-                        <option value="1">영화</option> 
+                        <option value="1">영화</option>
                         <option value="2">드라마</option> 
                         <option value="3">음악</option> 
                         <option value="4">애니메이션</option> 
-                        <option value="5">일상</option> 
+                        <option value="5">일상</option>
                     </select>
                             
                     <button type="submit" id="signupBtn">Sign Up</button> </form>
                 <div class="links">
                     Already have an account?<a href="#" id="switchToLoginLink"> Login</a> </div>
             </div>
-
-            <div class="links switch-form-link">
-                Not a member yet?<a href="#" id="switchToSignupLink">Sign Up</a> </div>
+			
+			<!-- <div class="links switch-form-link" > -->
+            <div class="links switch-form-link" style="${formToShow eq 'signUp' ? 'display: none;' : 'display: block;'}">
+                Not a member yet?<a href="#" id="switchToSignupLink">Sign Up</a>
+            </div>
         </div>
     </div>
 </div>
 
 <script src="./js/login.js"></script>
 
-<script>
-    $(document).ready(function() {
-        const formToShow = ${ formToShow != null ? formToShow : "" }; // null 체크 추가
-        if (formToShow === 'signup') {
-            $('#loginFormContainer').hide();
-            $('#signupFormContainer').show();
-            $('.switch-form-link').hide();
-        }
-    });
-</script>
 </body>
 </html>
