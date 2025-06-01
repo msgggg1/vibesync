@@ -32,7 +32,7 @@
     // 세션 초기화 (가장 확실한 방법)
     session.invalidate();
 
-    // 로그아웃 후 login.jsp로 리디렉션 
+    // 로그아웃 후 login.jsp로 리디렉션
     response.sendRedirect("login.jsp"); 
 %>
 

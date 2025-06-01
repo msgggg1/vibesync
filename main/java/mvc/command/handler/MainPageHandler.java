@@ -20,17 +20,16 @@ public class MainPageHandler implements CommandHandler {
 
     private NoteDAO noteDao;
     private UserDAO userDao;
-    private Connection conn;
 
     public MainPageHandler(Connection conn) {
         this.noteDao = new NoteDAOImpl();
         this.userDao = new UserDAOImpl(conn);
-        this.conn = conn;
     }
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+    	request.setCharacterEncoding("UTF-8");
+    	
         HttpSession session = request.getSession(false);
         Integer loggedInUserAcIdx = null;
 
