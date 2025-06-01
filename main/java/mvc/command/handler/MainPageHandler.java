@@ -11,6 +11,7 @@ import mvc.persistence.dao.UserDAO;
 import mvc.persistence.daoImpl.NoteDAOImpl;
 import mvc.persistence.daoImpl.UserDAOImpl;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +20,12 @@ public class MainPageHandler implements CommandHandler {
 
     private NoteDAO noteDao;
     private UserDAO userDao;
+    private Connection conn;
 
-    public MainPageHandler() {
+    public MainPageHandler(Connection conn) {
         this.noteDao = new NoteDAOImpl();
-        this.userDao = new UserDAOImpl();
+        this.userDao = new UserDAOImpl(conn);
+        this.conn = conn;
     }
 
     @Override

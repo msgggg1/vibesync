@@ -105,7 +105,7 @@ public class UserDAOImpl implements UserDAO {
                 String hashedInputPassword = PasswordMigrator.hashPassword(pwParam, storedSalt);
 
                 if (hashedInputPassword != null && storedHashedPassword.equals(hashedInputPassword)) {
-                	// 로그인 성공 (비밀번호 일치
+                	// 로그인 성공 (비밀번호 일치)
                 	userInfo = this.findByEmail(emailParam);
                 }
             }

@@ -87,10 +87,7 @@ public class UserHandler implements CommandHandler {
         
         // rememberedEmailForForm이 null일 경우 빈 문자열로 
         rememberedEmail = (rememberedEmail == null) ? "" : rememberedEmail;
-        
         UserSessionVO userInfo = null;
-        userInfo = (UserSessionVO) session.getAttribute("userInfo");
-        
         Connection conn = null;
         
         // 로그인 및 회원가입 기능
@@ -102,7 +99,7 @@ public class UserHandler implements CommandHandler {
         	conn.setAutoCommit(false);
         	
         	if (!"POST".equalsIgnoreCase(requestMethod)) { // GET 방식
-        		if(userInfo != null) { // 로그인 되어 있는 상태
+        		if(session.getAttribute("userInfo") != null) { // 로그인 되어 있는 상태
         			// 이미 세션에 로그인 정보가 있다면 (그리고 POST 요청이 아니라면) main.jsp로 리디렉션
         			// (로그인된 사용자가 login.jsp에 접근하는 것을 막음)
         			response.sendRedirect(contextPath + "/vibesync/main.do");
@@ -125,12 +122,35 @@ public class UserHandler implements CommandHandler {
     			        LoginDTO loginDTO = new LoginDTO(emailParam, pwParam);
     			        userInfo = loginService.login(loginDTO);
                 	
-                    if (userInfo != null) {
+                    if (userInfo != null) { // 로그인 성공
+                        // "Remember Email" 기능 처리
+                        String rememberEmail = request.getParameter("RememEmail"); // 체크박스 값 가져오기
+                        if ("on".equals(rememberEmail)) { // 체크박스가 선택되었다면 (HTML에서 checkbox가 check되면 "on" 값을 가짐)
+                            Cookie emailCookie = new Cookie("rememberedUserEmail", emailParam);
+                            emailCookie.setMaxAge(60 * 60 * 24 * 30); // 쿠키 유효 기간: 30일 (초 단위)
+                            emailCookie.setPath("/"); // 웹 애플리케이션 전체 경로에서 사용 가능하도록 설정
+                            response.addCookie(emailCookie);
+                        } else { // 체크박스가 선택되지 않았다면 기존 쿠키 삭제
+                            Cookie emailCookie = new Cookie("rememberedUserEmail", "");
+                            emailCookie.setMaxAge(0); // 쿠키 즉시 만료
+                            emailCookie.setPath("/");
+                            response.addCookie(emailCookie);
+                        }
+                        
+                        // 자동 로그인
+                        String autoLogin = request.getParameter("autoLogin");
+                        if ("on".equals(autoLogin)) {
+                        	Cookie autoLoginCookie = new Cookie("userEmail", emailParam);
+                        	autoLoginCookie.setMaxAge(60 * 60 * 24 * 30); // 쿠키 유효 기간: 30일 (초 단위)
+                        	autoLoginCookie.setPath("/"); // 웹 애플리케이션 전체 경로에서 사용 가능하도록 설정
+                            response.addCookie(autoLoginCookie);
+                        }
+                    	
                         session.setAttribute("userInfo", userInfo); // 세션에 사용자 정보 저장
                         response.sendRedirect(contextPath + "/vibesync/main.do");
                     } else {
                     	session.setAttribute("sessionLoginError", "로그인 중 오류가 발생했습니다.");
-                    	return "login.jsp";
+                    	response.sendRedirect(contextPath + "/vibesync/user.do");
                     }
                 
                 } else if (accessType.equals("signUp")) { // 회원가입

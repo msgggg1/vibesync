@@ -10,7 +10,8 @@
             if ("userEmail".equals(cookie.getName())) { // 자동 로그인용 쿠키
                 wasAutoLoginActive = true; // 자동 로그인이 활성화 되어 있었음을 표시
                 
-                cookie.setValue(""); 
+                cookie.setValue("");
+                cookie.setMaxAge(0);
                 cookie.setPath("/"); 
                 response.addCookie(cookie); // 자동 로그인 쿠키 삭제
             } else if ("rememberEmail".equals(cookie.getName())) {
