@@ -9,6 +9,8 @@
 <%@ page import="javax.servlet.http.Cookie" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
+
+String contextPath = request.getContextPath(); // jspPro
     // ── 0. 기존 쿠키 확인 ──
     String currentUser = null;
     String rememberedEmail = null;
@@ -35,167 +37,6 @@
         "SELECT category_idx, c_name FROM category"
     );
     ResultSet categoryRs = categoryStmt.executeQuery();
-
-    String action = request.getParameter("mode");
-    if (action != null && !action.trim().isEmpty()) {
-
-        // ─ 회원가입 처리 ─
-        if ("signup".equals(action)) {
-            Connection conn = null;
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-
-            String name      = request.getParameter("signupName");
-            String nickname  = request.getParameter("signupNickname");
-            String email     = request.getParameter("signupEmail");
-            String password  = request.getParameter("signupPw");
-            String category  = request.getParameter("category");
-
-            try {
-                conn = DBConn_vibesync.getConnection();
-
-                // 이메일 중복 확인
-                pstmt = conn.prepareStatement("SELECT 1 FROM useraccount WHERE email = ?");
-                pstmt.setString(1, email);
-                rs = pstmt.executeQuery();
-                if (rs.next()) {
-                    out.println("<script>alert('이미 존재하는 이메일입니다.'); location.href='login.jsp';</script>");
-                } else {
-                    // === 랜덤 salt 생성 ===
-                    SecureRandom sr = new SecureRandom();
-                    byte[] saltBytes = new byte[16];
-                    sr.nextBytes(saltBytes);
-                    StringBuilder saltSb = new StringBuilder();
-                    for (byte b : saltBytes) {
-                        saltSb.append(String.format("%02x", b));
-                    }
-                    String salt = saltSb.toString(); // 16바이트 -> 32hex
-
-                    // 비밀번호 + salt SHA-256 암호화
-                    MessageDigest md = MessageDigest.getInstance("SHA-256");
-                    md.update((password + salt).getBytes("UTF-8"));
-                    byte[] hash = md.digest();
-                    StringBuilder sb = new StringBuilder();
-                    for (byte b : hash) {
-                        sb.append(String.format("%02x", b));
-                    }
-                    String encryptedPassword = sb.toString();
-
-                    // 시퀀스 조회
-                    int ac_idx = 0;
-                    try (Statement seqStmt = conn.createStatement();
-                         ResultSet seqRs = seqStmt.executeQuery("SELECT useraccount_seq.NEXTVAL FROM dual")) {
-                        if (seqRs.next()) ac_idx = seqRs.getInt(1);
-                    }
-
-                    // 사용자 INSERT (salt 컬럼 포함) === SALT 추가 ===
-                    String insertSql =
-                      "INSERT INTO useraccount (ac_idx, email, pw, salt, nickname, img, name, category_idx) " +
-                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                    try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
-                        insertStmt.setInt(1, ac_idx);
-                        insertStmt.setString(2, email);
-                        insertStmt.setString(3, encryptedPassword);
-                        insertStmt.setString(4, salt);
-                        insertStmt.setString(5, nickname);
-                        insertStmt.setString(6, "./source/img.jpg");
-                        insertStmt.setString(7, name);
-                        insertStmt.setString(8, category);
-                        insertStmt.executeUpdate();
-                    }
-
-                    out.println("<script>alert('회원가입 성공!'); location.href='login.jsp';</script>");
-                }
-            } catch (Exception e) {
-                out.println("에러: " + e.getMessage());
-            } finally {
-                if (rs != null)    try { rs.close(); }    catch (Exception ignored) {}
-                if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
-                // Connection은 닫지 않음
-            }
-
-        // ─ 로그인 처리 ─
-        } else if ("login".equals(action)) {
-            Connection conn = null;
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-
-            String email          = request.getParameter("userId");
-            String password       = request.getParameter("userPw");
-            String autoLoginParam = request.getParameter("autoLogin");
-            String rememEmailParam= request.getParameter("RememEmail");
-
-            try {
-                conn = DBConn_vibesync.getConnection();
-
-                // 먼저 email로 사용자의 salt와 저장된 해시 비밀번호 조회 === SALT 변경 ===
-                String selectSql = "SELECT pw, salt, category_idx FROM useraccount WHERE email = ?";
-                pstmt = conn.prepareStatement(selectSql);
-                pstmt.setString(1, email);
-                rs = pstmt.executeQuery();
-
-                if (rs.next()) {
-                    String storedHash = rs.getString("pw");
-                    String salt       = rs.getString("salt");
-                    int userCategory  = rs.getInt("category_idx");
-
-                    // 입력된 비밀번호 + salt SHA-256 해시
-                    MessageDigest md = MessageDigest.getInstance("SHA-256");
-                    md.update((password + salt).getBytes("UTF-8"));
-                    byte[] hash = md.digest();
-                    StringBuilder sb = new StringBuilder();
-                    for (byte b : hash) {
-                        sb.append(String.format("%02x", b));
-                    }
-                    String encryptedPassword = sb.toString();
-
-                    // 해시 비교
-                    if (storedHash.equals(encryptedPassword)) {
-                        // ─ userId 쿠키 설정 ─
-                        Cookie loginCookie = new Cookie("userEmail", email);
-                        if (autoLoginParam != null) {
-                            loginCookie.setMaxAge(7 * 24 * 60 * 60); // 7일
-                        }
-                        loginCookie.setPath("/");
-                        response.addCookie(loginCookie);
-
-                        // ─ category_idx 쿠키 설정 ─
-                        Cookie categoryCookie = new Cookie("category_idx", String.valueOf(userCategory));
-                        if (autoLoginParam != null) {
-                            categoryCookie.setMaxAge(7 * 24 * 60 * 60);
-                        }
-                        categoryCookie.setPath("/");
-                        response.addCookie(categoryCookie);
-
-                        // ─ RememEmail 쿠키 설정 ─
-                        if (rememEmailParam != null) {
-                            Cookie remCookie = new Cookie("rememberEmail", email);
-                            remCookie.setMaxAge(30 * 24 * 60 * 60); // 30일
-                            remCookie.setPath("/");
-                            response.addCookie(remCookie);
-                        } else {
-                            Cookie remCookie = new Cookie("rememberEmail", "");
-                            remCookie.setMaxAge(0);
-                            remCookie.setPath("/");
-                            response.addCookie(remCookie);
-                        }
-
-                        out.println("<script>alert('로그인 성공!'); location.href='main.jsp';</script>");
-                    } else {
-                        out.println("<script>alert('로그인 실패: 이메일 또는 비밀번호가 잘못되었습니다.');</script>");
-                    }
-                } else {
-                    out.println("<script>alert('로그인 실패: 이메일 또는 비밀번호가 잘못되었습니다.');</script>");
-                }
-            } catch (Exception e) {
-                out.println("에러: " + e.getMessage());
-            } finally {
-                if (rs != null)    try { rs.close();    } catch (Exception ignored) {}
-                if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
-                // Connection은 닫지 않음
-            }
-        }
-    }
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -233,7 +74,7 @@
 
         <!-- 로그인 폼 -->
         <div id="loginFormContainer">
-          <form action="./login.jsp" method="post" id="loginForm">
+          <form action="<%= contextPath%>/login.do" method="post" id="loginForm">
             <input type="hidden" name="mode" value="login"/>
             <input type="email"  id="userId" name="userId" placeholder="Email" required
                    value="<%= rememberedEmail != null ? rememberedEmail : "" %>"/>
@@ -252,7 +93,7 @@
 
         <!-- 회원가입 폼 (기존 그대로) -->
         <div id="signupFormContainer" style="display: none">
-          <form action="./login.jsp" method="post" id="signupForm">
+          <form action="<%= contextPath%>/login.do" method="post" id="signupForm">
             <input type="hidden" name="mode" value="signup">
 
             <label for="signupEmail" class="sr-only">이름</label>

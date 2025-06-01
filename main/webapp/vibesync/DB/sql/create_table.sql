@@ -10,13 +10,16 @@ DROP TABLE note;
 DROP TABLE follows;
 DROP TABLE todolist;
 DROP TABLE message;
-DROP TABLE watchParty;
 DROP TABLE setting;
 DROP TABLE userPage;
 DROP TABLE contents;
 DROP TABLE genre;
+DROP TABLE wa_sync;
+DROP TABLE wa_comment;
+DROP TABLE watchParty;
 DROP TABLE userAccount;
 DROP TABLE category;
+
 
 --------------------------------------------------------------------------------
 -- 1. category (카테고리)
@@ -90,17 +93,6 @@ CREATE TABLE setting (
 );
 
 --------------------------------------------------------------------------------
--- 7. watchParty (워치파티)
---------------------------------------------------------------------------------
-CREATE TABLE watchParty (
-    watchParty_idx INT PRIMARY KEY,
-    video_id VARCHAR2(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT SYSDATE,
-    host INT NOT NULL,
-    CONSTRAINT FK_watchParty_TO_userAccount FOREIGN KEY (host) REFERENCES userAccount(ac_idx) ON DELETE CASCADE
-);
-
---------------------------------------------------------------------------------
 -- 8. message (메시지)
 --------------------------------------------------------------------------------
 CREATE TABLE message (
@@ -153,9 +145,11 @@ CREATE TABLE note (
     content_idx INT NOT NULL,
     genre_idx INT NOT NULL,
     category_idx int not null,
+    userPg_idx int not null,
     CONSTRAINT FK_note_TO_contents FOREIGN KEY (content_idx) REFERENCES contents(content_idx) ON DELETE CASCADE,
     CONSTRAINT FK_note_TO_genre FOREIGN KEY (genre_idx) REFERENCES genre(genre_idx) ON DELETE CASCADE,
-    CONSTRAINT FK_nc FOREIGN KEY (category_idx) REFERENCES category(category_idx) ON DELETE CASCADE
+    CONSTRAINT FK_nc FOREIGN KEY (category_idx) REFERENCES category(category_idx) ON DELETE CASCADE,
+    CONSTRAINT FK_np FOREIGN KEY (userPg_idx) REFERENCES userPage(userPg_idx) ON DELETE CASCADE
 );
 
 --------------------------------------------------------------------------------
@@ -189,7 +183,7 @@ CREATE TABLE bookmark (
 --------------------------------------------------------------------------------
 CREATE TABLE likes (
     likes_idx INT PRIMARY KEY,
-    created_at TIMESTAMP,
+    created_at TIMESTAMP default sysdate,
     note_idx INT NOT NULL,
     ac_idx INT NOT NULL,
     CONSTRAINT FK_likes_TO_note FOREIGN KEY (note_idx) REFERENCES note(note_idx) ON DELETE CASCADE,
@@ -223,6 +217,36 @@ CREATE TABLE commentlist (
     CONSTRAINT FK_comment_TO_comment FOREIGN KEY (re_commentlist_idx) REFERENCES commentlist(commentlist_idx) ON DELETE CASCADE,
     CONSTRAINT FK_comment_TO_note FOREIGN KEY (note_idx) REFERENCES note(note_idx) ON DELETE CASCADE,
     CONSTRAINT FK_comment_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) ON DELETE CASCADE
+);
+
+--------------------------------------------------------------------------------
+-- 7. watchParty (워치파티)
+--------------------------------------------------------------------------------
+CREATE TABLE watchParty (
+    watchParty_idx INT PRIMARY KEY,
+    title CLOB,
+    video_id VARCHAR2(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT SYSDATE,
+    host INT NOT NULL,
+    CONSTRAINT FK_wu FOREIGN KEY (host) REFERENCES userAccount(ac_idx) ON DELETE CASCADE
+);
+
+CREATE TABLE wa_sync (
+    sync_idx INT PRIMARY KEY,
+    timeline number(10, 3),
+    play VARCHAR2(10),
+    watchParty_idx int NOT NULL,
+    CONSTRAINT FK_sw FOREIGN KEY (watchParty_idx) REFERENCES watchParty(watchParty_idx) ON DELETE CASCADE
+);
+
+CREATE TABLE wa_comment (
+    wac_idx INT PRIMARY KEY,
+    nickname varchar(100),
+    commnet CLOB,
+    timeline number(10, 3),
+    create_at TIMESTAMP default sysdate,
+    watchParty_idx int NOT NULL,
+    CONSTRAINT FK_cw FOREIGN KEY (watchParty_idx) REFERENCES watchParty(watchParty_idx) ON DELETE CASCADE
 );
 
 

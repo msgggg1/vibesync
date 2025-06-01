@@ -9,23 +9,4 @@
     <welcome-file>default.jsp</welcome-file>
     <welcome-file>default.htm</welcome-file>
   </welcome-file-list>
-  
-  <servlet>
-		<description>MVC 패턴 서블릿</description>
-		<description>컨트롤러 역할</description>
-		<servlet-name>dispatcher</servlet-name>
-		<servlet-class>mvc.controller.DispatcherServlet</servlet-class>
-		<init-param>
-			<description>요청 URL = CommandHandler 매칭 설정 파일 등록</description>
-			<param-name>mappingPath</param-name>
-			<param-value>/WEB-INF/commandHandler.properties</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>dispatcher</servlet-name>
-		<url-pattern>*.do</url-pattern>
-	</servlet-mapping>
-	
 </web-app>

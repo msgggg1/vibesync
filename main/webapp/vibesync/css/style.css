@@ -30,6 +30,10 @@
 * {
   box-sizing: border-box;
 }
+
+button {
+	cursor: pointer;
+}
 .subfont {
   font-family: "National Park", sans-serif;
 }
@@ -49,6 +53,12 @@ a {
   cursor: pointer;
 }
 ul{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100%;
+  height: 100%;
+  padding: 0 10px;
   list-style: none;
 }
 p {
@@ -217,6 +227,7 @@ input:focus {
   text-transform: uppercase;
   font-weight: bold;
   color: var(--w-fff);
+  cursor: pointer;
 }
 
 #content_wrapper {
@@ -314,7 +325,9 @@ input:focus {
 }
 
 .grid_wrapper .grid_item {
-  background-color: var(--b-000);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
   height: 300px;
   border-radius: 20px;
   color: var(--w-fff);

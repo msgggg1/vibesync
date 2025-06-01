@@ -1,5 +1,7 @@
 package org.doit.domain;
 
+import java.sql.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,16 +15,14 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NoteVO {
-	
-	private int note_idx;
-	private String title;
-	private String text;
+public class UserPage_UserVO {
+	private int ac_idx;
+	private String email;
+	private String nickname;
 	private String img;
-	private String create_at;
-	private int view_count;
-	private int content_idx;
-	private int genre_idx;
+	private String name;
+	private Date created_at;
 	private int category_idx;
-	private int userPg_idx;
+	private int follower;
+	private int follow;
 }

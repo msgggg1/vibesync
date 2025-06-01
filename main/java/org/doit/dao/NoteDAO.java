@@ -51,6 +51,7 @@ public class NoteDAO {
                         .content_idx(rs.getInt("content_idx"))
                         .genre_idx(rs.getInt("genre_idx"))
                         .category_idx(rs.getInt("category_idx"))
+                        .userPg_idx(rs.getInt("userPg_idx"))
                         .build();
                     list.add(vo);
                 } while (rs.next());

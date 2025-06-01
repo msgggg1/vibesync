@@ -14,6 +14,7 @@
     Cookie[] cookies = request.getCookies();
     String userEmail = null;
     String categoryIdx_str = null;
+    String nickname = null;
     if (cookies != null) {
         for (Cookie c : cookies) {
             if ("userEmail".equals(c.getName())) {
@@ -38,7 +39,7 @@
             catArray[idx++] = i;
         }
     }
-
+    
     ArrayList<CategoryVO> category_list = CategoryDAO.CategoryAll(category);
     ArrayList<NoteVO> popular_notes = NoteDAO.MainList("view_count", category, 5);
     ArrayList<NoteVO> latest_notes  = NoteDAO.MainList("create_at",   category, 5);
@@ -65,11 +66,22 @@
   <link rel="stylesheet" href="./css/style.css">
   <script defer src="./js/script.js"></script>
   <style>
-    ul li a {
-      display:flex;
-      justify-content:center;
+     ul li {
+      height: 40px;
+      display: flex;
       align-items: center;
-      color: white;
+     
+     }
+  
+    ul li:hover{
+    }
+
+    ul li a {
+        padding: 0px 10px;
+      width: 100%;
+      display:flex;
+      justify-content:space-between;
+      align-items: center;
     }
   </style>
 </head>
@@ -77,55 +89,7 @@
   <div id="notion-app">
     <input type="hidden" id="mode" value="main">
     <div class="notion-app-inner">
-      <button id="toggle-btn">☰</button>
-      <!-- sidebar -->
-      <nav class="notion-sidebar-container" id="sidebar">
-        <div class="notion-sidebar">
-          <div class="menu_content">
-            <a class="nickname icon_wrap" href="./user.html">
-              <span>Duck Hammer</span>
-            </a>
-
-            <div class="search icon_wrap">
-              <img src="./sources/icons/search.svg" alt="search icon" class="sidebar_icon">
-              <input type="text" class="search-input" placeholder="Search…">
-            </div>
-
-            <a href="./main.jsp" class="home icon_wrap">
-              <img src="./sources/icons/home.svg" alt="" class="sidebar_icon">
-              <span>HOME</span>
-            </a>
-
-            <a href="./workspace.html" class="workspace icon_wrap">
-              <img src="./sources/icons/work.svg" alt="" class="sidebar_icon">
-              <span>WORKSPACE</span>
-            </a>
-
-            <div id="follow">
-              <div class="follow_list">
-                <div class="follow_tag icon_wrap">
-                  <img src="./sources/icons/follow.svg" alt="follow icon" class="sidebar_icon">
-                  <label for="follow_toggle">FOLLOW</label>
-                </div>
-                <input type="checkbox" id="follow_toggle">
-                <ul class="follow_items">
-                  <li><a href="postView.html">PostView</a></li>
-                  <li><a href="list.html">List</a></li>
-                </ul>
-              </div>
-            </div>
-
-          </div>
-
-          <div id="logout">
-            <!-- 로그아웃 버튼: logout.jsp 로 이동 -->
-            <form action="./includes/logout.jsp" method="post">
-              <button type="submit">Logout</button>
-            </form>
-          </div>
-
-        </div>
-      </nav>
+      <jsp:include page="./includes/sidebar.jsp"></jsp:include>
 
       <!-- content -->
       <div id="content_wrapper">
@@ -160,7 +124,7 @@
               <ul>
                 <% for (NoteVO note : popular_notes) { %>
                   <li>
-                    <a>
+                    <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
                       <div class="post-index"><%= note.getNote_idx() %></div>
                       <div class="post-title"><%= note.getTitle() %></div>
                     </a>
@@ -170,26 +134,26 @@
             </div>
             <div class="grid_item">
               <ul>
-                <% for (NoteVO note : latest_notes) { %>
+                <% int i = 1; for (NoteVO note : latest_notes) { %>
                   <li>
-                    <a>
-                      <div class="post-index"><%= note.getNote_idx() %></div>
+                    <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
+                      <div class="post-index"><%= i %></div>
                       <div class="post-title"><%= note.getTitle() %></div>
                     </a>
                   </li>
-                <% } %>
+                <% i++;} %>
               </ul>
             </div>
             <div class="grid_item">
               <ul>
-                <% for (UserVO user : follow_user) { %>
+                <% int j = 1; for (UserVO user : follow_user) { %>
                   <li>
-                    <a>
-                      <div class="post-index"><%= user.getAc_idx() %></div>
+                    <a href="" >
+                      <div class="post-index"><%= j %></div>
                       <div class="post-title"><%= user.getNickname() %></div>
                     </a>
                   </li>
-                <% } %>
+                <% j++; } %>
               </ul>
             </div>
           </div>
@@ -203,7 +167,7 @@
                   <ul>
                     <% for (NoteVO note : diff_notes1) { %>
                       <li>
-                        <a>
+                        <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
                           <div class="post-index"><%= note.getNote_idx() %></div>
                           <div class="post-title"><%= note.getTitle() %></div>
                         </a>
@@ -216,7 +180,7 @@
                   <ul>
                     <% for (NoteVO note : diff_notes2) { %>
                       <li>
-                        <a>
+                        <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
                           <div class="post-index"><%= note.getNote_idx() %></div>
                           <div class="post-title"><%= note.getTitle() %></div>
                         </a>
@@ -229,7 +193,7 @@
                   <ul>
                     <% for (NoteVO note : diff_notes3) { %>
                       <li>
-                        <a>
+                        <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
                           <div class="post-index"><%= note.getNote_idx() %></div>
                           <div class="post-title"><%= note.getTitle() %></div>
                         </a>
@@ -242,7 +206,7 @@
                   <ul>
                     <% for (NoteVO note : diff_notes4) { %>
                       <li>
-                        <a>
+                        <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
                           <div class="post-index"><%= note.getNote_idx() %></div>
                           <div class="post-title"><%= note.getTitle() %></div>
                         </a>
