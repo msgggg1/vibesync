@@ -8,24 +8,24 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
-    <link rel="icon" href="../sources/favicon.ico">
-    <title>VibeSync Login</title> <link rel="stylesheet" href="../css/login.css"> </head>    
+    <link rel="icon" href="./sources/favicon.ico">
+    <title>VibeSync Login</title> <link rel="stylesheet" href="./css/login.css"> </head>    
 
 <body ondragstart="return false" ondrop="return false" onselectstart="return false"><canvas id="starfield"></canvas>
 
 <div class="container">
     <div id="logo">
-        <img src="../sources/logo1.png" alt="VibeSync 로고" width="30%">
+        <img src="./sources/logo1.png" alt="VibeSync 로고" width="30%">
     </div>
 
     <div id="login">
         <div id="inner_logo">
-        	<img src="../sources/login/footer_logo.png" alt="VibeSync 로고" style=" width: 150px;
+        	<img src="./sources/login/footer_logo.png" alt="VibeSync 로고" style=" width: 150px;
         		 filter: drop-shadow(-1px 0px 0px #000) drop-shadow(-1px 0px 0px #000) drop-shadow(-1px 0px 0px #000) drop-shadow(1px 0px 0px #000) drop-shadow(0px 1px 0px #000);">
         </div>
         <div class="login-wrapper">
             <div id="findYourVibeSync">
-            	Find<br>Your<br><span class="highlight">VibeSync</span><br>
+            	Find<br>Your<br><span class="highlight">VibeSync</span><br><br>
             </div>
 
             <div id="loginFormContainer" style="${formToShow eq 'signUp' ? 'display: none;' : 'display: block;'}">
@@ -95,11 +95,9 @@
                     
                     <label for="category" class="sr-only">관심 카테고리</label>
                     <select id="category" name="category">
-                        <option value="1">영화</option>
-                        <option value="2">드라마</option> 
-                        <option value="3">음악</option> 
-                        <option value="4">애니메이션</option> 
-                        <option value="5">일상</option>
+	                    <c:forEach items="${ allCategoryInfo }" var="categoryVO">
+	                    	<option value="${ categoryVO.category_idx }">${ categoryVO.c_name }</option>
+	                    </c:forEach>
                     </select>
                             
                     <button type="submit" id="signupBtn">Sign Up</button> </form>
@@ -115,7 +113,7 @@
     </div>
 </div>
 
-<script src="../js/login.js"></script>
+<script src="./js/login.js"></script>
 
 </body>
 </html>

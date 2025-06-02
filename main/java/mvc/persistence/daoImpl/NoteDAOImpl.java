@@ -16,6 +16,7 @@ import mvc.persistence.dao.NoteDAO;
 
 public class NoteDAOImpl implements NoteDAO {
 
+	// 선호 카테고리 - 최신글
 	@Override
 	public List<NoteDTO> recentNoteByMyCategory(int categoryIdx, int limit) throws SQLException {
 		
@@ -55,6 +56,7 @@ public class NoteDAOImpl implements NoteDAO {
 	        return posts;
 	    }
 
+	// 선호 카테고리 - 인기글
 	@Override
 	public List<NoteDTO> popularNoteByMyCategory(int categoryIdx, int limit) throws SQLException {
 		List<NoteDTO> posts = new ArrayList<>();
@@ -98,8 +100,9 @@ public class NoteDAOImpl implements NoteDAO {
         return posts;
     }
 
+	// 전체 카테고리 - 인기글
 	@Override
-	public List<NoteDTO> recentAllNotes(int limit) throws SQLException {
+	public List<NoteDTO> popularNoteByAllCategory(int limit) throws SQLException {
 		 List<NoteDTO> notes = new ArrayList<>();
 	        // 전체 글 중 (좋아요 수 + 조회수) 합산 점수 높은 순, 동점 시 최신순
 	        String sql = "SELECT " +

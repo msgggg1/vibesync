@@ -7,16 +7,16 @@ import mvc.domain.vo.UserVO;
 import mvc.domain.vo.UserSessionVO;
 
 public class LoginService {
-    private UserDAO userAccountDAO;
+    private UserDAO userDAO;
 
-    public LoginService(UserDAO userAccountDAO) {
-    	this.userAccountDAO = userAccountDAO;
+    public LoginService(UserDAO userDAO) {
+    	this.userDAO = userDAO;
 	}
 
     // 로그인 : 이메일, 비밀번호 활용
 	public UserSessionVO login(LoginDTO dto) throws Exception {
 		UserSessionVO userSessionVO = null;
-		userSessionVO = userAccountDAO.login(dto);
+		userSessionVO = userDAO.login(dto);
 		
         return userSessionVO;
     }
@@ -24,7 +24,7 @@ public class LoginService {
 	// 자동로그인 : 쿠키의 사용자 이메일 정보 활용
 	public UserSessionVO autoLogin(String email) throws Exception {
 		UserSessionVO userSessionVO = null;
-		userSessionVO = userAccountDAO.findByEmail(email);
+		userSessionVO = userDAO.findByEmail(email);
 		
         return userSessionVO;
     }

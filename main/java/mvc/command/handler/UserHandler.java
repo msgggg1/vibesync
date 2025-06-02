@@ -1,6 +1,7 @@
 package mvc.command.handler;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.servlet.http.Cookie;
@@ -10,12 +11,16 @@ import javax.servlet.http.HttpSession;
 
 import com.util.ConnectionProvider;
 
+import mvc.command.service.CategoryService;
 import mvc.command.service.LoginService;
 import mvc.command.service.SignUpService;
 import mvc.domain.dto.LoginDTO;
 import mvc.domain.dto.SignUpDTO;
+import mvc.domain.vo.CategoryVO;
 import mvc.domain.vo.UserSessionVO;
+import mvc.persistence.dao.CategoryDAO;
 import mvc.persistence.dao.UserDAO;
+import mvc.persistence.daoImpl.CategoryDAOImpl;
 import mvc.persistence.daoImpl.UserDAOImpl;
 
 public class UserHandler implements CommandHandler {
@@ -71,6 +76,14 @@ public class UserHandler implements CommandHandler {
         try {
         	// 커넥션 풀을 활용한 DB 연결
         	conn = ConnectionProvider.getConnection();
+        	
+        	// 이후 Listener(서버 시작 시 실행)로 보낼 부분 : application 객체 사용 예정
+        	if (accessType == null) {
+        		CategoryDAO categoryDAO = new CategoryDAOImpl(conn);
+        		CategoryService categorySercive = new CategoryService(categoryDAO);
+        		ArrayList<CategoryVO> categoryVOList = (ArrayList<CategoryVO>) categorySercive.allCategories();
+        		session.setAttribute("allCategoryInfo", categoryVOList);
+        	}
         	
         	// 유저의 정보를 실제 JDBC에 CRUD 하는 기능들을 담당하는 DAO 클래스 : UserDAO, UserDAOImpl
         	UserDAO userAccountDAO = new UserDAOImpl(conn);

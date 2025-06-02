@@ -20,6 +20,7 @@ public class UserDAOImpl implements UserDAO {
     private PreparedStatement pstmt = null;
     ResultSet rs = null;
     
+    // 생성자
     public UserDAOImpl(Connection conn) {
     	this.conn = conn;
     }

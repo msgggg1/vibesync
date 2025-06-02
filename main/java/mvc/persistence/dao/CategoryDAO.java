@@ -6,6 +6,7 @@ import mvc.domain.vo.CategoryVO;
 
 public interface CategoryDAO {
 	
-	ArrayList<CategoryVO> CategoryAll(int category_idx);
+	// 모든 카테고리 정보 조회
+	ArrayList<CategoryVO> CategoryAll();
 	
 }

@@ -1,85 +1,52 @@
 package mvc.command.handler;
 
+import java.sql.Connection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import mvc.domain.dto.UserDTO;
-import mvc.domain.dto.NoteDTO;
-import mvc.persistence.dao.NoteDAO;
-import mvc.persistence.dao.UserDAO;
-import mvc.persistence.daoImpl.NoteDAOImpl;
-import mvc.persistence.daoImpl.UserDAOImpl;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import mvc.domain.vo.UserSessionVO;
 
 public class MainPageHandler implements CommandHandler {
 
-    private NoteDAO noteDao;
-    private UserDAO userDao;
-
-    public MainPageHandler(Connection conn) {
-        this.noteDao = new NoteDAOImpl();
-        this.userDao = new UserDAOImpl(conn);
-    }
-
-    @Override
-    public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	request.setCharacterEncoding("UTF-8");
-    	
-        HttpSession session = request.getSession(false);
-        Integer loggedInUserAcIdx = null;
-
-        if (session != null && session.getAttribute("loggedInUserAcIdx") != null) {
-            loggedInUserAcIdx = (Integer) session.getAttribute("loggedInUserAcIdx");
+	@Override
+	public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset=UTF-8");
+		
+		// 로그인 되어 있지 않고, 게스트 계정으로 메인 페이지 오픈하려는 경우
+		// HttpSession session = request.getSession();
+		
+		HttpSession session = request.getSession(false);
+		UserSessionVO userInfo = null; // 로그인된 유저 정보 저장할 객체
+		
+        if (session == null) { // 세션 만료
+        	System.err.println("MainPageHandler: session expired.");
+        } else if (session.getAttribute("userInfo") == null) {
+        	System.err.println("MainPageHandler: User not logged in");
+        	
+        	// 로그인 되어 있지 않고, 게스트 계정으로 메인 페이지 오픈하려는 경우
+        	/*
+            userInfo = new UserSessionVO().builder()
+            							  .email("")
+            							  .nickname("GUEST")
+            							  .img(null)
+            							  .category_idx(1)
+            							  .build();
+        	 */
         } else {
-            System.err.println("MainPageHandler: User not logged in or session expired.");
+        	// 로그인 성공 후 메인페이지로 넘어오면 유저 정보 받아옴
+        	userInfo = (UserSessionVO) session.getAttribute("userInfo");
         }
-
-        List<NoteDTO> recentPostsList = new ArrayList<>();
-        List<NoteDTO> popularPostsList = new ArrayList<>();
-        List<UserDTO> popularUsersList = new ArrayList<>();
-        int preferredCategoryIdx = -1;
-
-        try {
-            if (loggedInUserAcIdx != null) {
-                preferredCategoryIdx = userDao.preferredCategoryIdx(loggedInUserAcIdx);
-            }
-
-            if (preferredCategoryIdx != -1) {
-                recentPostsList = noteDao.recentNoteByMyCategory(preferredCategoryIdx, 5);
-                popularPostsList = noteDao.popularNoteByMyCategory(preferredCategoryIdx, 5);
-                
-            } else {
-            	System.out.println("MainPageHandler: 선호 카테고리 없음 또는 비로그인. 전체 게시글 목록을 조회합니다.");
-                // 선호 카테고리가 없을 때, 전체 글 중에서 인기글(좋아요+조회수, 최신순)을 가져옴
-                recentPostsList = noteDao.recentAllNotes(5);
-                popularPostsList = noteDao.recentAllNotes(5); 
-                
-            }
-
-            // 인기 유저 목록 조회
-            popularUsersList = userDao.findPopularUsers(5);
-           
-
-        } catch (SQLException e) {
-            System.err.println("MainPageHandler: DAO 작업 중 데이터베이스 오류 발생 - " + e.getMessage());
-            e.printStackTrace();
-            // 공통 에러 페이지로 포워딩.
-            request.setAttribute("errorMessage", "데이터를 불러오는 중 오류가 발생했습니다.");
-            return "/WEB-INF/error.jsp"; // 예시 에러 페이지 경로
-        }
-
-        // 뷰(JSP)로 전달할 데이터를 request attribute에 저장
-        request.setAttribute("recentPostsList", recentPostsList);
-        request.setAttribute("popularPostsList", popularPostsList);
-        request.setAttribute("popularUsersList", popularUsersList);
         
- 
-        // 포워딩할 뷰 페이지 경로
-        return "/vibesync/main.jsp";  
-    }
+        // DB 연결 관리 : Connection 객체
+        Connection conn = null;
+        
+        
+        
+		
+		return null;
+	}
+
 }
