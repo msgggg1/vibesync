@@ -17,6 +17,7 @@ public class LoginHandler implements CommandHandler {
 
 	@Override
 	public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String contextPath = request.getContextPath();
 		// ── 0. 기존 쿠키 확인 ──
 	    String currentUser = null;
 	    String rememberedEmail = null;
@@ -210,7 +211,7 @@ public class LoginHandler implements CommandHandler {
 	            }
 	        }
 	    }
-	    return "/vibesync/login.jsp";
+	    return null;
 	}
 	
 }

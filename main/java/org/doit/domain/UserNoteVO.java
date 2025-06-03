@@ -34,4 +34,6 @@ public class UserNoteVO {
 	private int ac_category_idx;
 	
 	private int like_num;
+	
+	private int upac_idx;
 }

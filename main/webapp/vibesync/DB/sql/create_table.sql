@@ -224,7 +224,7 @@ CREATE TABLE commentlist (
 --------------------------------------------------------------------------------
 CREATE TABLE watchParty (
     watchParty_idx INT PRIMARY KEY,
-    title CLOB,
+    title varchar2(1000),
     video_id VARCHAR2(255) NOT NULL,
     created_at TIMESTAMP DEFAULT SYSDATE,
     host INT NOT NULL,
@@ -242,7 +242,7 @@ CREATE TABLE wa_sync (
 CREATE TABLE wa_comment (
     wac_idx INT PRIMARY KEY,
     nickname varchar(100),
-    commnet CLOB,
+    chatting CLOB,
     timeline number(10, 3),
     create_at TIMESTAMP default sysdate,
     watchParty_idx int NOT NULL,

@@ -36,12 +36,16 @@ public class ToggleLikeServlet extends HttpServlet {
         int userIdx = Integer.parseInt(request.getParameter("userIdx"));
         // 이미 좋아요가 있는지 체크
         boolean liked = UserNoteDAO.isLiked(userIdx, noteIdx);
-
+        String img = null;
         if (liked) {
             UserNoteDAO.deleteLike(userIdx, noteIdx);
+            img = contextPath + "./sources/icons/heart.svg";
         } else {
             UserNoteDAO.addLike(userIdx, noteIdx);
+            img = contextPath + "/sources/icons/fill_heart.svg";
         }
+        
+        request.setAttribute("img", img);
         response.sendRedirect(contextPath + "/vibesync/postView.jsp?note_idx=" + noteIdx);
 	}
 

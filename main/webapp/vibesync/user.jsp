@@ -6,17 +6,10 @@
     pageEncoding="UTF-8"%>
 <%
 
-Cookie[] cookies = request.getCookies();
-
-String user_idx = null;
+String user_idx_str = request.getParameter("ui");
 int useridx = 0;
-if (cookies != null) {
-    for (Cookie c : cookies) {
-        if ("login_user_idx".equals(c.getName())) {
-        	user_idx = c.getValue();
-        	useridx = Integer.parseInt(user_idx);
-        }
-    }
+if (user_idx_str != null || user_idx_str != "") {
+	useridx = Integer.parseInt(user_idx_str);
 }
 
 UserPage_UserVO user = UserPageDAO.getUserData(useridx);
@@ -72,14 +65,14 @@ ArrayList<NoteVO> user_note = UserPageDAO.getNotesByUser(useridx);
             		for (NoteVO note : user_note) {%>
             			<div class="con_item">
             				<div class="note_imte">
-                      <img src="<%= note.getImg() %>" alt="<%= note.getImg()%>">
-                    </div>
-            				<div class="note_info">
-                      <p>
-                        <span class="category"><%= note.getCategory_idx() %></span>
-                        <span class="title"><%= note.getTitle() %></span>
-                      </p>
-                    </div>
+		                      <img src="<%= note.getImg() %>" alt="<%= note.getImg()%>">
+		                    </div>
+           					<div class="note_info">
+		                      <p>
+		                        <span class="category"><%= note.getCategory_idx() %></span>
+		                        <span class="title"><%= note.getTitle() %></span>
+		                      </p>
+		                    </div>
             			</div>
             		<%}
             	}%>

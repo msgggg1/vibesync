@@ -81,6 +81,7 @@ public class DispatcherServlet extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String contextPath = request.getContextPath();
 		// 2. 클라이언트가 요구하는 기능을 분석한다 -> 들어올 때 요청한 주소를 확인한다
 		
 		// ContextPath 밑에 값만 저장
@@ -98,6 +99,9 @@ public class DispatcherServlet extends HttpServlet {
 		String view = null;
 		try {
 			view = handler.process(request, response); // throws Exception로 인해 여기서 처리해야되기 때문에
+			view = contextPath + view;
+
+			System.out.println(view);
 			// 4. request, session 객체 결과를 저장
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -106,8 +110,7 @@ public class DispatcherServlet extends HttpServlet {
 		
 		// 5단계 ~ 뷰 출력(포워딩, 리다이렉트)
 		if (view != null) {
-			RequestDispatcher dispatcher = request.getRequestDispatcher(view);
-			dispatcher.forward(request, response);
+			response.sendRedirect(view);
 		}
 	}
 

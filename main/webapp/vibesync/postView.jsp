@@ -7,11 +7,13 @@
 %>
 <%
 Cookie[] cookies = request.getCookies();
-String useridx = null;
+String useridx_str = null;
+int useridx = 0;
 if (cookies != null) {
     for (Cookie c : cookies) {
         if ("login_user_idx".equals(c.getName())) {
-        	useridx = c.getValue();
+        	useridx_str = c.getValue();
+        	useridx = Integer.parseInt(useridx_str);
         }
     }
 }
@@ -21,10 +23,17 @@ int note_idx = 0;
 if (note_idx_str != null || note_idx_str != "") {
 	note_idx = Integer.parseInt(note_idx_str);
 }
+System.out.print(note_idx);
 
 UserNoteVO note = null;
 note = UserNoteDAO.getUserNoteById(note_idx);
 
+int writerIdx = 0;
+if (note != null) {
+	writerIdx = note.getUpac_idx();
+}
+boolean following = UserNoteDAO.isFollowing(useridx, writerIdx);
+boolean liking = UserNoteDAO.isLiked(useridx, note_idx);
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -55,14 +64,24 @@ note = UserNoteDAO.getUserNoteById(note_idx);
               <div class="writer">
                 <img src="<%= note.getImg()%>" alt="writer_profile">
                 <p><%= note.getNickname() %></p>
-                <button class="btn_liek_follow">Follow</button>
+                
+                <form action="<%=contextPath%>/toggleFollow" method="post" style="display:inline;margin:0; background:#99bc85;border-radius:5px;">
+                  <input type="hidden" name="userIdx" value="<%= useridx %>" />
+                  <input type="hidden" name="writerIdx" value="<%= writerIdx %>" />
+                  <input type="hidden" name="noteIdx" value="<%= note_idx %>" />
+                  <button type="submit" class="btn_like_follow" 
+                          style="border:none; background:none; cursor:pointer;">
+                    <%= following ? "Unfollow" : "Follow" %>
+                  </button>
+                </form>
+                
               </div>
               <div class="like_share">
                 <form action="<%=contextPath %>/toggleLike" method="post" style="display:inline;">
 				  <input type="hidden" name="noteIdx" value="<%=note.getNote_idx()%>"/>
-				  <input type="hidden" name="userIdx" value="<%=note_idx%>"/>				  
+				  <input type="hidden" name="userIdx" value="<%=useridx%>"/>				  
 				  <button type="submit" class="like" style="border:none; background:none; cursor:pointer;">
-				    <img src="./sources/icons/heart.svg" alt="heart">
+				    <img src="<%= liking ? "./sources/icons/fill_heart.png" : "./sources/icons/heart.svg" %>" alt="heart">
 				    <span><%=note.getLike_num()%></span>
 				  </button>
 				</form>

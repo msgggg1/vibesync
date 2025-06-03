@@ -30,7 +30,8 @@ public class UserNoteDAO {
           + "  n.category_idx AS note_category_idx, n.userPg_idx, "
           + "  u.ac_idx, u.email, u.pw, u.nickname, u.img, u.name, "
           + "  u.category_idx AS ac_category_idx, "
-          + "  NVL(l.cnt,0) AS like_num "
+          + "  NVL(l.cnt,0) AS like_num,"
+          + "  up.ac_idx AS upac_idx "
           + "FROM note n "
           + "JOIN userPage up ON n.userPg_idx = up.userPg_idx "
           + "JOIN userAccount u ON up.ac_idx = u.ac_idx "
@@ -66,6 +67,7 @@ public class UserNoteDAO {
                     .name(             rs.getString("name"))
                     .ac_category_idx(  rs.getInt("ac_category_idx"))
                     .like_num(         rs.getInt("like_num"))
+                    .upac_idx(         rs.getInt("upac_idx"))
                     .build();
             }
         } catch (Exception e) {
@@ -90,8 +92,8 @@ public class UserNoteDAO {
         PreparedStatement pstmt = null;
 
         String sql =
-            "INSERT INTO likes (likes_idx, created_at, note_idx, ac_idx) " +
-            "VALUES (likes_seq.NEXTVAL, SYSDATE, ?, ?)";
+            "INSERT INTO likes (created_at, note_idx, ac_idx) " +
+            "VALUES (SYSDATE, ?, ?)";
 
         try {
             conn = DBConn_vibesync.getConnection();
@@ -163,6 +165,93 @@ public class UserNoteDAO {
         }
 
         return liked;
+    }
+    
+    /**
+     * 특정 사용자가 다른 사용자를 팔로우하고 있는지 여부를 확인한다.
+     *
+     * @param userIdx   팔로우를 시도하는 사용자 ac_idx
+     * @param writerIdx 팔로우 대상(글 작성자) ac_idx
+     * @return          이미 팔로우 중이면 true, 아니면 false
+     */
+    public static boolean isFollowing(int userIdx, int writerIdx) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean following = false;
+
+        String sql =
+            "SELECT 1 FROM follows WHERE ac_follow = ? AND ac_following = ?";
+
+        try {
+            conn = DBConn_vibesync.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userIdx);
+            pstmt.setInt(2, writerIdx);
+            rs = pstmt.executeQuery();
+            following = rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs    != null) try { rs.close();    } catch (Exception ignored) {}
+            if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
+            // Connection은 닫지 않음
+        }
+
+        return following;
+    }
+
+    /**s
+     * follows 테이블에 새로운 팔로우 레코드를 추가한다.
+     *
+     * @param userIdx   팔로우를 시도하는 사용자 ac_idx
+     * @param writerIdx 팔로우 대상(글 작성자) ac_idx
+     */
+    public static void addFollow(int userIdx, int writerIdx) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        String sql =
+            "INSERT INTO follows (ac_follow, ac_following) " +
+            "VALUES (?, ?)";
+
+        try {
+            conn = DBConn_vibesync.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userIdx);
+            pstmt.setInt(2, writerIdx);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
+        }
+    }
+
+    /**
+     * follows 테이블에서 특정 팔로우 레코드를 삭제한다.
+     *
+     * @param userIdx   팔로우를 취소하는 사용자 ac_idx
+     * @param writerIdx 팔로우 대상(글 작성자) ac_idx
+     */
+    public static void deleteFollow(int userIdx, int writerIdx) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        String sql =
+            "DELETE FROM follows WHERE ac_follow = ? AND ac_following = ?";
+
+        try {
+            conn = DBConn_vibesync.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userIdx);
+            pstmt.setInt(2, writerIdx);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
+        }
     }
     
 }

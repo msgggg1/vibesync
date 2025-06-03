@@ -18,6 +18,9 @@ DROP SEQUENCE contents_seq;
 DROP SEQUENCE genre_seq;
 DROP SEQUENCE useraccount_seq;
 DROP SEQUENCE category_seq;
+DROP SEQUENCE seq_watchparty;
+DROP SEQUENCE seq_wa_sync;
+DROP SEQUENCE seq_wa_comment;
 
 --------------------------------------------------------------------------------
 -- 시퀀스 생성
@@ -133,6 +136,28 @@ CREATE SEQUENCE commentlist_seq
   INCREMENT BY 1
   NOCACHE
   NOCYCLE;
+  
+  -- 1) watchParty 시퀀스
+CREATE SEQUENCE seq_watchparty
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+
+-- 2) wa_sync 시퀀스
+CREATE SEQUENCE seq_wa_sync
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+
+-- 3) wa_comment 시퀀스
+CREATE SEQUENCE seq_wa_comment
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+
 
 SELECT COUNT(*) AS sequence_count FROM user_sequences;
 
@@ -154,6 +179,9 @@ DROP TRIGGER trg_userPage_bi;
 DROP TRIGGER trg_contents_bi;
 DROP TRIGGER trg_genre_bi;
 DROP TRIGGER trg_category_bi;
+DROP TRIGGER trg_watchParty_pk;
+DROP TRIGGER trg_wa_sync_pk;
+DROP TRIGGER trg_wa_comment_pk;
 
 --------------------------------------------------------------------------------
 -- 트리거 생성
@@ -292,4 +320,43 @@ BEGIN
   SELECT commentlist_seq.NEXTVAL INTO :NEW.commentlist_idx FROM dual;
 END;
 /
+
+-- watchParty IDX 자동 증가 트리거
+CREATE OR REPLACE TRIGGER trg_watchParty_pk
+  BEFORE INSERT ON watchParty
+  FOR EACH ROW
+BEGIN
+  IF :NEW.watchParty_idx IS NULL THEN
+    SELECT seq_watchparty.NEXTVAL 
+      INTO :NEW.watchParty_idx 
+      FROM dual;
+  END IF;
+END;
+/
+-- wa_sync IDX 자동 증가 트리거
+CREATE OR REPLACE TRIGGER trg_wa_sync_pk
+  BEFORE INSERT ON wa_sync
+  FOR EACH ROW
+BEGIN
+  IF :NEW.sync_idx IS NULL THEN
+    SELECT seq_wa_sync.NEXTVAL 
+      INTO :NEW.sync_idx 
+      FROM dual;
+  END IF;
+END;
+/
+-- wa_comment IDX 자동 증가 트리거
+CREATE OR REPLACE TRIGGER trg_wa_comment_pk
+  BEFORE INSERT ON wa_comment
+  FOR EACH ROW
+BEGIN
+  IF :NEW.wac_idx IS NULL THEN
+    SELECT seq_wa_comment.NEXTVAL 
+      INTO :NEW.wac_idx 
+      FROM dual;
+  END IF;
+END;
+/
+
+
 SELECT COUNT(*) AS trigger_count FROM user_triggers;

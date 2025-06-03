@@ -10,6 +10,7 @@
 <%@page import="org.doit.domain.NoteVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
+String contextPath = request.getContextPath();
     // --- 로그인 체크: userEmail, category_idx 쿠키 없으면 login.jsp 로 리디렉션 ---
     Cookie[] cookies = request.getCookies();
     String userEmail = null;
@@ -112,7 +113,7 @@
           <!-- category btn -->
           <div class="category_btn_group">
             <% for (CategoryVO ca : category_list) { %>
-              <button style="background-image: url(<%= ca.getImg() %>); background-size: cover;">
+              <button style="background-image: url(<%=  contextPath + "/vibesync" + ca.getImg() %>); background-size: cover;">
                 <p><%= ca.getC_name() %></p>
               </button>
             <% } %>
@@ -148,7 +149,7 @@
               <ul>
                 <% int j = 1; for (UserVO user : follow_user) { %>
                   <li>
-                    <a href="" >
+                    <a href="./user.jsp?ui=<%= user.getAc_idx() %>" >
                       <div class="post-index"><%= j %></div>
                       <div class="post-title"><%= user.getNickname() %></div>
                     </a>
