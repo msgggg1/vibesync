@@ -1,17 +1,11 @@
 <!-- main.jsp -->
-<%@page import="mvc.domain.dto.NoteDTO"%>
 <%@page import="javax.servlet.http.Cookie"%>
 <%@page import="mvc.persistence.daoImpl.CategoryDAOImpl"%>
-<%@page import="mvc.domain.dto.CategoryDTO"%>
-<%@page import="mvc.domain.dto.UserDTO"%>
-<%@page import="mvc.persistence.daoImpl.FollowUserDAOImpl"%>
 <%@page import="java.util.List"%>
 <%@page import="mvc.persistence.dao.NoteDAO"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="mvc.domain.dto.NoteDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-p
 
 // --- 로그인 체크: userEmail, category_idx 쿠키 없으면 login.jsp 로 리디렉션 ---
     Cookie[] cookies = request.getCookies();
@@ -151,7 +145,6 @@ p
           <!-- category btn -->
           <div class="category_btn_group">
             <%
-            p
 
                         for (CategoryDTO ca : category_list) {
             %>
@@ -159,7 +152,6 @@ p
                 <p><%=t(ca.getC_name%></p>
               </button>
             <%
-            p
 
                         }
             %>
@@ -170,7 +162,6 @@ p
             <div class="grid_item">
               <ul>
                 <%
-                p
 
                                 for (NoteDTO note : popular_notes) {
                 %>
@@ -181,7 +172,6 @@ p
                     </a>
                   </li>
                 <%
-                p
 
                                 }
                 %>
@@ -190,7 +180,6 @@ p
             <div class="grid_item">
               <ul>
                 <%
-                p
 
                                 for (NoteDTO note : latest_notes) {
                 %>
@@ -201,7 +190,6 @@ p
                     </a>
                   </li>
                 <%
-                p
 
                                 }
                 %>
@@ -210,7 +198,6 @@ p
             <div class="grid_item">
               <ul>
                 <%
-                p
 
                                 for (UserDTO user : follow_user) {
                 %>

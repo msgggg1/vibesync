@@ -129,7 +129,7 @@
             	  <c:forEach items="${popularUsers}" var="user" varStatus="status">
             		<div class="list-entry" data-id="${status.count}">
                	 		<img class="entry-image" src="https://placehold.co/100x100.png?text=${user.nickname}" alt="${user.nickname}">
-                		<span class="entry-number">${status.count}.</span>
+                		<span class="entry-number">${status.count}</span>
                 		<span class="entry-title">${user.nickname}</span>
             		</div>
         		 </c:forEach>
@@ -140,10 +140,20 @@
           <div class="slider-container">
             <div class="swiper" id="swiper2">
               <div class="swiper-wrapper">
-                <div class="swiper-slide">Card A</div>
-                <div class="swiper-slide">Card B</div>
-                <div class="swiper-slide">Card C</div>
-                <div class="swiper-slide">Card D</div>
+              	<c:forEach items="${ popularNotesNotByMyCategory }" var="entry">
+              		<div class="swiper-slide">
+              		<ul>
+              		<c:forEach items="${ entry.value }" var="posts">
+              			<li>
+              			<a>
+              				<div class="post-index" style="display: inline-block; align-self: left;">${ posts.note_idx }</div>
+		              		<div class="post-title" style="display: inline-block; align-self: right;">${ posts.title }</div>
+              			</a>
+              			</li>
+              		</c:forEach>
+              		</ul>
+              		</div>
+              	</c:forEach>
               </div>
               <div class="swiper-button-prev" id="prev2"></div>
               <div class="swiper-button-next" id="next2"></div>

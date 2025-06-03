@@ -99,7 +99,7 @@ p {
   position: fixed;
   height: 100%;
   background: var(--sidebar-color);
-  background-image: url(../sources/sidebar/back4.png);
+  background-image: url(./back4.png);
   width: 200px;
   overflow: hidden;
   white-space: nowrap;
@@ -200,7 +200,7 @@ input:focus {
   gap: 10px;
 }
 
-#logout form {
+#logout {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -208,7 +208,7 @@ input:focus {
   margin-bottom: 20px;
 }
 
-#logout form > button {
+#logout > button {
   width: 150px;
   border: none;
   background-color: red;
@@ -787,6 +787,125 @@ input:focus {
   padding-bottom: 40px;
 }
 
+/*추가*/
+.grid_item {
+    background-color: transparent;
+    height: 300px;
+    border-radius: 20px;
+    color: var(--w-fff, #fff);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    padding: 5px;
+    margin: 0px;
+}
+
+.list-entry {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-sizing: border-box;
+    color: var(--w-fff, #fff);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 10px;
+    flex-grow: 1;   /* 모든 list-entry가 grid_item의 남은 공간을 채우도록 함 */
+    flex-shrink: 0; /* 공간이 부족할 때 아이템 크기가 줄어들지 않도록 합니다.
+                       상황에 따라 1로 설정하여 다른 아이템들과 함께 유연하게 줄어들도록 할 수도 있습니다. */
+    flex-basis: 42px; /* 비활성 상태일 때의 기본 높이(애니메이션 대상).
+                         이전의 height: 42px;와 유사한 역할입니다. */
+    transition: flex-basis 0.4s ease-in-out, background-color 0.4s ease-in-out;
+
+    background-color: #222; /* 비활성 아이템 배경색 */
+}
+
+.list-entry .entry-image {
+    display: none; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px; 
+    z-index: 1;
+    filter: brightness(0.7);
+    opacity: 0; /* display:none 이므로 opacity는 사실상 의미 없지만, 만약 display를 block으로 바꿀 때 fade-in 효과를 원한다면 유지 */
+    transition: opacity 0.3s ease-in-out; /* 위와 동일한 이유 */
+}
+
+.list-entry .entry-number 
+.list-entry .entry-title {
+    position: relative; /* 이미지가 없으므로 z-index는 배경색과의 관계에서만 의미 가짐 */
+    z-index: 2;
+    color: var(--w-fff, #fff);
+    transition: font-size 0.3s ease-in-out, opacity 0.3s ease-in-out, line-height 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
+}
+
+/* 비활성 아이템의 순위와 제목 스타일 */
+.list-entry .entry-number {
+    font-size: 12px;
+    font-weight: bold;
+    color: #FFD700;
+    line-height: 1.1;
+    margin-right: 5px;
+}
+
+.list-entry .entry-title {
+    font-size: 12px;
+    line-height: 1.1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-grow: 1; /* 제목이 남은 공간을 채우도록 */
+    min-width: 0; /* 추가: ellipsis가 flex 아이템에서 잘 동작하도록*/
+}
+
+/* 활성 상태 스타일 (.active-highlight) */
+.list-entry.active-highlight {
+    background-color: var(--b-000, #000); /* 활성 아이템 배경색 */
+	flex-basis: 100px;
+}
+
+.list-entry.active-highlight .entry-image {
+    display: block;
+    opacity : 1;
+    filter: brightness(0.4);
+}
+
+/* 활성 아이템의 순위와 제목 스타일 (기존과 동일) */
+.list-entry.active-highlight .entry-number {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFD700;
+     line-height: 1.2; 
+    margin-right: 4px; 
+    margin-bottom: 0; 
+    position: relative;
+    z-index: 2;
+    white-space: nowrap; 
+
+}
+
+.list-entry.active-highlight .entry-title {
+    font-size: 18px; 
+    font-weight: bold;
+    color: var(--w-fff, #fff);
+    white-space: normal; /* 여러 줄 표시 허용 */
+    line-height: 1.2;
+    max-height: calc(1.2em * 2); /* 예: 최대 2줄까지 보이도록 (넘치면 숨김) */
+    overflow: hidden; /* 위 max-height와 함께 사용 */
+    text-overflow: ellipsis; /* 필요시 */
+    flex-grow: 0;
+    min-width: auto;
+    position: relative; /* z-index 적용 위해 */
+    z-index: 2; /* 이미지 위에 오도록 */
+    background-color: rgba(0,0,0,0.5); padding: 4px 6px; border-radius: 3px; 
+}
+
+
 @media (max-width:700px) {
   #login_wrapper {flex-direction: column; margin-top: 150px;}
   #login_signup_form, #signUp {border-left: none;}
@@ -814,5 +933,4 @@ input:focus {
   }
   #content_wrapper {padding-top: 80px; margin-left: 0px;}
 }
-
 
