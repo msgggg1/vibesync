@@ -11,8 +11,8 @@ import com.util.PasswordMigrator;
 
 import mvc.domain.dto.LoginDTO;
 import mvc.domain.dto.SignUpDTO;
-import mvc.domain.dto.UserDTO;
 import mvc.domain.vo.UserSessionVO;
+import mvc.domain.vo.UserVO;
 import mvc.persistence.dao.UserDAO;
 
 public class UserDAOImpl implements UserDAO {
@@ -223,13 +223,13 @@ public class UserDAOImpl implements UserDAO {
 		return isEmailExists;
 	}
 	
-	// 인기 유저 조회
+	// 전체 카테고리 - 인기 유저 조회
 	@Override
-	public List<UserDTO> findPopularUsers(int limit) throws SQLException {
-		 List<UserDTO> users = new ArrayList<>();
+	public List<UserVO> findPopularUsers(int limit) throws SQLException {
+		 List<UserVO> users = new ArrayList<>();
 		 
 	     // 인기 유저: (받은 좋아요 수 + 팔로워 수) 합산 기준, Oracle TOP-N 쿼리
-	     String sql = "SELECT ac_idx, nickname, img, popularity_score " +
+	     String sql = "SELECT nickname, img, created_at, popularity_score " +
 	                " FROM ( " +
 	                "    SELECT " +
 	                "        ua.ac_idx, " +
@@ -252,11 +252,60 @@ public class UserDAOImpl implements UserDAO {
 	         rs = pstmt.executeQuery();
 
 	         while (rs.next()) {
-	        	 UserDTO user = new UserDTO();
-	             user.setAc_idx(rs.getInt("ac_idx"));
+	        	 UserVO user = new UserVO();
 	             user.setNickname(rs.getString("nickname"));
 	             user.setImg(rs.getString("img"));
-	             user.setPopularityScore(rs.getInt("popularity_score")); // UserDTO에 필드가 있다면 설정
+	             user.setCreated_at(rs.getDate("created_at"));
+	             users.add(user);
+	         }
+	      
+	      } catch (Exception e) {
+	    	  e.printStackTrace();
+	      } finally {
+	    	  if (rs != null) rs.close();
+	    	  if (pstmt != null) pstmt.close();
+	      }
+	        
+	      return users;
+	}
+
+	// 특정 카테고리의 인기 유저 조회
+	@Override
+	public List<UserVO> findPopularUsersByCategory(int categoryIdx, int limit) throws SQLException {
+		 List<UserVO> users = new ArrayList<>();
+		 
+	     String sql = " SELECT * " +
+	    		 	" FROM ( " + 
+	    		 	"	SELECT " +
+	    		 	"		 u.nickname, " + 
+	    		 	"		 u.img, " + 
+	    		 	"		 u.created_at, " + 
+	    		 	"		 COUNT(f.ac_follow) AS follower_count " + 
+	                " 	FROM " + 
+	    		 	"		userAccount u " +
+	    		 	" 	LEFT JOIN follows f ON u.ac_idx = f.ac_following " +
+	                " 	WHERE " + 
+	    		 	" 		u.category_idx = ? " + 
+	    		 	" 	GROUP BY " +
+	                "		u.nickname, u.img, u.category_idx, u.created_at " + 
+	                "	ORDER BY " + 
+	                "		follower_count DESC " + 
+	                " ) " +
+	                " WHERE ROWNUM <= ? ";
+
+	     try {
+	    	 pstmt = this.conn.prepareStatement(sql);
+	         pstmt.setInt(1, categoryIdx);
+	         pstmt.setInt(2, limit);
+	         rs = pstmt.executeQuery();
+
+	         while (rs.next()) {
+	        	 UserVO user = new UserVO().builder()
+	        			 				   .nickname(rs.getString("nickname"))
+	        			 				   .img(rs.getString("img"))
+	        			 				   .created_at(rs.getDate("created_at"))
+	        			 				   .category_idx(categoryIdx)
+	        			 				   .build();
 	             users.add(user);
 	         }
 	      

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLEncoder" %>
+<% String contextPath = request.getContextPath() + "/vibesync"; %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -30,7 +31,7 @@
           <div class="menu_content">
 
             <a class="nickname icon_wrap" href="../html/user.html">
-              <span>Duck Hammer</span>
+              <span>${ userInfo.nickname }</span>
             </a>
 
             <div class="search icon_wrap">
@@ -65,10 +66,13 @@
             </div>
 
           </div>
-
-          <div id="logout">
-            <button>Logout</button>
-          </div>
+          
+		<form action="user.do" method="post">
+		    <input type="hidden" name="accessType" value="logout">
+	          <div id="logout">
+	            <button type="submit">Logout</button>
+	          </div>
+		</form>
 
         </div>
       </nav>
@@ -94,25 +98,27 @@
   
           <!-- category btn -->
           <div class="category_btn_group">
-            <button style="background-image: url(../sources/button_bg/movie.jpg); background-size: cover;"><p>Movie</p></button>
-            <button style="background-image: url(../sources/button_bg/drama.jpg); background-size: cover;"><p>Drama</p></button>
-            <button style="background-image: url(../sources/button_bg/music.jpg); background-size: cover;"><p>Music</p></button>
-            <button style="background-image: url(../sources/button_bg/anime.jpg); background-size: cover;"><p>Animation</p></button>
+            <c:forEach items="${ categoryVOList }" var="categoryVO">
+            	<c:if test="${categoryVO.category_idx != userInfo.category_idx}">
+	            	<button style="background-image: url( <%= contextPath %>${ categoryVO.img }); background-size: cover;">
+	            		<p>${ categoryVO.c_name }</p>
+	            	</button>
+            	</c:if>
+            </c:forEach>
           </div>
   
           <!-- grid -->
           <div class="grid_wrapper">
             <div class="grid_item" id="recent_posts_container" >
-	            <c:forEach items="${recentPostsList}" var="post" varStatus="status">
+	            <c:forEach items="${latestNotes}" var="post" varStatus="status">
 	            <div class="list-entry" data-id="${post.note_idx}">
-	                <%-- <img class="entry-image" src="<c:url value='${post.img}'/>" alt="${post.title}" style="display: none;"> --%>
 	                <img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
 	                <span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
 	            </div>
         		</c:forEach>
             </div>
             <div class="grid_item" id="popular_posts_container">
-	             <c:forEach items="${popularPostsList}" var="post" varStatus="status">
+	             <c:forEach items="${popularNotes}" var="post" varStatus="status">
 	            	<div class="list-entry" data-id="${post.note_idx}">
 	                	<img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
 	                	<span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
@@ -120,8 +126,8 @@
 	        	</c:forEach>
             </div>
             <div class="grid_item" id="popular_users_container">
-            	  <c:forEach items="${popularUsersList}" var="user" varStatus="status">
-            		<div class="list-entry" data-id="${user.ac_idx}">
+            	  <c:forEach items="${popularUsers}" var="user" varStatus="status">
+            		<div class="list-entry" data-id="${status.count}">
                	 		<img class="entry-image" src="https://placehold.co/100x100.png?text=${user.nickname}" alt="${user.nickname}">
                 		<span class="entry-number">${status.count}.</span>
                 		<span class="entry-title">${user.nickname}</span>
@@ -129,7 +135,7 @@
         		 </c:forEach>
             </div>
           </div>
-  
+
           <!-- other category -->
           <div class="slider-container">
             <div class="swiper" id="swiper2">
@@ -150,11 +156,5 @@
 
     </div>
   </div>
-  
-  <script>
-  	$("#logout > button").on("click", function(){
-  		location.href="./logout.jsp";
-  	});
-  </script>
 </body>
 </html>

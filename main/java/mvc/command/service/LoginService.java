@@ -3,7 +3,6 @@ package mvc.command.service;
 import mvc.persistence.dao.UserDAO;
 import mvc.persistence.daoImpl.UserDAOImpl;
 import mvc.domain.dto.LoginDTO;
-import mvc.domain.vo.UserVO;
 import mvc.domain.vo.UserSessionVO;
 
 public class LoginService {

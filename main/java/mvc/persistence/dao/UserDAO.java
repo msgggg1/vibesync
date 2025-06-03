@@ -5,8 +5,8 @@ import java.util.List;
 
 import mvc.domain.dto.LoginDTO;
 import mvc.domain.dto.SignUpDTO;
-import mvc.domain.dto.UserDTO;
 import mvc.domain.vo.UserSessionVO;
+import mvc.domain.vo.UserVO;
 
 public interface UserDAO {
 	
@@ -25,7 +25,9 @@ public interface UserDAO {
 	// 이메일 중복 검사
 	boolean isEmailExists(String email);
 	
-	// 인기 유저 조회
-	List<UserDTO> findPopularUsers(int limit) throws SQLException;
+	// 전체 카테고리의 인기 유저 조회
+	List<UserVO> findPopularUsers(int limit) throws SQLException;
     
+	// 특정 카테고리의 인기 유저 조회
+	List<UserVO> findPopularUsersByCategory(int categoryIdx, int limit) throws SQLException;
 }

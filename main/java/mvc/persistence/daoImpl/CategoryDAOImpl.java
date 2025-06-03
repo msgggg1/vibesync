@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 import mvc.domain.vo.CategoryVO;
 import mvc.persistence.dao.CategoryDAO;
@@ -18,9 +19,10 @@ public class CategoryDAOImpl implements CategoryDAO {
     	this.conn = conn;
     }
     
+    @Override
     // 모든 카테고리 정보 조회
-    public ArrayList<CategoryVO> CategoryAll() {
-    	ArrayList<CategoryVO> list = new ArrayList<CategoryVO>();
+    public List<CategoryVO> CategoryAll() {
+    	List<CategoryVO> list = new ArrayList<CategoryVO>();
 
     	String sql = " SELECT category_idx, c_name, img FROM category ";
     	

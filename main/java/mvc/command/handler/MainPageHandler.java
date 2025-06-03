@@ -6,7 +6,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.util.ConnectionProvider;
+
+import mvc.command.service.MainPageService;
+import mvc.domain.dto.MainPageDTO;
 import mvc.domain.vo.UserSessionVO;
+import mvc.persistence.dao.CategoryDAO;
+import mvc.persistence.dao.NoteDAO;
+import mvc.persistence.dao.UserDAO;
+import mvc.persistence.daoImpl.CategoryDAOImpl;
+import mvc.persistence.daoImpl.NoteDAOImpl;
+import mvc.persistence.daoImpl.UserDAOImpl;
 
 public class MainPageHandler implements CommandHandler {
 
@@ -23,9 +33,10 @@ public class MainPageHandler implements CommandHandler {
 		
         if (session == null) { // 세션 만료
         	System.err.println("MainPageHandler: session expired.");
+            response.sendRedirect(request.getContextPath() + "/vibesync/login.do");
         } else if (session.getAttribute("userInfo") == null) {
-        	System.err.println("MainPageHandler: User not logged in");
-        	
+        	System.err.println("MainPageHandler: User not logged in.");
+            response.sendRedirect(request.getContextPath() + "/vibesync/login.do");
         	// 로그인 되어 있지 않고, 게스트 계정으로 메인 페이지 오픈하려는 경우
         	/*
             userInfo = new UserSessionVO().builder()
@@ -43,10 +54,35 @@ public class MainPageHandler implements CommandHandler {
         // DB 연결 관리 : Connection 객체
         Connection conn = null;
         
-        
-        
+        // 메인 페이지 로딩
+        try {
+        	conn = ConnectionProvider.getConnection();
+        	UserDAO userDAO = new UserDAOImpl(conn);
+        	NoteDAO noteDAO = new NoteDAOImpl(conn);
+        	CategoryDAO categoryDAO = new CategoryDAOImpl(conn);
+        	
+        	MainPageService service = new MainPageService(categoryDAO, noteDAO, userDAO);
+        	MainPageDTO mainPageDTO = service.loadMainPage(userInfo.getCategory_idx());
+        	
+        	request.setAttribute("mainPageDTO", mainPageDTO);
+        	request.setAttribute("categoryVOList", mainPageDTO.getCategoryVOList());
+        	request.setAttribute("latestNotes", mainPageDTO.getLatestNotes());
+        	request.setAttribute("popularNotes", mainPageDTO.getPopularNotes());
+        	request.setAttribute("popularUsers", mainPageDTO.getPopularUsers());
+        	request.setAttribute("popularNotesNotByMyCategory", mainPageDTO.getPopularNotesNotByMyCategory());
+        	
+        	conn.close();
+        	return "main.jsp";
+        	
+		} catch (Exception e) {
+			System.out.println("> MainPageHandler.process() Exception...");
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			conn.close();
+		}
 		
-		return null;
+		return "login.jsp";
 	}
 
 }

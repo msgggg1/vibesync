@@ -1,5 +1,7 @@
 package mvc.domain.vo;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,10 +21,11 @@ public class NoteVO {
 	private String title;
 	private String text;
 	private String img;
-	private String create_at;
-	private String edit_at;
+	private Date create_at;
+	private Date edit_at;
 	private int view_count;
 	private int content_idx;
 	private int genre_idx;
 	private int category_idx;
+	private int userPg_idx;
 }

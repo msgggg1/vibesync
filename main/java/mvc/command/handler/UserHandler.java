@@ -49,6 +49,45 @@ public class UserHandler implements CommandHandler {
         String autoLoginUserEmail = null; // autoLoginUserEmail 쿠키 값 (자동로그인용)
         String rememberedEmail = ""; // rememberEmail 쿠키 값 (이메일 기억하기용 : 폼의 email 부분 기본 value값으로 들어감)
         							 // rememberEmail 쿠키 기본값 빈 문자열 처리 (폼에 email 정보 채워둘 때 오류 방지 목적)
+        
+        // 로그아웃
+        if (requestMethod.equals("POST") && accessType.equals("logout")) {
+            boolean wasAutoLoginActive = false; // 자동 로그인이 활성화되어 있었는지 여부를 판단하는 플래그
+            Cookie rememberEmailCookieInstance = null; // rememberEmail 쿠키 객체를 저장할 변수
+
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("autoLoginUserEmail".equals(cookie.getName())) { // 자동 로그인용 쿠키
+                        wasAutoLoginActive = true; // 자동 로그인이 활성화 되어 있었음을 표시
+                        
+                        cookie.setValue("");
+                        cookie.setMaxAge(0);
+                        cookie.setPath("/"); 
+                        response.addCookie(cookie); // 자동 로그인 쿠키 삭제
+                        
+                    } else if ("rememberedEmail".equals(cookie.getName())) {
+                        // rememberEmail 쿠키를 바로 삭제하지 않고, 인스턴스만 저장
+                        rememberEmailCookieInstance = cookie;
+                    }
+                }
+            }
+
+            // 자동 로그인이 활성화되어 있었고, 이메일 기억하기 쿠키도 존재했다면 함께 삭제
+            if (wasAutoLoginActive && rememberEmailCookieInstance != null) {
+                rememberEmailCookieInstance.setValue("");
+                rememberEmailCookieInstance.setMaxAge(0);
+                rememberEmailCookieInstance.setPath("/"); 
+                response.addCookie(rememberEmailCookieInstance); // 이메일 기억하기 쿠키 삭제
+            }
+
+            // 세션 초기화
+            session.invalidate();
+
+            // 로그아웃 후 login.jsp로 리디렉션
+            response.sendRedirect(contextPath + "/vibesync/user.do");
+        }
+        
         // 쿠키 값 불러오기
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -78,12 +117,14 @@ public class UserHandler implements CommandHandler {
         	conn = ConnectionProvider.getConnection();
         	
         	// 이후 Listener(서버 시작 시 실행)로 보낼 부분 : application 객체 사용 예정
+        	/*
         	if (accessType == null) {
         		CategoryDAO categoryDAO = new CategoryDAOImpl(conn);
         		CategoryService categorySercive = new CategoryService(categoryDAO);
         		ArrayList<CategoryVO> categoryVOList = (ArrayList<CategoryVO>) categorySercive.allCategories();
         		session.setAttribute("allCategoryInfo", categoryVOList);
         	}
+        	*/
         	
         	// 유저의 정보를 실제 JDBC에 CRUD 하는 기능들을 담당하는 DAO 클래스 : UserDAO, UserDAOImpl
         	UserDAO userAccountDAO = new UserDAOImpl(conn);

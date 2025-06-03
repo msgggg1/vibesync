@@ -162,6 +162,8 @@
 		if(pstmt != null) pstmt.close();
 		DBConn.close();
 	}
+	
+	request.getContextPath()
 %>
 <!DOCTYPE html>
 <html lang="ko">
