@@ -30,6 +30,8 @@ $(function() {
             $switchFormLinkContainer.show(); // '아직 회원이 아니신가요?' 링크 보이기 (기본 display block)
         }
     }
+    
+    
 
     // '회원가입' 링크 클릭 이벤트 (.on() 사용)
     if ($switchToSignupLink.length) {
@@ -94,17 +96,7 @@ $(function() {
          });
     }
 
-	const urlParams = new URLSearchParams(window.location.search);
-    const formToShow = urlParams.get('formToShow');
-
-	if (formToShow === 'signup') {
-        showSignupForm();
-    } else {
-        // 기본적으로 로그인 폼을 보여줌 
-        showLoginForm();
-    }
 });
-
 
     const starCanvas = document.getElementById('starfield');
     const starCtx    = starCanvas.getContext('2d');

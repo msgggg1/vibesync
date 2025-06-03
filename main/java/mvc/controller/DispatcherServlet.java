@@ -15,37 +15,36 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import mvc.command.CommandHandler;
+import mvc.command.handler.CommandHandler;
 
 //web.xml에 직접 설정
 public class DispatcherServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-       
 	
     public DispatcherServlet() {
         super();
         
     }
-
     
 	@Override
 	public void destroy() {
 		super.destroy();
-		//System.out.println(">DispatcherServlet.destroy()");
+		//System.out.println("> DispatcherServlet.destroy()");
 	}
 
-	// Map 선언 : key = url, value= 모델 객체를 생성해서 줌
+	// Map 선언 : key = url, value = 모델 객체를 생성해서 줌
 	public Map<String, CommandHandler> commandHandlerMap = new HashMap<>();
 
 	@Override
-	public void init() throws ServletException { // 생성자역할
+	public void init() throws ServletException { // 생성자 역할
 		super.init();
 	
 		String mappingPath = this.getInitParameter("mappingPath");
 		String realPath = this.getServletContext().getRealPath(mappingPath); 
-
-		Properties prop = new Properties(); // collection 클래스  key-value
+		System.out.println("> realPath : " + realPath);
+		
+		Properties prop = new Properties(); // collection 클래스 key-value
 		
 		try(FileReader reader = new FileReader(realPath)){
 			prop.load(reader);
@@ -57,8 +56,8 @@ public class DispatcherServlet extends HttpServlet {
 		Iterator<Entry<Object, Object>> ir = set.iterator();
 		while(ir.hasNext()) {
 			Entry<Object, Object> entry = ir.next();
-			String url = (String)entry.getKey(); // /board/list.do
-			String fullName = (String)entry.getValue(); // days08.mvc.command.ListHandler
+			String url = (String) entry.getKey(); // /vibesync/main.do
+			String fullName = (String) entry.getValue(); // mvc.command.MainPageHandler
 			
 			Class<?> commandHandlerClass = null;
 	         try {
@@ -75,18 +74,17 @@ public class DispatcherServlet extends HttpServlet {
 	            e.printStackTrace();
 	         }
 		}
+	}
 		
-		}
+	// 1단계. 사용자에게 요청받기
+	// GET 방식 요청
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 2단계. controller (DispatcherServlet) 에서 사용자 요청 분석
 		
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { // get방식 요청
-		// 1 2 3 4 5
-		// 1단계. 요청받음
-		// 2단계. 요청분석
-		// 		/jspPro/board/list.do
-		String requestURI = request.getRequestURI();
+		String requestURI = request.getRequestURI(); // /jspPro/board/list.do
+		System.out.println(request.getRequestURL());
+		System.out.println(requestURI);
 		// http://localhost/jspPro/board/list.do
-		//request.getRequestURL();
 		
 		// 		/jspPro
 		int beginIndex = request.getContextPath().length();
@@ -95,30 +93,29 @@ public class DispatcherServlet extends HttpServlet {
 		
 		System.out.println("[DispatcherServlet] 요청된 requestURI (commandKey): " + requestURI);
 		
-		// 3단계. 로직처리하는 모델객체를 commandHandlerMap으로 부터 얻어옴
+		// 3단계. 로직처리하는 모델 객체를 commandHandlerMap으로부터 얻어오기
 		CommandHandler handler = this.commandHandlerMap.get(requestURI);
-		String view = null;	  
+		String view = null;
 		
 		try {
+			// 4단계. request, session 객체에 결과 저장
 			view = handler.process(request, response);
-			// 4. request, session 객체에 결과 저장
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		// 5단계 - 뷰 출력(포워딩, 리다이렉트)
+		// 5단계. 뷰 출력(포워딩, 리다이렉트)
 		if (view != null) {
-			// 포워딩
-			// 리다이렉트는 핸들러에서
+			// 포워딩 (리다이렉트는 핸들러에서)
 			RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 			dispatcher.forward(request, response);
 		} // if
 	}
 
-	
+	// POST 방식 요청 (1단계. 사용자에게 요청받기)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { // post방식 서블릿 요청
 	
-		doGet(request, response); // 다 doGET이 처리하겠다.
+		doGet(request, response); // doGET에서 모두 처리
 	}
 
 }

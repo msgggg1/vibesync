@@ -1,10 +1,10 @@
-package mvc.command.Handler;
+package mvc.command.handler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import mvc.command.CommandHandler;
-import mvc.command.Service.NoteService;
+import mvc.command.service.NoteService;
 import mvc.domain.dto.NoteDetailDTO;
 
 

@@ -43,8 +43,6 @@ public class PasswordMigrator {
             throw new PasswordHashingException("잘못된 Salt 형식으로 인해 비밀번호 해싱에 실패했습니다.", e);
         	}
         }
-    
-
 
     public static String generateSalt() throws Exception {
         SecureRandom sr = SecureRandom.getInstanceStrong();
@@ -114,4 +112,3 @@ public class PasswordMigrator {
         }
     }
 }
-
