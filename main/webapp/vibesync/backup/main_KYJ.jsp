@@ -163,7 +163,7 @@
 		DBConn.close();
 	}
 	
-	request.getContextPath()
+	request.getContextPath();
 %>
 <!DOCTYPE html>
 <html lang="ko">

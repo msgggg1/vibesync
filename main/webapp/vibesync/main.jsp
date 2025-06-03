@@ -15,10 +15,10 @@
     href="https://unpkg.com/swiper/swiper-bundle.min.css"
   />
   <!-- css,js -->
-  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-  <script defer src="./js/script.js"></script>
+  <script defer src="${pageContext.request.contextPath}/js/script.js"></script>
 </head>
 <body>
   <div id="notion-app">
