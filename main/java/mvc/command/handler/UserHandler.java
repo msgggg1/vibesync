@@ -117,14 +117,12 @@ public class UserHandler implements CommandHandler {
         	conn = ConnectionProvider.getConnection();
         	
         	// 이후 Listener(서버 시작 시 실행)로 보낼 부분 : application 객체 사용 예정
-        	/*
         	if (accessType == null) {
         		CategoryDAO categoryDAO = new CategoryDAOImpl(conn);
         		CategoryService categorySercive = new CategoryService(categoryDAO);
         		ArrayList<CategoryVO> categoryVOList = (ArrayList<CategoryVO>) categorySercive.allCategories();
         		session.setAttribute("allCategoryInfo", categoryVOList);
         	}
-        	*/
         	
         	// 유저의 정보를 실제 JDBC에 CRUD 하는 기능들을 담당하는 DAO 클래스 : UserDAO, UserDAOImpl
         	UserDAO userAccountDAO = new UserDAOImpl(conn);
