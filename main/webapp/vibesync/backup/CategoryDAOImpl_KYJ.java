@@ -12,11 +12,13 @@ import com.util.ConnectionProvider;
 import mvc.domain.vo.CategoryVO;
 import mvc.persistence.dao.CategoryDAO;
 
-public class CategoryDAOImpl implements CategoryDAO {
+public class CategoryDAOImpl_KYJ implements CategoryDAO {
     private Connection conn = null;
+    private PreparedStatement pstmt = null;
+    ResultSet rs = null;
 
     // 생성자
-    public CategoryDAOImpl(Connection conn) {
+    public CategoryDAOImpl_KYJ(Connection conn) {
     	this.conn = conn;
     }
     
@@ -25,12 +27,14 @@ public class CategoryDAOImpl implements CategoryDAO {
     public List<CategoryVO> CategoryAll() throws SQLException {
     	List<CategoryVO> list = new ArrayList<CategoryVO>();
 
+    	Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
     	
     	String sql = " SELECT category_idx, c_name, img FROM category ";
     	
         try {
+            conn = ConnectionProvider.getConnection();
         	pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
 
@@ -51,6 +55,7 @@ public class CategoryDAOImpl implements CategoryDAO {
         } finally {
 			if(rs != null) rs.close();
 			if(pstmt != null) pstmt.close();
+			if(conn != null) conn.close();
         }
 
         return list;

@@ -93,6 +93,14 @@ $(function() {
              }
          });
     }
+
+	if (formToShow === 'signUp') {
+	    console.log('회원가입 폼 보여주기 실행됨');
+	    showSignupForm();
+	} else {
+	    console.log('로그인 폼 보여주기 실행됨');
+	    showLoginForm();
+	}
 });
 
 

@@ -27,5 +27,6 @@ public class MainPageDTO {
     private List<NoteVO> popularNotes; // 선호 카테고리 인기글
     private List<UserVO> popularUsers; // 선호 카테고리 인기유저
     private Map<Integer, List<NoteVO>> popularNotesNotByMyCategory; // 비선호 카테고리별 인기글
+    // private 유저가 팔로우하고 있는 계정 목록 UserVO
 	
 }

@@ -16,13 +16,13 @@ import com.util.ConnectionProvider;
 import mvc.domain.vo.NoteVO;
 import mvc.persistence.dao.NoteDAO;
 
-public class NoteDAOImpl implements NoteDAO {
+public class NoteDAOImpl_KYJ implements NoteDAO {
 
 	Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
 	
-	public NoteDAOImpl(Connection conn) {
+	public NoteDAOImpl_KYJ(Connection conn) {
 		this.conn = conn;
 	}
 	

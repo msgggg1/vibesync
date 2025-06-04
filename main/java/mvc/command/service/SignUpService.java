@@ -1,30 +1,57 @@
 package mvc.command.service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import com.util.ConnectionProvider;
+
 import mvc.domain.dto.SignUpDTO;
-import mvc.domain.vo.UserSessionVO;
 import mvc.persistence.dao.UserDAO;
+import mvc.persistence.daoImpl.UserDAOImpl;
 
 public class SignUpService {
-	
-    private UserDAO userAccountDAO;
 
-    public SignUpService(UserDAO userAccountDAO) {
-        this.userAccountDAO = userAccountDAO;
-    }
+    public boolean register(SignUpDTO dto) throws SQLException {
+    	boolean isRegisterd = false;
+    	
+    	Connection conn = null;
+    	String[] duplicateTest = null;
+    	
+    	try {
+    		conn = ConnectionProvider.getConnection();
+            conn.setAutoCommit(false);
 
-    public UserSessionVO register(SignUpDTO dto) {
-    	UserSessionVO userInfo = null;
+            // 유저의 정보를 실제 JDBC에 CRUD 하는 기능들을 담당하는 DAO 클래스 : UserDAO, UserDAOImpl
+            UserDAO userDAO = new UserDAOImpl(conn);
+            
+            // 닉네임, 이메일 중복 검사
+            duplicateTest = userDAO.duplicateTest(dto.getNickname(), dto.getEmail());
+            
+            if (duplicateTest == null) { // 중복되는 닉네임, 이메일 없음
+            	// 회원가입
+            	isRegisterd = userDAO.insertUser(dto);
+            	conn.commit();
+            	
+            } else {
+            	String nickname = duplicateTest[0];
+            	String email = duplicateTest[1];
+            	
+            	if (nickname != null && email != null) {
+            		throw new IllegalArgumentException(String.format("닉네임 [%s]이 이미 사용 중입니다.<br>이미 가입한 정보가 존재하는 이메일입니다.", nickname));
+            	} else if (nickname != null) {
+            		throw new IllegalArgumentException(String.format("[%s]는 이미 사용 중인 닉네임입니다.", nickname));
+            	} else if (email != null) {
+            		throw new IllegalArgumentException("이미 가입한 정보가 존재하는 이메일입니다.");
+            	}
+            }
+            
+        } catch (Exception e) {
+        	conn.rollback();
+        	e.printStackTrace();
+        } finally {
+			if (conn != null) conn.close();
+		}
     	
-    	Boolean isNicknameExists = userAccountDAO.isNicknameExists(dto.getNickname());
-    	Boolean isEmailExists = userAccountDAO.isEmailExists(dto.getEmail());
-    	
-    	if (isNicknameExists || isEmailExists) {
-    		if (isNicknameExists) throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
-    		if (isEmailExists) throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
-    	} else {
-    		userInfo = userAccountDAO.insertUser(dto);
-    	}
-    	
-    	return userInfo;
+    	return isRegisterd;
     }
 }

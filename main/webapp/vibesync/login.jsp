@@ -2,14 +2,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
-<html lang="en"> <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
     <link rel="icon" href="./sources/favicon.ico">
-    <title>VibeSync Login</title> <link rel="stylesheet" href="./css/login.css"> </head>    
+    <title>VibeSync Login</title>
+    <link rel="stylesheet" href="./css/login.css">
+</head>    
 
 <body ondragstart="return false" ondrop="return false" onselectstart="return false"><canvas id="starfield"></canvas>
 
@@ -28,7 +31,8 @@
             	Find<br>Your<br><span class="highlight">VibeSync</span><br><br>
             </div>
 
-            <div id="loginFormContainer" style="${formToShow eq 'signUp' ? 'display: none;' : 'display: block;'}">
+            <!-- <div id="loginFormContainer"> -->
+            <div id="loginFormContainer" style="${formToShow eq 'signUp' ? 'display:none;' : 'display:flex;'}">
                 <form action="<%= request.getContextPath() %>/vibesync/user.do" method="post" id="loginForm"> <%-- action을 login.jsp 또는 현재 페이지로 명시 --%>
                 	<%-- POST 요청 시 login/signup 구분 --%>
                 	<input type="hidden" name="accessType" value="login">
@@ -66,8 +70,8 @@
                 </div>
             </div>
 
-            <div id="signupFormContainer" style="${formToShow eq 'signUp' ? 'display: flex;' : 'display: none;'}">
-                    
+            <!-- <div id="signupFormContainer" style="display: none;"> -->
+            <div id="signupFormContainer" style="${formToShow eq 'signUp' ? 'display:flex;' : 'display:none;'}">
                 <form action="user.do" method="post" id="signupForm">
                 	<%-- POST 요청 시 login/signup 구분 --%>
                 	<input type="hidden" name="accessType" value="signUp">
@@ -106,7 +110,7 @@
             </div>
 			
 			<!-- <div class="links switch-form-link" > -->
-            <div class="links switch-form-link" style="${formToShow eq 'signUp' ? 'display: none;' : 'display: block;'}">
+            <div class="links switch-form-link" style="${formToShow eq 'signUp' ? 'display:none;' : 'display:block;'}">
                 Not a member yet?<a href="#" id="switchToSignupLink">Sign Up</a>
             </div>
         </div>

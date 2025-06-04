@@ -18,7 +18,7 @@ import mvc.persistence.daoImpl.CategoryDAOImpl;
 import mvc.persistence.daoImpl.NoteDAOImpl;
 import mvc.persistence.daoImpl.UserDAOImpl;
 
-public class MainPageHandler implements CommandHandler {
+public class MainPageHandler_KYJ implements CommandHandler {
 
 	@Override
 	public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {

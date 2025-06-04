@@ -2,29 +2,59 @@ package mvc.command.service;
 
 import mvc.persistence.dao.UserDAO;
 import mvc.persistence.daoImpl.UserDAOImpl;
+
+import java.sql.Connection;
+
+import com.util.ConnectionProvider;
+
 import mvc.domain.dto.LoginDTO;
-import mvc.domain.vo.UserSessionVO;
+import mvc.domain.vo.UserVO;
 
 public class LoginService {
-    private UserDAO userDAO;
-
-    public LoginService(UserDAO userDAO) {
-    	this.userDAO = userDAO;
-	}
 
     // 로그인 : 이메일, 비밀번호 활용
-	public UserSessionVO login(LoginDTO dto) throws Exception {
-		UserSessionVO userSessionVO = null;
-		userSessionVO = userDAO.login(dto);
+	public UserVO login(LoginDTO dto) throws Exception {
+		UserVO userVO = null;
 		
-        return userSessionVO;
+		Connection conn = null;
+		
+		try {
+    		conn = ConnectionProvider.getConnection();
+            
+            UserDAO userDAO = new UserDAOImpl(conn);
+            
+            // 로그인
+            userVO = userDAO.login(dto);
+            
+		} catch (Exception e) {
+        	e.printStackTrace();
+		} finally {
+			if (conn != null) conn.close();
+		}
+		
+        return userVO;
     }
 	
 	// 자동로그인 : 쿠키의 사용자 이메일 정보 활용
-	public UserSessionVO autoLogin(String email) throws Exception {
-		UserSessionVO userSessionVO = null;
-		userSessionVO = userDAO.findByEmail(email);
+	public UserVO autoLogin(String email) throws Exception {
+		UserVO userVO = null;
 		
-        return userSessionVO;
+		Connection conn = null;
+		
+		try {
+    		conn = ConnectionProvider.getConnection();
+            
+            UserDAO userDAO = new UserDAOImpl(conn);
+            
+            // 이메일로 로그인
+            userVO = userDAO.findByEmail(email);
+            
+		} catch (Exception e) {
+        	e.printStackTrace();
+		} finally {
+			if (conn != null) conn.close();
+		}
+		
+        return userVO;
     }
 }
