@@ -1,22 +1,12 @@
 package mvc.command.handler;
 
-import java.sql.Connection;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.util.ConnectionProvider;
-
 import mvc.command.service.MainPageService;
 import mvc.domain.dto.MainPageDTO;
 import mvc.domain.vo.UserVO;
-import mvc.persistence.dao.CategoryDAO;
-import mvc.persistence.dao.NoteDAO;
-import mvc.persistence.dao.UserDAO;
-import mvc.persistence.daoImpl.CategoryDAOImpl;
-import mvc.persistence.daoImpl.NoteDAOImpl;
-import mvc.persistence.daoImpl.UserDAOImpl;
 
 public class MainPageHandler implements CommandHandler {
 
@@ -45,11 +35,12 @@ public class MainPageHandler implements CommandHandler {
             							  .email("")
             							  .nickname("GUEST")
             							  .img(null)
-            							  .category_idx(1)
+            							  .category_idx(1) // 입력 받기?
             							  .build();
         	 */
         } else if (session.getAttribute("userInfo") != null) {
-        	System.out.println("mainHandler 로그인 성공");
+        	//System.out.println("mainHandler 로그인 성공");
+        	
         	// 로그인 성공 후 메인페이지로 넘어오면 유저 정보 받아옴
         	userInfo = (UserVO) session.getAttribute("userInfo");
         	

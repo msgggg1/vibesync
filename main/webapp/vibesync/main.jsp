@@ -100,7 +100,8 @@
           <div class="category_btn_group">
             <c:forEach items="${ categoryVOList }" var="categoryVO">
             	<c:if test="${categoryVO.category_idx != userInfo.category_idx}">
-	            	<button style="background-image: url( <%= contextPath %>${ categoryVO.img }); background-size: cover;">
+	            	<button style="background-image: url( <%= contextPath %>${ categoryVO.img }); background-size: cover;"
+	            			onclick="location.href='./list.jsp?category_idx=${categoryVO.category_idx}'">
 	            		<p>${ categoryVO.c_name }</p>
 	            	</button>
             	</c:if>
@@ -111,27 +112,33 @@
           <div class="grid_wrapper">
             <div class="grid_item" id="recent_posts_container" >
 	            <c:forEach items="${latestNotes}" var="post" varStatus="status">
-	            <div class="list-entry" data-id="${post.note_idx}">
-	                <img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
-	                <span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
-	            </div>
+		            <div class="list-entry" data-id="${post.note_idx}">
+		            	<a href="./postView.jsp?note_idx=${post.note_idx}" >
+			                <img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
+			                <span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
+			            </a>
+		            </div>
         		</c:forEach>
             </div>
             <div class="grid_item" id="popular_posts_container">
 	             <c:forEach items="${popularNotes}" var="post" varStatus="status">
 	            	<div class="list-entry" data-id="${post.note_idx}">
-	                	<img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
-	                	<span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
+	                	<a href="./postView.jsp?note_idx=${ post.note_idx }">
+		                	<img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
+		                	<span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
+	            		</a>
 	            	</div>
 	        	</c:forEach>
             </div>
             <div class="grid_item" id="popular_users_container">
             	  <c:forEach items="${popularUsers}" var="user" varStatus="status">
-            		<div class="list-entry" data-id="${status.count}">
-               	 		<img class="entry-image" src="https://placehold.co/100x100.png?text=${user.nickname}" alt="${user.nickname}">
-                		<span class="entry-number">${status.count}</span>
-                		<span class="entry-title">${user.nickname}</span>
-            		</div>
+	            	<div class="list-entry" data-id="${status.count}">
+	            		<a href="./user.jsp?ui=${ user.ac_idx }" >
+	               	 		<img class="entry-image" src="https://placehold.co/100x100.png?text=${user.nickname}" alt="${user.nickname}">
+	                		<span class="entry-number">${status.count}</span>
+	                		<span class="entry-title">${user.nickname}</span>
+	            		</a>
+	            	</div>
         		 </c:forEach>
             </div>
           </div>
@@ -140,14 +147,14 @@
           <div class="slider-container">
             <div class="swiper" id="swiper2">
               <div class="swiper-wrapper">
-              	<c:forEach items="${ popularNotesNotByMyCategory }" var="entry">
+              	<c:forEach items="${ popularNotesNotByMyCategory }" var="posts">
               		<div class="swiper-slide">
               		<ul>
-              		<c:forEach items="${ entry.value }" var="posts">
+              		<c:forEach items="${ posts.value }" var="post">
               			<li>
-              			<a>
-              				<div class="post-index" style="display: inline-block; align-self: left;">${ posts.note_idx }</div>
-		              		<div class="post-title" style="display: inline-block; align-self: right;">${ posts.title }</div>
+              			<a href="./postView.jsp?note_idx=${ post.note_idx }">
+              				<div class="post-index" style="display: inline-block; align-self: left;">${ post.note_idx }</div>
+		              		<div class="post-title" style="display: inline-block; align-self: right;">${ post.title }</div>
               			</a>
               			</li>
               		</c:forEach>

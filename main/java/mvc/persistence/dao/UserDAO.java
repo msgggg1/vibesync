@@ -19,7 +19,7 @@ public interface UserDAO {
 	// 이메일로 계정 정보 조회
 	UserVO findByEmail(String email);
 	
-	// 회원가입 시 중복 검사
+	// 회원가입 시 중복 검사 : 닉네임, 이메일 한번에
 	String[] duplicateTest(String nickname, String email);
 	
 	// 닉네임 중복 검사
@@ -33,4 +33,9 @@ public interface UserDAO {
     
 	// 특정 카테고리의 인기 유저 조회
 	List<UserVO> findPopularUsersByCategory(int categoryIdx, int limit) throws SQLException;
+	
+	// 팔로우 목록
+	
+	
+	// 팔로잉 목록
 }
