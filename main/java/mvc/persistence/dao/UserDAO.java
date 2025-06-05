@@ -28,14 +28,4 @@ public interface UserDAO {
 	// 이메일 중복 검사
 	boolean isEmailExists(String email);
 	
-	// 전체 카테고리의 인기 유저 조회
-	List<UserVO> findPopularUsers(int limit) throws SQLException;
-    
-	// 특정 카테고리의 인기 유저 조회
-	List<UserVO> findPopularUsersByCategory(int categoryIdx, int limit) throws SQLException;
-	
-	// 팔로우 목록
-	
-	
-	// 팔로잉 목록
 }

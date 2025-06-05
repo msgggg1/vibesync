@@ -1,6 +1,5 @@
 package mvc.persistence.daoImpl;
 
-import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,14 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
-
-import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 import com.util.PasswordMigrator;
 
 import mvc.domain.dto.LoginDTO;
 import mvc.domain.dto.SignUpDTO;
-import mvc.domain.vo.UserVO;
 import mvc.domain.vo.UserVO;
 import mvc.persistence.dao.UserDAO;
 
@@ -280,119 +276,4 @@ public class UserDAOImpl implements UserDAO {
 		return isEmailExists;
 	}
 	
-	// 전체 카테고리 - 인기 유저 조회
-	@Override
-	public List<UserVO> findPopularUsers(int limit) throws SQLException {
-		 List<UserVO> users = new ArrayList<>();
-		 
-	     PreparedStatement pstmt = null;
-	     ResultSet rs = null;
-		 
-	     // 인기 유저: (받은 좋아요 수 + 팔로워 수) 합산 기준, Oracle TOP-N 쿼리
-	     String sql = "SELECT ac_idx, email, nickname, img, name, category_idx " +
-	                " FROM ( " +
-	                "    SELECT " +
-	                "        ua.ac_idx, " + 
-	                "		 ua.email,	" +
-	                "        ua.nickname, " +
-	                "        ua.img, " +
-	                "        ua.name, " +
-	                "        ua.category_idx, " +
-	                "        COALESCE(follower_counts.total_followers, 0) AS popularity_score, " + // 인기도 점수를 팔로워 수로만 계산
-	                "        ROW_NUMBER() OVER (ORDER BY COALESCE(follower_counts.total_followers, 0) DESC, ua.created_at DESC) as rn " +
-	                "    FROM " +
-	                "        userAccount ua " +
-	                "    LEFT JOIN " +
-	                "        (SELECT ac_following, COUNT(follows_idx) AS total_followers " +
-	                "         FROM follows " +
-	                "         GROUP BY ac_following) follower_counts ON ua.ac_idx = follower_counts.ac_following " +
-	                " ) " +
-	                " WHERE rn <= ? ";
-
-	     try {
-	    	 pstmt = conn.prepareStatement(sql);
-	         pstmt.setInt(1, limit);
-	         rs = pstmt.executeQuery();
-
-	         while (rs.next()) {
-	        	 UserVO user = new UserVO().builder()
-	        			 				   .ac_idx(rs.getInt("ac_idx"))
-	        			 				   .email(rs.getString("email"))
-	        			 				   .nickname(rs.getString("nickname"))
-	        			 				   .img(rs.getString("img"))
-	        			 				   .name(rs.getString("name"))
-	        			 				   .category_idx(rs.getInt("category_idx"))
-	        			 				   .build();
-	        			 
-	             users.add(user);
-	         }
-	      
-	      } catch (Exception e) {
-	    	  e.printStackTrace();
-	      } finally {
-	    	  if (rs != null) rs.close();
-	    	  if (pstmt != null) pstmt.close();
-	      }
-	        
-	      return users;
-	}
-
-	// 특정 카테고리의 인기 유저 조회
-	@Override
-	public List<UserVO> findPopularUsersByCategory(int categoryIdx, int limit) throws SQLException {
-		 List<UserVO> users = new ArrayList<>();
-		 
-	     PreparedStatement pstmt = null;
-	     ResultSet rs = null;
-		 
-	     String sql = " SELECT * " +
-	    		 	" FROM ( " + 
-	    		 	"	SELECT " +
-	    		 	"		 u.ac_idx, " + 
-	    		 	"		 u.email, " + 
-	    		 	"		 u.nickname, " + 
-	    		 	"		 u.img, " + 
-	    		 	"		 u.name, " + 
-	    		 	"		 COUNT(f.ac_follow) AS follower_count " + 
-	                " 	FROM " + 
-	    		 	"		userAccount u " +
-	    		 	" 	LEFT JOIN follows f ON u.ac_idx = f.ac_following " +
-	                " 	WHERE " + 
-	    		 	" 		u.category_idx = ? " + 
-	    		 	" 	GROUP BY " +
-	                "		u.ac_idx, u.email, u.nickname, u.img, u.name, u.category_idx " + 
-	                "	ORDER BY " + 
-	                "		follower_count DESC " + 
-	                " ) " +
-	                " WHERE ROWNUM <= ? ";
-
-	     try {
-	    	 pstmt = conn.prepareStatement(sql);
-	         pstmt.setInt(1, categoryIdx);
-	         pstmt.setInt(2, limit);
-	         rs = pstmt.executeQuery();
-
-	         while (rs.next()) {
-	        	 UserVO user = new UserVO().builder()
-		 				   .ac_idx(rs.getInt("ac_idx"))
-		 				   .email(rs.getString("email"))
-		 				   .nickname(rs.getString("nickname"))
-		 				   .img(rs.getString("img"))
-		 				   .name(rs.getString("name"))
-		 				   .category_idx(categoryIdx)
-		 				   .build();
-	        	 
-	             users.add(user);
-	         }
-	      
-	      } catch (Exception e) {
-	    	  e.printStackTrace();
-	      } finally {
-	    	  if (rs != null) rs.close();
-	    	  if (pstmt != null) pstmt.close();
-	      }
-	        
-	      return users;
-	}
-
 }

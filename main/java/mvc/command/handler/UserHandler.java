@@ -109,7 +109,7 @@ public class UserHandler implements CommandHandler {
     	// 이후 Listener(서버 시작 시 실행)로 보낼 부분 : application 객체 사용 예정
     	CategoryService categoryService = new CategoryService();
     	List<CategoryVO> categoryVOList = (ArrayList<CategoryVO>) categoryService.allCategories();
-    	session.setAttribute("allCategoryInfo", categoryVOList);
+    	session.setAttribute("categoryVOList", categoryVOList);
     	
     	// UserHandler에서 로그인 관련 기능들을 담당하는 서비스 클래스 : LoginService
     	LoginService loginService = new LoginService();

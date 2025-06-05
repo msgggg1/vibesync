@@ -60,7 +60,7 @@
           <!-- grid -->
           <div class="grid_wrapper">
             <div class="grid_item" id="recent_posts_container" >
-	            <c:forEach items="${latestNotes}" var="post" varStatus="status">
+	            <c:forEach items="${mainPageDTO.latestNotes}" var="post" varStatus="status">
 		            <div class="list-entry" data-id="${post.note_idx}">
 		            	<a href="./postView.jsp?note_idx=${post.note_idx}" >
 			                <img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
@@ -70,7 +70,7 @@
         		</c:forEach>
             </div>
             <div class="grid_item" id="popular_posts_container">
-	             <c:forEach items="${popularNotes}" var="post" varStatus="status">
+	             <c:forEach items="${mainPageDTO.popularNotes}" var="post" varStatus="status">
 	            	<div class="list-entry" data-id="${post.note_idx}">
 	                	<a href="./postView.jsp?note_idx=${ post.note_idx }">
 		                	<img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
@@ -80,7 +80,7 @@
 	        	</c:forEach>
             </div>
             <div class="grid_item" id="popular_users_container">
-            	  <c:forEach items="${popularUsers}" var="user" varStatus="status">
+            	  <c:forEach items="${mainPageDTO.popularUsers}" var="user" varStatus="status">
 	            	<div class="list-entry" data-id="${status.count}">
 	            		<a href="./user.jsp?ui=${ user.ac_idx }" >
 	               	 		<img class="entry-image" src="https://placehold.co/100x100.png?text=${user.nickname}" alt="${user.nickname}">
@@ -96,7 +96,7 @@
           <div class="slider-container">
             <div class="swiper" id="swiper2">
               <div class="swiper-wrapper">
-              	<c:forEach items="${ popularNotesNotByMyCategory }" var="posts">
+              	<c:forEach items="${ mainPageDTO.popularNotesNotByMyCategory }" var="posts">
               		<div class="swiper-slide">
               		<ul>
               		<c:forEach items="${ posts.value }" var="post">

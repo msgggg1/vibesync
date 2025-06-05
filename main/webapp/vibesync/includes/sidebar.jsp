@@ -1,12 +1,6 @@
-<%@page import="mvc.domain.vo.UserVO"%>
-<%@page import="java.util.Enumeration"%>
-<%@ page import="javax.servlet.http.Cookie" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" %>
-<%
-    UserVO user = (UserVO) session.getAttribute("userInfo");
-	request.setAttribute("user", user);
-%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!-- CSS 및 JS를 모두 이 파일 내에 포함 -->
 <style>
@@ -114,14 +108,14 @@
       <!-- 닉네임 영역: 클릭 시 모달 토글 -->
       <div class="nickname-container">
         <span class="nickname" id="nickname-display">
-          ${user.nickname}
+          ${userInfo.nickname}
         </span>
 
         <!-- 모달: 기본 숨김, 클릭 시 보임 -->
         <div id="nickname-modal" class="modal">
           <!-- 모달 내부 닉네임 클릭 시 user.jsp?ui=로 이동 -->
           <a href='./user.jsp?ui=\${user.idx}' class="modal-nickname">
-            ${user.nickname}
+            ${userInfo.nickname}
           </a>
         </div>
       </div>
@@ -154,8 +148,9 @@
           </div>
           <input type="checkbox" id="follow_toggle">
           <ul class="follow_items">
-            <li><a href="./postView.html">PostView</a></li>
-            <li><a href="./list.jsp">List</a></li>
+          	<c:forEach items="${sidebarDTO.followingList}" var="user">
+          		<li><a href="./user.jsp?ui=${user.ac_idx}">${user.nickname}</a></li>
+          	</c:forEach>
           </ul>
         </div>
       </div>
