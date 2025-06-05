@@ -9,6 +9,8 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="org.doit.domain.NoteVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%
 String contextPath = request.getContextPath();
     // --- 로그인 체크: userEmail, category_idx 쿠키 없으면 login.jsp 로 리디렉션 ---
@@ -118,7 +120,7 @@ String contextPath = request.getContextPath();
               </button>
             <% } %>
           </div>
-  
+          
           <!-- grid -->
           <div class="grid_wrapper">
             <div class="grid_item">

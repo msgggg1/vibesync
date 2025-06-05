@@ -11,7 +11,7 @@
   <script>
     const CONTEXT_PATH = '<%= contextPath %>';
   </script>
-  
+  <link rel="icon" href="./sources/favicon.ico" />
   <script src="https://www.youtube.com/iframe_api"></script>
   <script defer src="./js/watchparty.js"></script>
   <style>

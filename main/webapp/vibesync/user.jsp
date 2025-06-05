@@ -4,7 +4,9 @@
 <%@page import="org.doit.domain.UserPage_UserVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+
 <%
+
 
 String user_idx_str = request.getParameter("ui");
 int useridx = 0;

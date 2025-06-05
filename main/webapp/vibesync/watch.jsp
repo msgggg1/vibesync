@@ -17,10 +17,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Watch Party - <%= wp.getTitle() %></title>
+  <link rel="icon" href="./sources/favicon.ico" />
   <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem;}
-    #video-container { text-align: center; margin-bottom: 1rem; }
-    #chat-container { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 0.5rem; margin-bottom: 0.5rem;}
+    body { font-family: Arial, sans-serif; width: 100%; height: 100vh; margin: 0;}
+    h1 {margin: 0; height: 10%;}
+    section.container {height: 90%; display: flex; justify-content: center; align-items: center;}
+    .videowrapper {flex: 7; height: 100%; display: flex; flex-direction: column; gap: 20px;}
+    .chatting-wrapper {flex: 2; height: 100%;} 
+    #video-container { text-align: center; width: 100%; height: 90%;}
+    iframe {width: 100%; height: 100%;}
+    #chat-container { border: 1px solid #ccc; height: 83%; overflow-y: scroll; padding: 0.5rem; margin-bottom: 30px;}
     #chat-input { width: calc(100% - 110px); padding: 0.5rem; }
     #send-btn { width: 80px; padding: 0.5rem; }
     #status { margin-top: 0.5rem; font-size: 0.9rem; color: gray; }
@@ -42,27 +48,32 @@
 <body>
   <h1><%= wp.getTitle() %></h1>
 
-  <!-- 영상 재생 영역 -->
-  <div id="video-container">
-    <iframe id="youtube-player"
-            width="720" height="405"
-            src="https://www.youtube.com/embed/<%= wp.getVideoId() %>?enablejsapi=1"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-    </iframe>
-  </div>
+  <section class="container">
+    <!-- 영상 재생 영역 -->
+    <div class="videowrapper">
+      <div id="video-container">
+        <iframe id="youtube-player"
+                src="https://www.youtube.com/embed/<%= wp.getVideoId() %>?enablejsapi=1"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+      </div>
+      
+      <button id="sync-button">Sync</button>
+      <div id="sync-status-message"></div>
+    </div>
   
-  <button id="sync-button">Sync</button>
-  <div id="sync-status-message"></div>
-
-  <!-- 채팅 + 동기화 상태 영역 -->
-  <div id="status">동기화 상태: <span id="sync-status">연결 중...</span></div>
-  <div id="chat-container"></div>
-  <div>
-    <input type="text" id="chat-input" placeholder="메시지를 입력하세요..." />
-    <button id="send-btn">전송</button>
-  </div>
+    <div class="chatting-wrapper">
+      <!-- 채팅 + 동기화 상태 영역 -->
+      <div id="status">동기화 상태: <span id="sync-status">연결 중...</span></div>
+      <div id="chat-container"></div>
+      <div>
+        <input type="text" id="chat-input" placeholder="메시지를 입력하세요..." />
+        <button id="send-btn">전송</button>
+      </div>
+    </div>
+  </section>
 
   <!-- YouTube IFrame API 로드 -->
   <script src="https://www.youtube.com/iframe_api"></script>
@@ -145,7 +156,7 @@
             playState = (msg.play === "PLAY");
             if (isSynced) {
               if (playState) {
-                player.seekTo(latestTimeline, true);
+                // player.seekTo(latestTimeline, true);
                 player.playVideo();
               } else {
                 player.pauseVideo();
