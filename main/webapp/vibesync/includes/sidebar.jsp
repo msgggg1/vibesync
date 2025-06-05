@@ -1,24 +1,11 @@
+<%@page import="mvc.domain.vo.UserVO"%>
+<%@page import="java.util.Enumeration"%>
 <%@ page import="javax.servlet.http.Cookie" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" %>
 <%
-    // 쿠키에서 nickname과 useridx 추출
-    Cookie[] cookies = request.getCookies();
-    String nickname = null;
-    String user_idx = null;
-    int useridx = 0;
-
-    if (cookies != null) {
-        for (Cookie c : cookies) {
-            if ("userNickname".equals(c.getName())) {
-                nickname = c.getValue();
-            }
-            if ("login_user_idx".equals(c.getName())) {
-                user_idx = c.getValue();
-                useridx = Integer.parseInt(user_idx);
-            }
-        }
-    }
+    UserVO user = (UserVO) session.getAttribute("userInfo");
+	request.setAttribute("user", user);
 %>
 
 <!-- CSS 및 JS를 모두 이 파일 내에 포함 -->
@@ -64,6 +51,26 @@
   .modal-nickname:hover {
     text-decoration: underline;
   }
+  
+	#logout form {
+	  width: 100%;
+	  display: flex;
+	  justify-content: center;
+	  height: 40px;
+	  margin-bottom: 20px;
+	}
+	
+	#logout form > button {
+	  width: 150px;
+	  border: none;
+	  background-color: red;
+	  border-radius: 5px;
+	  font-size: 14px;
+	  text-transform: uppercase;
+	  font-weight: bold;
+	  color: var(--w-fff);
+	  cursor: pointer;
+	}
 
 </style>
 
@@ -107,14 +114,14 @@
       <!-- 닉네임 영역: 클릭 시 모달 토글 -->
       <div class="nickname-container">
         <span class="nickname" id="nickname-display">
-          <%= nickname != null ? nickname : "Guest" %>
+          ${user.nickname}
         </span>
 
         <!-- 모달: 기본 숨김, 클릭 시 보임 -->
         <div id="nickname-modal" class="modal">
-          <!-- 모달 내부 닉네임 클릭 시 user.jsp?ui=<%=useridx%>로 이동 -->
-          <a href="./user.jsp?ui=<%= useridx %>" class="modal-nickname">
-            <%= nickname != null ? nickname : "GUEST" %>
+          <!-- 모달 내부 닉네임 클릭 시 user.jsp?ui=로 이동 -->
+          <a href='./user.jsp?ui=\${user.idx}' class="modal-nickname">
+            ${user.nickname}
           </a>
         </div>
       </div>
@@ -127,7 +134,7 @@
       </div>
 
       <!-- HOME -->
-      <a href="./main.jsp" class="home icon_wrap">
+      <a href="main.do" class="home icon_wrap">
         <img src="./sources/icons/home.svg" alt="home icon" class="sidebar_icon">
         <span>HOME</span>
       </a>
@@ -157,9 +164,10 @@
 
     <!-- 로그아웃 -->
     <div id="logout">
-      <form action="./includes/logout.jsp" method="post">
-        <button type="submit">Logout</button>
-      </form>
+      <form action="user.do" method="post">
+		    <input type="hidden" name="accessType" value="logout">
+            <button type="submit">Logout</button>
+	  </form>
     </div>
   </div>
 </nav>
