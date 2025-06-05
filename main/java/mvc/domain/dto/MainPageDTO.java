@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import mvc.domain.vo.CategoryVO;
 import mvc.domain.vo.NoteVO;
 import mvc.domain.vo.UserVO;
 
@@ -22,7 +21,6 @@ import mvc.domain.vo.UserVO;
 @ToString
 public class MainPageDTO {
 
-    private List<CategoryVO> categoryVOList; // 전체 카테고리 정보
     private List<NoteVO> latestNotes; // 선호 카테고리 최신글
     private List<NoteVO> popularNotes; // 선호 카테고리 인기글
     private List<UserVO> popularUsers; // 선호 카테고리 인기유저

@@ -1,20 +1,30 @@
-package mvc.persistence.dao; // 실제 프로젝트의 패키지 경로에 맞게 수정하세요.
+package mvc.persistence.dao;
 
 import java.sql.SQLException;
+import java.util.List;
+
+import mvc.domain.vo.UserVO;
 
 public interface FollowDAO {
-    // 특정 사용자를 팔로우하는 사용자 수 (나를 팔로우하는 사람 = 내 팔로워 수)
-    int countFollowers(int ac_idx) throws SQLException;
+	
+	// 팔로우 목록
+	List<UserVO> userFollowList(int ac_idx);
+	
+	// 팔로잉 목록
+	List<UserVO> userFollowingList(int ac_idx);
+	
+	// 전체 카테고리의 인기 유저 조회
+	List<UserVO> findPopularUsers(int limit) throws SQLException;
+    
+	// 특정 카테고리의 인기 유저 조회
+	List<UserVO> findPopularUsersByCategory(int categoryIdx, int limit) throws SQLException;
+	
+	 // 팔로우 관계를 추가
+    int addFollow(int followerAcIdx, int followingAcIdx) throws SQLException;
 
-    // 특정 사용자가 팔로우하는 사용자 수 (내가 팔로우하는 사람 = 내 팔로잉 수)
-    int countFollowing(int ac_idx) throws SQLException;
+    // 팔로우 관계를 제거
+    int removeFollow(int followerAcIdx, int followingAcIdx) throws SQLException;
 
-    // (선택적) 팔로우 관계 추가
-    boolean addFollow(int follower_ac_idx, int followed_ac_idx) throws SQLException;
-
-    // (선택적) 팔로우 관계 삭제
-    boolean removeFollow(int follower_ac_idx, int followed_ac_idx) throws SQLException;
-
-    // (선택적) 이미 팔로우하고 있는지 확인
-    boolean isFollowing(int follower_ac_idx, int followed_ac_idx) throws SQLException;
+    // 특정 사용자가 다른 사용자를 팔로우하고 있는지 확인
+    boolean isFollowing(int followerAcIdx, int followingAcIdx) throws SQLException;
 }

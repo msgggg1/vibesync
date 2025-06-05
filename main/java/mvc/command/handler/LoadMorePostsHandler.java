@@ -1,58 +1,54 @@
 package mvc.command.handler;
 
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson; // Gson 라이브러리 추가 필요 (JSON 변환용)
-
-import mvc.command.CommandHandler;
-import mvc.command.service.NoteService;
-import mvc.domain.dto.NoteDTO;
+import com.google.gson.Gson;
+import mvc.command.service.UserService; // 또는 NoteService 사용
+import mvc.domain.dto.NoteSummaryDTO;
 
 public class LoadMorePostsHandler implements CommandHandler {
+    private UserService userPageService; // 또는 NoteService
 
-    private NoteService noteService = new NoteService();
-    private static final int POSTS_PER_PAGE = 9; // userProfileHandler와 동일하게 유지
+    public LoadMorePostsHandler() {
+        this.userPageService = new UserService();
+    }
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json; charset=UTF-8"); // JSON 응답 지정
-
-        int ac_idx = 0;
-        int page = 1;
-
-        // 요청 파라미터에서 사용자 ID와 페이지 번호를 가져옴
-        String acIdxParam = request.getParameter("ac_idx");
-        String pageParam = request.getParameter("page");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        Gson gson = new Gson();
 
         try {
-            if (acIdxParam != null) {
-                ac_idx = Integer.parseInt(acIdxParam);
-            }
-            if (pageParam != null) {
-                page = Integer.parseInt(pageParam);
-            }
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 파라미터 형식입니다.");
-            return null;
+            int profileUserAcIdx = Integer.parseInt(request.getParameter("userId"));
+            int pageNumber = Integer.parseInt(request.getParameter("page"));
+
+            List<NoteSummaryDTO> morePosts = userPageService.getMorePosts(profileUserAcIdx, pageNumber);
+            
+            // 더 로드할 게시물이 있는지 판단 (간단한 예시)
+            // UserPageService에서 전체 게시물 수를 알아야 정확한 판단 가능
+            // 여기서는 PAGE_SIZE(예:9)만큼 가져왔다면 더 있다고 가정. 실제로는 전체 카운트 비교 필요.
+            boolean hasMore = (morePosts != null && morePosts.size() == 9); // 9는 UserPageService의 PAGE_SIZE와 일치해야 함
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("posts", morePosts);
+            result.put("hasMore", hasMore);
+            result.put("nextPage", pageNumber + 1);
+
+            out.print(gson.toJson(result));
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print(gson.toJson(Map.of("error", e.getMessage())));
+            e.printStackTrace();
+        } finally {
+            if (out != null) out.flush();
         }
-
-        if (ac_idx <= 0 || page <= 0) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효하지 않은 요청입니다.");
-            return null;
-        }
-
-        // 해당 페이지의 게시물 목록 조회
-        List<NoteDTO> morePosts = noteService.getNotesByAcIdxPaged(ac_idx, page, POSTS_PER_PAGE);
-
-        // Gson 라이브러리를 사용하여 List<NoteDTO>를 JSON 문자열로 변환
-        Gson gson = new Gson();
-        String jsonResponse = gson.toJson(morePosts);
-
-        // JSON 응답 전송
-        response.getWriter().write(jsonResponse);
-
-        return null; // AJAX 요청이므로 뷰 페이지로 포워딩할 필요 없음
+        return null; // JSON 직접 응답
     }
 }

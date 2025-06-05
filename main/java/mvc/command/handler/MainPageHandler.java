@@ -1,22 +1,14 @@
 package mvc.command.handler;
 
-import java.sql.Connection;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.util.ConnectionProvider;
-
 import mvc.command.service.MainPageService;
+import mvc.command.service.SidebarService;
 import mvc.domain.dto.MainPageDTO;
-import mvc.domain.vo.UserSessionVO;
-import mvc.persistence.dao.CategoryDAO;
-import mvc.persistence.dao.NoteDAO;
-import mvc.persistence.dao.UserDAO;
-import mvc.persistence.daoImpl.CategoryDAOImpl;
-import mvc.persistence.daoImpl.NoteDAOImpl;
-import mvc.persistence.daoImpl.UserDAOImpl;
+import mvc.domain.dto.SidebarDTO;
+import mvc.domain.vo.UserVO;
 
 public class MainPageHandler implements CommandHandler {
 
@@ -25,11 +17,13 @@ public class MainPageHandler implements CommandHandler {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		
+		System.out.println("> MainPageHandler.process()...");
+		
 		// 로그인 되어 있지 않고, 게스트 계정으로 메인 페이지 오픈하려는 경우
 		// HttpSession session = request.getSession();
 		
 		HttpSession session = request.getSession(false);
-		UserSessionVO userInfo = null; // 로그인된 유저 정보 저장할 객체
+		UserVO userInfo = null; // 로그인된 유저 정보 저장할 객체
 		
         if (session == null) { // 세션 만료
         	System.err.println("MainPageHandler: session expired.");
@@ -43,46 +37,29 @@ public class MainPageHandler implements CommandHandler {
             							  .email("")
             							  .nickname("GUEST")
             							  .img(null)
-            							  .category_idx(1)
+            							  .category_idx(1) // 입력 받기?
             							  .build();
         	 */
-        } else {
+        } else if (session.getAttribute("userInfo") != null) {
+        	//System.out.println("mainHandler 로그인 성공");
+        	
         	// 로그인 성공 후 메인페이지로 넘어오면 유저 정보 받아옴
-        	userInfo = (UserSessionVO) session.getAttribute("userInfo");
+        	userInfo = (UserVO) session.getAttribute("userInfo");
+        	
+        	// 사이드바 로딩
+        	SidebarService sidebarService = new SidebarService();
+        	SidebarDTO sidebarDTO = sidebarService.loadSidebar(userInfo.getAc_idx());
+        	request.setAttribute("sidebarDTO", sidebarDTO);
+        	
+        	// 메인 페이지 로딩
+        	MainPageService service = new MainPageService();
+        	MainPageDTO mainPageDTO = service.loadMainPage(userInfo.getCategory_idx());
+        	request.setAttribute("mainPageDTO", mainPageDTO);
+        	
+        	return "main.jsp";
         }
         
-        // DB 연결 관리 : Connection 객체
-        Connection conn = null;
-        
-        // 메인 페이지 로딩
-        try {
-        	conn = ConnectionProvider.getConnection();
-        	UserDAO userDAO = new UserDAOImpl(conn);
-        	NoteDAO noteDAO = new NoteDAOImpl(conn);
-        	CategoryDAO categoryDAO = new CategoryDAOImpl(conn);
-        	
-        	MainPageService service = new MainPageService(categoryDAO, noteDAO, userDAO);
-        	MainPageDTO mainPageDTO = service.loadMainPage(userInfo.getCategory_idx());
-        	
-        	request.setAttribute("mainPageDTO", mainPageDTO);
-        	request.setAttribute("categoryVOList", mainPageDTO.getCategoryVOList());
-        	request.setAttribute("latestNotes", mainPageDTO.getLatestNotes());
-        	request.setAttribute("popularNotes", mainPageDTO.getPopularNotes());
-        	request.setAttribute("popularUsers", mainPageDTO.getPopularUsers());
-        	request.setAttribute("popularNotesNotByMyCategory", mainPageDTO.getPopularNotesNotByMyCategory());
-        	
-        	conn.close();
-        	return "main.jsp";
-        	
-		} catch (Exception e) {
-			System.out.println("> MainPageHandler.process() Exception...");
-			e.printStackTrace();
-			conn.rollback();
-		} finally {
-			conn.close();
-		}
-		
-		return "login.jsp";
+		return null;
 	}
 
 }

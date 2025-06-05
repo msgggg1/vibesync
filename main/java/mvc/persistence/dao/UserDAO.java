@@ -5,32 +5,44 @@ import java.util.List;
 
 import mvc.domain.dto.LoginDTO;
 import mvc.domain.dto.SignUpDTO;
-import mvc.domain.vo.UserSessionVO;
+import mvc.domain.dto.UserDTO;
+import mvc.domain.vo.UserVO;
 import mvc.domain.vo.UserVO;
 
 public interface UserDAO {
-	
+	//////회원가입 로그인
 	// 회원가입
-	UserSessionVO insertUser(SignUpDTO dto);
+	boolean insertUser(SignUpDTO dto);
 	
 	// 로그인
-	UserSessionVO login(LoginDTO dto);
+	UserVO login(LoginDTO dto);
 	
 	// 이메일로 계정 정보 조회
-	UserSessionVO findByEmail(String email);
+	UserVO findByEmail(String email);
 	
-	// 회원가입 시 중복 검사
+	// 회원가입 시 중복 검사 : 닉네임, 이메일 한번에
+	String[] duplicateTest(String nickname, String email);
+	
 	// 닉네임 중복 검사
 	boolean isNicknameExists(String nickname);
+	
 	// 이메일 중복 검사
 	boolean isEmailExists(String email);
 	
-	// 전체 카테고리의 인기 유저 조회
-	List<UserVO> findPopularUsers(int limit) throws SQLException;
-    
-	// 특정 카테고리의 인기 유저 조회
-	List<UserVO> findPopularUsersByCategory(int categoryIdx, int limit) throws SQLException;
 	
-	// ac_idx로 user 정보 가져오기
-	UserVO findById(int ac_idx) throws SQLException;
+	//////회원 활동 관련
+	int preferredCategoryIdx(int acIdx) throws SQLException;
+    // List<UserVO> findPopularUsers(int limit) throws SQLException; -> FollowDAO에서 구현?
+    
+    //특정 사용자의 기본 프로필 정보 (ID, 닉네임, 프로필 이미지 경로)를 조회.
+    UserDTO getBasicUserInfoById(int acIdx) throws SQLException;
+
+    //특정 사용자가 작성한 총 게시글 수를 조회
+    int getPostCount(int userAcIdx) throws SQLException;
+
+    // 특정 사용자를 팔로우하는 총 팔로워 수를 조회합니다.
+    int getFollowerCount(int userAcIdx) throws SQLException;
+
+    // 특정 사용자가 팔로우하고 있는 총 사용자 수를 조회합니다.
+    int getFollowingCount(int userAcIdx) throws SQLException;
 }

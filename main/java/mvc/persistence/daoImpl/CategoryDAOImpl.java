@@ -3,16 +3,17 @@ package mvc.persistence.daoImpl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.util.ConnectionProvider;
 
 import mvc.domain.vo.CategoryVO;
 import mvc.persistence.dao.CategoryDAO;
 
 public class CategoryDAOImpl implements CategoryDAO {
     private Connection conn = null;
-    private PreparedStatement pstmt = null;
-    ResultSet rs = null;
 
     // 생성자
     public CategoryDAOImpl(Connection conn) {
@@ -21,13 +22,16 @@ public class CategoryDAOImpl implements CategoryDAO {
     
     @Override
     // 모든 카테고리 정보 조회
-    public List<CategoryVO> CategoryAll() {
+    public List<CategoryVO> CategoryAll() throws SQLException {
     	List<CategoryVO> list = new ArrayList<CategoryVO>();
 
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+    	
     	String sql = " SELECT category_idx, c_name, img FROM category ";
     	
         try {
-            pstmt = conn.prepareStatement(sql);
+        	pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -45,8 +49,8 @@ public class CategoryDAOImpl implements CategoryDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null)    try { rs.close();    } catch (Exception ignored) {}
-            if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
+			if(rs != null) rs.close();
+			if(pstmt != null) pstmt.close();
         }
 
         return list;

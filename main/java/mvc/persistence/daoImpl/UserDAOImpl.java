@@ -11,15 +11,14 @@ import com.util.PasswordMigrator;
 
 import mvc.domain.dto.LoginDTO;
 import mvc.domain.dto.SignUpDTO;
-import mvc.domain.vo.UserSessionVO;
+import mvc.domain.dto.UserDTO;
 import mvc.domain.vo.UserVO;
 import mvc.persistence.dao.UserDAO;
 
 public class UserDAOImpl implements UserDAO {
-    private Connection conn = null;
-    private PreparedStatement pstmt = null;
-    ResultSet rs = null;
     
+	private final Connection conn;
+	
     // 생성자
     public UserDAOImpl(Connection conn) {
     	this.conn = conn;
@@ -27,22 +26,20 @@ public class UserDAOImpl implements UserDAO {
 
     // 회원가입
     @Override
-    public UserSessionVO insertUser(SignUpDTO dto) {
-    	UserSessionVO userInfo = null;
+    public boolean insertUser(SignUpDTO dto) {
+    	boolean isInserted = false;
     	
-    	String sql = "INSERT INTO userAccount (ac_idx, email, pw, nickname, img, name, created_at, salt, category_idx) " +
+        PreparedStatement pstmt = null;
+    	
+    	String sql = " INSERT INTO userAccount " + 
+    				 " (ac_idx, email, pw, nickname, img, name, created_at, salt, category_idx) " +
     				 " VALUES (useraccount_seq.nextval, ?, ?, ?, ?, ?, SYSTIMESTAMP, ?, ?) ";
     	
     	try {
     		pstmt = conn.prepareStatement(sql);
     		
-    		String email = dto.getEmail();
     		String hashedPw = null;
-    		String nickname = dto.getNickname();
-    		String img = null;
-    		String name = dto.getName();
     		String salt = null;
-    		int category_idx = 1;
     		
     		try {
     			salt = PasswordMigrator.generateSalt();
@@ -51,21 +48,16 @@ public class UserDAOImpl implements UserDAO {
     			e.printStackTrace();
     		}
     		
-    		pstmt.setString(1, email);
+    		pstmt.setString(1, dto.getEmail());
     		pstmt.setString(2, hashedPw);
-    		pstmt.setString(3, nickname);
-    		pstmt.setString(4, img); // 기본 이미지 없음
-    		pstmt.setString(5, name);
+    		pstmt.setString(3, dto.getNickname());
+    		pstmt.setString(4, null); // 기본 이미지 없음
+    		pstmt.setString(5, dto.getName());
     		pstmt.setString(6, salt);
     		pstmt.setInt(7, dto.getCategory_idx());
     		
     		if (pstmt.executeUpdate() > 0) {
-    			userInfo = new UserSessionVO().builder()
-    					.email(email)
-    					.nickname(nickname)
-    					.img(img)
-    					.category_idx(category_idx)
-    					.build();
+    			isInserted = true;
     		}
     		
     	} catch (SQLException e) {
@@ -78,18 +70,22 @@ public class UserDAOImpl implements UserDAO {
 			}
     	}
     	
-    	return userInfo;
+    	return isInserted;
     }
     
     // 로그인
     @Override
-    public UserSessionVO login(LoginDTO dto) {
-    	UserSessionVO userInfo = null;
+    public UserVO login(LoginDTO dto) {
+    	UserVO userInfo = null;
     	
-    	String sql = "SELECT pw, salt FROM userAccount WHERE email = ? ";
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+    	
+    	String sql = "SELECT ac_idx, pw, salt, nickname, img, name, category_idx " +
+    				 " FROM userAccount WHERE email = ? ";
     	
     	try {
-			pstmt = conn.prepareStatement(sql);
+    		pstmt = conn.prepareStatement(sql);
 			
 			String emailParam = dto.getEmail(); // 폼에서 전달된 이메일
 			String pwParam = dto.getPassword(); // 폼에서 전달된 비밀번호 (평문)
@@ -105,11 +101,19 @@ public class UserDAOImpl implements UserDAO {
 
                 if (hashedInputPassword != null && storedHashedPassword.equals(hashedInputPassword)) {
                 	// 로그인 성공 (비밀번호 일치)
-                	userInfo = this.findByEmail(emailParam);
+                	userInfo = new UserVO().builder()
+                						   .ac_idx(rs.getInt("ac_idx"))
+                						   .email(emailParam)
+                						   .nickname(rs.getString("nickname"))
+                						   .img(rs.getString("img"))
+                						   .name(rs.getString("name"))
+                						   .category_idx(rs.getInt("category_idx"))
+                						   .build();
+                	System.out.println("로그인 성공");
                 }
             }
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException("로그인 과정에서 오류가 발생했습니다.");
 		} finally {
 			try {
 				if (rs != null) rs.close();
@@ -124,10 +128,13 @@ public class UserDAOImpl implements UserDAO {
     
 	// 이메일로 계정 정보 조회
 	@Override
-	public UserSessionVO findByEmail(String email) {
-		UserSessionVO userInfo = null;
+	public UserVO findByEmail(String email) {
+		UserVO userInfo = null;
 		
-		String sql = "SELECT nickname, img, category_idx FROM userAccount WHERE email = ? ";
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+		
+		String sql = "SELECT ac_idx, nickname, img, name, category_idx FROM userAccount WHERE email = ? ";
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -135,16 +142,14 @@ public class UserDAOImpl implements UserDAO {
 	 		rs = pstmt.executeQuery();
 	 		
 	 		if (rs.next()) {
-	 			String nickname = rs.getString("nickname");
-	 			String img = rs.getString("img");
-	 			int category_idx = rs.getInt("category_idx");
-	 			
-	 			userInfo = new UserSessionVO().builder()
-	 										  .email(email)
-	 										  .nickname(nickname)
-	 										  .img(img)
-	 										  .category_idx(category_idx)
-	 										  .build();
+            	userInfo = new UserVO().builder()
+						   .ac_idx(rs.getInt("ac_idx"))
+						   .email(email)
+						   .nickname(rs.getString("nickname"))
+						   .img(rs.getString("img"))
+						   .name(rs.getString("name"))
+						   .category_idx(rs.getInt("category_idx"))
+						   .build();
 	 		}
 	 		
 		} catch (Exception e) {
@@ -162,11 +167,56 @@ public class UserDAOImpl implements UserDAO {
 	}
 	
 	// 중복 검사 : 닉네임, 이메일
+	@Override
+	public String[] duplicateTest (String nickname, String email) {
+		String[] duplicateTest = null;
+		
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+		
+		String sql = "SELECT nickname, email " + 
+					 " FROM userAccount " + 
+					 " WHERE " + 
+					 " nickname = ? OR email = ? ";
+		try {
+			pstmt = conn.prepareStatement(sql);
+	 		pstmt.setString(1, nickname);
+	 		pstmt.setString(2, email);
+	 		rs = pstmt.executeQuery();
+	 		
+	 		if(rs.next()) {
+	 			duplicateTest = new String[2];
+	 			do {
+					if (rs.getString("nickname").equals(nickname)) {
+						duplicateTest[0] = nickname;
+					}
+					if (rs.getString("email").equals(email)) {
+						duplicateTest[1] = email;
+					}
+				} while (rs.next());
+	 		}
+	 		
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return duplicateTest;
+	}
 	
 	// 닉네임 중복 검사
 	@Override
 	public boolean isNicknameExists(String nickname) {
 		Boolean isNicknameExists = false;
+		
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
 		
 		String sql = "SELECT COUNT(ac_idx) ac_idx FROM userAccount WHERE nickname = ? ";
 		try {
@@ -198,6 +248,9 @@ public class UserDAOImpl implements UserDAO {
 	public boolean isEmailExists(String email) {
 		Boolean isEmailExists = false;
 		
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+		
 		String sql = "SELECT COUNT(ac_idx) ac_idx FROM userAccount WHERE email = ? ";
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -223,127 +276,122 @@ public class UserDAOImpl implements UserDAO {
 		return isEmailExists;
 	}
 	
-	// 전체 카테고리 - 인기 유저 조회
+	//사용자 선호 카테고리
 	@Override
-	public List<UserVO> findPopularUsers(int limit) throws SQLException {
-		 List<UserVO> users = new ArrayList<>();
-		 
-	     // 인기 유저: (받은 좋아요 수 + 팔로워 수) 합산 기준, Oracle TOP-N 쿼리
-	     String sql = "SELECT nickname, img, created_at, popularity_score " +
-	                " FROM ( " +
-	                "    SELECT " +
-	                "        ua.ac_idx, " +
-	                "        ua.nickname, " +
-	                "        ua.img, " +
-	                "        COALESCE(follower_counts.total_followers, 0) AS popularity_score, " + // 인기도 점수를 팔로워 수로만 계산
-	                "        ROW_NUMBER() OVER (ORDER BY COALESCE(follower_counts.total_followers, 0) DESC, ua.created_at DESC) as rn " +
-	                "    FROM " +
-	                "        userAccount ua " +
-	                "    LEFT JOIN " +
-	                "        (SELECT ac_following, COUNT(follows_idx) AS total_followers " +
-	                "         FROM follows " +
-	                "         GROUP BY ac_following) follower_counts ON ua.ac_idx = follower_counts.ac_following " +
-	                " ) " +
-	                " WHERE rn <= ? ";
+	public int preferredCategoryIdx(int acIdx) throws SQLException { 
+	    int preferredCategoryIdx = -1;
+	    String sql = "SELECT category_idx FROM userAccount WHERE ac_idx = ?";
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
 
-	     try {
-	    	 pstmt = this.conn.prepareStatement(sql);
-	         pstmt.setInt(1, limit);
-	         rs = pstmt.executeQuery();
-
-	         while (rs.next()) {
-	        	 UserVO user = new UserVO();
-	             user.setNickname(rs.getString("nickname"));
-	             user.setImg(rs.getString("img"));
-	             user.setCreated_at(rs.getDate("created_at"));
-	             users.add(user);
-	         }
-	      
-	      } catch (Exception e) {
-	    	  e.printStackTrace();
-	      } finally {
-	    	  if (rs != null) rs.close();
-	    	  if (pstmt != null) pstmt.close();
-	      }
-	        
-	      return users;
-	}
-
-	// 특정 카테고리의 인기 유저 조회
-	@Override
-	public List<UserVO> findPopularUsersByCategory(int categoryIdx, int limit) throws SQLException {
-		 List<UserVO> users = new ArrayList<>();
-		 
-	     String sql = " SELECT * " +
-	    		 	" FROM ( " + 
-	    		 	"	SELECT " +
-	    		 	"		 u.nickname, " + 
-	    		 	"		 u.img, " + 
-	    		 	"		 u.created_at, " + 
-	    		 	"		 COUNT(f.ac_follow) AS follower_count " + 
-	                " 	FROM " + 
-	    		 	"		userAccount u " +
-	    		 	" 	LEFT JOIN follows f ON u.ac_idx = f.ac_following " +
-	                " 	WHERE " + 
-	    		 	" 		u.category_idx = ? " + 
-	    		 	" 	GROUP BY " +
-	                "		u.nickname, u.img, u.category_idx, u.created_at " + 
-	                "	ORDER BY " + 
-	                "		follower_count DESC " + 
-	                " ) " +
-	                " WHERE ROWNUM <= ? ";
-
-	     try {
-	    	 pstmt = this.conn.prepareStatement(sql);
-	         pstmt.setInt(1, categoryIdx);
-	         pstmt.setInt(2, limit);
-	         rs = pstmt.executeQuery();
-
-	         while (rs.next()) {
-	        	 UserVO user = new UserVO().builder()
-	        			 				   .nickname(rs.getString("nickname"))
-	        			 				   .img(rs.getString("img"))
-	        			 				   .created_at(rs.getDate("created_at"))
-	        			 				   .category_idx(categoryIdx)
-	        			 				   .build();
-	             users.add(user);
-	         }
-	      
-	      } catch (Exception e) {
-	    	  e.printStackTrace();
-	      } finally {
-	    	  if (rs != null) rs.close();
-	    	  if (pstmt != null) pstmt.close();
-	      }
-	        
-	      return users;
+	    try {
+	        pstmt = this.conn.prepareStatement(sql); 
+	        pstmt.setInt(1, acIdx);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            preferredCategoryIdx = rs.getInt("category_idx");
+	        }
+	    } finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        if (pstmt != null) try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+	    }
+	    return preferredCategoryIdx;
 	}
 	
-	// ac_idx로 user 정보 가져오기
+	
 	@Override
-	public UserVO findById(int ac_idx) throws SQLException {
-	    UserVO user = null;
-	    // 실제 테이블명과 컬럼명으로 수정해주세요.
-	    String sql = "SELECT ac_idx, email, nickname, img, name, created_at, category_idx FROM UserAccount WHERE ac_idx = ?";
-	    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setInt(1, ac_idx);
-	        try (ResultSet rs = pstmt.executeQuery()) {
-	            if (rs.next()) {
-	                user = new UserVO();
-	                user.setAc_idx(rs.getInt("ac_idx"));
-	                user.setEmail(rs.getString("email"));
-	                user.setNickname(rs.getString("nickname"));
-	                user.setImg(rs.getString("img"));
-	                user.setName(rs.getString("name"));
-	                user.setCreated_at(rs.getDate("created_at"));
-	                user.setCategory_idx(rs.getInt("category_idx"));
-	                // UserVO의 다른 필드들도 여기서 채워주세요.
-	                // (주의: 비밀번호(pw), salt 같은 민감 정보는 UserVO에 담아 서비스 단으로 넘길 때 신중해야 합니다.
-	                //  여기서는 UserProfileViewDTO를 만드는 데 필요한 정보 위주로 가져옵니다.)
-	            }
+	public UserDTO getBasicUserInfoById(int acIdx) throws SQLException {
+	    String sql = "SELECT ac_idx, nickname, img, name FROM userAccount WHERE ac_idx = ?";
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    UserDTO user = null;
+	    try {
+	        pstmt = this.conn.prepareStatement(sql);
+	        pstmt.setInt(1, acIdx);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            user = UserDTO.builder()
+	                .ac_idx(rs.getInt("ac_idx"))
+	                .nickname(rs.getString("nickname"))
+	                .img(rs.getString("img"))
+	                .name(rs.getString("name"))
+	                .build();
+	        } else {
+	            System.out.println("[UserDAOImpl] 사용자 데이터 찾을 수 없음 (acIdx: " + acIdx + ")");
 	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        throw e; // 예외를 다시 던져 서비스 계층에서 알 수 있도록 함
+	    } finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        if (pstmt != null) try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
 	    }
 	    return user;
 	}
+	
+	@Override
+    public int getPostCount(int userAcIdx) throws SQLException {
+        // note 테이블과 userPage 테이블을 조인하여 해당 ac_idx를 가진 사용자의 게시글 수를 계산
+        String sql = "SELECT COUNT(n.note_idx) " +
+                     "FROM note n " +
+                     "JOIN userPage up ON n.userPg_idx = up.userPg_idx " +
+                     "WHERE up.ac_idx = ?";
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userAcIdx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+        return count;
+    }
 
+    @Override
+    public int getFollowerCount(int userAcIdx) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM follows WHERE ac_following = ?"; // userAcIdx를 팔로우하는 사람들의 수
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userAcIdx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+        return count;
+    }
+
+    @Override
+    public int getFollowingCount(int userAcIdx) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM follows WHERE ac_follow = ?"; // userAcIdx가 팔로우하는 사람들의 수
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userAcIdx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+        return count;
+    }
+	
 }
