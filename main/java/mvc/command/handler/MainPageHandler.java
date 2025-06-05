@@ -48,22 +48,13 @@ public class MainPageHandler implements CommandHandler {
             							  .category_idx(1)
             							  .build();
         	 */
-        } else {
+        } else if (session.getAttribute("userInfo") != null) {
+        	System.out.println("mainHandler 로그인 성공");
         	// 로그인 성공 후 메인페이지로 넘어오면 유저 정보 받아옴
         	userInfo = (UserVO) session.getAttribute("userInfo");
-        }
-        
-        // DB 연결 관리 : Connection 객체
-        Connection conn = null;
-        
-        // 메인 페이지 로딩
-        try {
-        	conn = ConnectionProvider.getConnection();
-        	UserDAO userDAO = new UserDAOImpl(conn);
-        	NoteDAO noteDAO = new NoteDAOImpl(conn);
-        	CategoryDAO categoryDAO = new CategoryDAOImpl(conn);
         	
-        	MainPageService service = new MainPageService(categoryDAO, noteDAO, userDAO);
+        	// 메인 페이지 로딩
+        	MainPageService service = new MainPageService();
         	MainPageDTO mainPageDTO = service.loadMainPage(userInfo.getCategory_idx());
         	
         	request.setAttribute("mainPageDTO", mainPageDTO);
@@ -73,18 +64,10 @@ public class MainPageHandler implements CommandHandler {
         	request.setAttribute("popularUsers", mainPageDTO.getPopularUsers());
         	request.setAttribute("popularNotesNotByMyCategory", mainPageDTO.getPopularNotesNotByMyCategory());
         	
-        	conn.close();
         	return "main.jsp";
-        	
-		} catch (Exception e) {
-			System.out.println("> MainPageHandler.process() Exception...");
-			e.printStackTrace();
-			conn.rollback();
-		} finally {
-			conn.close();
-		}
-		
-		return "login.jsp";
+        }
+        
+		return null;
 	}
 
 }

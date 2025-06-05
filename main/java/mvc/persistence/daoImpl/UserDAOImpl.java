@@ -108,11 +108,12 @@ public class UserDAOImpl implements UserDAO {
                 	userInfo = new UserVO().builder()
                 						   .ac_idx(rs.getInt("ac_idx"))
                 						   .email(emailParam)
-                						   .nickname("nickname")
-                						   .img("img")
-                						   .name("name")
+                						   .nickname(rs.getString("nickname"))
+                						   .img(rs.getString("img"))
+                						   .name(rs.getString("name"))
                 						   .category_idx(rs.getInt("category_idx"))
                 						   .build();
+                	System.out.println("로그인 성공");
                 }
             }
 		} catch (SQLException e) {
@@ -148,9 +149,9 @@ public class UserDAOImpl implements UserDAO {
             	userInfo = new UserVO().builder()
 						   .ac_idx(rs.getInt("ac_idx"))
 						   .email(email)
-						   .nickname("nickname")
-						   .img("img")
-						   .name("name")
+						   .nickname(rs.getString("nickname"))
+						   .img(rs.getString("img"))
+						   .name(rs.getString("name"))
 						   .category_idx(rs.getInt("category_idx"))
 						   .build();
 	 		}
