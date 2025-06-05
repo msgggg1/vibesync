@@ -1,102 +1,45 @@
-<!-- main.jsp -->
-<%@page import="javax.servlet.http.Cookie"%>
-<%@page import="org.doit.dao.CategoryDAO"%>
-<%@page import="org.doit.domain.CategoryVO"%>
-<%@page import="org.doit.domain.UserVO"%>
-<%@page import="org.doit.dao.FollowUserDAO"%>
-<%@page import="java.util.List"%>
-<%@page import="org.doit.dao.NoteDAO"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="org.doit.domain.NoteVO"%>
+<%@page import="java.util.Enumeration"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.net.URLEncoder" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<% String contextPath = request.getContextPath() + "/vibesync"; %>
 
 <%
-String contextPath = request.getContextPath();
-    // --- 로그인 체크: userEmail, category_idx 쿠키 없으면 login.jsp 로 리디렉션 ---
-    Cookie[] cookies = request.getCookies();
-    String userEmail = null;
-    String categoryIdx_str = null;
-    String nickname = null;
-    if (cookies != null) {
-        for (Cookie c : cookies) {
-            if ("userEmail".equals(c.getName())) {
-                userEmail = c.getValue();
-            }
-            if ("category_idx".equals(c.getName())) {
-                categoryIdx_str = c.getValue();
-            }
-        }
-    }
-    if (userEmail == null || categoryIdx_str == null) {
-        response.sendRedirect("login.jsp");
-        return;
-    }
+    Enumeration<String> attributeNames = session.getAttributeNames();
 
-    // 기존 로직: category 인자 파싱
-    int category = Integer.parseInt(categoryIdx_str);
-    int[] catArray = new int[4];
-    int idx = 0;
-    for (int i = 1; i <= 5; i++) {
-        if (i != category) {
-            catArray[idx++] = i;
-        }
+    while (attributeNames.hasMoreElements()) {
+        String name = attributeNames.nextElement();
+        Object value = session.getAttribute(name);
+        System.out.println("Session Attribute - " + name + " : " + value);
     }
-    
-    ArrayList<CategoryVO> category_list = CategoryDAO.CategoryAll(category);
-    ArrayList<NoteVO> popular_notes = NoteDAO.MainList("view_count", category, 5);
-    ArrayList<NoteVO> latest_notes  = NoteDAO.MainList("create_at",   category, 5);
-    ArrayList<UserVO> follow_user   = FollowUserDAO.getTopFollowed(category, 5);
-    ArrayList<NoteVO> diff_notes1  = NoteDAO.MainList("view_count", catArray[0], 5);
-    ArrayList<NoteVO> diff_notes2  = NoteDAO.MainList("view_count", catArray[1], 5);
-    ArrayList<NoteVO> diff_notes3  = NoteDAO.MainList("view_count", catArray[2], 5);
-    ArrayList<NoteVO> diff_notes4  = NoteDAO.MainList("view_count", catArray[3], 5);
 %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>main</title>
-  <link rel="icon" href="./sources/favicon.ico" />
+
   <!-- swiper -->
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/swiper/swiper-bundle.min.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <!-- css,js -->
   <link rel="stylesheet" href="./css/style.css">
   <script defer src="./js/script.js"></script>
-  <style>
-     ul li {
-      height: 40px;
-      display: flex;
-      align-items: center;
-     
-     }
-  
-    ul li:hover{
-    }
-
-    ul li a {
-        padding: 0px 10px;
-      width: 100%;
-      display:flex;
-      justify-content:space-between;
-      align-items: center;
-    }
-  </style>
 </head>
 <body>
   <div id="notion-app">
     <input type="hidden" id="mode" value="main">
     <div class="notion-app-inner">
-      <jsp:include page="./includes/sidebar.jsp"></jsp:include>
+     
+      <jsp:include page="./includes/sidebar.jsp" flush="true"></jsp:include>
 
       <!-- content -->
       <div id="content_wrapper">
         <section id="content">
+  
           <!-- banner -->
           <div class="slider-container">
             <div class="swiper" id="swiper1">
@@ -114,114 +57,74 @@ String contextPath = request.getContextPath();
   
           <!-- category btn -->
           <div class="category_btn_group">
-            <% for (CategoryVO ca : category_list) { %>
-              <button style="background-image: url(<%=  contextPath + "/vibesync" + ca.getImg() %>); background-size: cover;">
-                <p><%= ca.getC_name() %></p>
-              </button>
-            <% } %>
-          </div>
-          
-          <!-- grid -->
-          <div class="grid_wrapper">
-            <div class="grid_item">
-              <ul>
-                <% for (NoteVO note : popular_notes) { %>
-                  <li>
-                    <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
-                      <div class="post-index"><%= note.getNote_idx() %></div>
-                      <div class="post-title"><%= note.getTitle() %></div>
-                    </a>
-                  </li>
-                <% } %>
-              </ul>
-            </div>
-            <div class="grid_item">
-              <ul>
-                <% int i = 1; for (NoteVO note : latest_notes) { %>
-                  <li>
-                    <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
-                      <div class="post-index"><%= i %></div>
-                      <div class="post-title"><%= note.getTitle() %></div>
-                    </a>
-                  </li>
-                <% i++;} %>
-              </ul>
-            </div>
-            <div class="grid_item">
-              <ul>
-                <% int j = 1; for (UserVO user : follow_user) { %>
-                  <li>
-                    <a href="./user.jsp?ui=<%= user.getAc_idx() %>" >
-                      <div class="post-index"><%= j %></div>
-                      <div class="post-title"><%= user.getNickname() %></div>
-                    </a>
-                  </li>
-                <% j++; } %>
-              </ul>
-            </div>
+            <c:forEach items="${ categoryVOList }" var="categoryVO">
+            	<c:if test="${categoryVO.category_idx != userInfo.category_idx}">
+	            	<button style="background-image: url( <%= contextPath %>${ categoryVO.img }); background-size: cover;">
+	            		<p>${ categoryVO.c_name }</p>
+	            	</button>
+            	</c:if>
+            </c:forEach>
           </div>
   
+           <!-- grid -->
+          <div class="grid_wrapper">
+            <div class="grid_item" id="recent_posts_container" >
+	            <c:forEach items="${latestNotes}" var="post" varStatus="status">
+		            <div class="list-entry" data-id="${post.note_idx}">
+		            	<a href="postView.do?nidx=${post.note_idx}" >
+			                <img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
+			                <span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
+			            </a>
+		            </div>
+        		</c:forEach>
+            </div>
+            <div class="grid_item" id="popular_posts_container">
+	             <c:forEach items="${popularNotes}" var="post" varStatus="status">
+	            	<div class="list-entry" data-id="${post.note_idx}">
+	                	<a href="postView.do?nidx=${ post.note_idx }">
+		                	<img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
+		                	<span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
+	            		</a>
+	            	</div>
+	        	</c:forEach>
+            </div>
+            <div class="grid_item" id="popular_users_container">
+            	  <c:forEach items="${popularUsers}" var="user" varStatus="status">
+	            	<div class="list-entry" data-id="${status.count}">
+	            		<a href="./user.jsp?ui=${ user.ac_idx }" >
+	               	 		<img class="entry-image" src="https://placehold.co/100x100.png?text=${user.nickname}" alt="${user.nickname}">
+	                		<span class="entry-number">${status.count}</span>
+	                		<span class="entry-title">${user.nickname}</span>
+	            		</a>
+	            	</div>
+        		 </c:forEach>
+            </div>
+          </div>
+
           <!-- other category -->
           <div class="slider-container">
             <div class="swiper" id="swiper2">
               <div class="swiper-wrapper">
-                <%-- catArray[0] --%>
-                <div class="swiper-slide">
-                  <ul>
-                    <% for (NoteVO note : diff_notes1) { %>
-                      <li>
-                        <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
-                          <div class="post-index"><%= note.getNote_idx() %></div>
-                          <div class="post-title"><%= note.getTitle() %></div>
-                        </a>
-                      </li>
-                    <% } %>
-                  </ul>
-                </div>
-                <%-- catArray[1] --%>
-                <div class="swiper-slide">
-                  <ul>
-                    <% for (NoteVO note : diff_notes2) { %>
-                      <li>
-                        <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
-                          <div class="post-index"><%= note.getNote_idx() %></div>
-                          <div class="post-title"><%= note.getTitle() %></div>
-                        </a>
-                      </li>
-                    <% } %>
-                  </ul>
-                </div>
-                <%-- catArray[2] --%>
-                <div class="swiper-slide">
-                  <ul>
-                    <% for (NoteVO note : diff_notes3) { %>
-                      <li>
-                        <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
-                          <div class="post-index"><%= note.getNote_idx() %></div>
-                          <div class="post-title"><%= note.getTitle() %></div>
-                        </a>
-                      </li>
-                    <% } %>
-                  </ul>
-                </div>
-                <%-- catArray[3] --%>
-                <div class="swiper-slide">
-                  <ul>
-                    <% for (NoteVO note : diff_notes4) { %>
-                      <li>
-                        <a href="./postView.jsp?note_idx=<%= note.getNote_idx() %>" >
-                          <div class="post-index"><%= note.getNote_idx() %></div>
-                          <div class="post-title"><%= note.getTitle() %></div>
-                        </a>
-                      </li>
-                    <% } %>
-                  </ul>
-                </div>
+              	<c:forEach items="${ popularNotesNotByMyCategory }" var="posts">
+              		<div class="swiper-slide">
+              		<ul>
+              		<c:forEach items="${ posts.value }" var="post">
+              			<li>
+              			<a href="postView.do?nidx=${ post.note_idx }">
+              				<div class="post-index" style="display: inline-block; align-self: left;">${ post.note_idx }</div>
+		              		<div class="post-title" style="display: inline-block; align-self: right;">${ post.title }</div>
+              			</a>
+              			</li>
+              		</c:forEach>
+              		</ul>
+              		</div>
+              	</c:forEach>
               </div>
               <div class="swiper-button-prev" id="prev2"></div>
               <div class="swiper-button-next" id="next2"></div>
             </div>
           </div>
+  
   
         </section>
       </div>

@@ -6,7 +6,8 @@
     if (cookies != null) {
         for (Cookie c : cookies) {
             if ("userEmail".equals(c.getName()) ||
-                "category_idx".equals(c.getName()) || "login_user_idx".equals(c.getName()) || "userNickname".equals(c.getName())) {
+                "category_idx".equals(c.getName()) ||
+                "rememberEmail".equals(c.getName())) {
                 c.setMaxAge(0);
                 c.setPath("/");
                 response.addCookie(c);

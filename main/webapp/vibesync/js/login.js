@@ -93,8 +93,8 @@ $(function() {
              }
          });
     }
-
 });
+
 
     const starCanvas = document.getElementById('starfield');
     const starCtx    = starCanvas.getContext('2d');
