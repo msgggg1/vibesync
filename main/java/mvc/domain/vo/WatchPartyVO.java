@@ -1,5 +1,7 @@
 package mvc.domain.vo;
 
+import java.sql.Timestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,9 +15,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryVO {
-	
-	private int category_idx;
-	private String c_name;
-	private String img;
+
+public class WatchPartyVO {
+	private int watchPartyIdx;
+    private String title;
+    private String videoId;
+    private Timestamp createdAt;
+    private int host;
 }

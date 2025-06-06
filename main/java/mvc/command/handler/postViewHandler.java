@@ -46,6 +46,7 @@ public class postViewHandler implements CommandHandler {
 		if (note_idx_str != null && !note_idx_str.isEmpty()) {
 			note_idx = Integer.parseInt(note_idx_str);
 		}
+		System.out.println("noteidx : " + note_idx_str);
 		
 		UserNoteVO note = postviews.getUserNoteInfo(note_idx);
 		System.out.println(">>> PostView 데이터: " + note);
@@ -75,7 +76,7 @@ public class postViewHandler implements CommandHandler {
 
 			int userIdx = Integer.parseInt(request.getParameter("userIdx"));
 			int writerIdx = Integer.parseInt(request.getParameter("writerIdx"));
-			int noteIdx = Integer.parseInt(request.getParameter("noteIdx"));
+			int noteIdx = Integer.parseInt(request.getParameter("nidx"));
 
 			// 로그로 파라미터 값 확인
 			System.out.println(">>> handleToggleFollow - userIdx: " + userIdx + ", writerIdx: " + writerIdx + ", noteIdx: " + noteIdx);

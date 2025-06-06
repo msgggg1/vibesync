@@ -13,9 +13,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryVO {
-	
-	private int category_idx;
-	private String c_name;
-	private String img;
+
+public class WaSyncVO {
+	private int syncIdx;
+    private double timeline;
+    private String play;
+    private int watchPartyIdx;
 }

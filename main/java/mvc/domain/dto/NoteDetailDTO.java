@@ -29,5 +29,7 @@ public class NoteDetailDTO {
     private String nickname; 
     private String img; // 프로필 사진         
 
-  
+    private boolean followedByCurrentUser;
+    private boolean likedByCurrentUser;
+    private int like_count; 
 }

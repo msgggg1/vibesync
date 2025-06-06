@@ -1,21 +1,15 @@
 package mvc.persistence.daoImpl;
 
-import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.naming.NamingException;
-
-import com.util.ConnectionProvider;
 import com.util.PasswordMigrator;
 
 import mvc.domain.dto.LoginDTO;
 import mvc.domain.dto.SignUpDTO;
-import mvc.domain.vo.UserVO;
+import mvc.domain.dto.UserDTO;
 import mvc.domain.vo.UserVO;
 import mvc.persistence.dao.UserDAO;
 
@@ -280,119 +274,122 @@ public class UserDAOImpl implements UserDAO {
 		return isEmailExists;
 	}
 	
-	// 전체 카테고리 - 인기 유저 조회
+	//사용자 선호 카테고리
 	@Override
-	public List<UserVO> findPopularUsers(int limit) throws SQLException {
-		 List<UserVO> users = new ArrayList<>();
-		 
-	     PreparedStatement pstmt = null;
-	     ResultSet rs = null;
-		 
-	     // 인기 유저: (받은 좋아요 수 + 팔로워 수) 합산 기준, Oracle TOP-N 쿼리
-	     String sql = "SELECT ac_idx, email, nickname, img, name, category_idx " +
-	                " FROM ( " +
-	                "    SELECT " +
-	                "        ua.ac_idx, " + 
-	                "		 ua.email,	" +
-	                "        ua.nickname, " +
-	                "        ua.img, " +
-	                "        ua.name, " +
-	                "        ua.category_idx, " +
-	                "        COALESCE(follower_counts.total_followers, 0) AS popularity_score, " + // 인기도 점수를 팔로워 수로만 계산
-	                "        ROW_NUMBER() OVER (ORDER BY COALESCE(follower_counts.total_followers, 0) DESC, ua.created_at DESC) as rn " +
-	                "    FROM " +
-	                "        userAccount ua " +
-	                "    LEFT JOIN " +
-	                "        (SELECT ac_following, COUNT(follows_idx) AS total_followers " +
-	                "         FROM follows " +
-	                "         GROUP BY ac_following) follower_counts ON ua.ac_idx = follower_counts.ac_following " +
-	                " ) " +
-	                " WHERE rn <= ? ";
+	public int preferredCategoryIdx(int acIdx) throws SQLException { 
+	    int preferredCategoryIdx = -1;
+	    String sql = "SELECT category_idx FROM userAccount WHERE ac_idx = ?";
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
 
-	     try {
-	    	 pstmt = conn.prepareStatement(sql);
-	         pstmt.setInt(1, limit);
-	         rs = pstmt.executeQuery();
-
-	         while (rs.next()) {
-	        	 UserVO user = new UserVO().builder()
-	        			 				   .ac_idx(rs.getInt("ac_idx"))
-	        			 				   .email(rs.getString("email"))
-	        			 				   .nickname(rs.getString("nickname"))
-	        			 				   .img(rs.getString("img"))
-	        			 				   .name(rs.getString("name"))
-	        			 				   .category_idx(rs.getInt("category_idx"))
-	        			 				   .build();
-	        			 
-	             users.add(user);
-	         }
-	      
-	      } catch (Exception e) {
-	    	  e.printStackTrace();
-	      } finally {
-	    	  if (rs != null) rs.close();
-	    	  if (pstmt != null) pstmt.close();
-	      }
-	        
-	      return users;
+	    try {
+	        pstmt = this.conn.prepareStatement(sql); 
+	        pstmt.setInt(1, acIdx);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            preferredCategoryIdx = rs.getInt("category_idx");
+	        }
+	    } finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        if (pstmt != null) try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+	    }
+	    return preferredCategoryIdx;
 	}
-
-	// 특정 카테고리의 인기 유저 조회
+	
+	
 	@Override
-	public List<UserVO> findPopularUsersByCategory(int categoryIdx, int limit) throws SQLException {
-		 List<UserVO> users = new ArrayList<>();
-		 
-	     PreparedStatement pstmt = null;
-	     ResultSet rs = null;
-		 
-	     String sql = " SELECT * " +
-	    		 	" FROM ( " + 
-	    		 	"	SELECT " +
-	    		 	"		 u.ac_idx, " + 
-	    		 	"		 u.email, " + 
-	    		 	"		 u.nickname, " + 
-	    		 	"		 u.img, " + 
-	    		 	"		 u.name, " + 
-	    		 	"		 COUNT(f.ac_follow) AS follower_count " + 
-	                " 	FROM " + 
-	    		 	"		userAccount u " +
-	    		 	" 	LEFT JOIN follows f ON u.ac_idx = f.ac_following " +
-	                " 	WHERE " + 
-	    		 	" 		u.category_idx = ? " + 
-	    		 	" 	GROUP BY " +
-	                "		u.ac_idx, u.email, u.nickname, u.img, u.name, u.category_idx " + 
-	                "	ORDER BY " + 
-	                "		follower_count DESC " + 
-	                " ) " +
-	                " WHERE ROWNUM <= ? ";
+	public UserDTO getBasicUserInfoById(int acIdx) throws SQLException {
+	    String sql = "SELECT ac_idx, nickname, img, name FROM userAccount WHERE ac_idx = ?";
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    UserDTO user = null;
+	    try {
+	        pstmt = this.conn.prepareStatement(sql);
+	        pstmt.setInt(1, acIdx);
+	        rs = pstmt.executeQuery();
 
-	     try {
-	    	 pstmt = conn.prepareStatement(sql);
-	         pstmt.setInt(1, categoryIdx);
-	         pstmt.setInt(2, limit);
-	         rs = pstmt.executeQuery();
-
-	         while (rs.next()) {
-	        	 UserVO user = new UserVO().builder()
-		 				   .ac_idx(rs.getInt("ac_idx"))
-		 				   .email(rs.getString("email"))
-		 				   .nickname(rs.getString("nickname"))
-		 				   .img(rs.getString("img"))
-		 				   .name(rs.getString("name"))
-		 				   .category_idx(categoryIdx)
-		 				   .build();
-	        	 
-	             users.add(user);
-	         }
-	      
-	      } catch (Exception e) {
-	    	  e.printStackTrace();
-	      } finally {
-	    	  if (rs != null) rs.close();
-	    	  if (pstmt != null) pstmt.close();
-	      }
-	        
-	      return users;
+	        if (rs.next()) {
+	            user = UserDTO.builder()
+	                .ac_idx(rs.getInt("ac_idx"))
+	                .nickname(rs.getString("nickname"))
+	                .img(rs.getString("img"))
+	                .name(rs.getString("name"))
+	                .build();
+	        } else {
+	            System.out.println("[UserDAOImpl] 사용자 데이터 찾을 수 없음 (acIdx: " + acIdx + ")");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        throw e; // 예외를 다시 던져 서비스 계층에서 알 수 있도록 함
+	    } finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        if (pstmt != null) try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+	    }
+	    return user;
 	}
+	
+	@Override
+    public int getPostCount(int userAcIdx) throws SQLException {
+        // note 테이블과 userPage 테이블을 조인하여 해당 ac_idx를 가진 사용자의 게시글 수를 계산
+        String sql = "SELECT COUNT(n.note_idx) " +
+                     "FROM note n " +
+                     "JOIN userPage up ON n.userPg_idx = up.userPg_idx " +
+                     "WHERE up.ac_idx = ?";
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userAcIdx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+        return count;
+    }
 
+    @Override
+    public int getFollowerCount(int userAcIdx) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM follows WHERE ac_following = ?"; // userAcIdx를 팔로우하는 사람들의 수
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userAcIdx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+        return count;
+    }
+
+    @Override
+    public int getFollowingCount(int userAcIdx) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM follows WHERE ac_follow = ?"; // userAcIdx가 팔로우하는 사람들의 수
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userAcIdx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+        return count;
+    }
+	
 }

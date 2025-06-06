@@ -99,6 +99,48 @@ document.addEventListener('DOMContentLoaded', () => {
         nextBtn.classList.remove('swiper-button-disabled');
       }
     }
+    
+    function initRotatingHighlight(containerId, interval = 2800) {
+            console.log(`Initializing rotating highlight for ${containerId}`);
+            const container = document.getElementById(containerId);
+            if (!container) {
+                console.warn(`Container with ID ${containerId} not found.`);
+                return;
+            }
+            const items = container.querySelectorAll('.list-entry');
+            if (items.length === 0) {
+                return;
+            }
+
+            let currentIndex = Math.floor(Math.random() * items.length);
+
+            function resetItems() {
+                items.forEach(item => {
+                    item.classList.remove('active-highlight');
+                });
+            }
+
+            function highlightItem(index) {
+                if (items[index]) {
+                    items[index].classList.add('active-highlight');
+                }
+            }
+
+            resetItems();
+            highlightItem(currentIndex);
+            console.log(`Initial highlight for ${containerId}: item index ${currentIndex}`);
+
+            setInterval(() => {
+                resetItems();
+                currentIndex = (currentIndex + 1) % items.length;
+                highlightItem(currentIndex);
+            }, interval);
+        }
+    
+        initRotatingHighlight('recent_posts_container', 2800);
+        initRotatingHighlight('popular_posts_container', 2800);
+        initRotatingHighlight('popular_users_container', 2800);
+        
   } else if (mode.value === 'workspace') {
     console.log(mode.value);
     const plusbtn = document.querySelector('#content_plus');

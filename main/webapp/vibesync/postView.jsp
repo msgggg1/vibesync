@@ -16,6 +16,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PostView</title>
+  <link rel="icon" href="./sources/favicon.ico" />
   <link rel="stylesheet" href="./css/style.css">
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -27,7 +28,7 @@
       // 페이지 로드시 data 속성 값들 확인
       console.log("data-user-idx:", $('#followBtn').data('userIdx'));
       console.log("data-writer-idx:", $('#followBtn').data('writerIdx'));
-      console.log("data-note-idx:", $('#followBtn').data('noteIdx'));
+      console.log("data-note-idx:", $('#followBtn').data('nidx'));
       console.log("like data-user-idx:", $('#likeBtn').data('userIdx'));
       console.log("like data-note-idx:", $('#likeBtn').data('noteIdx'));
 
@@ -36,9 +37,9 @@
         e.preventDefault();
         const userIdx = $('#followBtn').data('userIdx');
         const writerIdx = $('#followBtn').data('writerIdx');
-        const noteIdx = $('#followBtn').data('noteIdx');
+        const nidx = $('#followBtn').data('nidx');
         console.log("[AJAX-FOLLOW] 보내기 전 userIdx:", userIdx,
-                    "writerIdx:", writerIdx, "noteIdx:", noteIdx);
+                    "writerIdx:", writerIdx, "noteIdx:", nidx);
 
         $.ajax({
           url: ajaxUrl,
@@ -47,7 +48,7 @@
             action: 'toggleFollow',
             userIdx: userIdx,
             writerIdx: writerIdx,
-            noteIdx: noteIdx
+            nidx : nidx 
           },
           dataType: 'json',
           cache: false,
@@ -128,7 +129,7 @@
                     type="submit"
                     data-user-idx="<%= user.getAc_idx() %>"
                     data-writer-idx="${note.upac_idx}"
-                    data-note-idx="${note.note_idx}"
+                    data-nidx="${note.note_idx}"
                     style="background:#99bc85; border-radius:5px; border:none; cursor:pointer; padding:5px 10px;">
                     <%= following ? "Unfollow" : "Follow" %>
                   </button>

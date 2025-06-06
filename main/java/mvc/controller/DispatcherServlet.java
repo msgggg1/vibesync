@@ -49,7 +49,7 @@ public class DispatcherServlet extends HttpServlet {
 		try(FileReader reader = new FileReader(realPath)){
 			prop.load(reader);
 		}catch(Exception e){
-			throw new ServletException();
+			e.printStackTrace();
 		}
 		
 		Set<Entry<Object, Object>> set = prop.entrySet();
