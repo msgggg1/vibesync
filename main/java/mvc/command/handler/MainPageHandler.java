@@ -49,6 +49,7 @@ public class MainPageHandler implements CommandHandler {
         	// 사이드바 로딩
         	SidebarService sidebarService = new SidebarService();
         	SidebarDTO sidebarDTO = sidebarService.loadSidebar(userInfo.getAc_idx());
+        	System.out.println(sidebarDTO);
         	request.setAttribute("sidebarDTO", sidebarDTO);
         	
         	// 메인 페이지 로딩

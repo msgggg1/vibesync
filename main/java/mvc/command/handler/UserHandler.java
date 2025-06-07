@@ -81,6 +81,8 @@ public class UserHandler implements CommandHandler {
 
             // 로그아웃 후 login.jsp로 리디렉션
             response.sendRedirect(contextPath + "/vibesync/user.do");
+            
+            return null;
         }
         
         // 쿠키 값 불러오기

@@ -1,5 +1,8 @@
 package mvc.domain.vo;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +26,7 @@ public class UserVO { // 세션에 담을 최소한의 사용자 정보
 	private String nickname;
 	private String img;
 	private String name;
+	private Timestamp created_at;
 	private int category_idx;
 	
 }

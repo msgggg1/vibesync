@@ -1,45 +1,45 @@
-<%@page import="mvc.domain.vo.NoteVO"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="mvc.domain.vo.NoteVO"%>
 <%@page import="com.util.DBConn_vibesync"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-Connection conn = null;
-PreparedStatement pstmt = null;
-String sql =  " select * from note order by note_idx";
-System.out.println(sql);
-ResultSet rs = null;   
-
-NoteVO vo = null;
-ArrayList<NoteVO> list = null;
-Iterator<NoteVO> ir = null;
-
-int note_idx;
-String title;
-
-conn = DBConn_vibesync.getConnection();
-pstmt = conn.prepareStatement(sql);
-rs = pstmt.executeQuery();
-
-
-if( rs.next() ){
-    list = new ArrayList<>();
-    do{
-       
-    	note_idx = rs.getInt("note_idx");
-    	title = rs.getString("title");
-       
-       vo = new NoteVO().builder()
-             .note_idx(note_idx).title(title)
-            .build();
-       list.add(vo);
-    }while( rs.next() );
-}
-
-int count = list.size();
+	Connection conn = null;
+	PreparedStatement pstmt = null;
+	String sql =  " select * from note order by note_idx";
+	System.out.println(sql);
+	ResultSet rs = null;   
+	
+	NoteVO vo = null;
+	ArrayList<NoteVO> list = null;
+	Iterator<NoteVO> ir = null;
+	
+	int note_idx;
+	String title;
+	
+	conn = DBConn_vibesync.getConnection();
+	pstmt = conn.prepareStatement(sql);
+	rs = pstmt.executeQuery();
+	
+	
+	if( rs.next() ){
+	    list = new ArrayList<>();
+	    do{
+	       
+	    	note_idx = rs.getInt("note_idx");
+	    	title = rs.getString("title");
+	       
+	       vo = new NoteVO().builder()
+	             .note_idx(note_idx).title(title)
+	            .build();
+	       list.add(vo);
+	    }while( rs.next() );
+	}
+	
+	int count = list.size();
 
 %>
 <!DOCTYPE html>
@@ -57,7 +57,53 @@ int count = list.size();
   <div id="notion-app">
     <input type="hidden" id="mode" value="board">
     <div class="notion-app-inner">
-      <jsp:include page="./includes/sidebar.jsp" flush="true"></jsp:include>
+      <button id="toggle-btn"><</button>
+      <!-- sidebar -->
+      <nav class="notion-sidebar-container" id="sidebar">
+        <div class="notion-sidebar">
+          <div class="menu_content">
+              <span>Duck Hammer</span>
+            </a>
+
+            <div class="search icon_wrap">
+              <img src="./sources/icons/search.svg" alt="search icon" class="sidebar_icon">
+              <input type="text" class="search-input" placeholder="Search…">
+            </div>
+
+            <a href="main.html" class="home icon_wrap">
+              <img src="./sources/icons/home.svg" alt="" class="sidebar_icon">
+              <span>HOME</span>
+            </a>
+
+            <a href="workspace.html" class="workspace icon_wrap">
+              <img src="./sources/icons/work.svg" alt="" class="sidebar_icon">
+              <span>WORKSPACE</span>
+            </a>
+
+            <div id="follow">
+              <div class="follow_list">
+                <div class="follow_tag icon_wrap">
+                  <img src="./sources/icons/follow.svg" alt="follow icon" class="sidebar_icon">
+                  <!-- label 클릭 시 체크박스 토글 -->
+                  <label for="follow_toggle">FOLLOW</label>
+                </div>
+                <!-- 체크박스를 follow_items 형제 요소로 이동 -->
+                <input type="checkbox" id="follow_toggle">
+                <ul class="follow_items">
+                  <li><a href="postView.html">PostView</a></li>
+                  <li><a href="list.html">List</a></li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+
+          <div id="logout">
+            <button>Logout</button>
+          </div>
+
+        </div>
+      </nav>
 
       <!-- content -->
       <div id="content_wrapper">

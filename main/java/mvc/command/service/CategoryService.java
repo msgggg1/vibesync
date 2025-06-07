@@ -25,6 +25,7 @@ public class CategoryService {
 			
 			// 카테고리 조회
 			list = categoryDAO.CategoryAll();
+			System.out.println(list.toString());
 			
 		} catch (Exception e) {
 			e.printStackTrace();

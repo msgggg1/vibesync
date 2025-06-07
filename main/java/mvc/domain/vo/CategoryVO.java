@@ -1,7 +1,5 @@
 package mvc.domain.vo;
 
-import java.io.Serializable;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryVO implements Serializable {
+public class CategoryVO {
 	
 	private int category_idx;
 	private String c_name;

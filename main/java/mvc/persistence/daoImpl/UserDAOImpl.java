@@ -4,10 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.util.JdbcUtil;
 import com.util.PasswordMigrator;
 
 import mvc.domain.dto.LoginDTO;
@@ -275,5 +272,123 @@ public class UserDAOImpl implements UserDAO {
 		
 		return isEmailExists;
 	}
+	
+	//사용자 선호 카테고리
+	@Override
+	public int preferredCategoryIdx(int acIdx) throws SQLException { 
+	    int preferredCategoryIdx = -1;
+	    String sql = "SELECT category_idx FROM userAccount WHERE ac_idx = ?";
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        pstmt = this.conn.prepareStatement(sql); 
+	        pstmt.setInt(1, acIdx);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            preferredCategoryIdx = rs.getInt("category_idx");
+	        }
+	    } finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        if (pstmt != null) try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+	    }
+	    return preferredCategoryIdx;
+	}
+	
+	
+	@Override
+	public UserVO getBasicUserInfoById(int acIdx) throws SQLException {
+	    String sql = "SELECT ac_idx, nickname, img, name FROM userAccount WHERE ac_idx = ?";
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    UserVO user = null;
+	    try {
+	        pstmt = this.conn.prepareStatement(sql);
+	        pstmt.setInt(1, acIdx);
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            user = UserVO.builder()
+	                .ac_idx(rs.getInt("ac_idx"))
+	                .nickname(rs.getString("nickname"))
+	                .img(rs.getString("img"))
+	                .name(rs.getString("name"))
+	                .build();
+	        } else {
+	            System.out.println("[UserDAOImpl] 사용자 데이터 찾을 수 없음 (acIdx: " + acIdx + ")");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        throw e; // 예외를 다시 던져 서비스 계층에서 알 수 있도록 함
+	    } finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        if (pstmt != null) try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+	    }
+	    return user;
+	}
+	
+	@Override
+    public int getPostCount(int userAcIdx) throws SQLException {
+        // note 테이블과 userPage 테이블을 조인하여 해당 ac_idx를 가진 사용자의 게시글 수를 계산
+        String sql = "SELECT COUNT(n.note_idx) " +
+                     "FROM note n " +
+                     "JOIN userPage up ON n.userPg_idx = up.userPg_idx " +
+                     "WHERE up.ac_idx = ?";
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userAcIdx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+        return count;
+    }
+
+    @Override
+    public int getFollowerCount(int userAcIdx) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM follows WHERE ac_following = ?"; // userAcIdx를 팔로우하는 사람들의 수
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userAcIdx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+        return count;
+    }
+
+    @Override
+    public int getFollowingCount(int userAcIdx) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM follows WHERE ac_follow = ?"; // userAcIdx가 팔로우하는 사람들의 수
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userAcIdx);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+        return count;
+    }
 	
 }

@@ -49,7 +49,7 @@ public class DispatcherServlet extends HttpServlet {
 		try(FileReader reader = new FileReader(realPath)){
 			prop.load(reader);
 		}catch(Exception e){
-			throw new ServletException();
+			e.printStackTrace();
 		}
 		
 		Set<Entry<Object, Object>> set = prop.entrySet();
@@ -95,6 +95,11 @@ public class DispatcherServlet extends HttpServlet {
 		
 		// 3단계. 로직처리하는 모델 객체를 commandHandlerMap으로부터 얻어오기
 		CommandHandler handler = this.commandHandlerMap.get(requestURI);
+		if (handler == null) {
+	        // 해당 URI에 매핑된 핸들러가 없으면 404 리턴
+	        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+	        return;
+	    }
 		String view = null;
 		
 		try {
@@ -102,6 +107,7 @@ public class DispatcherServlet extends HttpServlet {
 			view = handler.process(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new ServletException(e);
 		}
 		
 		// 5단계. 뷰 출력(포워딩, 리다이렉트)

@@ -5,14 +5,18 @@
   --font-color: #fff;
   --sidebar-color : #202020;
   --background-color : #191919;
-  --border-color: #fff
+  --border-color: #fff;
+  --hover-color: #a7ffa193;
+  --chpa: #2a2a2a ;
 }
 :root[color-theme='light']{
   --icon-filter: invert(0);
   --font-color: #000;
   --sidebar-color : #f8f8f8;
   --background-color : #f1f1f1;
-  --border-color: #000
+  --border-color: #000;
+  --hover-color: #a1f7ff62;
+  --chpa: #d9d9d9;
 }
 
 :root {
@@ -25,7 +29,9 @@
   --font-color: #000;
   --sidebar-color : #f8f8f8;
   --background-color : #f1f1f1;
-  --border-color: #000
+  --border-color: #000;
+  --hover-color: #a7ffa193;
+  --chpa: #d9d9d9;
 }
 * {
   box-sizing: border-box;
@@ -63,9 +69,13 @@ p {
   background-color: var(--font-color);
 }
 
+button {
+	cursor: pointer;
+}
+
 #notion-app {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
 }
 .notion-app-inner {
   position: relative;
@@ -108,123 +118,16 @@ p {
   transition: transform 0.3s ease;
 }
 
-.notion-app-inner .notion-sidebar-container .notion-sidebar {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  width: 100%;
-}
-
-.notion-app-inner .notion-sidebar-container .notion-sidebar .menu_content {
-  display: flex;
-  justify-content: center;
-  align-items: start;
-  flex-direction: column;
-  gap: 40px;
-  font-size: 20px;
-  font-weight: bold;
-  margin-left: 10px;
-  margin-block: 60px;
-}
-.notion-app-inner .notion-sidebar-container .notion-sidebar .menu_content .nickname {
-  text-decoration: none;
-  text-transform: uppercase;
-  color: var(--font-color);
-}
-
-.search {
-  display: inline-flex;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-}
-
-/* 입력창 숨김 상태 */
-.search-input {
-  width: 100px;
-  height: 22px;
-  background: none;
-  border: none;
-  border-bottom: var(--border-color) 2px solid;
-  color: var(--font-color);
-}
-
-input:focus {
-  outline: none;
-}
-
-#follow {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  flex-direction: column;
-  padding: 0;
-}
-
-/* 레이블 스타일 */
-.follow_list label {
-  text-decoration: none;
-  color: var(--font-color);
-  cursor: pointer;
-}
-
-/* 체크박스 숨김 */
-#follow_toggle {
-  display: none;
-}
-
-/* 토글 메뉴 숨김 상태 */
-.follow_items {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0 0;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-}
-
-/* 체크되면 메뉴 확장 */
-#follow_toggle:checked ~ .follow_items {
-  max-height: 200px;
-  transition: max-height 0.3s ease-in;
-}
-
-.follow_items li {
-  margin: 4px 0;
-}
-
-.icon_wrap {
-  display: flex;
-  gap: 10px;
-}
-
-#logout {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  height: 40px;
-  margin-bottom: 20px;
-}
-
-#logout > button {
-  width: 150px;
-  border: none;
-  background-color: red;
-  border-radius: 5px;
-  font-size: 14px;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: var(--w-fff);
-}
-
 #content_wrapper {
   width: 100%;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  margin-left: 220px;
+  margin-left: 200px;
   padding-top: 100px;
+  background-color: rgba(255, 255, 255, 0);
+  background-image:  linear-gradient(var(--chpa) 1.1px, transparent 1.1px), linear-gradient(to right, var(--chpa) 1.1px, transparent 1.1px);
+  background-size: 22px 22px;
 }
 
 #content {
@@ -314,7 +217,6 @@ input:focus {
 }
 
 .grid_wrapper .grid_item {
-  background-color: var(--b-000);
   height: 300px;
   border-radius: 20px;
   color: var(--w-fff);
@@ -792,7 +694,7 @@ input:focus {
     background-color: transparent;
     height: 300px;
     border-radius: 20px;
-    color: var(--w-fff, #fff);
+    color: var(--w-fff);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -803,10 +705,9 @@ input:focus {
 
 .list-entry {
     position: relative;
-    border-radius: 20px;
+    border-radius: 6px;
     overflow: hidden;
     box-sizing: border-box;
-    color: var(--w-fff, #fff);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -816,31 +717,19 @@ input:focus {
                        상황에 따라 1로 설정하여 다른 아이템들과 함께 유연하게 줄어들도록 할 수도 있습니다. */
     flex-basis: 42px; /* 비활성 상태일 때의 기본 높이(애니메이션 대상).
                          이전의 height: 42px;와 유사한 역할입니다. */
-    transition: flex-basis 0.4s ease-in-out, background-color 0.4s ease-in-out;
-
-    background-color: #222; /* 비활성 아이템 배경색 */
 }
 
-.list-entry .entry-image {
-    display: none; 
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 20px; 
-    z-index: 1;
-    filter: brightness(0.7);
-    opacity: 0; /* display:none 이므로 opacity는 사실상 의미 없지만, 만약 display를 block으로 바꿀 때 fade-in 효과를 원한다면 유지 */
-    transition: opacity 0.3s ease-in-out; /* 위와 동일한 이유 */
+.list-entry:hover{
+  background-color: var(--hover-color);
 }
+
+
 
 .list-entry .entry-number 
 .list-entry .entry-title {
     position: relative; /* 이미지가 없으므로 z-index는 배경색과의 관계에서만 의미 가짐 */
     z-index: 2;
-    color: var(--w-fff, #fff);
+    color: var(--w-fff);
     transition: font-size 0.3s ease-in-out, opacity 0.3s ease-in-out, line-height 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
 }
 
@@ -848,7 +737,7 @@ input:focus {
 .list-entry .entry-number {
     font-size: 12px;
     font-weight: bold;
-    color: #FFD700;
+    color: var(--b-000);
     line-height: 1.1;
     margin-right: 5px;
 }
@@ -861,12 +750,14 @@ input:focus {
     white-space: nowrap;
     flex-grow: 1; /* 제목이 남은 공간을 채우도록 */
     min-width: 0; /* 추가: ellipsis가 flex 아이템에서 잘 동작하도록*/
+    font-weight: bold;
 }
 
 /* 활성 상태 스타일 (.active-highlight) */
 .list-entry.active-highlight {
-    background-color: var(--b-000, #000); /* 활성 아이템 배경색 */
-	flex-basis: 100px;
+    background-image: linear-gradient(90deg, rgba(138, 196, 255, 1) 0%, rgba(227, 176, 255, 1) 50%, rgba(165, 250, 120, 1) 100%);
+	flex-basis: 42px;
+	color: var(--w-fff);
 }
 
 .list-entry.active-highlight .entry-image {
@@ -877,11 +768,11 @@ input:focus {
 
 /* 활성 아이템의 순위와 제목 스타일 (기존과 동일) */
 .list-entry.active-highlight .entry-number {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     color: #FFD700;
      line-height: 1.2; 
-    margin-right: 4px; 
+    margin-right: 10px; 
     margin-bottom: 0; 
     position: relative;
     z-index: 2;
@@ -892,7 +783,7 @@ input:focus {
 .list-entry.active-highlight .entry-title {
     font-size: 18px; 
     font-weight: bold;
-    color: var(--w-fff, #fff);
+    color: var(--w-fff);
     white-space: normal; /* 여러 줄 표시 허용 */
     line-height: 1.2;
     max-height: calc(1.2em * 2); /* 예: 최대 2줄까지 보이도록 (넘치면 숨김) */
@@ -902,7 +793,6 @@ input:focus {
     min-width: auto;
     position: relative; /* z-index 적용 위해 */
     z-index: 2; /* 이미지 위에 오도록 */
-    background-color: rgba(0,0,0,0.5); padding: 4px 6px; border-radius: 3px; 
 }
 
 
@@ -933,4 +823,3 @@ input:focus {
   }
   #content_wrapper {padding-top: 80px; margin-left: 0px;}
 }
-
