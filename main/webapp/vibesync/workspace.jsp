@@ -16,8 +16,110 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script defer src="./js/script.js"></script>
   
-	<style>
-	
+  <style> /* 메시지 */
+	  .message_card_list {
+	    display: flex;
+	    flex-direction: column;
+	    gap: 12px;
+	    max-height: 100%;
+	    overflow-y: auto;
+	    padding-right: 6px;
+	  }
+	  .message_card {
+	    display: flex;
+	    gap: 12px;
+	    padding: 12px;
+	    border-radius: 10px;
+	    background-color: lightgray;
+	    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+	    cursor: pointer;
+	    transition: background-color 0.2s ease;
+	    min-width: 0;
+	  }
+	  .message_card:hover {
+	    background-color: var(--hover-color);
+	  }
+	  .msg_profile img {
+	    width: 46px;
+	    height: 46px;
+	    object-fit: cover;
+	    border-radius: 50%;
+	    border: 2px solid var(--border-color);
+	  }
+	  .msg_text_area {
+	    display: flex;
+	    flex-direction: column;
+	    justify-content: center;
+	    flex: 1;
+	    overflow: hidden;
+	  }
+	  .msg_sender {
+	    font-weight: bold;
+	    font-size: 16px;
+	    color: black;
+	    margin-bottom: 4px;
+	  }
+	  .msg_preview {
+	    font-size: 14px;
+	    color: #111;
+	    white-space: nowrap;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	  }
+	  .msg_time {
+	    font-size: 12px;
+	    color: gray;
+	    margin-top: 4px;
+	    white-space: nowrap;
+	  }
+	  
+  </style>
+  
+  <style> /* 채팅방 */
+  
+    #chatHistory {
+        padding: 10px;
+    }
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+    .chat-bubble {
+        /* 크기는 내용에 따라 자동으로 결정되어야 함 */
+        max-width: 70%;
+        padding: 10px 14px;
+        border-radius: 10px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        text-align: left;
+        word-break: break-word;
+        white-space: normal;
+    }
+    .bubble-me {
+        align-self: flex-end;
+        background-color: #dcf8c6;
+    }
+    .bubble-other {
+        align-self: flex-start;
+        background-color: #fff;
+    }
+    .bubble-text {
+        font-size: 14px;
+        color: #000;
+        margin: 0 0 4px 0;
+        padding: 0;
+    }
+    .bubble-time {
+        font-size: 11px;
+        color: #999;
+        text-align: right;
+    }
+    
+  </style>
+
+  <style> /* 모달창 */
 	html, body {
 	  height: 100%;
 	  margin: 0;
@@ -35,7 +137,6 @@
 	  left: 0;
 	  width: 100vw;
 	  height: 100vh;
-	  /* background-color: rgba(0,0,0,0.6); */
 	  backdrop-filter: blur(4px);
 	}
 	
@@ -82,6 +183,23 @@
 	  background-color: #4297bf;
 	}
 	
+	.close-modal {
+	  position: absolute;
+	  top: 15px;
+	  right: 20px;
+	  background: none;
+	  border: none;
+	  font-size: 2em;
+	  color: grey;
+	  font-weight: bold;
+	  cursor: pointer;
+	  /* white-space: pre; */
+	}
+	
+	.close-modal:hover {
+	  color: black;
+	}
+	
 	@keyframes fadeInUp {
 	  from {
 	    transform: translateY(30px);
@@ -93,45 +211,10 @@
 	  }
 	}
 
-	</style>
+  </style>
   
 </head>
 <body>
-
-	<!-- 모달 -->
-	<!-- 메시지 모달 -->
-	<div id="chatModal" class="modal">
-		<div class="modal-content">
-			<span class="close-modal" onclick="closeChatModal()">&times;</span>
-			<h4 id="chatTitle">채팅</h4>
-			<div id="chatHistory"></div>
-		</div>
-	</div>
-	
-	<!-- 블록 추가 모달 -->
-	<div id="addBlockModal" class="modal">
-		<div class="modal-content">
-			<h4>추가할 블록 선택</h4>
-			<select id="blockTypeSelector">
-				<option value="getCategoryPosts">카테고리별 글</option>
-				<option value="getWatchParties">구독 워치파티</option>
-				<option value="getUserStats">내 활동 통계</option>
-			</select>
-	
-			<div id="categorySelector" style="display: none;">
-				<select id="category" name="category">
-					<c:forEach items="${ categoryVOList }" var="categoryVO">
-						<option value="${ categoryVO.category_idx }">${ categoryVO.c_name }</option>
-					</c:forEach>
-				</select> <select id="sortTypeSelector">
-					<option value="popular">인기순</option>
-					<option value="latest">최신순</option>
-				</select>
-			</div>
-			<button id="confirmAddBlock" style="display: block;">추가</button>
-		</div>
-	</div>
-	<!-- 모달 끝 -->
 
   <div id="notion-app">
     <input type="hidden" id="mode" value="user">
@@ -158,31 +241,35 @@
             <div id="contents_grid">
               <div class="contents_item"></div>
               <div class="contents_item"></div>
-              
-              <!-- 안읽은 메시지 목록 -->
-			  <div id="unread_messages">
-			  	<h3><i class="fa-solid fa-bell"></i> 안읽은 메시지</h3>
-			  	<ul class="message_list">
-			  		<c:choose>
-			  			<c:when test="${not empty initialData.unreadMessages}">
-			  				<c:forEach var="msg" items="${initialData.unreadMessages}">
-			  					<li class="message_item" data-sender-idx="${msg.ac_sender}">
-			  						<div class="msg_info">
-			  							<span class="sender_name">${msg.sender_nickname}</span>
-				                        <p class="msg_preview">${msg.text}</p>
-				                    </div>
-				                </li>
-				            </c:forEach>
-				        </c:when>
-				        <c:otherwise>
-				        	<li class="no_message">새로운 메시지가 없습니다.</li>
-				        </c:otherwise>
-				    </c:choose>
-				</ul>
+            
+            <!-- 안읽은 메시지 목록 -->
+			<div id="unread_messages" style="background-color: var(--sidebar-color); border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+			  <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--font-color); border-bottom: 1px solid var(--border-color); padding-bottom: 8px;"><i class="fa-solid fa-bell"></i> 안읽은 메시지</h3>
+			  <div class="message_card_list">
+			    <c:choose>
+			      <c:when test="${not empty initialData.unreadMessages}">
+			        <c:forEach var="msg" items="${initialData.unreadMessages}">
+			          <div class="message_card message_item" data-sender-idx="${msg.ac_sender}">
+			            <%-- <div class="msg_profile">
+			              <img src="${pageContext.request.contextPath}/vibesync/sources/profile/${msg.latestMessage.sender_img}" alt="profile">
+			            </div> --%>
+			            <div class="msg_text_area">
+			              <div class="msg_sender">${msg.latestMessage.sender_nickname}</div>
+			              <div class="msg_preview">${msg.latestMessage.text}</div>
+			              <div class="msg_time">${msg.latestMessage.relativeTime}</div>
+			            </div>
+			          </div>
+			        </c:forEach>
+			      </c:when>
+			      <c:otherwise>
+			        <div class="no_message">새로운 메시지가 없습니다.</div>
+			      </c:otherwise>
+			    </c:choose>
 			  </div>
+			</div>
               
-              <!-- 추가 블록 -->
-			  <div id="content_plus" class="contents_item">+</div>
+            <!-- 추가 블록 -->
+			<div id="content_plus" class="contents_item">+</div>
 
             </div>
           </div>
@@ -194,17 +281,103 @@
   
 </body>
 
-  <script>
-  
-  $(document).ready(function() {
-	    // 안읽은 메시지 클릭 -> 채팅 모달 열기
-	    $('.message_item').on('click', function() {
-	        const senderIdx = $(this).data('sender-idx');
-	        // AJAX로 채팅 내역 불러오고 모달 띄우는 함수 호출
-	        openChatModalWithHistory(senderIdx); 
-	    });
+	<!-- 모달 -->
+	<!-- 메시지 모달 -->
+	<div id="chatModal" class="modal">
+	  <div class="modal-content" style="min-width:350px; max-width:430px;">
+	    <span class="close-modal" onclick="closeChatModal()"> &times; </span>
+	    <h4 id="chatTitle" style="text-align:center;">채팅</h4>
+	    <div id="chatHistory"></div>
+	  </div>
+	</div>
+	
+	<!-- 블록 추가 모달 -->
+	<div id="addBlockModal" class="modal">
+		<div class="modal-content" style="text-align: center;">
+			<h4>추가할 블록 선택</h4>
+			<select id="blockTypeSelector">
+				<option value="getCategoryPosts">카테고리별 글</option>
+				<option value="getWatchParties">구독 워치파티</option>
+				<option value="getUserStats">내 활동 통계</option>
+			</select>
+	
+			<div id="categorySelector" style="display: none;">
+				<select id="category" name="category">
+					<c:forEach items="${ categoryVOList }" var="categoryVO">
+						<option value="${ categoryVO.category_idx }">${ categoryVO.c_name }</option>
+					</c:forEach>
+				</select> <select id="sortTypeSelector">
+					<option value="popular">인기순</option>
+					<option value="latest">최신순</option>
+				</select>
+			</div>
+			<button id="confirmAddBlock" style="display: block;">추가</button>
+		</div>
+	</div>
+	<!-- 모달 끝 -->
 
-	    // '+' 버튼 클릭 -> 추가 블록 모달 열기
+	<script> /* 메시지 내역 */
+	
+	/* 메시지 내역 (수정된 JavaScript) */
+	
+	$(document).ready(function() {
+	    $('.message_item').on('click', function () {
+	      const senderIdx = $(this).data('sender-idx');
+	      $.ajax({
+	        url: '${pageContext.request.contextPath}/message.do',
+	        type: 'GET',
+	        data: { senderIdx },
+	        dataType: 'json',
+	        success: function (chatList) {
+	            $('#chatHistory').empty();
+
+	            if (!chatList || !Array.isArray(chatList) || chatList.length === 0) {
+	                $('#chatHistory').html('<p style="text-align:center; color:grey;">채팅 내역이 없습니다.</p>');
+	                return; 
+	            }
+	            
+	            const chatContainer = $('<div class="chat-container"></div>');
+
+	            chatList.forEach(msg => {
+	                const who = msg.isMine ? 'bubble-me' : 'bubble-other';
+	                const formattedText = msg.text.replace(/\n/g, '<br>');
+
+	                const messageHtml = `
+	                    <div class="chat-bubble \${who}">
+	                        <div class="bubble-text">\${formattedText}</div>
+	                        <div class="bubble-time">\${msg.relativeTime}</div>
+	                    </div>
+	                `;
+	                chatContainer.append(messageHtml);
+	            });
+
+	            $('#chatHistory').append(chatContainer);
+
+	            $('#chatModal').css({
+	                display: 'flex',
+	                top: '50%',
+	                left: '50%',
+	                transform: 'translate(-50%, -50%)',
+	                backgroundColor: 'rgba(0,0,0,0.8)'
+	            });
+	            
+	            if(chatContainer.length) {
+	                chatContainer.scrollTop(chatContainer[0].scrollHeight);
+	            }
+	        },
+	        error: function () {
+	          alert('채팅 내역 불러오기 실패');
+	        }
+	      });
+	    });
+	});
+	</script>
+
+  <script>
+  $(document).ready(function() {
+	  	// -- 모달 -- // 
+	  
+	  	// '+' 버튼 클릭 -> 추가 블록 모달 열기
 		$('#content_plus').on('click', function() {
 		  $('html, body').scrollTop(0);
 		  $('#addBlockModal').css({
@@ -263,7 +436,11 @@
 	    });
 	    
 	});
-
+  
+  </script>
+  
+  <script> /* 함수 모음 */
+  
 	// 서버에 블록 데이터 요청 및 화면에 추가하는 함수
 	function addBlockToServer(options) {
 	  $.ajax({
@@ -329,34 +506,13 @@
 	    }
 	  });
 	}
-
-	
-	// 모달창에서 채팅 내역 보는 함수
-	function openChatModalWithHistory(senderIdx) {
-		  $.ajax({
-		    url: 'workspace.do?action=getChatHistory',
-		    type: 'GET',
-		    data: { sender_idx: senderIdx },
-		    dataType: 'json',
-		    success: function(chatList) {
-		      let html = '<ul>';
-		      chatList.forEach(msg => {
-		        html += `<li><strong>${msg.sender_nickname}</strong>: ${msg.text}</li>`;
-		      });
-		      html += '</ul>';
-		      $('#chatHistory').html(html);
-		      $('#chatModal').show();
-		    },
-		    error: function(err) {
-		      console.error("채팅 불러오기 실패:", err);
-		    }
-		  });
-		}
-
-		function closeChatModal() {
-		  $('#chatModal').hide();
-		}
-  
+  	
+	// 채팅 내역 닫기
+	function closeChatModal() {
+		$('#chatModal').hide();
+		location.reload();
+	}
+		
   </script>
 
 </html>

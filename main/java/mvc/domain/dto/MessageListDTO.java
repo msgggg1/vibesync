@@ -1,6 +1,4 @@
-package mvc.domain.vo;
-
-import java.io.Serializable;
+package mvc.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mvc.domain.vo.MessageVO;
 
 @Getter
 @Setter
@@ -15,9 +14,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryVO implements Serializable {
+public class MessageListDTO {
+
+	private int ac_sender;
+	private int numOfUnreadMessages;
+	private MessageDTO latestMessage;
 	
-	private int category_idx;
-	private String c_name;
-	private String img;
 }

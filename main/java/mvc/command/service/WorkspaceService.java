@@ -3,6 +3,7 @@ package mvc.command.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import mvc.domain.dto.MessageListDTO;
 import mvc.domain.dto.NoteStatsDTO;
 import mvc.domain.dto.NoteSummaryDTO;
 import mvc.domain.dto.WatchPartyDTO;
@@ -23,7 +24,7 @@ public class WorkspaceService {
         List<TodolistVO> todolists = todolistService.getTodolists(acIdx, LocalDate.now().getYear(), LocalDate.now().getMonthValue());
         List<NoteSummaryDTO> myPosts = noteService.getMyPosts(acIdx);
         List<NoteSummaryDTO> likedPosts = noteService.getLikedPosts(acIdx);
-        List<MessageVO> unreadMessages = messageService.getUnreadMessages(acIdx);
+        List<MessageListDTO> unreadMessages = messageService.getUnreadMessageList(acIdx);
         // List<NoteSummaryDTO> postsByCategory = noteService.getPostsByCategory(acIdx, null);
         // List<WatchPartyDTO> followingWatchParties = watchPartyService.getFollowingWatchParties(acIdx);
         // NoteStatsDTO userNoteStats = noteService.getUserNoteStats(acIdx);
