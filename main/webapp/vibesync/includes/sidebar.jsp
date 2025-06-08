@@ -221,6 +221,12 @@ input:focus {
         <img src="./sources/icons/work.svg" alt="workspace icon" class="sidebar_icon">
         <span>WORKSPACE</span>
       </a>
+      
+      <!-- FULL PAGE -->
+      <a href="page.do" class="workspace icon_wrap">
+        <img src="./sources/icons/page.svg" alt="workspace icon" class="sidebar_icon">
+        <span>PAGES</span>
+      </a>
 
       <!-- FOLLOW 목록 -->
       <div id="follow">

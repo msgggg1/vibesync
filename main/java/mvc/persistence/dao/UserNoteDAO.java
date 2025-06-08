@@ -6,6 +6,9 @@ public interface UserNoteDAO {
 	
 	UserNoteVO getUserNoteById(int noteIdx);
 	
+	// 추가
+	void updateViewCount(int noteIdx);
+	
 	void addLike(int userIdx, int noteIdx);
 	
 	void deleteLike(int userIdx, int noteIdx);

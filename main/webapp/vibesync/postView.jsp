@@ -135,8 +135,16 @@
                   </button>
                 </form>
               </div>
-
+               
+			  <!-- // 추가 -->
               <div class="like_share">
+              	<div>
+	              <p>
+	              	<span>view : </span>
+	              	<span>${note.view_count}</span>
+	              </p>
+	            </div>
+              	
                 <!-- like 버튼 -->
                 <form id="likeForm" style="display:inline; margin:0; padding:0;">
                   <button

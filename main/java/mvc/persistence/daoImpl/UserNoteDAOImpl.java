@@ -95,7 +95,24 @@ public class UserNoteDAOImpl implements UserNoteDAO {
         return vo;
     }
     
-    /**
+    // 추가
+    @Override
+	public void updateViewCount(int noteIdx) {	
+    	String sql =
+            "update note set view_count = view_count + 1 where note_idx = ?";
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, noteIdx);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
+        }
+	}
+
+
+	/**
      * likes 테이블에 새로운 좋아요 레코드를 추가한다.
      *
      * @param userIdx 좋아요를 누른 사용자 ac_idx
