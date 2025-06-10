@@ -14,8 +14,12 @@ import mvc.command.service.PostViewService;
 import mvc.domain.dto.UserNoteDTO;
 import mvc.domain.vo.UserNoteVO;
 import mvc.domain.vo.UserVO;
-import mvc.persistence.dao.UserNoteDAO;
-import mvc.persistence.daoImpl.UserNoteDAOImpl;
+import mvc.persistence.dao.FollowDAO;
+import mvc.persistence.dao.LikeDAO;
+import mvc.persistence.dao.NoteDAO;
+import mvc.persistence.daoImpl.FollowDAOImpl;
+import mvc.persistence.daoImpl.LikeDAOImpl;
+import mvc.persistence.daoImpl.NoteDAOImpl;
 
 public class postViewHandler implements CommandHandler {
 	
@@ -77,7 +81,7 @@ public class postViewHandler implements CommandHandler {
 		Connection conn = null;
 		try {
 			conn = ConnectionProvider.getConnection();
-			UserNoteDAO dao = new UserNoteDAOImpl(conn);
+			FollowDAO dao = new FollowDAOImpl(conn);
 
 			int userIdx = Integer.parseInt(request.getParameter("userIdx"));
 			int writerIdx = Integer.parseInt(request.getParameter("writerIdx"));
@@ -88,7 +92,7 @@ public class postViewHandler implements CommandHandler {
 
 			boolean following = dao.isFollowing(userIdx, writerIdx);
 			if (following) {
-				dao.deleteFollow(userIdx, writerIdx);
+				dao.removeFollow(userIdx, writerIdx);
 				following = false;
 			} else {
 				dao.addFollow(userIdx, writerIdx);
@@ -115,7 +119,7 @@ public class postViewHandler implements CommandHandler {
 		Connection conn = null;
 		try {
 			conn = ConnectionProvider.getConnection();
-			UserNoteDAO dao = new UserNoteDAOImpl(conn);
+			LikeDAO dao = new LikeDAOImpl(conn);
 
 			int userIdx = Integer.parseInt(request.getParameter("userIdx"));
 			int noteIdx = Integer.parseInt(request.getParameter("noteIdx"));
@@ -125,7 +129,7 @@ public class postViewHandler implements CommandHandler {
 
 			boolean liked = dao.isLiked(userIdx, noteIdx);
 			if (liked) {
-				dao.deleteLike(userIdx, noteIdx);
+				dao.removeLike(userIdx, noteIdx);
 				liked = false;
 			} else {
 				dao.addLike(userIdx, noteIdx);

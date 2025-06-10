@@ -15,8 +15,8 @@ import lombok.ToString;
 @ToString
 public class NoteStatsDTO {
 	
-    private int totalViews = 0;
-    private int totalLikes = 0;
-    private int totalPosts = 0;
+    private int totalViews;
+    private int totalLikes;
+    private int totalPosts;
     
 }

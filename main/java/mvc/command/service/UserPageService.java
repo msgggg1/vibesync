@@ -11,6 +11,7 @@ import com.util.ConnectionProvider;
 import mvc.domain.dto.NoteSummaryDTO;
 import mvc.domain.dto.UserPageDataDTO;
 import mvc.domain.dto.UserPageInfoDTO;
+import mvc.domain.vo.UserSummaryVO;
 import mvc.domain.vo.UserVO;
 import mvc.persistence.dao.FollowDAO; // 실제 경로로
 import mvc.persistence.dao.NoteDAO;   // 실제 경로로
@@ -19,7 +20,7 @@ import mvc.persistence.daoImpl.FollowDAOImpl; // 실제 경로로
 import mvc.persistence.daoImpl.NoteDAOImpl;   // 실제 경로로
 import mvc.persistence.daoImpl.UserDAOImpl;
 
-public class UserService {
+public class UserPageService {
 
     private static final int PAGE_SIZE = 9; // 한 번에 로드할 게시글 수
     
@@ -29,7 +30,7 @@ public class UserService {
         Connection conn = null;
         UserPageDataDTO pageData = new UserPageDataDTO();
         UserPageInfoDTO userProfileInfo = null;
-        UserVO basicUserInfo = null; // UserDAO에서 받을 기본 정보 UserVO
+        UserSummaryVO basicUserInfo = null; // UserDAO에서 받을 기본 정보 UserVO
         List<NoteSummaryDTO> posts = null;
         boolean hasMorePosts = false;
         // boolean autoCommitOriginalState = true; // 현재 코드에서는 트랜잭션 수동 관리가 주석처리 되어있음
@@ -53,8 +54,8 @@ public class UserService {
 
             // 2. 게시글 수, 팔로워 수, 팔로잉 수 설정
             userProfileInfo.setPostCount(userDAO.getPostCount(profileUserAcIdx));
-            userProfileInfo.setFollowerCount(userDAO.getFollowerCount(profileUserAcIdx));
-            userProfileInfo.setFollowingCount(userDAO.getFollowingCount(profileUserAcIdx));
+            userProfileInfo.setFollowerCount(followDAO.getFollowerCount(profileUserAcIdx));
+            userProfileInfo.setFollowingCount(followDAO.getFollowingCount(profileUserAcIdx));
 
             // 3. 현재 로그인한 사용자가 이 프로필 사용자를 팔로우하는지 여부 설정
             if (loggedInUserAcIdx != null && loggedInUserAcIdx != profileUserAcIdx) {

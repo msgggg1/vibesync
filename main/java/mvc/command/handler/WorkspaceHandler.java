@@ -5,12 +5,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
-import com.util.WorkspaceAction;
+import com.util.BlockAction;
 
 import mvc.command.service.MessageService;
 import mvc.command.service.NoteService;
 import mvc.command.service.PostViewService;
-import mvc.command.service.UserService;
+import mvc.command.service.UserPageService;
 import mvc.command.service.WatchPartyService;
 import mvc.command.service.WorkspaceService;
 import mvc.domain.dto.UserPageDataDTO;
@@ -45,7 +45,7 @@ public class WorkspaceHandler implements CommandHandler {
         	return null;
         }
         
-        WorkspaceDTO initialData = workspaceService.getInitialData(ac_idx);
+    	WorkspaceDTO initialData = workspaceService.getInitialData(ac_idx);
         request.setAttribute("initialData", initialData);
         return "workspace.jsp";
     }

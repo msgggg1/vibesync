@@ -2,6 +2,7 @@ package mvc.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import mvc.domain.vo.UserSummaryVO;
 import mvc.domain.vo.UserVO;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -22,11 +23,11 @@ public class UserPageInfoDTO {
     private int followingCount;         // 팔로잉 수
     private boolean followedByCurrentUser; // 현재 로그인한 사용자가 이 프로필 사용자를 팔로우하는지 여부
     
-    public UserPageInfoDTO(UserVO userInfo) {
-    	if (userInfo != null) {
-    		this.ac_idx = userInfo.getAc_idx();
-    		this.nickname = userInfo.getNickname();
-    		this.img = userInfo.getImg();
+    public UserPageInfoDTO(UserSummaryVO basicUserInfo) {
+    	if (basicUserInfo != null) {
+    		this.ac_idx = basicUserInfo.getAc_idx();
+    		this.nickname = basicUserInfo.getNickname();
+    		this.img = basicUserInfo.getProfile_img();
 		}
     }
     

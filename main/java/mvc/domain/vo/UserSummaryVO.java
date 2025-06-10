@@ -1,4 +1,4 @@
-package mvc.domain.dto;
+package mvc.domain.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mvc.domain.vo.UserSummaryVO;
-import mvc.domain.vo.WatchPartyVO;
 
 @Getter
 @Setter
@@ -15,11 +13,11 @@ import mvc.domain.vo.WatchPartyVO;
 @AllArgsConstructor
 @Builder
 @ToString
-public class WatchPartyDTO {
-	
-	private WatchPartyVO watchparty;
-	private int current_num;
-	private int max_num;
-	private UserSummaryVO host;
+public class UserSummaryVO { // 조회에 필요한 최소한의 정보
 
+	private int ac_idx;
+	private String nickname;
+	private String profile_img;
+	private int category_idx;
+	
 }

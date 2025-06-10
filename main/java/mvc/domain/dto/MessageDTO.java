@@ -21,6 +21,7 @@ public class MessageDTO {
 	private String text;
 	private Timestamp time;
 	private String relativeTime;
+	private String date;
 	private String img;
 	private int chk;
 	private int ac_receiver;

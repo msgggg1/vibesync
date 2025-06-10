@@ -32,7 +32,7 @@ public class MessageService {
 			conn = ConnectionProvider.getConnection();
 			
 			MessageDAO messageDAO = new MessageDAOImpl(conn);
-			unreadMessageList = messageDAO.getUnreadMessages(acIdx);
+			unreadMessageList = messageDAO.selectUnreadMessageList(acIdx);
 			
 		} catch (NamingException e) {
 			e.printStackTrace();
@@ -45,8 +45,31 @@ public class MessageService {
 		return unreadMessageList;
 	}
 
+	// 전체 메시지 목록
+	public List<MessageListDTO> getMessageListAll(int acIdx) {
+		List<MessageListDTO> messageList = null;
+		
+		Connection conn = null;
+		
+		try {
+			conn = ConnectionProvider.getConnection();
+			
+			MessageDAO messageDAO = new MessageDAOImpl(conn);
+			messageList = messageDAO.selectMessageListAll(acIdx);
+			
+		} catch (NamingException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(conn);
+		}
+		
+		return messageList;
+	}
+	
 	// 채팅방 채팅 내역 열람
-	public List<MessageDTO> getChatHistory(int ac_idx, int sender_idx) {
+	public List<MessageDTO> getChatHistory(int myIdx, int otherIdx) {
 		List<MessageDTO> chatHistory = null;
 		
 		Connection conn = null;
@@ -55,7 +78,7 @@ public class MessageService {
 			conn = ConnectionProvider.getConnection();
 			
 			MessageDAO messageDAO = new MessageDAOImpl(conn);
-			chatHistory = messageDAO.getChatHistory(ac_idx, sender_idx);
+			chatHistory = messageDAO.selectChatHistory(myIdx, otherIdx);
 			if (chatHistory != null) {
 				List<Integer> msg_idxList = new ArrayList<Integer>();
 				Iterator<MessageDTO> ir = chatHistory.iterator();
@@ -63,7 +86,7 @@ public class MessageService {
 					MessageDTO messageDTO = ir.next();
 					msg_idxList.add(messageDTO.getMsg_idx());
 				}
-				messageDAO.updateChkMessage(msg_idxList);
+				messageDAO.updateChkMessage(myIdx, msg_idxList);
 				conn.commit();
 			}
 			
@@ -80,6 +103,29 @@ public class MessageService {
 		return chatHistory;
 	}
 	
-	
+	// 채팅방 메시지 보내기
+    public boolean sendMessage(int senderIdx, int receiverIdx, String text) {
+        boolean isSent = false;
+    	
+        Connection conn = null;
+		
+		try {
+			conn = ConnectionProvider.getConnection();
+			
+			MessageDAO messageDAO = new MessageDAOImpl(conn);
+			isSent = messageDAO.insertMessage(senderIdx, receiverIdx, text);
+			
+		} catch (NamingException e) {
+			JdbcUtil.rollback(conn);
+			e.printStackTrace();
+		} catch (SQLException e) {
+			JdbcUtil.rollback(conn);
+			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(conn);
+		}
+    	
+        return isSent;
+    }
 
 }

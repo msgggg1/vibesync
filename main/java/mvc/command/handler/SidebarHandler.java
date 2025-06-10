@@ -1,25 +1,17 @@
 package mvc.command.handler;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.util.ConnectionProvider;
-import mvc.command.service.PostViewService;
+import mvc.command.service.SidebarService;
 import mvc.domain.dto.SidebarDTO;
-import mvc.domain.dto.UserNoteDTO;
-import mvc.domain.vo.UserNoteVO;
-import mvc.domain.vo.UserVO;
-import mvc.persistence.dao.UserNoteDAO;
-import mvc.persistence.daoImpl.FollowDAOImpl;
-import mvc.persistence.daoImpl.UserNoteDAOImpl;
+import mvc.domain.vo.UserSummaryVO;
 
-public class CommonHandler implements CommandHandler {
+public class SidebarHandler implements CommandHandler {
 	
 	@Override
 	public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -37,25 +29,19 @@ public class CommonHandler implements CommandHandler {
 	        try {
 	            userIdx = Integer.parseInt(userIdxStr);
 	            
-	            Connection conn = ConnectionProvider.getConnection();
+	            SidebarService sidebarService = new SidebarService();
+	            SidebarDTO sidebarDTO = sidebarService.loadSidebar(userIdx);
 	            
-	            FollowDAOImpl dao = new FollowDAOImpl(conn);
-	            
-	            SidebarDTO sidebarDTO = dao.getFollowingList(userIdx);
-	            
-	            List<UserVO> list = sidebarDTO.getFollowingList();
+	            List<UserSummaryVO> list = sidebarDTO.getFollowingList();
 	            StringBuilder sb = new StringBuilder();
 	            sb.append("{\"followingList\":[");
 
 	            for (int i = 0; i < list.size(); i++) {
-	                UserVO u = list.get(i);
+	            	UserSummaryVO u = list.get(i);
 	                sb.append("{")
 	                  .append("\"ac_idx\":").append(u.getAc_idx()).append(",")
-	                  .append("\"email\":\"").append(u.getEmail()).append("\",")
 	                  .append("\"nickname\":\"").append(u.getNickname()).append("\",")
-	                  .append("\"img\":\"").append(u.getImg()).append("\",")
-	                  .append("\"name\":\"").append(u.getName()).append("\",")
-	                  .append("\"created_at\":\"").append(u.getCreated_at()).append("\",")
+	                  .append("\"profile_img\":\"").append(u.getProfile_img()).append("\",")
 	                  .append("\"category_idx\":").append(u.getCategory_idx())
 	                  .append("}");
 	                if (i < list.size() - 1) {
