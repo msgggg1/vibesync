@@ -8,13 +8,12 @@ import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.util.ConnectionProvider;
-import mvc.command.service.PostViewService;
-import mvc.domain.dto.UserNoteDTO;
-import mvc.domain.vo.UserNoteVO;
-import mvc.domain.vo.UserVO;
-import mvc.persistence.dao.UserNoteDAO;
-import mvc.persistence.daoImpl.UserNoteDAOImpl;
+import mvc.persistence.dao.FollowDAO;
+import mvc.persistence.dao.LikeDAO;
+import mvc.persistence.dao.NoteDAO;
+import mvc.persistence.daoImpl.FollowDAOImpl;
+import mvc.persistence.daoImpl.LikeDAOImpl;
+import mvc.persistence.daoImpl.NoteDAOImpl;
 
 public class postViewHandler implements CommandHandler {
 	
@@ -50,11 +49,15 @@ public class postViewHandler implements CommandHandler {
 		
 		UserNoteVO note = postviews.getUserNoteInfo(note_idx);
 		System.out.println(">>> PostView 데이터: " + note);
-
-		UserVO user = (UserVO) request.getSession().getAttribute("userInfo");
-		if (user == null) {
-			System.out.println(">>> 경고: 세션에 userInfo가 없습니다.");
-		}
+		
+        HttpSession session = request.getSession(false);
+        UserVO user = null;
+        if (session != null && session.getAttribute("userInfo") != null) {
+        	user = (UserVO) session.getAttribute("userInfo");
+        } else {
+        	System.out.println(">>> 경고: 세션에 userInfo가 없습니다.");
+        	response.sendRedirect(request.getContextPath() + "/vibesync/user.do"); // 로그인 페이지로 리디렉션
+        }
 		
 		UserNoteDTO followLike = postviews.getFollowLike(user.getAc_idx(), note_idx, note.getUpac_idx());
 		System.out.println(">>> followLike DTO: " + followLike);
@@ -71,8 +74,8 @@ public class postViewHandler implements CommandHandler {
 		PrintWriter out = response.getWriter();
 		Connection conn = null;
 		try {
-			conn = ConnectionProvider.getConnection();
-			UserNoteDAO dao = new UserNoteDAOImpl(conn);
+			conn = ConnectionProvider.getConnection(); // *******************수정정
+			FollowDAO dao = new FollowDAOImpl(conn);
 
 			int userIdx = Integer.parseInt(request.getParameter("userIdx"));
 			int writerIdx = Integer.parseInt(request.getParameter("writerIdx"));
@@ -83,7 +86,7 @@ public class postViewHandler implements CommandHandler {
 
 			boolean following = dao.isFollowing(userIdx, writerIdx);
 			if (following) {
-				dao.deleteFollow(userIdx, writerIdx);
+				dao.removeFollow(userIdx, writerIdx);
 				following = false;
 			} else {
 				dao.addFollow(userIdx, writerIdx);
@@ -108,7 +111,7 @@ public class postViewHandler implements CommandHandler {
 		Connection conn = null;
 		try {
 			conn = ConnectionProvider.getConnection();
-			UserNoteDAO dao = new UserNoteDAOImpl(conn);
+			LikeDAO dao = new LikeDAOImpl(conn);
 
 			int userIdx = Integer.parseInt(request.getParameter("userIdx"));
 			int noteIdx = Integer.parseInt(request.getParameter("noteIdx"));
@@ -118,7 +121,7 @@ public class postViewHandler implements CommandHandler {
 
 			boolean liked = dao.isLiked(userIdx, noteIdx);
 			if (liked) {
-				dao.deleteLike(userIdx, noteIdx);
+				dao.removeLike(userIdx, noteIdx);
 				liked = false;
 			} else {
 				dao.addLike(userIdx, noteIdx);
