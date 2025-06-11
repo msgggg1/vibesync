@@ -292,6 +292,7 @@ public class FollowDAOImpl implements FollowDAO {
         }
     }
 
+    /*
     @Override
     public SidebarDTO getFollowingList(int acFollow) {
         List<UserVO> followingList = new ArrayList<>();
@@ -336,6 +337,7 @@ public class FollowDAOImpl implements FollowDAO {
         dto.setFollowingList(followingList);
         return dto;
     }
+    */
     
     @Override
     public int getFollowerCount(int userAcIdx) throws SQLException {

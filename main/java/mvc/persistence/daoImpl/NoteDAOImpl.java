@@ -327,7 +327,7 @@ public class NoteDAOImpl implements NoteDAO {
 
 	
 	@Override
-	public List<NoteSummaryDTO> findMyPostsByPopularity(int acIdx, int limit) throws SQLException {
+	public List<NoteSummaryDTO> findMyPostsByPopularity(int acIdx) throws SQLException {
 	    List<NoteSummaryDTO> posts = new ArrayList<>();
 	    String sql = "SELECT * FROM ( "
 	            + "    SELECT ROWNUM AS rnum, n.* FROM ( "
@@ -340,11 +340,10 @@ public class NoteDAOImpl implements NoteDAO {
 	            + "        GROUP BY nt.note_idx, nt.title, nt.view_count, nt.create_at, ua.nickname "
 	            + "        ORDER BY likes_count DESC, nt.view_count DESC, nt.create_at DESC"
 	            + "    ) n "
-	            + ") WHERE rnum <= ?";
+	            + ") WHERE rnum <= 5";
 
 	    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 	        pstmt.setInt(1, acIdx);
-	        pstmt.setInt(2, limit);
 	        try (ResultSet rs = pstmt.executeQuery()) {
 	            System.out.println("[DAO] 쿼리 실행 완료. 데이터 읽기 시작...");
 	            while (rs.next()) {
@@ -352,7 +351,7 @@ public class NoteDAOImpl implements NoteDAO {
 	                post.setNote_idx(rs.getInt("note_idx"));
 	                post.setTitle(rs.getString("title"));
 	                post.setView_count(rs.getInt("view_count"));
-	                post.setLikes_count(rs.getInt("likes_count"));
+	                post.setLike_count(rs.getInt("likes_count"));
 	                post.setAuthor_name(rs.getString("author_name"));
 	            	posts.add(post);
 	                System.out.println("[DAO] 행 발견: note_idx=" + rs.getInt("note_idx"));
@@ -389,7 +388,7 @@ public class NoteDAOImpl implements NoteDAO {
 	                post.setTitle(rs.getString("title"));
 	                post.setThumbnail_img("thumbnail_img");
 	                post.setView_count(rs.getInt("view_count"));
-	                post.setLikes_count(rs.getInt("likes_count"));
+	                post.setLike_count(rs.getInt("likes_count"));
 	                post.setAuthor_name(rs.getString("author_name"));
 	                posts.add(post);
 	            }
@@ -404,7 +403,7 @@ public class NoteDAOImpl implements NoteDAO {
 	    }
 
 		@Override
-		public List<NoteSummaryDTO> findLikedPostsByRecent(int acIdx, int limit) throws SQLException {
+		public List<NoteSummaryDTO> findLikedPostsByRecent(int acIdx) throws SQLException {
 			List<NoteSummaryDTO> posts = new ArrayList<>();
 		    // likes 테이블을 기준으로 note 테이블과 JOIN하여, 좋아요한 날짜 순으로 정렬합니다.
 		    String sql = "SELECT * FROM ( "
@@ -418,12 +417,11 @@ public class NoteDAOImpl implements NoteDAO {
 		               + "        WHERE lk.ac_idx = ? "
 		               + "        ORDER BY lk.created_at DESC "
 		               + "    ) n "
-		               + ") WHERE rnum <= ?";
+		               + ") WHERE rnum <= 5";
 
 		    // try-with-resources 구문을 사용하여 자원을 자동 해제합니다.
 		    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 		        pstmt.setInt(1, acIdx);
-		        pstmt.setInt(2, limit);
 
 		        try (ResultSet rs = pstmt.executeQuery()) {
 		            while (rs.next()) {
@@ -476,48 +474,6 @@ public class NoteDAOImpl implements NoteDAO {
 		    }
 		    return posts;
 		}
-
-  public List<NoteSummaryDTO> getPostsByUser(int userAcIdx, int offset, int limit) throws SQLException {
-      List<NoteSummaryDTO> posts = new ArrayList<>();
-      PreparedStatement pstmt = null;
-      ResultSet rs = null;
-
-      // ROWNUM 사용 
-      String sql = "SELECT note_idx, title, thumbnail_img " +
-                   "FROM ( " +
-                   "    SELECT r.*, ROWNUM RNUM " + 
-                   "    FROM ( " +
-                   "        SELECT n.note_idx, n.title, n.img AS thumbnail_img " + // 실제 가져올 컬럼
-                   "        FROM note n " +
-                   "        JOIN userPage up ON n.userPg_idx = up.userPg_idx " +
-                   "        WHERE up.ac_idx = ? " + // 조건: 특정 사용자
-                   "        ORDER BY n.create_at DESC " + // 정렬 기준 (가장 안쪽에서 정렬해야 ROWNUM이 의미 있음)
-                   "    ) r " +
-                   "    WHERE ROWNUM <= ? " + // 페이징 조건 1: (offset + limit) -> 가져올 마지막 행 번호
-                   ") " +
-                   "WHERE RNUM > ?"; // 페이징 조건 2: offset -> 가져올 시작 행 번호 다음부터
-
-      try {
-          pstmt = conn.prepareStatement(sql);
-          pstmt.setInt(1, userAcIdx);          // WHERE up.ac_idx = ?
-          pstmt.setInt(2, offset + limit);     // WHERE ROWNUM <= ?
-          pstmt.setInt(3, offset);             // WHERE RNUM > ?
-          
-          rs = pstmt.executeQuery();
-          while (rs.next()) {
-              NoteSummaryDTO post = NoteSummaryDTO.builder()
-                      .note_idx(rs.getInt("note_idx"))
-                      .title(rs.getString("title"))
-                      .thumbnail_img(rs.getString("thumbnail_img")) 
-                      .build();
-              posts.add(post);
-          }
-      } finally {
-          if (rs != null) rs.close();
-          if (pstmt != null) pstmt.close();
-      }
-      return posts;
-  }
 
 	// 특정 사용자가 작성한 전체 게시글 조회수 총합
 	@Override

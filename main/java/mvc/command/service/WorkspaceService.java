@@ -9,21 +9,23 @@ import mvc.domain.dto.NoteSummaryDTO;
 import mvc.domain.dto.WatchPartyDTO;
 import mvc.domain.dto.WorkspaceDTO;
 import mvc.domain.vo.MessageVO;
-import mvc.domain.vo.TodolistVO;
+import mvc.domain.vo.TodoVO;
 
 public class WorkspaceService {
 
-    private TodolistService todolistService = new TodolistService();
+    private TodoService todoService = new TodoService();
     private NoteService noteService = new NoteService();
     private MessageService messageService = new MessageService();
     private WatchPartyService watchPartyService = new WatchPartyService();
 
-    public WorkspaceDTO getInitialData(int acIdx) {
+    public WorkspaceDTO getInitialData(int acIdx) throws Exception {
         WorkspaceDTO dto = null;
         
-        List<TodolistVO> todolists = todolistService.getTodolists(acIdx, LocalDate.now().getYear(), LocalDate.now().getMonthValue());
-        List<NoteSummaryDTO> myPosts = noteService.getMyPosts(acIdx);
-        List<NoteSummaryDTO> likedPosts = noteService.getLikedPosts(acIdx);
+        List<TodoVO> todolists = todoService.getTodoListByUser(acIdx);
+        List<NoteSummaryDTO> myPosts = noteService.getMyPostsPreview(acIdx);
+        List<NoteSummaryDTO> myAllPosts = noteService.getAllMyPosts(acIdx);
+        List<NoteSummaryDTO> likedPosts = noteService.getLikedPostsPreview(acIdx);
+        List<NoteSummaryDTO> likedAllPosts = noteService.getAllLikedPosts(acIdx);
         List<MessageListDTO> unreadMessages = messageService.getUnreadMessageList(acIdx);
         // List<NoteSummaryDTO> postsByCategory = noteService.getPostsByCategory(acIdx, null);
         // List<WatchPartyDTO> followingWatchParties = watchPartyService.getFollowingWatchParties(acIdx);

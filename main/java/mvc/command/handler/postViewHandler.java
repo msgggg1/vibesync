@@ -7,13 +7,18 @@ import java.sql.Connection;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.util.ConnectionProvider;
+
+import mvc.command.service.PostViewService;
+import mvc.domain.dto.UserNoteDTO;
+import mvc.domain.vo.UserNoteVO;
+import mvc.domain.vo.UserVO;
 import mvc.persistence.dao.FollowDAO;
 import mvc.persistence.dao.LikeDAO;
-import mvc.persistence.dao.NoteDAO;
 import mvc.persistence.daoImpl.FollowDAOImpl;
 import mvc.persistence.daoImpl.LikeDAOImpl;
-import mvc.persistence.daoImpl.NoteDAOImpl;
 
 public class postViewHandler implements CommandHandler {
 	

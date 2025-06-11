@@ -19,9 +19,6 @@ public interface NoteDAO {
 
     // 선호 카테고리 - 인기글
     List<NoteSummaryDTO> popularNoteByMyCategory(int categoryIdx, int limit) throws SQLException;
-    
-    // 포스트 뷰 출력
- 	NoteDetailDTO printNote(int noteIdx);
  	
  	// 포스트 뷰 출력 2
  	UserNoteVO getUserNoteById(int noteIdx);
@@ -34,13 +31,13 @@ public interface NoteDAO {
 
 	/* 워크스페이스스 */
 	// 특정 사용자가 작성한 글 인기순으로 가져오기 (미리보기용)
-	List<NoteSummaryDTO> findMyPostsByPopularity(int acIdx, int limit) throws SQLException;
+	List<NoteSummaryDTO> findMyPostsByPopularity(int acIdx) throws SQLException;
 
 	// 특정 사용자가 작성한 글 전체 목록 인기순으로 가져오기 (모달용)
 	List<NoteSummaryDTO> findAllMyPostsByPopularity(int acIdx) throws SQLException;
 
 	// 좋아요한 글 (미리보기)
-	List<NoteSummaryDTO> findLikedPostsByRecent(int acIdx, int limit) throws SQLException;
+	List<NoteSummaryDTO> findLikedPostsByRecent(int acIdx) throws SQLException;
 
 	// 좋아요한 글 (전체체)
 	List<NoteSummaryDTO> findAllLikedPostsByRecent(int acIdx) throws SQLException;
