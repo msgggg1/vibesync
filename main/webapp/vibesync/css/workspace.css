@@ -1,0 +1,1014 @@
+@charset "UTF-8";
+    /* 모든 블록 공통 */
+  
+	.contents_item {
+	  background: #fff;
+	  border-radius: 20px;
+	  box-shadow: 0 3px 16px rgba(110,120,140,0.06);
+	  border: 1.3px solid #f1f2f6;
+	  padding: 24px 24px 18px 24px;
+	  margin-bottom: 22px;
+	  min-width: 220px;
+	  transition: box-shadow 0.16s, border 0.16s, background 0.13s;
+	  display: flex;
+	  flex-direction: column;
+	  gap: 10px;
+	}
+  
+    /* 메시지 */
+	#unread_messages.contents_item {
+	  background: #fffbe7 !important;
+	  border: 1.5px solid #ffe7ad !important;
+	  box-shadow: 0 3px 16px rgba(255,223,112,0.10);
+	}
+	
+	#unread_messages h3 i {
+	  color: #ff9900;
+	  margin-right: 7px;
+	}
+	
+	#unread_messages .no_message {
+	  color: #a3a096;
+	  font-style: italic;
+	  font-size: 15px;
+	  padding: 16px 0 0 0;
+	  text-align: left;
+	}
+	 
+	.message_card_list {
+	    display: flex;
+	    flex-direction: column;
+	    gap: 12px;
+	    max-height: 100%;
+	    overflow-y: auto;
+	    padding-right: 6px;
+	}
+	  
+	.message_card {
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  gap: 12px;
+	  padding: 12px;
+	  border-radius: 9px; /* 10px 14px */
+	  background-color: #fafbfc; /* #e8edf2 */
+	  border: 1px solid #f2eac2;
+	  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+	  min-width: 0;
+	  position: relative;
+	}
+	  .message_card:hover {
+	    background-color: var(--hover-color); /* #e2f3f7 */
+	    cursor: pointer;
+	  }
+	  .msg_profile img {
+	    width: 46px;
+	    height: 46px;
+	    object-fit: cover;
+	    border-radius: 50%;
+	    border: 2px solid var(--border-color);
+	  }
+	  
+	  .msg_text_area {
+	    flex: 1 1 auto;
+	    overflow: hidden;
+	    min-width: 0;
+  	  }
+	
+	  .msg_sender_row {
+	    display: flex;
+	    align-items: center;
+	  }
+	
+	  .msg_sender {
+	    font-weight: bold;
+	    font-size: 16px;
+	    color: black;
+	    margin-bottom: 4px;
+	  }
+	  .msg_preview {
+	    font-size: 14px;
+	    color: #111;
+	    white-space: nowrap;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	  }
+	  .msg_time {
+	    font-size: 12px;
+	    color: gray;
+	    margin-top: 4px;
+	    white-space: nowrap;
+	  }
+	  
+	.unread-badge {
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  width: 22px;
+	  height: 22px;
+	  background: linear-gradient(135deg, #6fdc88 60%, #6ac8fa 100%);
+	  color: #fff;
+	  font-size: 13px;
+	  font-weight: bold;
+	  border-radius: 50%;
+	  box-shadow: 0 1px 5px rgba(0,0,0,0.10);
+	  user-select: none;
+	  letter-spacing: -0.5px;
+	  margin-left: 10px;
+	}
+
+	  
+    /* 채팅방 */
+  
+    #chatHistory {
+        padding: 10px;
+    }
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+    .chat-bubble {
+        /* 크기는 내용에 따라 자동으로 결정되어야 함 */
+        max-width: 70%;
+        padding: 10px 14px;
+        border-radius: 10px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        text-align: left;
+        word-break: break-word;
+        white-space: normal;
+    }
+    .bubble-me {
+        align-self: flex-end;
+        background-color: #dcf8c6;
+    }
+    .bubble-other {
+        align-self: flex-start;
+        background-color: #fff;
+    }
+    .bubble-text {
+        font-size: 14px;
+        color: #000;
+        margin: 0 0 4px 0;
+        padding: 0;
+    }
+    .bubble-time {
+        font-size: 11px;
+        color: #999;
+        text-align: right;
+    }
+    
+	.chat-input-row {
+	  display: flex;
+	  align-items: center;
+	  gap: 8px;
+	  margin-top: 16px;
+	  background: #f2f5fa;
+	  border-radius: 12px;
+	  border: 1.5px solid #e2e5ea;
+	  padding: 7px 12px;
+	  box-shadow: 0 1px 4px rgba(80,110,140,0.08);
+	}
+	
+	#chatInput {
+	  flex: 1;
+	  border: none;
+	  background: #f9fafb;
+	  font-size: 15px;
+	  color: #23272f;
+	  outline: none;
+	  padding: 8px 0;
+	  height: 38px;
+	  background: none;
+	}
+	
+	#chatInput::placeholder {
+	  color: #b7b8bd;
+	  font-size: 14px;
+	}
+	
+	#sendMessageBtn {
+	  display: flex;
+	  align-self: center;
+	  justify-content: center;
+	  width: 38px;
+	  height: 38px;
+	  background: linear-gradient(135deg,#6fdc88 60%,#6ac8fa 100%);
+	  border: none;
+	  border-radius: 50%;
+	  box-shadow: 0 2px 6px rgba(140,200,255,0.13);
+	  transition: background 0.16s, transform 0.12s;
+	  cursor: pointer;
+	  padding: 0;
+	  margin-bottom: 0;
+	}
+	
+	#sendMessageBtn svg {
+	  display: block;
+	  margin: auto;
+	}
+	
+	#sendMessageBtn:hover {
+	  background: linear-gradient(135deg,#4fbb68 60%,#57a5ec 100%);
+	}
+    
+    /* 모달창 */
+	html, body {
+	  height: 100%;
+	  margin: 0;
+	  padding: 0;
+	  overflow-x: hidden;
+	}
+	
+	.modal {
+	  display: none;
+	  justify-content: center;
+	  align-items: center;
+	  position: fixed;
+	  z-index: 9999;
+	  top: 0;
+	  left: 0;
+	  width: 100vw;
+	  height: 100vh;
+	  backdrop-filter: blur(4px);
+	}
+	
+	.modal-content {
+	  position: relative;
+	  max-width: 420px;
+	  width: 90%;
+	  background-color: var(--background-color);
+	  padding: 30px;
+	  border-radius: 16px;
+	  color: var(--font-color);
+	  text-align: center;
+	  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+	  animation: fadeInUp 0.3s ease-out;
+	}
+	
+	#categorySelector {
+	  display: flex;
+	  flex-direction: column;
+	  gap: 10px;
+	}
+	
+	.modal-content select,
+	.modal-content button {
+	  width: 100%;
+	  padding: 12px;
+	  font-size: 1rem;
+	  border: 2px solid var(--border-color);
+	  border-radius: 8px;
+	  background-color: var(--sidebar-color);
+	  color: var(--font-color);
+	  margin-bottom: 10px;
+	}
+	
+	.modal-content button {
+	  background-color: #5DAED7;
+	  color: white;
+	  font-weight: bold;
+	  cursor: pointer;
+	  transition: background-color 0.3s;
+	}
+	
+	.modal-content button:hover {
+	  background-color: #4297bf;
+	}
+	
+	.close-modal {
+	  position: absolute;
+	  top: 15px;
+	  right: 20px;
+	  background: none;
+	  border: none;
+	  font-size: 2em;
+	  color: grey;
+	  font-weight: bold;
+	  cursor: pointer;
+	  /* white-space: pre; */
+	}
+	
+	.close-modal:hover {
+	  color: black;
+	}
+	
+	@keyframes fadeInUp {
+	  from {
+	    transform: translateY(30px);
+	    opacity: 0;
+	  }
+	  to {
+	    transform: translateY(0);
+	    opacity: 1;
+	  }
+	}
+
+    /* 추가 블록 */
+  
+	/* 인기글/최신글: 연회색+얇은 블루 보더+블루 아이콘 */
+	.contents_item.generated_block {
+	  background: #f8fafd !important;
+	  border: 1.3px solid #e2eafd;
+	  border-radius: 18px;
+	  box-shadow: 0 2px 10px rgba(90,120,180,0.06);
+	  padding: 28px 26px 22px 26px;
+	  margin-bottom: 24px;
+	  transition: box-shadow 0.18s, background 0.13s;
+	  min-width: 260px;
+	  max-width: 99%;
+	  word-break: break-all;
+	  position: relative;
+	  animation: fadeInUp 0.33s;
+	}
+	.contents_item.generated_block:hover {
+	  box-shadow: 0 6px 32px rgba(40, 80, 120, 0.16);
+	  background: #e3ebf2;
+	}
+	.generated_block h4 {
+	  margin-top: 0;
+	  margin-bottom: 12px;
+	  font-size: 18px;
+	  font-weight: bold;
+	  color: #223d65;
+	  letter-spacing: -0.5px;
+	}
+	.generated_block h4 i {
+	  color: #61b1ff;
+	}
+	
+	/* 구독 워치파티: 연민트 */
+	.generated_block h4 i.fa-tv {
+	  color: #27c99e;
+	}
+	.generated_block[block-type="WatchParties"] {
+	  background: #edfaf6 !important;
+	  border: 1.3px solid #b8e6d5;
+	}
+	.generated_block ul {
+	  margin: 0;
+	  padding: 0;
+	  list-style: none;
+	  overflow-y: auto;
+	}
+	
+	.generated_block ul li {
+	  padding: 11px 0;
+	  font-size: 15px;
+	  color: #27344c;
+	  border-bottom: 1px solid #eef3fa;
+	  display: flex;
+	  align-items: center;
+	  gap: 9px;
+	  white-space: nowrap;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	  line-height: 1.24;
+	  background: none;
+	}
+	.generated_block ul li:last-child {
+	  border-bottom: none;
+	}
+	
+	/* 내 활동 통계: 연보라+얇은 파랑보더 */
+	.generated_block h4 i.fa-chart-simple {
+	  color: #5663dd;
+	}
+	.generated_block[block-type="UserStats"] {
+	  background: #f5f6ff !important;
+	  border: 1.3px solid #d8e1ff;
+	}
+	
+	.generated_block ul li a {
+	  flex: 1 1 0;
+	  text-decoration: none;
+	  color: #3473e6;
+	  font-weight: 600;
+	  transition: color 0.14s;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	  white-space: nowrap;
+	  max-width: 70%;
+	}
+	.generated_block ul li a:hover {
+	  color: #1b295d;
+	}
+	
+	.generated_block .block-meta {
+	  font-size: 12.5px;
+	  color: #a6b0be;
+	  margin-left: auto;
+	  min-width: 80px;
+	  text-align: right;
+	  font-weight: 500;
+	}
+	
+	.generated_block .block-badge {
+	  background: linear-gradient(135deg, #7ae4af 50%, #79c1ff 100%);
+	  color: #fff;
+	  font-size: 13px;
+	  font-weight: 700;
+	  padding: 4px 13px;
+	  border-radius: 13px;
+	  margin-right: 7px;
+	  box-shadow: 0 1px 4px rgba(40,160,160,0.06);
+	  letter-spacing: -0.3px;
+	}
+	
+	/* 통계 차트가 카드에 자연스럽게 보이도록 */
+	.generated_block canvas {
+	  display: block;
+	  margin: 18px auto 0 auto;
+	  max-width: 94%;
+	  background: transparent;
+	}
+	
+	/* + 버튼만 강조 색상 */
+	#content_plus.contents_item {
+	  background: #f3f6fa;
+	  border: 2.5px dashed #e3e9f2;
+	  color: #6cb7e6;
+	  font-size: 44px;
+	  text-align: center;
+	  justify-content: center;
+	  align-items: center;
+	  cursor: pointer;
+	  transition: background 0.2s, border-color 0.2s;
+	}
+	
+	#content_plus.contents_item:hover {
+	  background: #eaf4fc;
+	  border-color: #6cb7e6;
+	  color: #3183c3;
+	}
+
+#todolist {
+    width: 100%;
+    height: 650px;
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+/* 캘린더 (왼쪽) - 2의 비율 */
+#calendar {
+    flex: 2 1 0;          /* 팽창 비율 2, 수축 비율 1, 기본 너비 0 */
+    min-width: 0;           /* 유연한 축소를 위해 */
+    
+    position: relative; /*팝업 창 위치계산*/ 
+    
+     /* 자식 요소(FullCalendar)를 컨트롤하기 위해 flex로 만듭니다. */
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* 자식 높이가 부모를 초과하지 않도록 보장 */
+    
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px; 
+    padding: 20px;
+}
+
+/* FullCalendar의 날짜 그리드 영역이 남는 공간을 모두 차지하도록 설정 */
+#calendar .fc-view-harness {
+    flex-grow: 1; 
+}
+
+/* --- 캘린더 상단 툴바 (이전/다음, 날짜 제목) 스타일 --- */
+.fc-header-toolbar {
+    margin-bottom: 1.5em !important; /* !important로 라이브러리 기본값 덮어쓰기 */
+    padding: 0 10px; /* 좌우 패딩으로 내용 정렬 */
+}
+
+/* 툴바의 버튼들 (prev, next, today 등) */
+.fc .fc-button {
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    color: #333;
+    text-transform: capitalize;
+    box-shadow: none; /* 기본 그림자 제거 */
+}
+.fc .fc-button:hover {
+    background-color: #e0e0e0;
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    background-color: #007bff; /* 활성화된 버튼 색상 */
+    border-color: #007bff;
+}
+
+/* 요일(SUN, MON...) 헤더 스타일 */
+.fc .fc-col-header-cell {
+    background-color: transparent;
+    border: none;
+    font-size: 0.85em;
+    color: #666;
+}
+
+/* 날짜 칸(cell) 스타일 */
+.fc .fc-daygrid-day {
+    border: 1px solid #f0f0f0; /* 날짜 칸 사이에 옅은 선 */
+}
+.fc .fc-day-other {
+    background-color: #f9f9f9; /* 다른 달의 날짜 배경색 */
+}
+
+/* --- 하이라이트 스타일 --- */
+/* 오늘 날짜 & 사용자가 선택한 날짜에 적용될 하이라이트 스타일 */
+.fc .fc-day-today,
+.fc .fc-day-selected {  
+    background-color: #fff9c4 !important; /* 노란색 계열 하이라이트 */
+}
+
+/* 일정 이벤트(점) 스타일 */
+.fc-daygrid-event {
+    background-color: rgba(255, 255, 0, 0.3) !important;
+}
+
+/* 일정 표시 영역 (오른쪽) - 1의 비율 */
+.calendar_contents {
+    flex: 1 1 0;          /* 팽창 비율 1, 수축 비율 1, 기본 너비 0 */
+    min-width: 0;           /* 유연한 축소를 위해 */
+    /* (추가) flex 아이템이 부모 높이를 초과하지 않도록 설정 */
+    min-height: 0;
+    border-radius: 20px;    /* 둥근 모서리 */
+    background-color: #f5f5f5;   /* 배경색 */
+    
+    /* (추가) 내부 요소를 세로로 정렬하기 위한 flex 설정 */
+    display: flex;
+    flex-direction: column;
+    padding: 15px; /* 내부 여백 */
+}
+
+/* 탭 버튼 컨테이너 */
+.tab-buttons {
+    display: flex;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 15px;
+}
+
+/* 탭 버튼 기본 스타일 */
+.tab-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    font-size: 16px;
+    font-weight: bold;
+    color: #888;
+    border-bottom: 3px solid transparent;
+}
+
+/* 활성화된 탭 버튼 스타일 */
+.tab-btn.active {
+    color: #333;
+    border-bottom: 3px solid #333;
+}
+
+/* 탭 컨텐츠 기본 스타일 (기본적으로 숨김) */
+.tab-content {
+    display: none;
+}
+
+/* 활성화된 탭 컨텐츠 스타일 (보여주기) */
+.tab-content.active {
+    display: block;
+}
+
+/* 탭 컨텐츠 영역이 남는 공간을 모두 차지하도록 설정 */
+.tab-content-wrapper {
+    flex-grow: 1;
+    overflow-y: auto; /* 내용이 길어지면 스크롤바 생성 */
+}
+
+/* style.css */
+
+.schedule-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.schedule-list li {
+    display: flex;
+    align-items: flex-start;
+    padding: 15px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    gap: 10px;
+}
+
+.schedule-list li:last-child {
+    border-bottom: none;
+}
+
+.schedule-list li.no-schedule {
+    color: #888;
+    justify-content: center;
+    padding: 30px 0;
+}
+
+.schedule-time {
+    font-weight: bold;
+    color: #333;
+    margin-right: 15px;
+    font-size: 0.9em;
+    width: 100px; /* 시간 영역 너비 고정 */
+}
+
+.schedule-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.schedule-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.schedule-desc {
+    font-size: 0.85em;
+    color: #666;
+}
+
+/* 할 일 목록 ul 스타일 */
+.todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* 할 일 목록 li (각 항목) 스타일 */
+.todo-list li {
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 15px;
+}
+
+.todo-list li:last-child {
+    border-bottom: none;
+}
+
+/* 체크박스 스타일 */
+.todo-checkbox {
+    margin-right: 15px;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+
+/* 텍스트 영역 (체크 시 취소선 적용 위해) */
+.todo-text {
+    flex-grow: 1; /* 남은 공간을 모두 차지 */
+    color: #333;
+    transition: color 0.3s;
+}
+
+/* 완료된 항목의 텍스트 스타일 */
+.todo-text.completed {
+    text-decoration: line-through; /* 취소선 */
+    color: #aaa;
+}
+
+/* 삭제 버튼 스타일 */
+.schedule-delete-btn,
+.todo-delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #ccc;
+    padding: 0 5px;
+    line-height: 1;
+    
+    margin-left: auto;
+    /* flex 아이템이 수축하지 않도록 설정 (버튼이 찌그러지는 것 방지) */
+    flex-shrink: 0; 
+}
+
+.schedule-delete-btn:hover,
+.todo-delete-btn:hover {
+    color: #f44336; /* 마우스 올리면 빨간색 */
+}
+
+/* --- 모달 창 스타일 --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+#schedule-form .form-group,
+#todo-form .form-group  {
+    margin-bottom: 15px;
+}
+#schedule-form .form-group-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+#schedule-form .form-group-row .form-group {
+    flex: 1;
+    min-width: 180px; /* 각 입력칸의 최소 너비 보장 */
+    margin-bottom: 0;
+}
+
+#schedule-form label,
+#todo-form label  {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#schedule-form input[type="text"],
+#schedule-form input[type="datetime-local"],
+#schedule-form textarea,
+#todo-form input[type="text"],
+#todo-form textarea  {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px; 
+    box-sizing: border-box; 
+}
+
+#schedule-form textarea,
+#todo-form textarea {
+    resize: vertical;
+}
+
+#schedule-form input[type="color"] ,
+#todo-form input[type="color"]{
+    width: 30%;
+    height: 40px;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+/* calendar*/
+.fc-day-today {
+    background-color: #fff9c4 !important; /* !important를 사용하여 라이브러리 기본 스타일 덮어쓰기 */
+}
+
+#calendar .fc-toolbar-title {
+    /* 높이를 적절한 값으로 강제 지정합니다. */
+    height: 40px; 
+    
+    /* 세로 중앙 정렬을 위해 높이와 동일한 값을 줍니다. */
+    line-height: 40px; 
+
+    /* 불필요한 상하 여백을 모두 제거합니다. */
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* --- 날짜 선택 팝오버 스타일 --- */
+#date-picker-popover {
+    display: none; /* JS로 제어 */
+    position: absolute;
+    
+    /* ★★★ 위치 고정: 이 값을 조절하여 위치를 미세 조정하세요 ★★★ */
+    top: 175px;  /* 캘린더 상단에서부터 75px 아래 */
+    left: 45%;  /* 캘린더의 가로 중앙 */
+    transform: translateX(-50%); /* 중앙 정렬을 위한 트릭 */
+
+    width: 280px;
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 1001;
+}
+
+/* 위쪽을 가리키는 삼각형 */
+#date-picker-popover::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 10px 10px 10px;
+    border-style: solid;
+    border-color: transparent transparent white transparent;
+}
+
+/* 팝오버 내부 요소 스타일 */
+#date-picker-popover .date-picker-body {
+    display: flex;
+    gap: 10px;
+}
+#date-picker-popover select,
+#date-picker-popover button {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: inherit;
+}
+#date-picker-popover select {
+    flex: 1;
+}
+#date-picker-popover button#goto-date-btn {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    cursor: pointer;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+}
+.modal-close-btn {
+    background-color: #f0f0f0;
+}
+.modal-save-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+/* --- 새 일정 추가 버튼 스타일 --- */
+.add-btn-container {
+    padding: 0 10px 10px 10px;
+}
+.add-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #e9e9e9;
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+}
+.add-btn:hover {
+    background-color: #dcdcdc;
+}
+
+#content_plus {
+   background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    font-size: 70px;
+    font-weight: bold;
+    color: #ced4da; /* 색상을 약간 연하게 조정 */
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* --- 위젯 아이템 공통 스타일 --- */
+.contents_item {
+    background-color: #f8f9fa; /* 배경색을 약간 부드럽게 */
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    
+    /* 자식 요소(헤더, 목록)를 세로로 배치하기 위한 flex 설정 */
+    display: flex;
+    flex-direction: column;
+    
+    /* 내용이 넘칠 경우를 대비 */
+    min-height: 0; /* flex 아이템의 최소 높이 */
+}
+
+/* --- 위젯 헤더 (제목, 더보기 버튼) --- */
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    /* 헤더는 크기가 커지지 않도록 고정 */
+    flex-shrink: 0; 
+}
+
+.widget-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #343a40;
+}
+
+.widget-header .more-btn {
+    background: none;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    color: #495057;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.widget-header .more-btn:hover {
+    background-color: #e9ecef;
+}
+
+/* --- 위젯 목록 (ul) --- */
+.widget-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    /* 남는 공간을 모두 차지하며, 내용이 길어지면 스크롤됩니다. */
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* --- 위젯 목록 아이템 (li) --- */
+.widget-list li {
+    padding: 10px 5px;
+    border-bottom: 1px solid #e9ecef;
+}
+.widget-list li:last-child {
+    border-bottom: none;
+}
+.widget-list li.no-items {
+    color: #868e96;
+    text-align: center;
+    padding-top: 20px;
+}
+
+/* 위젯 목록 링크 (a) */
+.widget-list li a {
+    display: block;
+    text-decoration: none;
+}
+.widget-list li a:hover .widget-post-title {
+    color: #007bff; /* 마우스 올리면 제목 색상 변경 */
+}
+
+/* 위젯 포스트 제목 */
+.widget-post-title {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #495057;
+    /* 제목이 길 경우 ...으로 표시 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s;
+}
+
+/* 위젯 포스트 메타 정보 (작성자, 조회수 등) */
+.widget-post-meta {
+    font-size: 12px;
+    color: #868e96;
+    display: flex;
+    flex-wrap: wrap; /* 창이 좁을 때 줄바꿈 */
+    gap: 8px;
+}
+
+/* 메타 정보 구분자 */
+.widget-post-meta .meta-divider {
+    color: #dee2e6;
+}
+
+	@media (max-width: 800px) {
+	  .contents_item, .generated_block { padding: 12px 7px !important; }
+	  #content_plus.contents_item { font-size: 30px; }
+	}
+  
