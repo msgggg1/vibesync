@@ -15,6 +15,33 @@
   <link rel="stylesheet" href="./css/style.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script defer src="./js/script.js"></script>
+  <style>
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%; max-width: 400px;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 10px; right: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      border: none;
+      background: none;
+    }
+  </style>
 </head>
 <body>
   <div id="notion-app">
@@ -55,8 +82,6 @@
                       ${userPageData.userProfile.followedByCurrentUser ? 'UNFOLLOW' : 'FOLLOW'}
                     </button>
                   </c:if>
-                  <%-- Watch Party 버튼 (기능 구현 시 활성화) --%>
-                  <%-- <button class="btn_follow_2">Watch Party</button> --%>
                 </div>
                 <div class="user_count">
                   <p>POST <span>${userPageData.userProfile.postCount}</span></p>
@@ -78,7 +103,6 @@
                       </c:when>
                       <c:otherwise>
                         <img src="<%=contextPath %>/sources/images/default_thumbnail.png" alt="기본 썸네일">
-                        <%-- 기본 썸네일 이미지 경로 --%>
                       </c:otherwise>
                     </c:choose>
                     <p>${post.title}</p>
@@ -93,27 +117,41 @@
     </div>
   </div>
 
+  <!-- 페이지 생성 모달 트리거 버튼 -->
+  <button id="pageCreateBtn"
+          style="position:fixed; bottom:20px; left:20px; width:50px; height:50px;
+                 border-radius:50%; background:#007bff; color:#fff; font-size:24px;
+                 z-index:1000; border:none; cursor:pointer;">
+    ＋
+  </button>
+
+  <!-- 모달 오버레이 및 컨텐츠 -->
+  <div id="pageModalOverlay" class="modal-overlay">
+    <div class="modal-content" id="pageModalContent">
+      <button class="modal-close" id="pageModalClose">&times;</button>
+      <!-- AJAX로 로드된 <select> + 버튼들 삽입 -->
+    </div>
+  </div>
+
   <script>
     $(document).ready(function() {
-      // 사이드바 토글, 로그아웃 등 기존 스크립트 ...
+      // 로그아웃
       $("#logout").on("click", function(){
-        location.href = "${pageContext.request.contextPath}/logout.jsp"; // 예시
+        location.href = "${pageContext.request.contextPath}/logout.jsp";
       });
 
-      // 프로필 페이지의 팔로우 버튼 처리
+      // 팔로우/언팔로우
       $('#profileFollowBtn').on('click', function() {
         var $button = $(this);
         var authorId = $button.data('author-id');
-        var isLoggedIn = ${sessionScope.userInfo != null}; // 로그인 상태 확인
-
+        var isLoggedIn = ${sessionScope.userInfo != null};
         if (!isLoggedIn) {
           alert("로그인이 필요합니다.");
-          location.href = "${pageContext.request.contextPath}/login.jsp"; // 로그인 페이지로 이동
+          location.href = "${pageContext.request.contextPath}/login.jsp";
           return;
         }
-
         $.ajax({
-          url: '${pageContext.request.contextPath}/followToggle.do', // 팔로우/언팔로우 처리 핸들러
+          url: '${pageContext.request.contextPath}/followToggle.do',
           type: 'POST',
           data: { authorId: authorId },
           dataType: 'json',
@@ -124,7 +162,6 @@
               } else {
                 $button.data('following', false).text('FOLLOW');
               }
-              // 팔로워 수 업데이트
               if (typeof response.newFollowerCount !== 'undefined') {
                 $('#profileFollowerCount').text(response.newFollowerCount);
               }
@@ -138,35 +175,25 @@
         });
       });
 
-      // 무한 스크롤 로직
-      var isLoading = false; // 중복 요청 방지 플래그
+      // 무한 스크롤
+      var isLoading = false;
       $(window).scroll(function() {
         var hasMore = ($('#hasMorePosts').val() === 'true');
-        if (!hasMore || isLoading) {
-          return;
-        }
-
-        // (window의 높이 + 스크롤된 양) >= (문서 전체의 높이 - 특정 버퍼값)
+        if (!hasMore || isLoading) return;
         if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
           isLoading = true;
           $('#loadingIndicator').show();
           var nextPage = parseInt($('#currentPageNumber').val()) + 1;
           var profileUserId = $('#profileUserAcIdx').val();
-
-          console.log("Loading more posts for user: " + profileUserId + ", page: " + nextPage);
-
           $.ajax({
-            url: '${pageContext.request.contextPath}/loadMorePosts.do', // 추가 게시물 로드 핸들러
-            type: 'GET', // 또는 POST
-            data: {
-              userId: profileUserId,
-              page: nextPage
-            },
+            url: '${pageContext.request.contextPath}/loadMorePosts.do',
+            type: 'GET',
+            data: { userId: profileUserId, page: nextPage },
             dataType: 'json',
             success: function(response) {
               if (response.posts && response.posts.length > 0) {
                 var postsHtml = '';
-                $.each(response.posts, function(index, post) {
+                $.each(response.posts, function(i, post) {
                   postsHtml += '<div class="con_item">';
                   postsHtml += '  <a href="${pageContext.request.contextPath}/noteView.do?noteIdx=' + post.note_idx + '">';
                   postsHtml += '    <img src="${pageContext.request.contextPath}/' + (post.thumbnail_img ? post.thumbnail_img : 'sources/images/default_thumbnail.png') + '" alt="' + post.title + ' 썸네일">';
@@ -175,7 +202,7 @@
                   postsHtml += '</div>';
                 });
                 $('#con_wrapper').append(postsHtml);
-                $('#currentPageNumber').val(nextPage); // 현재 페이지 번호 업데이트
+                $('#currentPageNumber').val(nextPage);
               }
               if (!response.hasMore) {
                 $('#hasMorePosts').val('false');
@@ -192,6 +219,71 @@
             }
           });
         }
+      });
+
+      // 모달 열기: 페이지 목록 로드
+      $('#pageCreateBtn').on('click', function() {
+        var acIdx = $('#profileUserAcIdx').val();
+        $.get('${pageContext.request.contextPath}/page/modalList.do', { ac_idx: acIdx }, function(html) {
+          $('#pageModalContent').children(':not(.modal-close)').remove();
+          $('#pageModalContent').append(html);
+          $('#pageModalOverlay').fadeIn();
+        });
+      });
+
+      // 모달 닫기
+      $('#pageModalOverlay').on('click', '#pageModalClose, .modal-overlay', function(e) {
+        e.stopPropagation();
+        $('#pageModalOverlay').fadeOut(function() {
+          $('#pageModalContent').children(':not(.modal-close)').remove();
+        });
+      });
+
+      // '＋ 새 페이지' 클릭 시 JS로 폼 전환 (페이지 생성 폼)
+      $('#pageModalOverlay').on('click', '#newPageBtn', function() {
+        $('#pageModalContent').children(':not(.modal-close)').remove();
+        var formHtml = ''
+          + '<h3>새 페이지 생성</h3>'
+          + '<form id="pageCreateForm" enctype="multipart/form-data">'
+          + '  <label>Subject: <input type="text" id="subject" name="subject" required/></label><br/>'
+          + '  <button type="submit">Create</button>'
+          + '</form>';
+        $('#pageModalContent').append(formHtml);
+      });
+      
+      $('#pageModalOverlay').on('click', '#newNoteBtn', function() {
+    	  // select 박스에서 현재 선택된 페이지 idx
+    	  var selectedIdx = $('#pageSelect').val();
+    	  // 새 글쓰기 링크 href 업데이트
+    	  $('#newNoteLink').attr('href', 'notecreate.do?pageidx=' + selectedIdx);
+    	  // 실제 이동
+    	  window.location.href = $('#newNoteLink').attr('href');
+    	});
+
+
+      // 폼 제출 시 pageCreateHandler 호출
+      $('#pageModalOverlay').on('submit', '#pageCreateForm', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        let subject = document.getElementById("subject").value;
+        $.ajax({
+          url: '${pageContext.request.contextPath}/page/create.do?subject=' + subject,
+          type: 'GET',
+          data: formData,
+          processData: false,
+          contentType: false,
+          dataType: 'json',
+          success: function(res) {
+            if (res.success) {
+              $('#pageModalOverlay').fadeOut();
+            } else {
+              alert('페이지 생성 실패: ' + (res.message || ''));
+            }
+          },
+          error: function() {
+            alert('페이지 생성 중 오류가 발생했습니다.');
+          }
+        });
       });
     });
   </script>

@@ -19,9 +19,7 @@ public class PostViewService {
 	public UserNoteVO getUserNoteInfo(int note_idx) {
 		try {
             conn = ConnectionProvider.getConnection(); 
-
             UserNoteDAO dao = new UserNoteDAOImpl(conn);
-            
             UserNoteVO noteInfo = dao.getUserNoteById(note_idx);
             return noteInfo;
 

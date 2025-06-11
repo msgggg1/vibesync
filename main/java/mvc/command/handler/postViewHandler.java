@@ -3,6 +3,7 @@ package mvc.command.handler;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.util.Enumeration;
 import java.util.HashSet; // 수정: 세션에 저장할 Set 사용
 import java.util.Set;      // 수정: 세션에 저장할 Set 사용
 
@@ -27,6 +28,16 @@ public class postViewHandler implements CommandHandler {
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
+        
+        Enumeration<String> names = request.getParameterNames();
+        
+        while (names.hasMoreElements()) {
+			String name = (String) names.nextElement();
+			System.out.println(name +" | ");
+		}
+        
+        String page = request.getParameter("userPgIdx");
+        System.out.println("page : " + page);
         
         // AJAX 처리: action 파라미터 확인
         String action = request.getParameter("action");
