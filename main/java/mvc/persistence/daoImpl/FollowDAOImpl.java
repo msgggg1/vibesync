@@ -107,9 +107,9 @@ public class FollowDAOImpl implements FollowDAO {
 	    ResultSet rs = null;
 	    
 	    String sql = "SELECT " + 
-	    			 " ac_follow " +
+	    			 " ac_following " +
 	    			 " FROM follows " +
-	    			 " WHERE ac_following = ?";
+	    			 " WHERE ac_follow = ?";
 	    
 	    try {
 			pstmt = conn.prepareStatement(sql);
@@ -117,7 +117,7 @@ public class FollowDAOImpl implements FollowDAO {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
-				userIdList.add(rs.getInt("ac_follow"));
+				userIdList.add(rs.getInt("ac_following"));
 			}
 			
 		} catch (Exception e) {

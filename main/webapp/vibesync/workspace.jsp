@@ -21,7 +21,7 @@
   <%-- 달력 --%>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
 <link rel="stylesheet" href="./css/workspace.css">
-<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/style.css"> 
 <link rel="stylesheet" href="./css/sidebar.css">
 </head>
 <body>

@@ -87,54 +87,77 @@ function getTodayString() {
     
 // [함수] 내가 쓴 글 위젯 로딩
 function loadMyPostsWidget() {
-    const $widget = $('#my-posts');
-    $widget.html('<p>로딩 중...</p>');
-    $.ajax({
-        url: contextPath + '/note.do', // ★ contextPath 변수 사용
-        type: 'GET',
-        data: { action: 'getMyPostsPreview' },
-        dataType: 'json',
-        success: function(posts) {
-            let contentHtml = '<div class="widget-header"><h3>내가 작성한 글 (인기순)</h3><button class="more-btn" data-type="my-posts">더보기</button></div>';
-            contentHtml += '<ul class="widget-list">';
-            if (posts && posts.length > 0) {
-                posts.forEach(function(post) {
-                    contentHtml += `<li><a href="postView.do?nidx=${post.note_idx}"><span class="widget-post-title">${post.title}</span><span class="widget-post-meta">조회수 ${post.view_count} | 좋아요 ${post.likes_count}</span></a></li>`;
-                });
-            } else {
-                contentHtml += '<li class="no-items">작성한 글이 없습니다.</li>';
-            }
-            contentHtml += '</ul>';
-            $widget.html(contentHtml);
-        },
-        error: function() { $widget.html('<p>글을 불러오는 데 실패했습니다.</p>'); }
-    });
+    const $widget = $('#my-posts');
+    $widget.html('<p>로딩 중...</p>');
+    $.ajax({
+        url: contextPath + '/note.do',
+        type: 'GET',
+        data: { action: 'getMyPostsPreview' },
+        dataType: 'json',
+        success: function(posts) {
+            // HTML 구조를 다른 블록과 통일하고, 아이콘을 추가합니다.
+            let contentHtml = `<div class="widget-header">
+                                 <h4><i class="fa-solid fa-pen-nib"></i>&nbsp;&nbsp;내가 작성한 글</h4>
+                                 <button class="more-btn" data-type="my-posts">더보기</button>
+                               </div>`;
+            contentHtml += '<ul>';
+            if (posts && posts.length > 0) {
+                posts.forEach(function(post) {
+                    // a 태그 안에 제목과 메타 정보를 함께 넣어 스타일 적용이 용이하게 합니다.
+                    contentHtml += `<li>
+                                        <a href="postView.do?nidx=${post.note_idx}" title="${post.title}">
+                                            <span>${post.title}</span>
+                                            <span class="block-meta">
+                                                <i class="fa-regular fa-eye"></i> ${post.view_count}&nbsp;&nbsp;
+                                                <i class="fa-regular fa-thumbs-up"></i>${post.like_count}
+                                            </span>
+                                        </a>
+                                    </li>`;
+                });
+            } else {
+                contentHtml += '<li class="no-items">작성한 글이 없습니다.</li>';
+            }
+            contentHtml += '</ul>';
+            $widget.html(contentHtml);
+        },
+        error: function() { $widget.html('<p>글을 불러오는 데 실패했습니다.</p>'); }
+    });
 }
 
 // [함수] 좋아요한 글 위젯 로딩
 function loadLikedPostsWidget() {
-    const $widget = $('#liked-posts');
-    $widget.html('<p>로딩 중...</p>');
-    $.ajax({
-        url: contextPath + '/note.do', // ★ contextPath 변수 사용
-        type: 'GET',
-        data: { action: 'getLikedPostsPreview'},
-        dataType: 'json',
-        success: function(posts) {
-            let contentHtml = '<div class="widget-header"><h3>좋아요한 글</h3><button class="more-btn" data-type="liked-posts">더보기</button></div>';
-            contentHtml += '<ul class="widget-list">';
-            if (posts && posts.length > 0) {
-                posts.forEach(function(post) {
-                    contentHtml += `<li><a href="postView.do?nidx=${post.note_idx}"><span class="widget-post-title">${post.title}</span><span class="widget-post-author">by ${post.author_name}</span></a></li>`;
-                });
-            } else {
-                contentHtml += '<li class="no-items">좋아요한 글이 없습니다.</li>';
-            }
-            contentHtml += '</ul>';
-            $widget.html(contentHtml);
-        },
-        error: function() { $widget.html('<p>글을 불러오는 데 실패했습니다.</p>'); }
-    });
+    const $widget = $('#liked-posts');
+    $widget.html('<p>로딩 중...</p>');
+    $.ajax({
+        url: contextPath + '/note.do',
+        type: 'GET',
+        data: { action: 'getLikedPostsPreview'},
+        dataType: 'json',
+        success: function(posts) {
+            // HTML 구조를 다른 블록과 통일하고, 아이콘을 추가합니다.
+            // ★★★ 더보기 버튼이 포함된 헤더 구조로 수정 ★★★
+            let contentHtml = `<div class="widget-header">
+                                 <h4><i class="fa-solid fa-heart"></i>&nbsp;&nbsp;좋아요한 글</h4>
+                                 <button class="more-btn" data-type="liked-posts">더보기</button>
+                               </div>`;
+            contentHtml += '<ul>';
+            if (posts && posts.length > 0) {
+                posts.forEach(function(post) {
+                    contentHtml += `<li>
+                                        <a href="postView.do?nidx=${post.note_idx}" title="${post.title}">
+                                            <span>${post.title}</span>
+                                            <span class="block-meta">by ${post.author_name}</span>
+                                        </a>
+                                    </li>`;
+                });
+            } else {
+                contentHtml += '<li class="no-items">좋아요한 글이 없습니다.</li>';
+            }
+            contentHtml += '</ul>';
+            $widget.html(contentHtml);
+        },
+        error: function() { $widget.html('<p>글을 불러오는 데 실패했습니다.</p>'); }
+    });
 }
 
 // [함수] 날짜 선택 팝오버 채우기
@@ -177,7 +200,18 @@ function addBlockToServer(options) {
                 }
                 blockHtml += `</ul>`;
             } else if (options.action === 'WatchParties') {
-                // ... (워치파티 로직) ...
+                 blockHtml += `<h4><i class="fa-solid fa-tv" style="color:#6fdc88"></i>&nbsp;&nbsp;진행중인 워치파티</h4><ul>`;
+	    	  if (data.length === 0) {
+	    	    blockHtml += `<li style="color:#bbb">진행 중인 워치파티가 없습니다.</li>`;
+	    	  }
+	    	  data.forEach(party => {
+	    	    blockHtml += `<li>
+	    	      <span class="block-badge">${party.host.nickname}</span>
+	    	      <span>${party.watchparty.title}</span>
+	    	      <span class="block-meta">${party.current_num}/${party.max_num}명</span>
+	    	    </li>`;
+	    	  });
+	    	  blockHtml += `</ul>`;
             } else if (options.action === 'UserStats') {
                 const chartId = `myStatsChart_${timestamp}`;
                 blockHtml += `<h4><i class="fa-solid fa-chart-simple" style="color:#356dd5"></i>&nbsp;&nbsp;내 활동 통계</h4>`;
@@ -290,7 +324,7 @@ $(document).ready(function() {
             $li.find('.todo-text').toggleClass('completed', isChecked);
 
             $.ajax({
-                url: contextPath/'todoList.do',
+                url: contextPath + '/todoList.do',
                 type: 'POST',
                 data: {
                     action: 'updateStatus',
@@ -313,7 +347,7 @@ $(document).ready(function() {
 
             if (confirm("정말로 이 할 일을 삭제하시겠습니까?")) {
                 $.ajax({
-                    url: contextPath/'todoList.do',
+                    url: contextPath + '/todoList.do',
                     type: 'POST',
                     data: {
                         action: 'delete',
@@ -350,6 +384,7 @@ $(document).ready(function() {
 
             $todoForm.show();
             $unifiedModal.show();
+            
             
              }); // 수정 모달 열기
 
@@ -410,7 +445,7 @@ $(document).ready(function() {
             }
             if (confirm("정말로 이 일정을 삭제하시겠습니까?")) {
                 $.ajax({
-                    url: contextPath/'schedules.do',
+                    url: contextPath + '/schedules.do',
                     type: 'POST',
                     data: {
                         action: 'deleteSchedule',
@@ -502,7 +537,7 @@ $(document).ready(function() {
             if (isUpdating) { scheduleData.schedule_idx = scheduleId; }
             const alertMessage = isUpdating ? "수정" : "추가";
             $.ajax({
-                url: contextPath/'schedules.do',
+                url: contextPath +'/schedules.do',
                 type: 'POST',
                 data: scheduleData,
                 success: function(response) {
@@ -530,7 +565,7 @@ $(document).ready(function() {
             if (isUpdating) { todoData.todo_idx = todoId; }
             const alertMessage = isUpdating ? "수정" : "추가";
             $.ajax({
-                url: contextPath/'todoList.do',
+                url: contextPath +'/todoList.do',
                 type: 'POST',
                 data: todoData,
                 success: function(response) {
@@ -566,7 +601,8 @@ $(document).ready(function() {
 	         }).change();
 	
 	// 모달에서 '추가' 버튼 클릭
-    $('#confirmAddBlock').on('click', function() { 
+    $('#confirmAddBlock').off('click').on('click', function() { 
+    
     		const blockType = $('#blockTypeSelector').val();
 	        let options = { action: blockType };
 
@@ -598,7 +634,7 @@ $(document).ready(function() {
             else { return; }
 
             $.ajax({
-                url: contextPath/'note.do',
+                url: contextPath + '/note.do',
                 type: 'GET',
                 data: { action: action },
                 dataType: 'json',
@@ -608,7 +644,17 @@ $(document).ready(function() {
                     let listHtml = '<ul class="widget-list">';
                     if (posts && posts.length > 0) {
                         posts.forEach(function(post) {
-                            listHtml += `<li><a href="postView.do?nidx=${post.note_idx}"><span class="widget-post-title">${post.title}</span><span class="widget-post-author">by ${post.author_name}</span><span class="widget-post-meta">조회수 ${post.view_count} | 좋아요 ${post.likes_count}</span></a></li>`;
+                            listHtml += `<li>
+                                        <a href="postView.do?nidx=${post.note_idx}">
+                                            <div class="post-main-info">
+                                                <span class="widget-post-title">${post.title}</span>
+                                                <span>조회수 ${post.view_count} | 좋아요 ${post.like_count}</span>
+                                            </div>
+                                            <div class="widget-post-author">
+                                                <span class="widget-post-meta">BY ${post.author_name}</span>
+                                            </div>
+                                        </a>
+                                    </li>`;
                         });
                     } else {
                         listHtml += '<li class="no-items">목록이 없습니다.</li>';
@@ -662,7 +708,7 @@ $(document).ready(function() {
 	      $('#chatTitle').text(nickname);
 	      
 	      $.ajax({
-	        url: contextPath/'message.do',
+	        url: contextPath +'/message.do',
 	        type: 'GET',
 	        data: { senderIdx },
 	        dataType: 'json',
@@ -721,7 +767,9 @@ $(document).ready(function() {
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
-                    
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek'
                 },
                 dayMaxEvents: 2,
                 height: '100%',
@@ -733,7 +781,7 @@ $(document).ready(function() {
                     var endIso = fetchInfo.end.toISOString();
 
                     $.ajax({
-                        url: contextPath/'schedules.do',
+                        url: contextPath +'/schedules.do',
                         method: 'GET',
                         data: {
                             action: 'getMonthlySchedules',

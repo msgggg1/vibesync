@@ -63,8 +63,14 @@ public class BlockHandler implements CommandHandler {
 	                break;
 	            
 	            case WatchParties:
+	            	System.out.println("===== 1. BlockHandler 진입 =====");
+	                System.out.println("현재 로그인한 사용자 ID(ac_idx): " + ac_idx); // 로그인 ID 확인
+
 	                WatchPartyService watchPartyService = new WatchPartyService();
 	                result = watchPartyService.getFollowingWatchPartyList(ac_idx);
+
+	                System.out.println("서비스 실행 후 받은 결과: " + new Gson().toJson(result)); // 서비스 결과 확인
+	                System.out.println("================================");
 	                break;
 	
 	            case UserStats:

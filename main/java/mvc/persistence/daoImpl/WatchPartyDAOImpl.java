@@ -229,6 +229,12 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
 	// 6) 여러 명의 호스트의 WatchParty 목록 조회
 	@Override
 	public List<WatchPartyDTO> selectWatchPartyListByHostId(List<Integer> hostList) throws SQLException {
+		
+		// 1. hostList가 비어있는 경우, DB에 접근할 필요 없이 즉시 빈 리스트를 반환합니다. (오류 방지)
+	    if (hostList == null || hostList.isEmpty()) {
+	        return new ArrayList<>();
+	    }
+	    
 		List<WatchPartyDTO> watchPartyListByHost = new ArrayList<WatchPartyDTO>();
 		
         PreparedStatement pstmt = null;
