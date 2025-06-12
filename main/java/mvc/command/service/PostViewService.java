@@ -12,9 +12,11 @@ import mvc.domain.vo.UserNoteVO;
 import mvc.persistence.dao.FollowDAO;
 import mvc.persistence.dao.LikeDAO;
 import mvc.persistence.dao.NoteDAO;
+import mvc.persistence.dao.UserNoteDAO;
 import mvc.persistence.daoImpl.FollowDAOImpl;
 import mvc.persistence.daoImpl.LikeDAOImpl;
 import mvc.persistence.daoImpl.NoteDAOImpl;
+import mvc.persistence.daoImpl.UserNoteDAOImpl;
 
 public class PostViewService {
 	
@@ -26,11 +28,6 @@ public class PostViewService {
             NoteDAO noteDAO = new NoteDAOImpl(conn);
             
             UserNoteVO noteInfo = noteDAO.getUserNoteById(note_idx);
-           
-            //*******************확인
-            if (noteInfo != null) { // 트랜잭션 처리 (조회수)
-            	noteDAO.increaseViewCount(note_idx);
-			}
             
             return noteInfo;
 
@@ -53,6 +50,7 @@ public class PostViewService {
 	}
 
 	public void updateViewCount(int noteidx) {
+		Connection conn = null;
 		try {
             conn = ConnectionProvider.getConnection(); 
             UserNoteDAO dao = new UserNoteDAOImpl(conn);

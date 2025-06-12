@@ -217,7 +217,7 @@ input:focus {
       </a>
 
       <!-- WORKSPACE -->
-      <a href="./workspace.html" class="workspace icon_wrap">
+      <a href="workspace.do" class="workspace icon_wrap">
         <img src="./sources/icons/work.svg" alt="workspace icon" class="sidebar_icon">
         <span>WORKSPACE</span>
       </a>
