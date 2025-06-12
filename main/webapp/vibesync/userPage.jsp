@@ -14,6 +14,7 @@
   <link rel="icon" href="./sources/favicon.ico" />
   <link rel="stylesheet" href="./css/style.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.min.js"></script>
   <script defer src="./js/script.js"></script>
 </head>
 <body>
@@ -90,6 +91,19 @@
           </div>
         </section>
       </div>
+    </div>
+  </div>
+  
+  <!-- 페이지 생성 모달 트리거 버튼 -->
+  <button id="pageCreateBtn">＋</button>
+
+  <!-- 모달 오버레이 및 컨텐츠 -->
+  <div id="pageModalOverlay" class="modal-overlay">
+    <div id="modalWrapper">
+    	<div class="modal-content" id="pageModalContent">
+	    <button class="modal-close" id="pageModalClose">&times;</button>
+	    <!-- AJAX로 로드된 <select> + 버튼들 삽입 -->
+    </div>
     </div>
   </div>
 
