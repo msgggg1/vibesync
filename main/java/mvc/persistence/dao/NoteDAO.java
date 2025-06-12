@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import mvc.domain.dto.DailyStatsDTO;
 import mvc.domain.dto.NoteDetailDTO;
 import mvc.domain.dto.NoteSummaryDTO;
-import mvc.domain.vo.NoteVO;
 import mvc.domain.vo.UserNoteVO;
 
 public interface NoteDAO {
@@ -54,5 +54,11 @@ public interface NoteDAO {
     
     // 게시글들의 조회수 총합 조회
     int getViewCountsForMultipleNotes(List<Integer> noteIdx) throws SQLException;
+    
+    // 특정 사용자의 최근 N일간의 일별 게시글 작성 수 (일별 통계)
+    List<DailyStatsDTO> getDailyPostCounts(int acIdx, int days) throws SQLException;
+    
+    // 특정 사용자의 최근 N일간의 일별 게시글 조회 수 (일별 통계)
+    List<DailyStatsDTO> getDailyViewCounts(int acIdx, int days) throws SQLException;
     
 }

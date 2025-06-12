@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+                <%@ page language="java" contentType="text/html; charset=UTF-8"
   pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLEncoder"%>
 <% String contextPath = request.getContextPath() + "/vibesync"; %>
@@ -23,6 +23,18 @@
 <link rel="stylesheet" href="./css/workspace.css">
 <link rel="stylesheet" href="./css/style.css"> 
 <link rel="stylesheet" href="./css/sidebar.css">
+  
+    <style> /* 추가 블록 */
+        .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .block-header h4 { margin: 0; }
+        .block-actions button { background: none; border: none; cursor: pointer; color: #888; font-size: 14px; margin-left: 5px; }
+        .block-actions button:hover { color: #000; }
+        .chart-toggles { margin-bottom: 10px; }
+        .chart-toggles label { margin-right: 15px; font-size: 13px; cursor: pointer; }
+        .loading-spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+  
 </head>
 <body>
 	<div id="notion-app">
@@ -54,7 +66,6 @@
 									<button id="add-todo-btn" class="add-btn"
 										style="display: none;">+ 새 할 일</button>
 								</div>
-
 								<%-- 탭 컨텐츠 영역 --%>
 								<div class="tab-content-wrapper">
 									<div id="tab_schedule" class="tab-content active">
@@ -152,6 +163,29 @@
                             </div>
                             </div>
 
+							<%-- 동적으로 추가된 블록들을 렌더링하는 부분 --%>
+							<c:forEach var="block" items="${workspaceData.blocks}">
+								<div class="contents_item generated_block" id="block-${block.block_id}">
+									<div class="block-header">
+										<h4>
+											<c:choose>
+												<c:when test="${block.block_type == 'CategoryPosts'}"><i class="fa-solid fa-layer-group"></i>&nbsp;${block.categoryName} ${block.sortType == 'popular' ? '인기' : '최신'}글</c:when>
+												<c:when test="${block.block_type == 'WatchParties'}"><i class="fa-solid fa-tv"></i>&nbsp;진행중인 워치파티</c:when>
+												<c:when test="${block.block_type == 'UserStats'}"><i class="fa-solid fa-chart-simple"></i>&nbsp;${block.title}</c:when>
+											</c:choose>
+										</h4>
+										<button class="refresh-block-btn" data-block-id="${block.block_id}" title="새로고침">
+											<i class="fa-solid fa-arrows-rotate"></i>
+										</button>
+									</div>
+									<div class="block-content">
+										<%-- 각 블록 타입에 맞는 JSP 프래그먼트를 include --%>
+										<c:set var="block" value="${block}" scope="request" />
+										<jsp:include page="/WEB-INF/views/workspace/fragments/_${block.block_type}Content.jsp" />
+									</div>
+								</div>
+						</c:forEach>
+
                         <!-- 추가 블록 -->
 			            <div id="content_plus" class="contents_item">+</div>
 
@@ -159,7 +193,6 @@
 					</div>
 				</section>
 			</div>
-
 		</div>
 	</div>
 
@@ -281,7 +314,6 @@
 	<script>
         const contextPath = "${pageContext.request.contextPath}";
     </script>
-
     <script defer src="./js/workspace.js"></script>
 </body>
 </html>

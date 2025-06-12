@@ -173,82 +173,56 @@ function populateDatePicker() {
         $monthSelect.append(`<option value="${i}">${i}월</option>`);
     }
 }
-
-// [함수] 블록 추가
-function addBlockToServer(options) {
-    $.ajax({
-        url: contextPath + '/block.do', // ★ contextPath 변수 사용
-        type: 'GET',
-        data: {
-            action: options.action,
-            category_idx: options.categoryIdx,
-            sortType: options.sortType
-        },
-        dataType: 'json',
-        success: function(data) {
-            let blockHtml = '<div class="contents_item generated_block">';
-            const timestamp = Date.now();
-    
-            if (options.action === 'CategoryPosts') {
-                blockHtml += `<h4><i class="fa-solid fa-layer-group" style="color:#6ac8fa"></i>&nbsp;&nbsp;${category_name} ${sortType === 'popular' ? '인기' : '최신'}글</h4><ul>`;
-                if (!data || data.length === 0) {
-                    blockHtml += `<li style="color:#bbb">글이 없습니다.</li>`;
-                } else {
-                    data.forEach(post => {
-                        blockHtml += `<li><a href="postView.do?nidx=${post.note_idx}" title="${post.title}">${post.title}</a><span class="block-meta"><i class="fa-regular fa-eye"></i> ${post.view_count} &nbsp; <i class="fa-regular fa-thumbs-up"></i> ${post.like_count || 0}</span></li>`;
-                    });
-                }
-                blockHtml += `</ul>`;
-            } else if (options.action === 'WatchParties') {
-                 blockHtml += `<h4><i class="fa-solid fa-tv" style="color:#6fdc88"></i>&nbsp;&nbsp;진행중인 워치파티</h4><ul>`;
-	    	  if (data.length === 0) {
-	    	    blockHtml += `<li style="color:#bbb">진행 중인 워치파티가 없습니다.</li>`;
-	    	  }
-	    	  data.forEach(party => {
-	    	    blockHtml += `<li>
-	    	      <span class="block-badge">${party.host.nickname}</span>
-	    	      <span>${party.watchparty.title}</span>
-	    	      <span class="block-meta">${party.current_num}/${party.max_num}명</span>
-	    	    </li>`;
-	    	  });
-	    	  blockHtml += `</ul>`;
-            } else if (options.action === 'UserStats') {
-                const chartId = `myStatsChart_${timestamp}`;
-                blockHtml += `<h4><i class="fa-solid fa-chart-simple" style="color:#356dd5"></i>&nbsp;&nbsp;내 활동 통계</h4>`;
-                blockHtml += `<canvas id="${chartId}" height="180"></canvas>`;
-            }
-    
-            blockHtml += '</div>';
-            $('#content_plus').before(blockHtml);
-    
-            if (options.action === 'UserStats') {
-                const chartId = `myStatsChart_${timestamp}`;
-                const ctx = document.getElementById(chartId).getContext('2d');
-                new Chart(ctx, { 
-					type: 'bar',
-	          		data: {
-	           		labels: ['총 조회수', '총 좋아요'],
-	            	datasets: [{
-	              	label: '활동 통계',
-	              	data: [data.totalViews, data.totalLikes],
-	              	backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
-	            }]
-	          },
-	          options: {
-	            responsive: true,
-	            scales: {
-	              y: { beginAtZero: true }
-	            }
-	          }
-					
-				 });
-            }
-        },
-        error: function(err) {
-            console.error("블록 추가 실패: ", err);
+    const userCharts = {}; // 전역 차트 인스턴스 저장소
+// 차트 생성/재생성 함수 (이 함수는 전역에서 접근 가능해야 함)
+    function createOrUpdateChart(block_id, chartData) {
+        if (userCharts['userStatsChart_' + block_id]) {
+            userCharts['userStatsChart_' + block_id].destroy();
         }
-    });
-}
+        const ctx = document.getElementById('userStatsChart_' + block_id)?.getContext('2d');
+        if (!ctx) return;
+
+        const chart = new Chart(ctx, { /* ... 차트 생성 로직 ... */ });
+        userCharts['userStatsChart_' + block_id] = chart;
+    }
+
+// 블록 추가 함수
+	function addBlockToServer(dataToSend) {
+	    $.ajax({
+	        url: 'block.do',
+	        type: 'POST',
+	        data: dataToSend,
+	        dataType: 'html',
+	        success: function(newBlockHtml) {
+	            $('#content_plus').before(newBlockHtml);
+	
+	            // 블록 개수 제한 로직
+	            if ($('#contents_grid .generated_block').length >= 5) {
+	                $("#content_plus").hide();
+	            }
+	        },
+	        error: function(err) {
+	            console.error("블록 추가 실패: ", err);
+	            alert('블록을 추가하는 데 실패했습니다.');
+	        }
+	    });
+	}
+
+// 블록 삭제 함수
+    function deleteBlock(block_id) {
+        if (!confirm("블록을 정말 삭제하시겠습니까?")) return;
+        $.ajax({
+            url: 'block.do', type: 'DELETE',
+            data: { block_id: block_id }, dataType: 'json',
+            success: function(res) {
+                if (res.success) {
+                    $('#block-' + block_id).remove();
+                    if ($('#contents_grid .generated_block').length < 5) { $("#content_plus").show(); }
+                } else { alert(res.message); }
+            },
+            error: function() { alert('블록 삭제 중 오류가 발생했습니다.'); }
+        });
+    }
     
 // [함수] 채팅 모달 닫기
 function closeChatModal() {
@@ -579,6 +553,48 @@ $(document).ready(function() {
             }); });
 
     // 5. 추가 블록 관련
+    <c:forEach var="block" items="${workspaceData.blocks}">
+    <c:if test="\${block.block_type == 'UserStats'}">
+          (function() {
+              const block_id = \${block.block_id};
+              const chartData = JSON.parse('<c:out value="\${block.chartDataJson}" escapeXml="false"/>');
+              createOrUpdateChart(block_id, chartData);
+          })();
+    </c:if>
+    </c:forEach>
+
+      // 모든 이벤트 핸들러 등록
+      const grid = $('#contents_grid');
+
+      // 블록 새로고침
+      grid.on('click', '.refresh-block-btn', function() {
+          const block_id = $(this).data('block-id');
+          const blockContentDiv = $('#block-' + block_id + ' .block-content');
+          blockContentDiv.html('<div class="loading-spinner"></div>');
+          $.ajax({
+              url: 'block.do', type: 'GET', data: { block_id: block_id },
+              success: function(newBlockContentHtml) { blockContentDiv.html(newBlockContentHtml); },
+              error: function() { blockContentDiv.html('<p style="color:red;">새로고침 실패</p>'); }
+          });
+      });
+
+      // 블록 삭제
+      grid.on('click', '.delete-block-btn', function() {
+          deleteBlock($(this).data('block-id'));
+      });
+
+      // 차트 데이터셋 토글
+      grid.on('change', '.dataset-toggle-cb', function() {
+          const checkbox = $(this);
+          const chartId = checkbox.closest('.chart-toggles').data('chart-id');
+          const datasetIndex = checkbox.data('dataset-index');
+          const chart = userCharts[chartId];
+          if (chart) {
+              chart.setDatasetVisibility(datasetIndex, checkbox.prop('checked'));
+              chart.update();
+          }
+      });
+
     $('#content_plus').on('click', function() { 
 		 $('html, body').scrollTop(0);
 		  $('#addBlockModal').css({
