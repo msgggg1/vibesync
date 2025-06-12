@@ -5,9 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.naming.NamingException;
 
@@ -16,7 +13,6 @@ import com.util.JdbcUtil;
 
 import mvc.domain.dto.MessageDTO;
 import mvc.domain.dto.MessageListDTO;
-import mvc.domain.vo.MessageVO;
 import mvc.persistence.dao.MessageDAO;
 import mvc.persistence.daoImpl.MessageDAOImpl;
 

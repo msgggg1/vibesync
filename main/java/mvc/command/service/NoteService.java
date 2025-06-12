@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
@@ -73,6 +72,8 @@ public class NoteService {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(conn);
 		}
 		
 		return postsByCategory;

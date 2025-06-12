@@ -90,25 +90,10 @@
             
             <%-- 동적으로 추가된 블록들을 렌더링하는 부분 --%>
             <c:forEach var="block" items="${workspaceData.blocks}">
-            	<div class="contents_item generated_block" id="block-${block.block_id}">
-            		<div class="block-header">
-            			<h4>
-            				<c:choose>
-            					<c:when test="${block.block_type == 'CategoryPosts'}"><i class="fa-solid fa-layer-group"></i>&nbsp;${block.categoryName} ${block.sortType == 'popular' ? '인기' : '최신'}글</c:when>
-                                <c:when test="${block.block_type == 'WatchParties'}"><i class="fa-solid fa-tv"></i>&nbsp;진행중인 워치파티</c:when>
-                                <c:when test="${block.block_type == 'UserStats'}"><i class="fa-solid fa-chart-simple"></i>&nbsp;${block.title}</c:when>
-                            </c:choose>
-                        </h4>
-                        <button class="refresh-block-btn" data-block-id="${block.block_id}" title="새로고침">
-                        	<i class="fa-solid fa-arrows-rotate"></i>
-                        </button>
-                     </div>
-                     <div class="block-content">
-                     	<%-- 각 블록 타입에 맞는 JSP 프래그먼트를 include --%>
-                     	<c:set var="block" value="${block}" scope="request" />
-                        <jsp:include page="/WEB-INF/views/workspace/fragments/_${block.block_type}Content.jsp" />
-                     </div>
-                </div>
+				<%-- 각 블록에 대한 데이터를 request scope에 설정 --%>
+			    <c:set var="block" value="${block}" scope="request" />
+			    <%-- _blockWrapper.jsp를 include하여 블록을 렌더링 --%>
+			    <jsp:include page="/WEB-INF/views/workspace/fragments/_blockWrapper.jsp" />
            </c:forEach>
             
             <!-- 추가 블록 -->
@@ -170,8 +155,206 @@
 	</div>
 	<!-- 모달 끝 -->
 
-	<script> /* 채팅방 */
+<script> /* 모달, 블록 */
 	
+    // 전역 차트 인스턴스 저장소
+    const userCharts = {};
+	
+    /* js, jquery */
+    $(document).ready(function() {
+    	// 초기 페이지 로드
+        <c:forEach var="block" items="${workspaceData.blocks}">
+            <c:if test="${block.block_type == 'UserStats'}">
+                // 서버에서 받은 JSON 문자열을 사용해 차트 생성 함수를 호출하는 코드를 반복문으로 생성
+                createOrUpdateChart(${block.block_id}, JSON.parse('<c:out value="${block.chartDataJson}" escapeXml="false"/>'));
+            </c:if>
+        </c:forEach>
+        
+        // + 버튼 표시여부 결정
+        updateAddBlockButtonVisibility();
+		
+        // 이벤트 관련
+        const grid = $('#contents_grid');
+
+     // 이벤트 위임을 사용하여 새로고침 및 삭제 버튼 이벤트 한 번에 처리
+        grid.on('click', '.block-actions button', function() {
+            const button = $(this);
+            const blockId = button.data('block-id');
+
+            if (button.hasClass('refresh-block-btn')) {
+                const blockContentDiv = $('#block-' + blockId + ' .block-content');
+                blockContentDiv.html('<div class="loading-spinner"></div>');
+                $.ajax({
+                    url: 'block.do',
+                    type: 'GET',
+                    data: { block_id: blockId },
+                    dataType: 'json', // 서버로부터 JSON 응답을 기대한다고 명시
+                    success: function(res) {
+                        // 1. 새로운 HTML로 내용을 교체
+                        blockContentDiv.html(res.html);
+
+                        // 2. 만약 블록 타입이 'UserStats'이고 차트 데이터가 있다면 차트를 다시 그림
+                        if (res.block_type === 'UserStats' && res.chart_data) {
+                            createOrUpdateChart(blockId, res.chart_data);
+                        }
+                    },
+                    error: function() {
+                        blockContentDiv.html('<p style="color:red;">새로고침 실패</p>');
+                    }
+                });
+            } else if (button.hasClass('delete-block-btn')) {
+                deleteBlock(blockId);
+            }
+        });
+
+        // 차트 데이터셋 토글
+        grid.on('change', '.dataset-toggle-cb', function() {
+            const checkbox = $(this);
+            const chartId = checkbox.closest('.chart-toggles').data('chart-id');
+            const datasetIndex = checkbox.data('dataset-index');
+            const chart = userCharts[chartId];
+            if (chart) {
+                chart.setDatasetVisibility(datasetIndex, checkbox.prop('checked'));
+                chart.update();
+            }
+        });
+
+        // --- 블록 추가 모달 관련 이벤트 ---
+        $('#content_plus').on('click', function() {
+  		  $('html, body').scrollTop(0);
+		  $('#addBlockModal').css({
+			  position: 'fixed',
+			  top: '50%',
+			  left: '50%',
+			  transform: 'translate(-50%, -50%)',
+			  backgroundColor: 'rgba(0,0,0,0.8)',
+			  display: 'flex',
+			  zIndex: 99999
+		  });
+        });
+        
+        $('#blockTypeSelector').on('change', function() {
+            if ($(this).val() === 'CategoryPosts') { $('#category').show(); } 
+            else { $('#category').hide(); }
+        }).change();
+
+        $('#confirmAddBlock').on('click', function() {
+            const blockType = $('#blockTypeSelector').val();
+            let dataToSend = {
+                block_type: blockType, // camelCase 사용
+            };
+            if (blockType === 'CategoryPosts') {
+                dataToSend.category_idx = $('#categorySelector').val();
+                dataToSend.category_name = $('#categorySelector option:selected').text();
+                dataToSend.sort_type = $('#sortTypeSelector').val();
+            }
+            addBlockToServer(dataToSend);
+            $('#addBlockModal').hide();
+        });
+        
+	    // 모달 외부 클릭/ESC로 닫기
+	    $(document).on('keydown', function(e) {
+	        if (e.key === 'Escape') {
+	          $('#addBlockModal').hide();
+	        }
+	    });
+
+	    $('#addBlockModal').on('click', function(e) {
+	        if (e.target.id === 'addBlockModal') {
+	          $(this).hide();
+	        }
+	    });
+        
+    });
+    
+	/* 함수 */
+
+	// '+' 버튼 표시 여부를 업데이트하는 함수
+	function updateAddBlockButtonVisibility() {
+	    if ($('.generated_block').length >= 5) {
+	        $("#content_plus").hide();
+	    } else {
+	        $("#content_plus").show();
+	    }
+	}
+	
+    // 차트 생성 함수
+    function createOrUpdateChart(blockId, chartData) {
+        const chartId = 'userStatsChart_' + blockId;
+        if (userCharts[chartId]) {
+            userCharts[chartId].destroy();
+        }
+        const ctx = document.getElementById(chartId)?.getContext('2d');
+        if (!ctx) return;
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { position: 'top' }, tooltip: { mode: 'index', intersect: false } },
+                hover: { mode: 'index', intersect: false }
+            }
+        });
+        userCharts[chartId] = chart;
+    }
+
+    // 블록 추가 함수
+	function addBlockToServer(payload) {
+	    $.ajax({
+	        url: 'block.do',
+	        type: 'POST',
+	        data: payload,
+	        dataType: 'json', // 응답 타입을 'html'에서 'json'으로 변경
+	        success: function(res) { // 응답 변수 이름을 res (response)로 변경
+	            // 1. 새로운 HTML을 화면에 추가
+	            $('#content_plus').before(res.html);
+	            
+	            // 2. 만약 추가된 블록이 차트 블록이라면, 차트를 그려줌
+	            if (res.block_type === 'UserStats' && res.chart_data) {
+	                // res.blockId로 새로 추가된 블록의 ID를 사용
+	                createOrUpdateChart(res.block_id, res.chart_data);
+	            }
+	            
+	            // 3. '+' 버튼 표시 여부 업데이트
+	            updateAddBlockButtonVisibility();
+	        },
+	        error: function() { alert('블록을 추가하는 데 실패했습니다.'); }
+	    });
+	}
+
+	// 블록 삭제
+	function deleteBlock(blockId) {
+	    if (!confirm("블록을 정말 삭제하시겠습니까?")) return;
+	    $.ajax({
+	        url: 'block.do',
+	        type: 'POST', // 1. type을 'DELETE'에서 'POST'로 변경
+	        data: {
+	            block_id: blockId,
+	            _method: 'DELETE' // 2. 실제 의도를 담은 파라미터 추가
+	        },
+	        dataType: 'json',
+	        success: function(res) {
+	            if (res.success) {
+	                $('#block-' + blockId).fadeOut(function() {
+	                    $(this).remove();
+	                    
+	                    updateAddBlockButtonVisibility();
+	                });
+	            } else { alert(res.message); }
+	        },
+	        error: function() { alert('블록 삭제 중 오류가 발생했습니다.'); }
+	    });
+	}
+
+    
+</script>
+
+<script> /* 채팅방 */
+
+	/* js, jquery */
 	let currentChatSenderIdx = null;
 	
 	$(document).ready(function() {
@@ -188,18 +371,18 @@
 	        dataType: 'json',
 	        success: function (chatList) {
 	        	$('#chatHistory').empty();
-
+	
 	            if (!chatList || !Array.isArray(chatList) || chatList.length === 0) {
 	                $('#chatHistory').html('<p style="text-align:center; color:grey;">채팅 내역이 없습니다.</p>');
 	                return; 
 	            }
 	            
 	            const chatContainer = $('<div class="chat-container"></div>');
-
+	
 	            chatList.forEach(msg => {
 	                const who = msg.isMine ? 'bubble-me' : 'bubble-other';
 	                const formattedText = msg.text.replace(/\n/g, '<br>');
-
+	
 	                const messageHtml = `
 	                    <div class="chat-bubble \${who}">
 	                        <div class="bubble-text">\${formattedText}</div>
@@ -208,9 +391,9 @@
 	                `;
 	                chatContainer.append(messageHtml);
 	            });
-
+	
 	            $('#chatHistory').append(chatContainer);
-
+	
 	            $('#chatModal').css({
 	                display: 'flex',
 	                top: '50%',
@@ -231,7 +414,7 @@
 	    
 	    // 채팅방에서 메시지 전송 (버튼 클릭 또는 엔터)
 	    $("#sendMessageBtn").on("click", sendChatMessage);
-
+	
 	    $("#chatInput").on("keydown", function(e) {
 	      if (e.key === "Enter" && !e.shiftKey) {
 	        e.preventDefault();
@@ -240,179 +423,7 @@
 	   });
 	});
 
-	</script>
-
-  <script> /* 모달 */
-  
-  let category_name = null;
-  let sortType = null;
-  
-  $(document).ready(function() {
-	// 페이지 로드 시 초기 차트 렌더링
-    <c:forEach var="block" items="${workspaceData.blocks}">
-    <c:if test="\${block.block_type == 'UserStats'}">
-          (function() {
-              const block_id = \${block.block_id};
-              const chartData = JSON.parse('<c:out value="\${block.chartDataJson}" escapeXml="false"/>');
-              createOrUpdateChart(block_id, chartData);
-          })();
-    </c:if>
-    </c:forEach>
-
-      // 모든 이벤트 핸들러 등록
-      const grid = $('#contents_grid');
-
-      // 블록 새로고침
-      grid.on('click', '.refresh-block-btn', function() {
-          const block_id = $(this).data('block-id');
-          const blockContentDiv = $('#block-' + block_id + ' .block-content');
-          blockContentDiv.html('<div class="loading-spinner"></div>');
-          $.ajax({
-              url: 'block.do', type: 'GET', data: { block_id: block_id },
-              success: function(newBlockContentHtml) { blockContentDiv.html(newBlockContentHtml); },
-              error: function() { blockContentDiv.html('<p style="color:red;">새로고침 실패</p>'); }
-          });
-      });
-
-      // 블록 삭제
-      grid.on('click', '.delete-block-btn', function() {
-          deleteBlock($(this).data('block-id'));
-      });
-
-      // 차트 데이터셋 토글
-      grid.on('change', '.dataset-toggle-cb', function() {
-          const checkbox = $(this);
-          const chartId = checkbox.closest('.chart-toggles').data('chart-id');
-          const datasetIndex = checkbox.data('dataset-index');
-          const chart = userCharts[chartId];
-          if (chart) {
-              chart.setDatasetVisibility(datasetIndex, checkbox.prop('checked'));
-              chart.update();
-          }
-      });
-
-      // 블록 추가
-	  	// '+' 버튼 클릭 -> 추가 블록 모달 열기
-		$('#content_plus').on('click', function() {
-		  $('html, body').scrollTop(0);
-		  $('#addBlockModal').css({
-			  position: 'fixed',
-			  top: '50%',
-			  left: '50%',
-			  transform: 'translate(-50%, -50%)',
-			  backgroundColor: 'rgba(0,0,0,0.8)',
-			  display: 'flex',
-			  zIndex: 99999
-		  });
-		});
-	  	
-	    $('#blockTypeSelector').on('change', function() {
-	    	if ($(this).val() === 'CategoryPosts') {
-	            $('#category').show();
-	        } else {
-	            $('#category').hide();
-	        }
-	    });
-	    $("#blockTypeSelector").change();
-	    
-        // 블록 개수 5개 제한
-        if ($('#contents_grid .generated_block').length >= 4) {
-             $("#content_plus").hide();
-        }
-      
-      // 블록 추가 모달 확인 버튼
-	  $('#confirmAddBlock').on('click', function() {
-		  const block_type = $('#blockTypeSelector').val();
-		    
-		  // 서버에 전송할 데이터를 담는 객체
-		  let dataToSend = {
-		      block_type: block_type // 'CategoryPosts', 'UserStats' 등 블록의 종류
-		  };
-		
-		  // '카테고리별 글' 타입일 경우, 추가 설정값을 담아줍니다.
-		  if (block_type === 'CategoryPosts') {
-		      dataToSend.categoryIdx = $('#categorySelector').val();
-		      dataToSend.sortType = $('#sortTypeSelector').val();
-		  }
-		    
-		  // 완성된 데이터 객체를 addBlockToServer 함수에 전달합니다.
-		  addBlockToServer(dataToSend);
-		    
-		  $('#addBlockModal').hide();
-		});
-	    
-	    // 모달 외부 클릭/ESC로 닫기
-	    $(document).on('keydown', function(e) {
-	        if (e.key === 'Escape') {
-	          $('#addBlockModal').hide();
-	        }
-	    });
-
-	    $('#addBlockModal').on('click', function(e) {
-	        if (e.target.id === 'addBlockModal') {
-	          $(this).hide();
-	        }
-	    });
-	    
-	});
-  
-  </script>
-  
-  <script> /* 함수 모음 */
-  
-    // 전역 차트 인스턴스 저장소
-    const userCharts = {};
-
-    // 차트 생성/재생성 함수 (이 함수는 전역에서 접근 가능해야 함)
-    function createOrUpdateChart(block_id, chartData) {
-        if (userCharts['userStatsChart_' + block_id]) {
-            userCharts['userStatsChart_' + block_id].destroy();
-        }
-        const ctx = document.getElementById('userStatsChart_' + block_id)?.getContext('2d');
-        if (!ctx) return;
-
-        const chart = new Chart(ctx, { /* ... 차트 생성 로직 ... */ });
-        userCharts['userStatsChart_' + block_id] = chart;
-    }
-
-    // 블록 추가 함수
-	function addBlockToServer(dataToSend) {
-	    $.ajax({
-	        url: 'block.do',
-	        type: 'POST',
-	        data: dataToSend,
-	        dataType: 'html',
-	        success: function(newBlockHtml) {
-	            $('#content_plus').before(newBlockHtml);
-	
-	            // 블록 개수 제한 로직
-	            if ($('#contents_grid .generated_block').length >= 5) {
-	                $("#content_plus").hide();
-	            }
-	        },
-	        error: function(err) {
-	            console.error("블록 추가 실패: ", err);
-	            alert('블록을 추가하는 데 실패했습니다.');
-	        }
-	    });
-	}
-
-    // 블록 삭제 함수
-    function deleteBlock(block_id) {
-        if (!confirm("블록을 정말 삭제하시겠습니까?")) return;
-        $.ajax({
-            url: 'block.do', type: 'DELETE',
-            data: { block_id: block_id }, dataType: 'json',
-            success: function(res) {
-                if (res.success) {
-                    $('#block-' + block_id).remove();
-                    if ($('#contents_grid .generated_block').length < 5) { $("#content_plus").show(); }
-                } else { alert(res.message); }
-            },
-            error: function() { alert('블록 삭제 중 오류가 발생했습니다.'); }
-        });
-    }
-  
+/* 채팅방 함수 */
 	// 채팅 내역 닫기
 	function closeChatModal() {
 		$('#chatModal').hide();
@@ -452,7 +463,32 @@
         $('.message_item[data-sender-idx="'+currentChatSenderIdx+'"]').click();
       }
     }
-		
-  </script>
+
+</script>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.dto.WatchPartyDTO;
 import mvc.domain.vo.UserSummaryVO;
@@ -273,6 +274,9 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
 			
 			watchPartyListByHost.add(watchPartDTO);
 		}
+        
+        JdbcUtil.close(rs);
+        JdbcUtil.close(pstmt);
 		
 		return watchPartyListByHost;
 	}
