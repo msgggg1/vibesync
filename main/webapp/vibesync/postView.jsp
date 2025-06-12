@@ -123,12 +123,12 @@
                 <p>${note.nickname}</p>
 
                 <!-- follow 버튼 -->
-               <c:if test="${user != null && user.ac_idx != note.upac_idx}">
+               <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx != note.upac_idx}">
                 <form id="followForm" style="display:inline; margin:0; padding:0;">
                   <button
                     id="followBtn"
                     type="submit"
-                    data-user-idx="<%= user.getAc_idx() %>"
+                    data-user-idx="${ sessionScope.userInfo.ac_idx }"
                     data-writer-idx="${note.upac_idx}"
                     data-nidx="${note.note_idx}"
                     style="background:#99bc85; border-radius:5px; border:none; cursor:pointer; padding:5px 10px;">

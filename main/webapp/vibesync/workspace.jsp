@@ -71,8 +71,57 @@
 						<div class="line"></div>
 
 						<div id="contents_grid">
-							<div class="contents_item" id="my-posts"></div>
-							<div class="contents_item" id="liked-posts"></div>
+							<div class="contents_item" id="my-posts">
+								<div class="widget-header">
+						        <h4><i class="fa-solid fa-pen-nib"></i>&nbsp;&nbsp;내가 작성한 글</h4>
+						        <button class="more-btn" data-type="my-posts">더보기</button>
+						    </div>
+						    <ul>
+						        <%-- initialData에 담겨온 myPosts 목록을 사용 --%>
+						        <c:choose>
+						            <c:when test="${not empty initialData.myPosts}">
+						                <c:forEach var="post" items="${initialData.myPosts}">
+						                    <li>
+						                        <a href="postView.do?nidx=${post.note_idx}" title="${post.title}">
+						                            <span>${post.title}</span>
+						                            <span class="block-meta">
+						                                <i class="fa-regular fa-eye"></i> ${post.view_count}&nbsp;&nbsp;
+						                                <i class="fa-regular fa-thumbs-up"></i>${post.like_count}
+						                            </span>
+						                        </a>
+						                    </li>
+						                </c:forEach>
+						            </c:when>
+						            <c:otherwise>
+						                <li class="no-items">작성한 글이 없습니다.</li>
+						            </c:otherwise>
+						        </c:choose>
+						    </ul>
+							</div>
+							<div class="contents_item" id="liked-posts">
+								<div class="widget-header">
+							        <h4><i class="fa-solid fa-heart"></i>&nbsp;&nbsp;좋아요한 글</h4>
+							        <button class="more-btn" data-type="liked-posts">더보기</button>
+							    </div>
+							    <ul>
+							        <%-- initialData에 담겨온 likedPosts 목록을 사용 --%>
+							        <c:choose>
+							            <c:when test="${not empty initialData.likedPosts}">
+							                <c:forEach var="post" items="${initialData.likedPosts}">
+							                    <li>
+							                        <a href="postView.do?nidx=${post.note_idx}" title="${post.title}">
+							                            <span>${post.title}</span>
+							                            <span class="block-meta">by ${post.author_name}</span>
+							                        </a>
+							                    </li>
+							                </c:forEach>
+							            </c:when>
+							            <c:otherwise>
+							                <li class="no-items">좋아요한 글이 없습니다.</li>
+							            </c:otherwise>
+							        </c:choose>
+							    </ul>
+							</div>
 
 							<!-- 안읽은 메시지 목록 -->
                             <div id="unread_messages" class="contents_item" style="background-color: var(--sidebar-color); border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">

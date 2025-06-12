@@ -876,7 +876,7 @@ $(document).ready(function() {
     // --- 초기 데이터 로딩 함수 호출 ---
     loadTodoList();
     loadDailySchedules(getTodayString());
-    loadMyPostsWidget();
-    loadLikedPostsWidget();
+    //loadMyPostsWidget();
+    //loadLikedPostsWidget();
     populateDatePicker();
 });
