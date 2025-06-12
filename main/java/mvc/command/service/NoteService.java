@@ -25,7 +25,17 @@ import mvc.persistence.dao.NoteDAO;
 import mvc.persistence.daoImpl.LikeDAOImpl;
 import mvc.persistence.daoImpl.NoteDAOImpl;
 
+
 public class NoteService {
+	
+
+	@Getter @Setter
+	private static class DailyStatSummary {
+		private long postCount = 0;
+		private long viewCount = 0;
+		private long likeCount = 0;
+	}
+	
 	 // --- Workspace [내가 작성한 글] 관련 서비스 메소드 ---
     //사용자가 작성한 글 인기순. (위젯 미리보기용)
 	public List<NoteSummaryDTO> getMyPostsPreview(int acIdx) throws Exception {
@@ -38,13 +48,8 @@ public class NoteService {
 	    } finally {
 	        if (conn != null) conn.close();
 	    }
+	}
 	
-    @Getter @Setter
-    private static class DailyStatSummary {
-        private long postCount = 0;
-        private long viewCount = 0;
-        private long likeCount = 0;
-    }
 
     
     //사용자가 작성한 글 전체를 인기순 (모달용)

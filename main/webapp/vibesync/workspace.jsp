@@ -310,10 +310,61 @@
 			<button id="confirmAddBlock" style="display: block;">추가</button>
 		</div>
 	</div>
-	
+	  <c:forEach var="block" items="${workspaceData.blocks}">
+    <c:if test="\${block.block_type == 'UserStats'}">
+          (function() {
+              const block_id = \${block.block_id};
+              const chartData = JSON.parse('<c:out value="\${block.chartDataJson}" escapeXml="false"/>');
+              createOrUpdateChart(block_id, chartData);
+          })();
+    </c:if>
+    </c:forEach>
 	<script>
         const contextPath = "${pageContext.request.contextPath}";
     </script>
     <script defer src="./js/workspace.js"></script>
+    <script>
+    $(document).ready(function() {
+	    <c:forEach var="block" items="${workspaceData.blocks}">
+	    	<c:if test="\${block.block_type == 'UserStats'}">
+	          (function() {
+	              const block_id = \${block.block_id};
+	              const chartData = JSON.parse('<c:out value="\${block.chartDataJson}" escapeXml="false"/>');
+	              createOrUpdateChart(block_id, chartData);
+	          })();
+	    	</c:if>
+	    </c:forEach>
+    });
+    </script>
+    
+    <script>
+    $(document).ready(function() {
+        console.log("JSP 파일의 스크립트가 실행되었습니다.");
+
+        <c:if test="${empty workspaceData.blocks}">
+            console.warn("서버로부터 받은 workspaceData.blocks가 비어있습니다.");
+        </c:if>
+
+        <c:forEach var="block" items="${workspaceData.blocks}" varStatus="status">
+            console.log("블록 루프 실행 [${status.index}]: block.block_type = '${block.block_type}'");
+
+            <c:if test="${block.block_type == 'UserStats'}">
+                console.log("UserStats 블록을 찾았습니다. block_id = ${block.block_id}");
+                const chartDataString = '<c:out value="${block.chartDataJson}" />';
+                console.log("서버에서 받은 차트 데이터:", chartDataString);
+
+                try {
+                    const block_id = ${block.block_id};
+                    const chartData = JSON.parse(chartDataString);
+                    // JS 파일에 정의된 함수 호출
+                    createOrUpdateChart(block_id, chartData);
+                    console.log("createOrUpdateChart(${block.block_id}) 함수 호출 성공!");
+                } catch (e) {
+                    console.error("차트 데이터 파싱 또는 차트 생성 중 오류 발생:", e);
+                }
+            </c:if>
+        </c:forEach>
+    });
+</script>
 </body>
 </html>

@@ -189,7 +189,7 @@ function populateDatePicker() {
 // 블록 추가 함수
 	function addBlockToServer(dataToSend) {
 	    $.ajax({
-	        url: 'block.do',
+	        url: contextPath + '/block.do',
 	        type: 'POST',
 	        data: dataToSend,
 	        dataType: 'html',
@@ -551,17 +551,6 @@ $(document).ready(function() {
                 },
                 error: function() { alert('서버와 통신 중 오류가 발생했습니다.'); }
             }); });
-
-    // 5. 추가 블록 관련
-    <c:forEach var="block" items="${workspaceData.blocks}">
-    <c:if test="\${block.block_type == 'UserStats'}">
-          (function() {
-              const block_id = \${block.block_id};
-              const chartData = JSON.parse('<c:out value="\${block.chartDataJson}" escapeXml="false"/>');
-              createOrUpdateChart(block_id, chartData);
-          })();
-    </c:if>
-    </c:forEach>
 
       // 모든 이벤트 핸들러 등록
       const grid = $('#contents_grid');

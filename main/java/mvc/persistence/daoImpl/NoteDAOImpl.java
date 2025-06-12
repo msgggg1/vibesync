@@ -415,9 +415,6 @@ public class NoteDAOImpl implements NoteDAO {
 	            }
 	        }
 	    }
-	    // ★★★★★ DAO가 반환하기 직전의 목록 크기를 출력합니다. ★★★★★
-	    System.out.println("[DAO] 최종적으로 반환할 목록 크기: " + posts.size());
-	    System.out.println("====== [DAO] findMyPostsByPopularity 종료 ======");
 	    return posts;
 	}
 	    
@@ -425,6 +422,8 @@ public class NoteDAOImpl implements NoteDAO {
 	    public List<NoteSummaryDTO> findAllMyPostsByPopularity(int acIdx) throws SQLException {
 	        // 위 메소드에서 ROWNUM 제한만 뺀 쿼리
 	        List<NoteSummaryDTO> posts = new ArrayList<>();
+	        PreparedStatement pstmt = null;
+		    ResultSet rs = null;
 	        String sql = "        SELECT nt.note_idx, nt.title, nt.view_count, ua.nickname AS author_name, COUNT(lk.likes_idx) AS likes_count "
 			            + "        FROM note nt "
 			            + "        JOIN userPage up ON nt.userPg_idx = up.userPg_idx "
