@@ -260,6 +260,67 @@ public class NoteDAOImpl implements NoteDAO {
         return vo;
     }
 	
+	@Override //***************확인 후 삭제
+	  public NoteDetailDTO printNote(int noteIdx) { 
+      String sql = "SELECT "
+                 + "    n.note_idx, "
+                 + "    n.title, "
+                 + "    n.text, "
+                 + "    n.create_at, "
+                 + "    n.view_count, "
+                 + "    ua.ac_idx, "
+                 + "    ua.nickname, "
+                 + "    ua.img, " 
+                 + "    ( "
+                 + "        SELECT COUNT(*) "
+                 + "        FROM likes l "
+                 + "        WHERE l.note_idx = n.note_idx "
+                 + "    ) AS like_sum "
+                 + "FROM "
+                 + "    note n "
+                 + "JOIN "
+                 + "    userPage up ON n.userPg_idx = up.userPg_idx "
+                 + "JOIN "
+                 + "    userAccount ua ON up.ac_idx = ua.ac_idx "
+                 + "WHERE "
+                 + "    n.note_idx = ? ";
+
+      PreparedStatement pstmt = null;
+      ResultSet rs = null;
+      NoteDetailDTO dto = null; // NoteDetailDTO 타입으로 변경, null로 초기화
+
+      try {
+          pstmt = conn.prepareStatement(sql);
+          pstmt.setInt(1, noteIdx);
+          rs = pstmt.executeQuery();
+
+          if (rs.next()) { // 단일 결과를 예상하므로 if 사용
+          	dto = new NoteDetailDTO(); // NoteDetailDTO 객체 생성
+
+              // DTO 필드명에 맞춰 SQL 별칭을 사용해 값 설정
+              dto.setNote_idx(rs.getInt("note_idx"));
+              dto.setTitle(rs.getString("title"));
+              dto.setText(rs.getString("text"));
+              dto.setCreate_at(rs.getTimestamp("create_at"));
+              dto.setView_count(rs.getInt("view_count"));
+              
+              dto.setAc_idx(rs.getInt("ac_idx"));
+              dto.setNickname(rs.getString("nickname"));
+              dto.setImg(rs.getString("img")); 
+          
+          }
+      } catch (SQLException e) {
+          e.printStackTrace(); 
+      } finally {
+          try {
+              if (rs != null) rs.close();
+              if (pstmt != null) pstmt.close();
+          } catch (SQLException e) { e.printStackTrace(); }
+          
+      }
+      return dto; 
+  }
+
 	// 조회수 증가 메서드
 	@Override
 	public void increaseViewCount(int noteIdx) throws SQLException {

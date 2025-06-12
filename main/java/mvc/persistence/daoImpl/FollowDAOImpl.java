@@ -293,9 +293,6 @@ public class FollowDAOImpl implements FollowDAO {
     }
 
     /*
-    @Override
-    public SidebarDTO getFollowingList(int acFollow) {
-        List<UserVO> followingList = new ArrayList<>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;

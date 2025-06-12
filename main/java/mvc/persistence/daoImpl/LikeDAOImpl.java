@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-// import your.project.db.DBConnectionManager; // 직접 사용하지 않고 Connection을 매개변수로 받음
 import java.util.List;
 
 import com.util.JdbcUtil;
