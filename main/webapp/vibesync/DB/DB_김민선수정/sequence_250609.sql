@@ -384,3 +384,8 @@ END;
 /
 
 SELECT COUNT(*) AS trigger_count FROM user_triggers;
+
+commit;
+
+select *
+from useraccount;
