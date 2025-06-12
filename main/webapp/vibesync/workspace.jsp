@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+                <%@ page language="java" contentType="text/html; charset=UTF-8"
   pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLEncoder"%>
 <% String contextPath = request.getContextPath() + "/vibesync"; %>
@@ -25,17 +25,22 @@
   <!-- workspace.css -->
   <link rel="stylesheet" href="./css/workspace.css">
   
+    <style> /* 추가 블록 */
+        .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .block-header h4 { margin: 0; }
+        .block-actions button { background: none; border: none; cursor: pointer; color: #888; font-size: 14px; margin-left: 5px; }
+        .block-actions button:hover { color: #000; }
+        .chart-toggles { margin-bottom: 10px; }
+        .chart-toggles label { margin-right: 15px; font-size: 13px; cursor: pointer; }
+        .loading-spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+  
 </head>
 <body>
 
   <div id="notion-app">
-    <input type="hidden" id="mode" value="user">
-    <input type="hidden" id="profileUserAcIdx" value="${userPageData.userProfile.ac_idx}">
-    <%-- 무한스크롤용 --%>
-    <input type="hidden" id="currentPageNumber" value="${userPageData.nextPageNumber - 1}">
-    <%-- 현재 로드된 페이지 번호 --%>
-    <input type="hidden" id="hasMorePosts" value="${userPageData.hasMorePosts ? 'true' : 'false'}">
-
+    <input type="hidden" id="mode" value="workspace">
     <div class="notion-app-inner">
       <jsp:include page="./includes/sidebar.jsp" flush="true"></jsp:include>
 
@@ -59,8 +64,8 @@
 			  <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--font-color); border-bottom: 1px solid var(--border-color); padding-bottom: 8px;"><i class="fa-solid fa-bell"></i> 안읽은 메시지</h3>
 			  <div class="message_card_list">
 			    <c:choose>
-			      <c:when test="${not empty initialData.unreadMessages}">
-			        <c:forEach var="msg" items="${initialData.unreadMessages}">
+			      <c:when test="${not empty workspaceData.unreadMessages}">
+			        <c:forEach var="msg" items="${workspaceData.unreadMessages}">
 			          <div class="message_card message_item" data-sender-idx="${msg.ac_sender}" data-nickname="${msg.latestMessage.sender_nickname}">
 			            <%-- <div class="msg_profile">
 			              <img src="${pageContext.request.contextPath}/vibesync/sources/profile/${msg.latestMessage.sender_img}" alt="profile">
@@ -82,7 +87,30 @@
 			    </c:choose>
 			  </div>
 			</div>
-              
+            
+            <%-- 동적으로 추가된 블록들을 렌더링하는 부분 --%>
+            <c:forEach var="block" items="${workspaceData.blocks}">
+            	<div class="contents_item generated_block" id="block-${block.block_id}">
+            		<div class="block-header">
+            			<h4>
+            				<c:choose>
+            					<c:when test="${block.block_type == 'CategoryPosts'}"><i class="fa-solid fa-layer-group"></i>&nbsp;${block.categoryName} ${block.sortType == 'popular' ? '인기' : '최신'}글</c:when>
+                                <c:when test="${block.block_type == 'WatchParties'}"><i class="fa-solid fa-tv"></i>&nbsp;진행중인 워치파티</c:when>
+                                <c:when test="${block.block_type == 'UserStats'}"><i class="fa-solid fa-chart-simple"></i>&nbsp;${block.title}</c:when>
+                            </c:choose>
+                        </h4>
+                        <button class="refresh-block-btn" data-block-id="${block.block_id}" title="새로고침">
+                        	<i class="fa-solid fa-arrows-rotate"></i>
+                        </button>
+                     </div>
+                     <div class="block-content">
+                     	<%-- 각 블록 타입에 맞는 JSP 프래그먼트를 include --%>
+                     	<c:set var="block" value="${block}" scope="request" />
+                        <jsp:include page="/WEB-INF/views/workspace/fragments/_${block.block_type}Content.jsp" />
+                     </div>
+                </div>
+           </c:forEach>
+            
             <!-- 추가 블록 -->
 			<div id="content_plus" class="contents_item">+</div>
 
@@ -220,6 +248,50 @@
   let sortType = null;
   
   $(document).ready(function() {
+	// 페이지 로드 시 초기 차트 렌더링
+    <c:forEach var="block" items="${workspaceData.blocks}">
+    <c:if test="\${block.block_type == 'UserStats'}">
+          (function() {
+              const block_id = \${block.block_id};
+              const chartData = JSON.parse('<c:out value="\${block.chartDataJson}" escapeXml="false"/>');
+              createOrUpdateChart(block_id, chartData);
+          })();
+    </c:if>
+    </c:forEach>
+
+      // 모든 이벤트 핸들러 등록
+      const grid = $('#contents_grid');
+
+      // 블록 새로고침
+      grid.on('click', '.refresh-block-btn', function() {
+          const block_id = $(this).data('block-id');
+          const blockContentDiv = $('#block-' + block_id + ' .block-content');
+          blockContentDiv.html('<div class="loading-spinner"></div>');
+          $.ajax({
+              url: 'block.do', type: 'GET', data: { block_id: block_id },
+              success: function(newBlockContentHtml) { blockContentDiv.html(newBlockContentHtml); },
+              error: function() { blockContentDiv.html('<p style="color:red;">새로고침 실패</p>'); }
+          });
+      });
+
+      // 블록 삭제
+      grid.on('click', '.delete-block-btn', function() {
+          deleteBlock($(this).data('block-id'));
+      });
+
+      // 차트 데이터셋 토글
+      grid.on('change', '.dataset-toggle-cb', function() {
+          const checkbox = $(this);
+          const chartId = checkbox.closest('.chart-toggles').data('chart-id');
+          const datasetIndex = checkbox.data('dataset-index');
+          const chart = userCharts[chartId];
+          if (chart) {
+              chart.setDatasetVisibility(datasetIndex, checkbox.prop('checked'));
+              chart.update();
+          }
+      });
+
+      // 블록 추가
 	  	// '+' 버튼 클릭 -> 추가 블록 모달 열기
 		$('#content_plus').on('click', function() {
 		  $('html, body').scrollTop(0);
@@ -233,39 +305,41 @@
 			  zIndex: 99999
 		  });
 		});
-
-	    // 추가 블록 모달에서 타입 선택 시 옵션 표시/숨김 처리
+	  	
 	    $('#blockTypeSelector').on('change', function() {
 	    	if ($(this).val() === 'CategoryPosts') {
 	            $('#category').show();
 	        } else {
 	            $('#category').hide();
 	        }
-	        
 	    });
 	    $("#blockTypeSelector").change();
-
-	    // 모달에서 '추가' 버튼 클릭
-	    $('#confirmAddBlock').on('click', function() {
-	        const blockType = $('#blockTypeSelector').val();
-	        let options = { action: blockType };
-
-	        if (blockType === 'CategoryPosts') {
-	        	category_name = $("#categorySelector option:selected").text();
-	        	sortType = $("#sortTypeSelector").val();
-	            options.categoryIdx = $('#categorySelector').val();
-	            options.sortType = $('#sortTypeSelector').val();
-	        }
-	        
-	        addBlockToServer(options);
-	        $('#addBlockModal').hide();
-	        
-	        // 블록 개수 5개 제한
-	        if ($('#contents_grid .generated_block').length >= 4) {
-	             $("#content_plus").hide();
-	             return;
-	        }
-	    });
+	    
+        // 블록 개수 5개 제한
+        if ($('#contents_grid .generated_block').length >= 4) {
+             $("#content_plus").hide();
+        }
+      
+      // 블록 추가 모달 확인 버튼
+	  $('#confirmAddBlock').on('click', function() {
+		  const block_type = $('#blockTypeSelector').val();
+		    
+		  // 서버에 전송할 데이터를 담는 객체
+		  let dataToSend = {
+		      block_type: block_type // 'CategoryPosts', 'UserStats' 등 블록의 종류
+		  };
+		
+		  // '카테고리별 글' 타입일 경우, 추가 설정값을 담아줍니다.
+		  if (block_type === 'CategoryPosts') {
+		      dataToSend.categoryIdx = $('#categorySelector').val();
+		      dataToSend.sortType = $('#sortTypeSelector').val();
+		  }
+		    
+		  // 완성된 데이터 객체를 addBlockToServer 함수에 전달합니다.
+		  addBlockToServer(dataToSend);
+		    
+		  $('#addBlockModal').hide();
+		});
 	    
 	    // 모달 외부 클릭/ESC로 닫기
 	    $(document).on('keydown', function(e) {
@@ -286,86 +360,59 @@
   
   <script> /* 함수 모음 */
   
-	// 서버에 블록 데이터 요청 및 화면에 추가하는 함수
-	function addBlockToServer(options) {
-	  $.ajax({
-	    url: 'block.do',
-	    type: 'GET',
-	    data: {
-	      action: options.action,
-	      category_idx: options.categoryIdx,
-	      sortType: options.sortType
-	    },
-	    dataType: 'json',
-	    success: function(data) {
-	      let blockHtml = '<div class="contents_item generated_block">';
-	      const timestamp = Date.now(); // 고유 ID 생성을 위해 사용
+    // 전역 차트 인스턴스 저장소
+    const userCharts = {};
+
+    // 차트 생성/재생성 함수 (이 함수는 전역에서 접근 가능해야 함)
+    function createOrUpdateChart(block_id, chartData) {
+        if (userCharts['userStatsChart_' + block_id]) {
+            userCharts['userStatsChart_' + block_id].destroy();
+        }
+        const ctx = document.getElementById('userStatsChart_' + block_id)?.getContext('2d');
+        if (!ctx) return;
+
+        const chart = new Chart(ctx, { /* ... 차트 생성 로직 ... */ });
+        userCharts['userStatsChart_' + block_id] = chart;
+    }
+
+    // 블록 추가 함수
+	function addBlockToServer(dataToSend) {
+	    $.ajax({
+	        url: 'block.do',
+	        type: 'POST',
+	        data: dataToSend,
+	        dataType: 'html',
+	        success: function(newBlockHtml) {
+	            $('#content_plus').before(newBlockHtml);
 	
-	      if (options.action === 'CategoryPosts') {
-	    	  blockHtml += `<h4><i class="fa-solid fa-layer-group" style="color:#6ac8fa"></i>&nbsp;&nbsp;\${category_name} \${sortType === 'popular' ? '인기' : '최신'}글</h4><ul>`;
-	    	  if (data.length === 0) {
-	    	    blockHtml += `<li style="color:#bbb">글이 없습니다.</li>`;
-	    	  }
-	    	  data.forEach(post => {
-	    	    blockHtml += `<li>
-	    	      <a href="/postView.do?note_idx=\${post.note_idx}" title="\${post.title}">\${post.title}</a>
-	    	      <span class="block-meta"><i class="fa-regular fa-eye"></i> \${post.view_count} &nbsp; <i class="fa-regular fa-thumbs-up"></i> \${post.like_count || 0}</span>
-	    	    </li>`;
-	    	  });
-	    	  blockHtml += `</ul>`;
-	    	}
-	    	else if (options.action === 'WatchParties') {
-	    	  blockHtml += `<h4><i class="fa-solid fa-tv" style="color:#6fdc88"></i>&nbsp;&nbsp;진행중인 워치파티</h4><ul>`;
-	    	  if (data.length === 0) {
-	    	    blockHtml += `<li style="color:#bbb">진행 중인 워치파티가 없습니다.</li>`;
-	    	  }
-	    	  data.forEach(party => {
-	    	    blockHtml += `<li>
-	    	      <span class="block-badge">\${party.host.nickname}</span>
-	    	      <span>\${party.watchparty.title}</span>
-	    	      <span class="block-meta">\${party.current_num}/\${party.max_num}명</span>
-	    	    </li>`;
-	    	  });
-	    	  blockHtml += `</ul>`;
-	    	}
-	    	else if (options.action === 'UserStats') {
-	    	  const chartId = `myStatsChart_\${timestamp}`;
-	    	  blockHtml += `<h4><i class="fa-solid fa-chart-simple" style="color:#356dd5"></i>&nbsp;&nbsp;내 활동 통계</h4>`;
-	    	  blockHtml += `<canvas id="\${chartId}" height="180"></canvas>`;
-	    	}
-	
-	      blockHtml += '</div>';
-	      $('#content_plus').before(blockHtml);
-	
-	      // Chart.js 렌더링 (활동 통계)
-	      if (options.action === 'UserStats') {
-	        const chartId = `myStatsChart_\${timestamp}`;
-	        const ctx = document.getElementById(chartId).getContext('2d');
-	        new Chart(ctx, {
-	          type: 'bar',
-	          data: {
-	            labels: ['총 조회수', '총 좋아요'],
-	            datasets: [{
-	              label: '활동 통계',
-	              data: [data.totalViews, data.totalLikes],
-	              backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
-	            }]
-	          },
-	          options: {
-	            responsive: true,
-	            scales: {
-	              y: { beginAtZero: true }
+	            // 블록 개수 제한 로직
+	            if ($('#contents_grid .generated_block').length >= 5) {
+	                $("#content_plus").hide();
 	            }
-	          }
-	        });
-	      }
-	    },
-	    error: function(err) {
-	      console.error("블록 추가 실패: ", err);
-	    }
-	  });
+	        },
+	        error: function(err) {
+	            console.error("블록 추가 실패: ", err);
+	            alert('블록을 추가하는 데 실패했습니다.');
+	        }
+	    });
 	}
-  	
+
+    // 블록 삭제 함수
+    function deleteBlock(block_id) {
+        if (!confirm("블록을 정말 삭제하시겠습니까?")) return;
+        $.ajax({
+            url: 'block.do', type: 'DELETE',
+            data: { block_id: block_id }, dataType: 'json',
+            success: function(res) {
+                if (res.success) {
+                    $('#block-' + block_id).remove();
+                    if ($('#contents_grid .generated_block').length < 5) { $("#content_plus").show(); }
+                } else { alert(res.message); }
+            },
+            error: function() { alert('블록 삭제 중 오류가 발생했습니다.'); }
+        });
+    }
+  
 	// 채팅 내역 닫기
 	function closeChatModal() {
 		$('#chatModal').hide();

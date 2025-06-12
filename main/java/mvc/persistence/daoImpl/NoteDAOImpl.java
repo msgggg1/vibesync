@@ -8,23 +8,17 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.naming.NamingException;
-
-import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 
+import mvc.domain.dto.DailyStatsDTO;
 import mvc.domain.dto.NoteDetailDTO;
 import mvc.domain.dto.NoteSummaryDTO;
-import mvc.domain.vo.NoteVO;
 import mvc.domain.vo.UserNoteVO;
 import mvc.persistence.dao.NoteDAO;
 
 public class NoteDAOImpl implements NoteDAO {
 
 	Connection conn = null;
-    PreparedStatement pstmt = null;
-    ResultSet rs = null;
 	
 	public NoteDAOImpl(Connection conn) {
 		this.conn = conn;
@@ -152,7 +146,7 @@ public class NoteDAOImpl implements NoteDAO {
 	    ResultSet rs = null;
 		
 		String sql = "SELECT " +
-	             "    rnk.note_idx, n_orig.title, rnk.popularity_score, n_orig.img " + 
+	             "    rnk.note_idx AS note_idx , n_orig.title AS title , rnk.popularity_score, n_orig.img AS img " + 
 	             " FROM ( " +
 	             "    SELECT " +
 	             "        n.note_idx, " +
@@ -262,6 +256,8 @@ public class NoteDAOImpl implements NoteDAO {
      */
     public UserNoteVO getUserNoteById(int noteIdx) {
         UserNoteVO vo = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
 
         String sql =
             "SELECT "
@@ -344,7 +340,7 @@ public class NoteDAOImpl implements NoteDAO {
 		}
 	
 	@Override
-  public List<NoteSummaryDTO> getPostsByUser(int userAcIdx, int offset, int limit) throws SQLException {
+	public List<NoteSummaryDTO> getPostsByUser(int userAcIdx, int offset, int limit) throws SQLException {
       List<NoteSummaryDTO> posts = new ArrayList<>();
       PreparedStatement pstmt = null;
       ResultSet rs = null;
@@ -452,7 +448,7 @@ public class NoteDAOImpl implements NoteDAO {
 	    
 	    StringBuffer sql = new StringBuffer(" SELECT SUM(view_count) AS viewCnt "
 	    								  + " FROM note "
-	    								  + " IN ( ");
+	    								  + " WHERE note_idx IN ( ");
 	    
 	    for (int i = 0; i < noteIdx.size(); i++) {
 			sql.append(noteIdx.get(i));
@@ -476,4 +472,81 @@ public class NoteDAOImpl implements NoteDAO {
 		return viewCnt;
 	}
 
+	// 특정 사용자의 최근 N일간의 일별 게시글 작성 수 (일별 통계)
+	@Override
+	public List<DailyStatsDTO> getDailyPostCounts(int acIdx, int days) throws SQLException {
+		List<DailyStatsDTO> dailyStats = new ArrayList<>();
+		
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    
+	    String sql =
+	    		  " SELECT TO_CHAR(TRUNC(create_at),'YYYY-MM-DD') stat_date, COUNT(*) post_count "
+	    		+ " FROM note n "
+	    		+ " JOIN userPage u "
+	    		+ " ON u.userPg_idx = n.userPg_idx "
+	    		+ " WHERE u.ac_idx = ? AND create_at >= TRUNC(SYSDATE) - ? "
+	    		+ " GROUP BY TRUNC(create_at) "
+	    		+ " ORDER BY TRUNC(create_at) ";
+
+	    try {
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, acIdx);
+	        pstmt.setInt(2, days -1); // 오늘 포함 7일이면 6일 전부터
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            String statDate = rs.getString("stat_date");
+	            long postCount = rs.getLong("post_count");
+	            dailyStats.add(new DailyStatsDTO(statDate, postCount));
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        JdbcUtil.close(rs);
+	        JdbcUtil.close(pstmt);
+	    }
+	    
+	    return dailyStats;
+	}
+
+	
+	// 특정 사용자의 최근 N일간의 일별 게시글 조회 수 (일별 통계)
+	@Override
+	public List<DailyStatsDTO> getDailyViewCounts(int acIdx, int days) throws SQLException {
+		List<DailyStatsDTO> dailyStats = new ArrayList<>();
+
+		PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    
+	    String sql = " SELECT TO_CHAR(TRUNC(create_at),'YYYY-MM-DD') stat_date, SUM(view_count) AS view_sum "
+	    		   + " FROM note n "
+	    		   + " JOIN userPage u "
+	    		   + " ON u.userPg_idx = n.userPg_idx "
+	               + " WHERE u.ac_idx = ? AND create_at >= TRUNC(SYSDATE) - ? "
+	               + " GROUP BY TRUNC(create_at) "
+	               + " ORDER BY TRUNC(create_at)";
+
+	    try {
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, acIdx);
+	        pstmt.setInt(2, days - 1);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            String statDate = rs.getString("stat_date");
+	            long viewSum = rs.getLong("view_sum");
+	            dailyStats.add(new DailyStatsDTO(statDate, viewSum));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        JdbcUtil.close(rs);
+	        JdbcUtil.close(pstmt);
+	    }
+	    return dailyStats;
+	}
+
+	
 }
