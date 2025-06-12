@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="mvc.domain.vo.PageVO" %>
 <%@ page import="mvc.domain.vo.NoteVO" %>
+<%@ page import="mvc.domain.vo.UserVO" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     List<PageVO> list      = (List<PageVO>) request.getAttribute("list");
@@ -11,9 +12,22 @@
     String searchType      = (String)  request.getAttribute("searchType");
     String keyword         = (String)  request.getAttribute("keyword");
     List<NoteVO> notes     = (List<NoteVO>) request.getAttribute("notes");
+    String getPageTitle    = (String) request.getAttribute("pagetitle");
     Integer selectedIdx    = (Integer) request.getAttribute("selectedUserPgIdx");
     int totalPages         = (int) Math.ceil((double) totalCount / pageSize);
-%>
+ // 로그인한 사용자 정보 및 선택된 페이지의 ac_idx 확인
+    UserVO user = (UserVO) session.getAttribute("userInfo");
+    Integer userAcIdx = user != null ? user.getAc_idx() : null;
+    Integer selAcIdx = null;
+    if (selectedIdx != null) {
+        for (PageVO vo : list) {
+            if (vo.getUserpg_idx() == selectedIdx) {
+                selAcIdx = vo.getAc_idx();
+                break;
+            }
+        }
+    }
+  %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -23,6 +37,50 @@
   <link rel="stylesheet" href="./css/style.css">
   <link rel="icon" href="./sources/favicon.ico" />
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+   
+  <style>
+  #searchForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  
+  .searchInput {
+    background: none;
+    border: none;
+    border-bottom: 1px solid black;
+    font-weight: bold;
+  }
+
+  .searchBtn {
+    background: none;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding-block: 2px;
+    padding-inline: 8px;
+    font-weight: bold;
+  }
+
+  .searchBtn:hover {
+    background: rgba(256, 256, 256, 0.88) !important;
+  }
+
+  #add_note_btn {
+    width: 2vw;
+    height: 2vw;
+    border-radius: 50%;
+    background: #8ac4ff;
+    border: none;
+    font-size: 1.4vw;
+  }
+
+  #add_note_btn a {
+    color: white;
+    font-weight: bold;
+  }
+  </style>
+  
 </head>
 <body>
   <div id="notion-app">
@@ -38,7 +96,11 @@
           
           <div id="board_all">
             <div class="board_info">
-              <p>Title</p>
+              <p><%= getPageTitle == null ? "Page" : getPageTitle %></p>
+              <%-- 로그인 사용자와 선택 페이지의 작성자가 일치할 때만 노트 생성 버튼 표시 --%>
+              <% if (selectedIdx != null && userAcIdx != null && selAcIdx != null && userAcIdx.equals(selAcIdx)) { %>
+                <button id="add_note_btn"><a href="notecreate.do?pageidx=<%= selectedIdx %>">+</a></button>
+              <% } %>
             </div>
             <div class="line"></div>
 
@@ -48,10 +110,9 @@
 
                   <!-- 1) notes 가 있을 때: page 리스트 숨기고 notes 리스트만 출력 -->
                   <c:if test="${not empty notes}">
-                    <div class="full-list subfont" id="full-list-notes">
-                      <h2>유저 페이지 ${selectedIdx} 의 노트 목록</h2>
+                    <div class="full-list subfont" id="full-list-notes" style="position: relative;">
                       <c:forEach var="note" items="${notes}">
-                      	<a href="postView.do?nidx=${ note.note_idx }">
+                      	<a href="postView.do?nidx=${note.note_idx}&pageidx=<%= selectedIdx %>">
                           <div class="full-post" style="margin-bottom:8px; border-bottom: 1px solid #666;">
                             <div class="post-index">${note.note_idx}</div>
                             <div class="post-title"><c:out value="${note.title}"/></div>
@@ -62,9 +123,9 @@
                         <p>노트가 없습니다.</p>
                       </c:if>
                       <!-- 뒤로가기: 다시 페이지 리스트 보기 -->
-                      <button type="button" 
+                      <button type="button" class="searchBtn"
                               onclick="location.href='<c:url value="/vibesync/page.do"/>?page=${currentPage}&size=${pageSize}&searchType=${searchType}&keyword=${keyword}'"
-                              style="margin-top:16px;">목록으로 돌아가기</button>
+                              style="margin-top:16px; position: absolute; right: 18px">List</button>
                     </div>
                   </c:if>
 
@@ -88,14 +149,14 @@
                     <!-- 검색 바 -->
                     <div class="search-bar" style="margin:16px 0;">
                       <form id="searchForm" action="page.do" method="get">
-                        <select name="searchType">
+                        <select name="searchType" class="searchInput">
                           <option value="subject"         ${searchType=='subject'          ? 'selected':''}>제목</option>
                           <option value="content"         ${searchType=='content'          ? 'selected':''}>내용</option>
                           <option value="subject_content" ${searchType=='subject_content'  ? 'selected':''}>제목+내용</option>
                         </select>
-                        <input type="text" name="keyword" value="<c:out value='${keyword}'/>" placeholder="검색어 입력"/>
-                        <button type="submit">검색</button>
-                        <button type="button" id="resetBtn">전체목록</button>
+                         <input type="text" class="searchInput" name="keyword" value="<c:out value='${keyword}'/>" placeholder="검색어 입력"/>
+                        <button type="submit" class="searchBtn" >Search</button>
+                        <button type="button" id="resetBtn" class="searchBtn">List</button>
                       </form>
                     </div>
 
@@ -136,6 +197,7 @@
         $.ajax({
           url: 'page.do',
           data: params,
+          cache: false,
           success: function(html) {
             var $resp = $('<div>').append($.parseHTML(html));
             $('#full-list').html( $resp.find('#full-list').html() );

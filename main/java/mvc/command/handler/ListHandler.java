@@ -37,12 +37,21 @@ public class ListHandler implements CommandHandler {
         // 만약 userPgIdx 파라미터가 있으면, 해당 노트들 조회
         String noteParam = request.getParameter("userPgIdx");
         if (noteParam != null) {
+        	int upidx = Integer.parseInt(noteParam);
+        	String title = null;
+        	List<PageVO> pageList = dto.getList();
+        	for (int i = 0; i < pageList.size(); i++) {
+        		if (pageList.get(i).getAc_idx() == upidx) {
+        			title = pageList.get(i).getSubject();
+        		}
+			}
+        	
             int userPgIdx = Integer.parseInt(noteParam);
             List<NoteVO> notes = service.getNotesByPage(userPgIdx);
             request.setAttribute("notes", notes);
+            request.setAttribute("pagetitle", title);
             request.setAttribute("selectedUserPgIdx", userPgIdx);
         }
-
         // 항상 page.jsp 로 포워딩
         return "page.jsp";
     }
