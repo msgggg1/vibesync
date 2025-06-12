@@ -110,6 +110,7 @@ public class BlockDAOImpl implements BlockDAO {
             // block_order 값 가져오기 (이후 + 1)
             pstmt = conn.prepareStatement(blockOrderSql);
             pstmt.setInt(1, block.getAc_idx());
+            rs = pstmt.executeQuery();
             if (rs.next()) {
             	block_order = rs.getInt(1) + 1;
             }

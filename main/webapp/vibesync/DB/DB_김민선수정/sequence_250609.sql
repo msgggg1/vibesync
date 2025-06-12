@@ -165,6 +165,13 @@ CREATE SEQUENCE schedule_seq
     INCREMENT BY 1
 	NOCACHE
     NOCYCLE;
+ 
+-- workspace_blocks
+CREATE SEQUENCE workspace_blocks_seq
+    START WITH 6     -- 이후 실제 MAX(block_id)+1 로 조정
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
 
 SELECT COUNT(*) AS sequence_count FROM user_sequences;
 

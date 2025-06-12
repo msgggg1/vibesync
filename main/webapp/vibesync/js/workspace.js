@@ -25,7 +25,7 @@ function loadDailySchedules(dateString) {
             var endTime = String(endDate.getHours()).padStart(2, '0') + ":" + String(endDate.getMinutes()).padStart(2, '0');
             var descriptionHtml = (schedule.description && schedule.description.trim() !== '') ? ' <span class="schedule-desc">' + schedule.description + '</span>' : '';
             
-            scheduleHtml += `<li data-id="${schedule.id}">
+            scheduleHtml += `<li data-id="\${schedule.id}">
                                <div class="schedule-item-content">
                                    <span class="schedule-time">${startTime} - ${endTime}</span>
                                    <div class="schedule-details">
@@ -56,9 +56,9 @@ function loadTodoList() {
                 $.each(todos, function(index, todo) {
                     let isChecked = todo.status === 1 ? "checked" : "";
                     let textClass = todo.status === 1 ? "completed" : "";
-                    todoListHtml += `<li data-id="${todo.todo_idx}">
-                                       <input type="checkbox" class="todo-checkbox" ${isChecked}>
-                                       <span class="todo-text ${textClass}">${todo.text}</span>
+                    todoListHtml += `<li data-id="\${todo.todo_idx}">
+                                       <input type="checkbox" class="todo-checkbox" \${isChecked}>
+                                       <span class="todo-text \${textClass}">\${todo.text}</span>
                                        <button class="todo-delete-btn">&times;</button>
                                    </li>`;
                     todosById[todo.todo_idx] = todo;
@@ -105,11 +105,11 @@ function loadMyPostsWidget() {
                 posts.forEach(function(post) {
                     // a 태그 안에 제목과 메타 정보를 함께 넣어 스타일 적용이 용이하게 합니다.
                     contentHtml += `<li>
-                                        <a href="postView.do?nidx=${post.note_idx}" title="${post.title}">
-                                            <span>${post.title}</span>
+                                        <a href="postView.do?nidx=\${post.note_idx}" title="\${post.title}">
+                                            <span>\${post.title}</span>
                                             <span class="block-meta">
-                                                <i class="fa-regular fa-eye"></i> ${post.view_count}&nbsp;&nbsp;
-                                                <i class="fa-regular fa-thumbs-up"></i>${post.like_count}
+                                                <i class="fa-regular fa-eye"></i> \${post.view_count}&nbsp;&nbsp;
+                                                <i class="fa-regular fa-thumbs-up"></i>\${post.like_count}
                                             </span>
                                         </a>
                                     </li>`;
@@ -144,9 +144,9 @@ function loadLikedPostsWidget() {
             if (posts && posts.length > 0) {
                 posts.forEach(function(post) {
                     contentHtml += `<li>
-                                        <a href="postView.do?nidx=${post.note_idx}" title="${post.title}">
-                                            <span>${post.title}</span>
-                                            <span class="block-meta">by ${post.author_name}</span>
+                                        <a href="postView.do?nidx=\${post.note_idx}" title="\${post.title}">
+                                            <span>\${post.title}</span>
+                                            <span class="block-meta">by \${post.author_name}</span>
                                         </a>
                                     </li>`;
                 });
@@ -409,7 +409,7 @@ $(document).ready(function() {
                 const found = schedulesByDate[date].find(event => event.id == scheduleId);
                 if (found) {
                     const d = new Date(found.start);
-                    scheduleDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    scheduleDate = `\${d.getFullYear()}-\${String(d.getMonth() + 1).padStart(2, '0')}-\${String(d.getDate()).padStart(2, '0')}`;
                     break;
                 }
             }
@@ -650,13 +650,13 @@ $(document).ready(function() {
                     if (posts && posts.length > 0) {
                         posts.forEach(function(post) {
                             listHtml += `<li>
-                                        <a href="postView.do?nidx=${post.note_idx}">
+                                        <a href="postView.do?nidx=\${post.note_idx}">
                                             <div class="post-main-info">
-                                                <span class="widget-post-title">${post.title}</span>
-                                                <span>조회수 ${post.view_count} | 좋아요 ${post.like_count}</span>
+                                                <span class="widget-post-title">\${post.title}</span>
+                                                <span>조회수 \${post.view_count} | 좋아요 \${post.like_count}</span>
                                             </div>
                                             <div class="widget-post-author">
-                                                <span class="widget-post-meta">BY ${post.author_name}</span>
+                                                <span class="widget-post-meta">BY \${post.author_name}</span>
                                             </div>
                                         </a>
                                     </li>`;
@@ -693,7 +693,7 @@ $(document).ready(function() {
     $('#goto-date-btn').on('click', function() { 
 			const year = $('#year-select').val();
             const month = $('#month-select').val();
-            const targetDate = `${year}-${String(month).padStart(2, '0')}-01`;
+            const targetDate = `\${year}-\${String(month).padStart(2, '0')}-01`;
             calendar.gotoDate(targetDate);
             $datePickerPopover.hide();
 	 });
@@ -732,9 +732,9 @@ $(document).ready(function() {
 	                const formattedText = msg.text.replace(/\n/g, '<br>');
 
 	                const messageHtml = `
-	                    <div class="chat-bubble ${who}">
-	                        <div class="bubble-text">${formattedText}</div>
-	                        <div class="bubble-time">${msg.relativeTime}</div>
+	                    <div class="chat-bubble \${who}">
+	                        <div class="bubble-text">\${formattedText}</div>
+	                        <div class="bubble-time">\${msg.relativeTime}</div>
 	                    </div>
 	                `;
 	                chatContainer.append(messageHtml);
@@ -864,7 +864,7 @@ $(document).ready(function() {
                     const dateStr = info.event.start.toISOString().substring(0, 10);
                     
                     // 해당 날짜의 DOM 요소를 직접 찾아 dateClick과 동일한 로직을 수행합니다.
-                    const dayEl = document.querySelector(`.fc-daygrid-day[data-date="${dateStr}"]`);
+                    const dayEl = document.querySelector(`.fc-daygrid-day[data-date="\${dateStr}"]`);
                     if (dayEl) {
                         if (selectedDateCell) {
                             selectedDateCell.classList.remove('fc-day-selected');

@@ -168,37 +168,6 @@ INSERT INTO todolist (created_at, text, todo_group, color, ac_idx, status) VALUE
 INSERT INTO todolist (created_at, text, todo_group, color, ac_idx, status) VALUES ( TO_TIMESTAMP('2025-06-10 11:30:00', 'YYYY-MM-DD HH24:MI:SS'), '새로운 프로그래밍 언어 탐색', '학습', '보라색', 26, FLOOR(DBMS_RANDOM.VALUE(0, 2)));
 INSERT INTO todolist (created_at, text, todo_group, color, ac_idx, status) VALUES ( TO_TIMESTAMP('2025-06-10 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), '퇴근 후 친구와 저녁 약속 🍻', '약속', '주황색', 26, FLOOR(DBMS_RANDOM.VALUE(0, 2)));
 
-commit;
-
--- =================================================================
--- watchParty 테이블 더미 데이터 (총 20개)
--- host 26번 사용자 데이터 10개
--- =================================================================
-INSERT INTO watchParty (title, video_id, host) VALUES ('함께 보는 명작 영화: 쇼생크 탈출', 'K_tLp7T6U1c', 26);
-INSERT INTO watchParty (title, video_id, host) VALUES ('꿀잼 예능 다시보기: 무한도전 레전드편', 'z9u3h9s8k3j', 26);
-INSERT INTO watchParty (title, video_id, host) VALUES ('최신 드라마 정주행: 눈물의 여왕', 'Q32__wA23dE', 26);
-INSERT INTO watchParty (title, video_id, host) VALUES ('인생 애니메이션 같이 봐요: 센과 치히로의 행방불명', 'byDgl2-CvjE', 26);
-INSERT INTO watchParty (title, video_id, host) VALUES ('긴급 토론: 영화 인셉션의 결말은?', '8hP9D6kZseM', 26);
-INSERT INTO watchParty (title, video_id, host) VALUES ('추억의 시트콤: 남자셋 여자셋', 'a7b8c9d0e1f', 26);
-INSERT INTO watchParty (title, video_id, host) VALUES ('다큐멘터리 ''자연의 신비'' 1편', 'g2h3i4j5k6l', 26);
-INSERT INTO watchParty (title, video_id, host) VALUES ('K-POP 뮤비 리액션 타임', 'm7n8o9p0q1r', 26);
-INSERT INTO watchParty (title, video_id, host) VALUES ('숨겨진 보석같은 단편 영화 모음', 's2t3u4v5w6x', 26);
-INSERT INTO watchParty (title, video_id, host) VALUES ('공포 영화 챌린지: 곤지암', 'y7z8a9b0c1d', 26);
-
--- =================================================================
--- host 27번 사용자 데이터 10개
--- =================================================================
-INSERT INTO watchParty (title, video_id, host) VALUES ('해리포터와 마법사의 돌, 처음부터 함께', 'e1f2g3h4i5j', 27);
-INSERT INTO watchParty (title, video_id, host) VALUES ('마블 시네마틱 유니버스 정주행', 'k6l7m8n9o0p', 27);
-INSERT INTO watchParty (title, video_id, host) VALUES ('응답하라 1988 보면서 추억여행', 'q1r2s3t4u5v', 27);
-INSERT INTO watchParty (title, video_id, host) VALUES ('디즈니 애니메이션 OST 콘서트', 'w6x7y8z9a0b', 27);
-INSERT INTO watchParty (title, video_id, host) VALUES ('범죄도시 1편 다시보기', 'c1d2e3f4g5h', 27);
-INSERT INTO watchParty (title, video_id, host) VALUES ('지브리 스튜디오 명작선', 'i6j7k8l9m0n', 27);
-INSERT INTO watchParty (title, video_id, host) VALUES ('넷플릭스 신작 리뷰 및 수다', 'o1p2q3r4s5t', 27);
-INSERT INTO watchParty (title, video_id, host) VALUES ('먹방 보면서 야식먹기', 'u6v7w8x9y0z', 27);
-INSERT INTO watchParty (title, video_id, host) VALUES ('스포츠 명경기 하이라이트', 'a1b2c3d4e5f', 27);
-INSERT INTO watchParty (title, video_id, host) VALUES ('고전게임 스트리밍 시청', 'g6h7i8j9k0l', 27);
-
 
 commit;
 
