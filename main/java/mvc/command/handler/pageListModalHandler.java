@@ -38,11 +38,12 @@ public class pageListModalHandler implements CommandHandler {
             }
         }
         out.println("  </select>");
+   
+        out.println("  <div id=\"btn_wrapper\"><button id=\"newPageBtn\" class=\"btn_deco\">＋ 새 페이지</button>");
         out.println("  <a id=\"newNoteLink\" href=\"notecreate.do?pageidx=\">\r\n"
-        		+ "  <button id=\"newNoteBtn\">새 글쓰기</button>\r\n"
-        		+ "</a>\r\n"
+        		+ "  <button id=\"newNoteBtn\" class=\"btn_deco\" >새 글쓰기</button>\r\n"
+        		+ "</a></di>\r\n"
         		+ "");
-        out.println("  <button id=\"newPageBtn\">＋ 새 페이지</button>");
         out.println("</div>");
         return null;
     }

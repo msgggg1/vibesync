@@ -16,6 +16,25 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script defer src="./js/script.js"></script>
   <style>
+    h3 {
+      margin: 0;
+    }
+
+    #pageCreateBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #8ac4ff;
+      color: #fff;
+      font-size: 24px;
+      z-index: 1000;
+      border: none;
+      cursor: pointer;
+    }
+
     .modal-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -26,13 +45,60 @@
       align-items: center;
       z-index: 2000;
     }
+    
+    #modalWrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
     .modal-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+
       background: #fff;
       padding: 20px;
       border-radius: 8px;
       width: 90%; max-width: 400px;
+      min-height: 14rem;
       position: relative;
     }
+
+    #pageSelect {
+      width: 100%;
+      height: 2rem;
+      text-align: center;
+      border-radius: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    #btn_wrapper {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .btn_deco {
+      background: #8ac4ff;
+      border: none;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+
+    .btn_deco:hover {
+      background: #4da3f9;
+    }
+
+    #pageCreateForm {
+      display: flex;
+      flex-direction: column;
+    }
+
     .modal-close {
       position: absolute;
       top: 10px; right: 10px;
@@ -118,18 +184,15 @@
   </div>
 
   <!-- 페이지 생성 모달 트리거 버튼 -->
-  <button id="pageCreateBtn"
-          style="position:fixed; bottom:20px; left:20px; width:50px; height:50px;
-                 border-radius:50%; background:#007bff; color:#fff; font-size:24px;
-                 z-index:1000; border:none; cursor:pointer;">
-    ＋
-  </button>
+  <button id="pageCreateBtn">＋</button>
 
   <!-- 모달 오버레이 및 컨텐츠 -->
   <div id="pageModalOverlay" class="modal-overlay">
-    <div class="modal-content" id="pageModalContent">
-      <button class="modal-close" id="pageModalClose">&times;</button>
-      <!-- AJAX로 로드된 <select> + 버튼들 삽입 -->
+    <div id="modalWrapper">
+    	<div class="modal-content" id="pageModalContent">
+	    <button class="modal-close" id="pageModalClose">&times;</button>
+	    <!-- AJAX로 로드된 <select> + 버튼들 삽입 -->
+    </div>
     </div>
   </div>
 
@@ -245,8 +308,8 @@
         var formHtml = ''
           + '<h3>새 페이지 생성</h3>'
           + '<form id="pageCreateForm" enctype="multipart/form-data">'
-          + '  <label>Subject: <input type="text" id="subject" name="subject" required/></label><br/>'
-          + '  <button type="submit">Create</button>'
+          + '  <label>Subject&nbsp<input type="text" id="subject" name="subject" required/></label><br/>'
+          + '  <button type="submit" class="btn_deco">Create</button>'
           + '</form>';
         $('#pageModalContent').append(formHtml);
       });
