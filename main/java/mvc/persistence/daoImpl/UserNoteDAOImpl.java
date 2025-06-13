@@ -291,7 +291,7 @@ public class UserNoteDAOImpl implements UserNoteDAO {
     @Override
     public void updateNote(NoteVO note) {
         // [수정] titleImg 컬럼 추가 (업데이트 기능에도 필요 시 추가)
-        String sql = "UPDATE note SET title = ?, text = ?, img = ?, titleImg = ?, edit_at = SYSDATE, "
+        String sql = "UPDATE note SET title = ?, text = ?, img = ?, edit_at = SYSDATE, "
                    + " content_idx = ?, genre_idx = ?, category_idx = ? "
                    + " WHERE note_idx = ?";
         try {
@@ -299,11 +299,10 @@ public class UserNoteDAOImpl implements UserNoteDAO {
             pstmt.setString(1, note.getTitle());
             pstmt.setString(2, note.getText());
             pstmt.setString(3, note.getImg());
-            pstmt.setString(4, note.getTitleImg()); // [추가] titleImg 값 설정
-            pstmt.setInt(5, note.getContent_idx());
-            pstmt.setInt(6, note.getGenre_idx());
-            pstmt.setInt(7, note.getCategory_idx());
-            pstmt.setInt(8, note.getNote_idx());
+            pstmt.setInt(4, note.getContent_idx());
+            pstmt.setInt(5, note.getGenre_idx());
+            pstmt.setInt(6, note.getCategory_idx());
+            pstmt.setInt(7, note.getNote_idx());
             pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

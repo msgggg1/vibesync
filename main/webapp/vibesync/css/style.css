@@ -393,9 +393,13 @@ p {
   gap: 2px;
 }
 
+#con_wrapper>a {
+  background: black;
+}
+
 #con_wrapper .con_item {
   background-color: gray;
-  height: 300px;
+  width: 100%;
 }
 
 /* workspace */

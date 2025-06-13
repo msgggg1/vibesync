@@ -29,8 +29,6 @@ public class WorkspaceService {
         List<MessageListDTO> unreadMessages = messageService.getUnreadMessageList(acIdx);
         List<BlockDTO> blocks = blockService.getBlocksForUser(acIdx);
         
-        System.out.println("MessageService가 반환한 안읽은 메시지 개수: " + (unreadMessages != null ? unreadMessages.size() : "null"));
-        
         dto = new WorkspaceDTO().builder()
         					    .todolists(todolists)
         					    .myPosts(myPosts)

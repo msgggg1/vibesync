@@ -504,29 +504,6 @@
 }
 
 
-.contents_item.generated_block {
-    display: flex;          /* 내부 요소를 flexbox로 제어합니다. */
-    flex-direction: column; /* 자식 요소(헤더, 컨텐츠)를 세로로 쌓습니다. */
-    height: 320px;          /* 모든 블록의 높이를 320px로 고정합니다. 이 값은 원하시는 대로 조절하세요. */
-}
-
-.contents_item.generated_block .block-content {
-    flex-grow: 1;           /* 헤더를 제외한 나머지 모든 수직 공간을 차지합니다. */
-    overflow-y: auto;       /* 내용이 이 영역을 벗어날 경우, 세로 스크롤바가 자동으로 생깁니다. */
-    min-height: 0;          /* flex-grow와 overflow를 함께 사용할 때 레이아웃이 깨지지 않도록 보장합니다. */
-}
-
-/* 모든 블록의 스크롤바에 디자인 적용 */
-.contents_item ::-webkit-scrollbar {
-    width: 6px;
-}
-.contents_item ::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 3px;
-}
-.contents_item ::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
-}
 /* 블록 공통 링크 (a) 및 메타 정보 */
 #my-posts ul li a,
 #liked-posts ul li a,

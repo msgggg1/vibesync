@@ -58,7 +58,6 @@ public class WorkspaceHandler implements CommandHandler {
     	}
     	
         request.setAttribute("workspaceData", initialData);
-        request.setAttribute("initialData", initialData);
         return "workspace.jsp";
     }
 }

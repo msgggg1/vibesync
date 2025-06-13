@@ -26,7 +26,7 @@ public class BlockDAOImpl implements BlockDAO {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         List<BlockVO> blocks = new ArrayList<BlockVO>();
-        String sql = " SELECT block_id, block_type, block_order, config "
+        String sql = " SELECT block_id, ac_idx, block_type, block_order, config "
         		   + " FROM workspace_blocks "
         		   + " WHERE ac_idx = ? "
         		   + " ORDER BY block_order ASC";
@@ -39,7 +39,7 @@ public class BlockDAOImpl implements BlockDAO {
             while (rs.next()) {
                 BlockVO block = new BlockVO();
                 block.setBlock_id(rs.getInt("block_id"));
-                block.setAc_idx(acIdx);
+                block.setAc_idx(rs.getInt("ac_idx"));
                 block.setBlock_type(rs.getString("block_type"));
                 block.setBlock_order(rs.getInt("block_order"));
                 block.setConfig(rs.getString("config"));
@@ -58,7 +58,7 @@ public class BlockDAOImpl implements BlockDAO {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         BlockVO block = null;
-        String sql = " SELECT ac_idx, block_type, block_order, config "
+        String sql = " SELECT block_id, ac_idx, block_type, block_order, config "
         		   + " FROM workspace_blocks "
         		   + " WHERE block_id = ? ";
 
@@ -69,7 +69,7 @@ public class BlockDAOImpl implements BlockDAO {
 
             if (rs.next()) {
                 block = new BlockVO();
-                block.setBlock_id(blockId);
+                block.setBlock_id(rs.getInt("block_id"));
                 block.setAc_idx(rs.getInt("ac_idx"));
                 block.setBlock_type(rs.getString("block_type"));
                 block.setBlock_order(rs.getInt("block_order"));
@@ -95,42 +95,41 @@ public class BlockDAOImpl implements BlockDAO {
         String blockOrderSql = " SELECT MAX(block_order) FROM workspace_blocks WHERE ac_idx = ? ";
         String insertSql = " INSERT INTO workspace_blocks (block_id, ac_idx, block_type, block_order, config) "
         				 + " VALUES (?, ?, ?, ?, ?) ";
-
-        // 시퀀스 값 가져오기
-        pstmt = conn.prepareStatement(sequenceSql);
-        rs = pstmt.executeQuery();
-        if (rs.next()) {
-        	insertedBlockId = rs.getInt(1);
-        }
         
-        JdbcUtil.close(rs);
-        JdbcUtil.close(pstmt);
-        
-        // block_order 값 가져오기 (이후 + 1)
-        pstmt = conn.prepareStatement(blockOrderSql);
-        pstmt.setInt(1, block.getAc_idx());
-        rs = pstmt.executeQuery();
-        if (rs.next()) {
-        	block_order = rs.getInt(1) + 1;
-        }
-        
-        JdbcUtil.close(rs);
-        JdbcUtil.close(pstmt);
-
-        // 가져온 시퀀스 값과 block_order 값을 사용하여 INSERT
-        if (insertedBlockId > 0) {
-            pstmt = conn.prepareStatement(insertSql);
-            pstmt.setInt(1, insertedBlockId); // 조회해온 시퀀스 값을 PK로 사용
-            pstmt.setInt(2, block.getAc_idx());
-            pstmt.setString(3, block.getBlock_type());
-            pstmt.setInt(4, block_order);
-            pstmt.setString(5, block.getConfig());
+        try {
+            // 시퀀스 값 가져오기
+            pstmt = conn.prepareStatement(sequenceSql);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+            	insertedBlockId = rs.getInt(1);
+            }
             
-            pstmt.executeUpdate();
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
             
+            // block_order 값 가져오기 (이후 + 1)
+            pstmt = conn.prepareStatement(blockOrderSql);
+            pstmt.setInt(1, block.getAc_idx());
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+            	block_order = rs.getInt(1) + 1;
+            }
+
+            // 가져온 시퀀스 값과 block_order 값을 사용하여 INSERT
+            if (insertedBlockId > 0) {
+                pstmt = conn.prepareStatement(insertSql);
+                pstmt.setInt(1, insertedBlockId); // 조회해온 시퀀스 값을 PK로 사용
+                pstmt.setInt(2, block.getAc_idx());
+                pstmt.setString(3, block.getBlock_type());
+                pstmt.setInt(4, block_order);
+                pstmt.setString(5, block.getConfig());
+                
+                pstmt.executeUpdate();
+            }
+        } finally {
+            JdbcUtil.close(rs);
             JdbcUtil.close(pstmt);
         }
-        
         return insertedBlockId;
 	}
 
@@ -144,9 +143,7 @@ public class BlockDAOImpl implements BlockDAO {
 		
 		String selectOrderSql = " SELECT block_order FROM workspace_blocks WHERE block_id = ? ";
 		int block_order = 0;
-		
-		String selectMaxSql = " SELECT MAX(block_order) FROM workspace_blocks WHERE ac_idx = ? ";
-		int max_block_order = 0;
+		int rowsAffected = 0;
 		
         String deleteSql = "DELETE FROM workspace_blocks "
         		   + " WHERE block_id = ? AND ac_idx = ?";
@@ -154,45 +151,33 @@ public class BlockDAOImpl implements BlockDAO {
         String reorganizeSql = " UPDATE workspace_blocks "
         					 + " SET block_order = block_order - 1 "
         					 + " WHERE ac_idx = ? AND block_order > ? ";
-        int rowsAffected = 0;
         
-    	pstmt = conn.prepareStatement(selectOrderSql);
-    	pstmt.setInt(1, block_id);
-    	rs = pstmt.executeQuery();
-        if (rs.next()) {
-        	block_order = rs.getInt(1);
-        }
-        
-        JdbcUtil.close(rs);
-        JdbcUtil.close(pstmt);
-        
-    	pstmt = conn.prepareStatement(selectMaxSql);
-    	pstmt.setInt(1, acIdx);
-    	rs = pstmt.executeQuery();
-        if (rs.next()) {
-        	max_block_order = rs.getInt(1);
-        }
-        
-        JdbcUtil.close(rs);
-        JdbcUtil.close(pstmt);
-    	
-        pstmt = conn.prepareStatement(deleteSql);
-        pstmt.setInt(1, block_id);
-        pstmt.setInt(2, acIdx);
-        rowsAffected = pstmt.executeUpdate();
-        isDeleted = rowsAffected == 1;
-        
-        JdbcUtil.close(pstmt);
-        
-        if (isDeleted && (block_order < max_block_order)) {
-        	pstmt = conn.prepareStatement(reorganizeSql);
+        try {
+        	pstmt = conn.prepareStatement(selectOrderSql);
+        	pstmt.setInt(1, block_id);
+        	rs = pstmt.executeQuery();
+            if (rs.next()) {
+            	block_order = rs.getInt(1);
+            }
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        	
+            pstmt = conn.prepareStatement(deleteSql);
+            pstmt.setInt(1, block_id);
+            pstmt.setInt(2, acIdx);
+            rowsAffected = pstmt.executeUpdate();
+            isDeleted = rowsAffected == 1;
+            JdbcUtil.close(pstmt);
+            
+            pstmt = conn.prepareStatement(reorganizeSql);
             pstmt.setInt(1, acIdx);
             pstmt.setInt(2, block_order);
             rowsAffected = pstmt.executeUpdate();
             isDeleted = isDeleted && (rowsAffected > 0);
             
+        } finally {
             JdbcUtil.close(pstmt);
-		}
+        }
         
         return isDeleted;
 	}

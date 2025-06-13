@@ -87,6 +87,10 @@
     height: 94%;
     background: transparent;
 	}
+	
+	.note-editable {
+		height: 100% !important;
+	}
 
 	#save_btn {
 		display: flex;

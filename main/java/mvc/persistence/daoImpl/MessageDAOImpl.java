@@ -317,8 +317,6 @@ public class MessageDAOImpl implements MessageDAO {
 		int result = pstmt.executeUpdate();
 		isSent = result >= 1 ? true : false;
 		
-		JdbcUtil.close(pstmt);
-		
 		return isSent;
 	}
 	

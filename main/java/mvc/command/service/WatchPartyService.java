@@ -2,14 +2,15 @@ package mvc.command.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingException;
 
 import com.util.ConnectionProvider;
-import com.util.JdbcUtil;
 
 import mvc.domain.dto.WatchPartyDTO;
+import mvc.domain.vo.UserSummaryVO;
 import mvc.persistence.dao.FollowDAO;
 import mvc.persistence.dao.WatchPartyDAO;
 import mvc.persistence.daoImpl.FollowDAOImpl;
@@ -35,8 +36,6 @@ public class WatchPartyService {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
 		}
 		return followingWatchParties;
 	}
