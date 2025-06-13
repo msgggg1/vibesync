@@ -1,4 +1,4 @@
-                <%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
   pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLEncoder"%>
 <% String contextPath = request.getContextPath() + "/vibesync"; %>
@@ -194,16 +194,6 @@
 				</section>
 			</div>
             
-            <%-- 동적으로 추가된 블록들을 렌더링하는 부분 --%>
-            <c:forEach var="block" items="${workspaceData.blocks}">
-				<%-- 각 블록에 대한 데이터를 request scope에 설정 --%>
-			    <c:set var="block" value="${block}" scope="request" />
-			    <%-- _blockWrapper.jsp를 include하여 블록을 렌더링 --%>
-			    <jsp:include page="/WEB-INF/views/workspace/fragments/_blockWrapper.jsp" />
-           </c:forEach>
-            
-            <!-- 추가 블록 -->
-			<div id="content_plus" class="contents_item">+</div>
 
 <%-- ======================================================== --%>
 <%--                통합 추가/수정 모달 창                     --%>
@@ -351,7 +341,7 @@
                 const blockContentDiv = $('#block-' + blockId + ' .block-content');
                 blockContentDiv.html('<div class="loading-spinner"></div>');
                 $.ajax({
-                    url: 'block.do',
+                    url: '${pageContext.request.contextPath}/block.do',
                     type: 'GET',
                     data: { block_id: blockId },
                     dataType: 'json', // 서버로부터 JSON 응답을 기대한다고 명시
@@ -470,7 +460,7 @@
     // 블록 추가 함수
 	function addBlockToServer(payload) {
 	    $.ajax({
-	        url: 'block.do',
+	        url: '${pageContext.request.contextPath}/block.do',
 	        type: 'POST',
 	        data: payload,
 	        dataType: 'json', // 응답 타입을 'html'에서 'json'으로 변경
@@ -495,7 +485,7 @@
 	function deleteBlock(blockId) {
 	    if (!confirm("블록을 정말 삭제하시겠습니까?")) return;
 	    $.ajax({
-	        url: 'block.do',
+	        url: '${pageContext.request.contextPath}/block.do',
 	        type: 'POST', // 1. type을 'DELETE'에서 'POST'로 변경
 	        data: {
 	            block_id: blockId,
@@ -518,8 +508,7 @@
     
 </script>
 
-<script> /* 채팅방 */
-
+<script> 
 	/* js, jquery */
 	let currentChatSenderIdx = null;
 	
@@ -632,6 +621,11 @@
 
 </script>
 
+<script>
+        const contextPath = "${pageContext.request.contextPath}";
+</script>
+<script defer src="./js/workspace.js"></script>
+</body>
 </html>
 
 

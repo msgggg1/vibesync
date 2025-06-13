@@ -239,30 +239,6 @@ INSERT INTO wa_sync (timeline, play, watchParty_idx) VALUES (5010.500, 'play', 1
 INSERT INTO wa_sync (timeline, play, watchParty_idx) VALUES (600.000, 'play', 20);
 commit;
 
--- =================================================================
--- watchParty 테이블 추가 더미 데이터 (총 20개)
--- 다양한 사용자가 생성한 워치파티
--- =================================================================
-INSERT INTO watchParty (title, video_id, host) VALUES ('주말엔 역시 마블 정주행이지!', 'play', 1);
-INSERT INTO watchParty (title, video_id, host) VALUES ('응답하라 시리즈 같이 봐요! (1997부터)', 'play', 2);
-INSERT INTO watchParty (title, video_id, host) VALUES ('BTS 최신 콘서트 실황 함께 즐기기', 'play', 3);
-INSERT INTO watchParty (title, video_id, host) VALUES ('퇴근 후 힐링: 지브리 애니메이션 모음', 'play', 4);
-INSERT INTO watchParty (title, video_id, host) VALUES ('숨 막히는 심리 스릴러 영화 추천', 'play', 5);
-INSERT INTO watchParty (title, video_id, host) VALUES ('인생 드라마 ''나의 아저씨'' 1화부터', 'play', 6);
-INSERT INTO watchParty (title, video_id, host) VALUES ('넷플릭스 신작 다큐 ''나는 신이다'' 토론', 'play', 7);
-INSERT INTO watchParty (title, video_id, host) VALUES ('[코미디] SNL 레전드편 모음집', 'play', 8);
-INSERT INTO watchParty (title, video_id, host) VALUES ('유퀴즈 보면서 하루 마무리', 'play', 9);
-INSERT INTO watchParty (title, video_id, host) VALUES ('로맨스 영화 추천 받습니다!', 'play', 10);
-INSERT INTO watchParty (title, video_id, host) VALUES ('해외 축구 빅매치 다시보기', 'play', 11);
-INSERT INTO watchParty (title, video_id, host) VALUES ('귀멸의 칼날 1기 정주행', 'play', 12);
-INSERT INTO watchParty (title, video_id, host) VALUES ('블랙핑크 뮤직비디오 리액션', 'play', 13);
-INSERT INTO watchParty (title, video_id, host) VALUES ('명작 다큐 ''아마존의 눈물'' 시청', 'play', 14);
-INSERT INTO watchParty (title, video_id, host) VALUES ('추억의 예능 1박2일 시즌1', 'play', 15);
-INSERT INTO watchParty (title, video_id, host) VALUES ('영화 ''기생충'' 심층 분석', 'play', 18);
-INSERT INTO watchParty (title, video_id, host) VALUES ('같이 게임 스트리밍 봐요!', 'play', 20);
-INSERT INTO watchParty (title, video_id, host) VALUES ('KBS 역사스페셜: 조선왕조실록편', 'play', 21);
-INSERT INTO watchParty (title, video_id, host) VALUES ('미드 ''프렌즈''로 영어 공부하기', 'play', 22);
-INSERT INTO watchParty (title, video_id, host) VALUES ('디즈니 OST와 함께하는 저녁', 'play', 25);
 
 
 INSERT INTO follows (ac_follow, ac_following) VALUES (26, 2);
