@@ -12,6 +12,7 @@ import mvc.domain.dto.NoteSummaryDTO;
 import mvc.domain.dto.UserPageDataDTO;
 import mvc.domain.dto.UserPageInfoDTO;
 import mvc.domain.vo.UserSummaryVO;
+import mvc.domain.vo.UserVO;
 import mvc.persistence.dao.FollowDAO; // 실제 경로로
 import mvc.persistence.dao.NoteDAO;   // 실제 경로로
 import mvc.persistence.dao.UserDAO;
