@@ -1,6 +1,7 @@
 --------------------------------------------------------------------------------
 -- 테이블 삭제 (제약조건 순서에 유의)
 --------------------------------------------------------------------------------
+DROP TABLE schedule;
 DROP TABLE commentlist;
 DROP TABLE noteAccess;
 DROP TABLE likes;
@@ -142,6 +143,7 @@ CREATE TABLE note (
     create_at TIMESTAMP,
     edit_at TIMESTAMP,
     view_count INT DEFAULT 0,
+    titleimg clob,
     content_idx INT NOT NULL,
     genre_idx INT NOT NULL,
     category_idx int not null,
@@ -208,12 +210,13 @@ CREATE TABLE noteAccess (
 --------------------------------------------------------------------------------
 CREATE TABLE commentlist (
     commentlist_idx INT PRIMARY KEY,
-    text CLOB not null,
+    text CLOB NOT NULL,
     like_count INT,
     create_at TIMESTAMP DEFAULT SYSDATE,
     re_commentlist_idx INT,
     note_idx INT NOT NULL,
     ac_idx INT NOT NULL,
+    depth INT DEFAULT 1 NOT NULL, -- [추가] 댓글 깊이 컬럼
     CONSTRAINT FK_comment_TO_comment FOREIGN KEY (re_commentlist_idx) REFERENCES commentlist(commentlist_idx) ON DELETE CASCADE,
     CONSTRAINT FK_comment_TO_note FOREIGN KEY (note_idx) REFERENCES note(note_idx) ON DELETE CASCADE,
     CONSTRAINT FK_comment_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) ON DELETE CASCADE
@@ -248,7 +251,19 @@ CREATE TABLE wa_comment (
     watchParty_idx int NOT NULL,
     CONSTRAINT FK_cw FOREIGN KEY (watchParty_idx) REFERENCES watchParty(watchParty_idx) ON DELETE CASCADE
 );
-
+--------------------------------------------------------------------------------
+-- (추가) schedule (일정 관리) 테이블
+--------------------------------------------------------------------------------
+CREATE TABLE schedule (
+    schedule_idx    INT             PRIMARY KEY,
+    title           VARCHAR2(255)   NOT NULL,         -- 일정 제목
+    description     CLOB,                             -- 상세 내용
+    start_time      TIMESTAMP       NOT NULL,         -- 시작 시간
+    end_time        TIMESTAMP       NOT NULL,         -- 종료 시간
+    color           VARCHAR2(100),                    -- 캘린더에 표시될 색상 (선택 사항)
+    ac_idx          INT             NOT NULL,         -- 일정을 등록한 사용자 ID
+    CONSTRAINT FK_schedule_TO_userAccount FOREIGN KEY (ac_idx) REFERENCES userAccount(ac_idx) ON DELETE CASCADE
+);
 
 SELECT COUNT(*)
 FROM USER_TABLES;

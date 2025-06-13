@@ -157,7 +157,13 @@ CREATE SEQUENCE seq_wa_comment
   INCREMENT BY 1
   NOCACHE
   NOCYCLE;
-
+  
+-- 19. schedule 시퀀스
+CREATE SEQUENCE schedule_seq 
+	START WITH 1 
+	NCREMENT BY 1
+	NOCACHE
+  NOCYCLE;
 
 SELECT COUNT(*) AS sequence_count FROM user_sequences;
 
@@ -357,6 +363,5 @@ BEGIN
   END IF;
 END;
 /
-
 
 SELECT COUNT(*) AS trigger_count FROM user_triggers;

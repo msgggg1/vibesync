@@ -27,72 +27,71 @@ public class postViewHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
-        
-        Enumeration<String> names = request.getParameterNames();
-        
-        while (names.hasMoreElements()) {
-			String name = (String) names.nextElement();
-			System.out.println(name +" | ");
-		}
-        
-        String page = request.getParameter("userPgIdx");
-        System.out.println("page : " + page);
-        
-        // AJAX 처리: action 파라미터 확인
-        String action = request.getParameter("action");
-        if ("toggleFollow".equals(action)) {
-            System.out.println(">>> postViewHandler.process(): toggleFollow 호출됨");
-            handleToggleFollow(request, response);
-            return null; // AJAX 응답을 이미 보냈으므로 forward 하지 않음
-        } else if ("toggleLike".equals(action)) {
-            System.out.println(">>> postViewHandler.process(): toggleLike 호출됨");
-            handleToggleLike(request, response);
-            return null; // AJAX 응답을 이미 보냈으므로 forward 하지 않음
+        String method = request.getMethod(); // 요청 메소드 확인 (GET 또는 POST)
+
+        // POST 요청은 AJAX (팔로우/좋아요) 처리
+        if ("POST".equalsIgnoreCase(method)) {
+            response.setContentType("application/json; charset=UTF-8");
+            String action = request.getParameter("action");
+
+            if ("toggleFollow".equals(action)) {
+                System.out.println(">>> postViewHandler.process(): toggleFollow 호출됨");
+                handleToggleFollow(request, response);
+            } else if ("toggleLike".equals(action)) {
+                System.out.println(">>> postViewHandler.process(): toggleLike 호출됨");
+                handleToggleLike(request, response);
+            } else {
+                // 정의되지 않은 action에 대한 오류 처리
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                try (PrintWriter out = response.getWriter()) {
+                    out.write("{\"error\":\"Invalid action\"}");
+                    out.flush();
+                }
+            }
+            return null; // AJAX 처리 후 forward 방지
+
+        // GET 요청은 페이지 렌더링 처리
+        } else if ("GET".equalsIgnoreCase(method)) {
+            System.out.println("> postViewHandler.process() - 일반 페이지 요청 (GET)");
+            response.setContentType("text/html; charset=UTF-8");
+
+            String note_idx_str = request.getParameter("nidx");
+            if (note_idx_str == null || note_idx_str.isEmpty()) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Note index is required.");
+                return null;
+            }
+            int note_idx = Integer.parseInt(note_idx_str);
+
+            // --- 기존 페이지 로드 로직 시작 ---
+            HttpSession session = request.getSession();
+            @SuppressWarnings("unchecked")
+            Set<Integer> accessPage = (Set<Integer>) session.getAttribute("accessPage");
+            if (accessPage == null) {
+                accessPage = new HashSet<>();
+                session.setAttribute("accessPage", accessPage);
+            }
+
+            if (!accessPage.contains(note_idx)) {
+                postviews.updateViewCount(note_idx);
+                accessPage.add(note_idx);
+            }
+
+            UserNoteVO note = postviews.getUserNoteInfo(note_idx);
+            request.setAttribute("note", note);
+
+            UserVO user = (UserVO) session.getAttribute("userInfo");
+            if (user != null) {
+                UserNoteDTO followLike = postviews.getFollowLike(user.getAc_idx(), note_idx, note.getUpac_idx());
+                request.setAttribute("followLike", followLike);
+            }
+            // --- 기존 페이지 로드 로직 끝 ---
+
+            return "postView.jsp"; // JSP 페이지로 forward
         }
 
-        // 일반적인 페이지 요청: postView.jsp 렌더링
-        System.out.println("> postViewHandler.process() - 일반 페이지 요청");
-
-        String note_idx_str = request.getParameter("nidx");
-        int note_idx = 0;
-        
-        if (note_idx_str != null && !note_idx_str.isEmpty()) {
-            note_idx = Integer.parseInt(note_idx_str);
-        }
-        System.out.println("noteidx : " + note_idx_str);
-        
-        HttpSession session = request.getSession(); // 수정: 세션 가져오기
-        // 수정: accessPage 세션 속성에서 방문 노트 목록 관리
-        @SuppressWarnings("unchecked")
-        Set<Integer> accessPage = (Set<Integer>) session.getAttribute("accessPage");
-        if (accessPage == null) {
-            accessPage = new HashSet<>();
-            session.setAttribute("accessPage", accessPage);
-        }
-        // 수정: 이전에 조회한 적이 없다면 조회수 증가
-        if (!accessPage.contains(note_idx)) {
-            postviews.updateViewCount(note_idx); // 수정: 조회수 업데이트 서비스 호출
-            accessPage.add(note_idx);
-            System.out.println("accessPage : " + accessPage);
-        }
-        
-        UserNoteVO note = postviews.getUserNoteInfo(note_idx);
-        System.out.println(">>> PostView 데이터: " + note);
-
-        UserVO user = (UserVO) request.getSession().getAttribute("userInfo");
-        if (user == null) {
-            System.out.println(">>> 경고: 세션에 userInfo가 없습니다.");
-        }
-        
-        UserNoteDTO followLike = postviews.getFollowLike(user.getAc_idx(), note_idx, note.getUpac_idx());
-        System.out.println(">>> followLike DTO: " + followLike);
-        
-        request.setAttribute("note", note);
-        request.setAttribute("followLike", followLike);
-        
-        // forward할 때는 쿼리 스트링 없이 JSP 경로만 넘긴다
-        return "postView.jsp";
+        // GET/POST가 아닌 다른 메소드는 에러 처리
+        response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        return null;
     }
 
     private void handleToggleFollow(HttpServletRequest request, HttpServletResponse response) throws IOException {

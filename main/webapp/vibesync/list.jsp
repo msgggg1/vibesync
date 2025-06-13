@@ -57,9 +57,7 @@
   <div id="notion-app">
     <input type="hidden" id="mode" value="board">
     <div class="notion-app-inner">
-     <jsp:include page="./includes/sidebar.jsp" flush="true"></jsp:include>
-
-
+      <jsp:include page="./includes/sidebar.jsp" flush="true"></jsp:include>
       <!-- content -->
       <div id="content_wrapper">
         <section id="content">

@@ -1,7 +1,16 @@
+<%@page import="java.util.Enumeration"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
   pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLEncoder"%>
 <% String contextPath = request.getContextPath() + "/vibesync"; %>
+<%
+Enumeration<String> names = request.getParameterNames();
+while (names.hasMoreElements()) {
+    String name = names.nextElement();
+    String name_val = request.getParameter(name);
+    System.out.println("name : " + name + "/ val : " + name_val);
+}
+%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
@@ -14,6 +23,7 @@
   <link rel="icon" href="./sources/favicon.ico" />
   <link rel="stylesheet" href="./css/style.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.min.js"></script>
   <script defer src="./js/script.js"></script>
   <style>
     h3 {
@@ -148,6 +158,8 @@
                       ${userPageData.userProfile.followedByCurrentUser ? 'UNFOLLOW' : 'FOLLOW'}
                     </button>
                   </c:if>
+                  <%-- Watch Party 버튼 (기능 구현 시 활성화) --%>
+                  <%-- <button class="btn_follow_2">Watch Party</button> --%>
                 </div>
                 <div class="user_count">
                   <p>POST <span>${userPageData.userProfile.postCount}</span></p>
@@ -161,19 +173,18 @@
 
             <div id="con_wrapper">
               <c:forEach var="post" items="${userPageData.posts}">
-                <div class="con_item">
                   <a href="<%=contextPath %>/postView.do?nidx=${post.note_idx}">
+                	<div class="con_item">
                     <c:choose>
                       <c:when test="${not empty post.thumbnail_img}">
-                        <img src="<%=contextPath %>/${post.thumbnail_img}" alt="${post.title} 썸네일">
+                        <img src="${pageContext.request.contextPath}/${post.thumbnail_img}" alt="${post.title} 썸네일" style="width: 100%; height: 100%; object-fit:cover;" >
                       </c:when>
                       <c:otherwise>
-                        <img src="<%=contextPath %>/sources/images/default_thumbnail.png" alt="기본 썸네일">
+                        <img src="${pageContext.request.contextPath}/sources/images/default_thumbnail.png" alt="기본 썸네일">
                       </c:otherwise>
-                    </c:choose>
-                    <p>${post.title}</p>
+                    </c:choose>             
+                   </div>
                   </a>
-                </div>
               </c:forEach>
             </div>
             <div id="loadingIndicator" style="display: none; text-align: center; padding: 20px;">로딩 중...</div>
@@ -182,9 +193,11 @@
       </div>
     </div>
   </div>
-
+  
   <!-- 페이지 생성 모달 트리거 버튼 -->
-  <button id="pageCreateBtn">＋</button>
+  <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == userPageData.userProfile.ac_idx}">
+  	<button id="pageCreateBtn">＋</button>
+  </c:if>
 
   <!-- 모달 오버레이 및 컨텐츠 -->
   <div id="pageModalOverlay" class="modal-overlay">
@@ -198,23 +211,20 @@
 
   <script>
     $(document).ready(function() {
-      // 로그아웃
-      $("#logout").on("click", function(){
-        location.href = "${pageContext.request.contextPath}/logout.jsp";
-      });
-
-      // 팔로우/언팔로우
+      // 프로필 페이지의 팔로우 버튼 처리
       $('#profileFollowBtn').on('click', function() {
         var $button = $(this);
         var authorId = $button.data('author-id');
-        var isLoggedIn = ${sessionScope.userInfo != null};
+        var isLoggedIn = ${sessionScope.userInfo != null}; 
+
         if (!isLoggedIn) {
           alert("로그인이 필요합니다.");
-          location.href = "${pageContext.request.contextPath}/login.jsp";
+          location.href = "${pageContext.request.contextPath}/login.jsp"; 
           return;
         }
+
         $.ajax({
-          url: '${pageContext.request.contextPath}/followToggle.do',
+          url: '${pageContext.request.contextPath}/followToggle.do', 
           type: 'POST',
           data: { authorId: authorId },
           dataType: 'json',
@@ -225,6 +235,7 @@
               } else {
                 $button.data('following', false).text('FOLLOW');
               }
+              // 팔로워 수 업데이트
               if (typeof response.newFollowerCount !== 'undefined') {
                 $('#profileFollowerCount').text(response.newFollowerCount);
               }
@@ -238,25 +249,31 @@
         });
       });
 
-      // 무한 스크롤
-      var isLoading = false;
+      // 무한 스크롤 로직
+      var isLoading = false; // 중복 요청 방지 플래그
       $(window).scroll(function() {
         var hasMore = ($('#hasMorePosts').val() === 'true');
         if (!hasMore || isLoading) return;
+
+        // (window의 높이 + 스크롤된 양) >= (문서 전체의 높이 - 특정 버퍼값)
         if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
           isLoading = true;
           $('#loadingIndicator').show();
           var nextPage = parseInt($('#currentPageNumber').val()) + 1;
           var profileUserId = $('#profileUserAcIdx').val();
+
           $.ajax({
-            url: '${pageContext.request.contextPath}/loadMorePosts.do',
-            type: 'GET',
-            data: { userId: profileUserId, page: nextPage },
+            url: '${pageContext.request.contextPath}/loadMorePosts.do', 
+            type: 'GET', 
+            data: {
+              userId: profileUserId,
+              page: nextPage
+            },
             dataType: 'json',
             success: function(response) {
               if (response.posts && response.posts.length > 0) {
                 var postsHtml = '';
-                $.each(response.posts, function(i, post) {
+                $.each(response.posts, function(index, post) {
                   postsHtml += '<div class="con_item">';
                   postsHtml += '  <a href="${pageContext.request.contextPath}/noteView.do?noteIdx=' + post.note_idx + '">';
                   postsHtml += '    <img src="${pageContext.request.contextPath}/' + (post.thumbnail_img ? post.thumbnail_img : 'sources/images/default_thumbnail.png') + '" alt="' + post.title + ' 썸네일">';
@@ -265,7 +282,7 @@
                   postsHtml += '</div>';
                 });
                 $('#con_wrapper').append(postsHtml);
-                $('#currentPageNumber').val(nextPage);
+                $('#currentPageNumber').val(nextPage); // 현재 페이지 번호 업데이트
               }
               if (!response.hasMore) {
                 $('#hasMorePosts').val('false');
@@ -283,7 +300,7 @@
           });
         }
       });
-
+      
       // 모달 열기: 페이지 목록 로드
       $('#pageCreateBtn').on('click', function() {
         var acIdx = $('#profileUserAcIdx').val();

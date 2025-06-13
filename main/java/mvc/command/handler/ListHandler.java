@@ -1,6 +1,5 @@
 package mvc.command.handler;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +52,6 @@ public class ListHandler implements CommandHandler {
             request.setAttribute("pagetitle", title);
             request.setAttribute("selectedUserPgIdx", userPgIdx);
         }
-
         // 항상 page.jsp 로 포워딩
         return "page.jsp";
     }

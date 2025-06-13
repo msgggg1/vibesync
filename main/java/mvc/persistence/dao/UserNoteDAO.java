@@ -6,7 +6,6 @@ import mvc.domain.vo.UserNoteVO;
 public interface UserNoteDAO {
 	
 	UserNoteVO getUserNoteById(int noteIdx);
-	
 	// 추가
 	void updateViewCount(int noteIdx);
 	
@@ -21,7 +20,7 @@ public interface UserNoteDAO {
 	void addFollow(int userIdx, int writerIdx);
 	
 	void deleteFollow(int userIdx, int writerIdx);
-	
+
 	/** 노트 생성 */
     void createNote(NoteVO note);
     
