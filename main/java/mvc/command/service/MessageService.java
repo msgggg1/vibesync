@@ -72,6 +72,7 @@ public class MessageService {
 		
 		try {
 			conn = ConnectionProvider.getConnection();
+			conn.setAutoCommit(false);
 			
 			MessageDAO messageDAO = new MessageDAOImpl(conn);
 			chatHistory = messageDAO.selectChatHistory(myIdx, otherIdx);
@@ -82,8 +83,12 @@ public class MessageService {
 					MessageDTO messageDTO = ir.next();
 					msg_idxList.add(messageDTO.getMsg_idx());
 				}
-				messageDAO.updateChkMessage(myIdx, msg_idxList);
-				conn.commit();
+				
+				if (messageDAO.updateChkMessage(myIdx, msg_idxList)) {
+					conn.commit();
+				} else {
+					conn.rollback();
+				}
 			}
 			
 		} catch (NamingException e) {
@@ -107,9 +112,16 @@ public class MessageService {
 		
 		try {
 			conn = ConnectionProvider.getConnection();
+			conn.setAutoCommit(false);
 			
 			MessageDAO messageDAO = new MessageDAOImpl(conn);
 			isSent = messageDAO.insertMessage(senderIdx, receiverIdx, text);
+			
+			if (isSent) {
+				conn.commit();
+			} else {
+				conn.rollback();
+			}
 			
 		} catch (NamingException e) {
 			JdbcUtil.rollback(conn);
