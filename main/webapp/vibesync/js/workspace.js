@@ -5,9 +5,6 @@ var selectedDateCell = null;
 var todosById = {};
 let dateToRefreshAfterFetch = null;
 let isInitialLoad = true;
-let currentChatSenderIdx = null;
-let category_name = null;
-let sortType = null;
 
 // ========================================================
 //  함수 선언 영역
@@ -25,7 +22,7 @@ function loadDailySchedules(dateString) {
             var endTime = String(endDate.getHours()).padStart(2, '0') + ":" + String(endDate.getMinutes()).padStart(2, '0');
             var descriptionHtml = (schedule.description && schedule.description.trim() !== '') ? ' <span class="schedule-desc">' + schedule.description + '</span>' : '';
             
-            scheduleHtml += `<li data-id="\${schedule.id}">
+            scheduleHtml += `<li data-id="${schedule.id}">
                                <div class="schedule-item-content">
                                    <span class="schedule-time">${startTime} - ${endTime}</span>
                                    <div class="schedule-details">
@@ -56,9 +53,9 @@ function loadTodoList() {
                 $.each(todos, function(index, todo) {
                     let isChecked = todo.status === 1 ? "checked" : "";
                     let textClass = todo.status === 1 ? "completed" : "";
-                    todoListHtml += `<li data-id="\${todo.todo_idx}">
-                                       <input type="checkbox" class="todo-checkbox" \${isChecked}>
-                                       <span class="todo-text \${textClass}">\${todo.text}</span>
+                    todoListHtml += `<li data-id="${todo.todo_idx}">
+                                       <input type="checkbox" class="todo-checkbox" ${isChecked}>
+                                       <span class="todo-text ${textClass}">${todo.text}</span>
                                        <button class="todo-delete-btn">&times;</button>
                                    </li>`;
                     todosById[todo.todo_idx] = todo;
@@ -105,11 +102,11 @@ function loadMyPostsWidget() {
                 posts.forEach(function(post) {
                     // a 태그 안에 제목과 메타 정보를 함께 넣어 스타일 적용이 용이하게 합니다.
                     contentHtml += `<li>
-                                        <a href="postView.do?nidx=\${post.note_idx}" title="\${post.title}">
-                                            <span>\${post.title}</span>
+                                        <a href="postView.do?nidx=${post.note_idx}" title="${post.title}">
+                                            <span>${post.title}</span>
                                             <span class="block-meta">
-                                                <i class="fa-regular fa-eye"></i> \${post.view_count}&nbsp;&nbsp;
-                                                <i class="fa-regular fa-thumbs-up"></i>\${post.like_count}
+                                                <i class="fa-regular fa-eye"></i> ${post.view_count}&nbsp;&nbsp;
+                                                <i class="fa-regular fa-thumbs-up"></i>${post.like_count}
                                             </span>
                                         </a>
                                     </li>`;
@@ -144,9 +141,9 @@ function loadLikedPostsWidget() {
             if (posts && posts.length > 0) {
                 posts.forEach(function(post) {
                     contentHtml += `<li>
-                                        <a href="postView.do?nidx=\${post.note_idx}" title="\${post.title}">
-                                            <span>\${post.title}</span>
-                                            <span class="block-meta">by \${post.author_name}</span>
+                                        <a href="postView.do?nidx=${post.note_idx}" title="${post.title}">
+                                            <span>${post.title}</span>
+                                            <span class="block-meta">by ${post.author_name}</span>
                                         </a>
                                     </li>`;
                 });
@@ -173,89 +170,6 @@ function populateDatePicker() {
         $monthSelect.append(`<option value="${i}">${i}월</option>`);
     }
 }
-    const userCharts = {}; // 전역 차트 인스턴스 저장소
-// 차트 생성/재생성 함수 (이 함수는 전역에서 접근 가능해야 함)
-    function createOrUpdateChart(block_id, chartData) {
-        if (userCharts['userStatsChart_' + block_id]) {
-            userCharts['userStatsChart_' + block_id].destroy();
-        }
-        const ctx = document.getElementById('userStatsChart_' + block_id)?.getContext('2d');
-        if (!ctx) return;
-
-        const chart = new Chart(ctx, { /* ... 차트 생성 로직 ... */ });
-        userCharts['userStatsChart_' + block_id] = chart;
-    }
-
-// 블록 추가 함수
-	function addBlockToServer(dataToSend) {
-	    $.ajax({
-	        url: contextPath + '/block.do',
-	        type: 'POST',
-	        data: dataToSend,
-	        dataType: 'html',
-	        success: function(newBlockHtml) {
-	            $('#content_plus').before(newBlockHtml);
-	
-	            // 블록 개수 제한 로직
-	            if ($('#contents_grid .generated_block').length >= 5) {
-	                $("#content_plus").hide();
-	            }
-	        },
-	        error: function(err) {
-	            console.error("블록 추가 실패: ", err);
-	            alert('블록을 추가하는 데 실패했습니다.');
-	        }
-	    });
-	}
-
-// 블록 삭제 함수
-    function deleteBlock(block_id) {
-        if (!confirm("블록을 정말 삭제하시겠습니까?")) return;
-        $.ajax({
-            url: 'block.do', type: 'DELETE',
-            data: { block_id: block_id }, dataType: 'json',
-            success: function(res) {
-                if (res.success) {
-                    $('#block-' + block_id).remove();
-                    if ($('#contents_grid .generated_block').length < 5) { $("#content_plus").show(); }
-                } else { alert(res.message); }
-            },
-            error: function() { alert('블록 삭제 중 오류가 발생했습니다.'); }
-        });
-    }
-    
-// [함수] 채팅 모달 닫기
-function closeChatModal() {
-    $('#chatModal').hide();
-    location.reload(); // 안읽은 메시지 개수 등 갱신을 위해 새로고침
-}
-
-// [함수] 채팅 메시지 전송
-function sendChatMessage() {
-    const message = $("#chatInput").val().trim();
-    if (!message || !currentChatSenderIdx) return;
-
-    $.ajax({
-        url: contextPath + '/message.do', // ★ contextPath 변수 사용
-        type: 'POST',
-        data: JSON.stringify({ receiverIdx: currentChatSenderIdx, text: message }),
-        contentType: "application/json; charset=utf-8",
-        success: function(res) {
-            $("#chatInput").val("");
-            reloadChatHistory();
-        },
-        error: function() { alert('메시지 전송 실패!'); }
-    });
-}
-
-// [함수] 채팅 내역 새로고침
-function reloadChatHistory() {
-    if (currentChatSenderIdx) {
-        // 클릭 이벤트를 다시 발생시켜서 채팅 내역을 다시 로드
-        $('.message_item[data-sender-idx="'+currentChatSenderIdx+'"]').trigger('click');
-    }
-}
-
 
 // ========================================================
 //  페이지 로드 완료 후 실행되는 메인 로직
@@ -409,7 +323,7 @@ $(document).ready(function() {
                 const found = schedulesByDate[date].find(event => event.id == scheduleId);
                 if (found) {
                     const d = new Date(found.start);
-                    scheduleDate = `\${d.getFullYear()}-\${String(d.getMonth() + 1).padStart(2, '0')}-\${String(d.getDate()).padStart(2, '0')}`;
+                    scheduleDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
                     break;
                 }
             }
@@ -551,84 +465,7 @@ $(document).ready(function() {
                 },
                 error: function() { alert('서버와 통신 중 오류가 발생했습니다.'); }
             }); });
-
-      // 모든 이벤트 핸들러 등록
-      const grid = $('#contents_grid');
-
-      // 블록 새로고침
-      grid.on('click', '.refresh-block-btn', function() {
-          const block_id = $(this).data('block-id');
-          const blockContentDiv = $('#block-' + block_id + ' .block-content');
-          blockContentDiv.html('<div class="loading-spinner"></div>');
-          $.ajax({
-              url: 'block.do', type: 'GET', data: { block_id: block_id },
-              success: function(newBlockContentHtml) { blockContentDiv.html(newBlockContentHtml); },
-              error: function() { blockContentDiv.html('<p style="color:red;">새로고침 실패</p>'); }
-          });
-      });
-
-      // 블록 삭제
-      grid.on('click', '.delete-block-btn', function() {
-          deleteBlock($(this).data('block-id'));
-      });
-
-      // 차트 데이터셋 토글
-      grid.on('change', '.dataset-toggle-cb', function() {
-          const checkbox = $(this);
-          const chartId = checkbox.closest('.chart-toggles').data('chart-id');
-          const datasetIndex = checkbox.data('dataset-index');
-          const chart = userCharts[chartId];
-          if (chart) {
-              chart.setDatasetVisibility(datasetIndex, checkbox.prop('checked'));
-              chart.update();
-          }
-      });
-
-    $('#content_plus').on('click', function() { 
-		 $('html, body').scrollTop(0);
-		  $('#addBlockModal').css({
-			  position: 'fixed',
-			  top: '50%',
-			  left: '50%',
-			  transform: 'translate(-50%, -50%)',
-			  backgroundColor: 'rgba(0,0,0,0.8)',
-			  display: 'flex',
-			  zIndex: 99999
-		  });
-	 });
-	 
-	// 추가 블록 모달에서 타입 선택 시 옵션 표시/숨김 처리
-    $('#blockTypeSelector').on('change', function() { if ($(this).val() === 'CategoryPosts') {
-	            $('#category').show();
-	        } else {
-	            $('#category').hide();
-	        }
-	         }).change();
-	
-	// 모달에서 '추가' 버튼 클릭
-    $('#confirmAddBlock').off('click').on('click', function() { 
     
-    		const blockType = $('#blockTypeSelector').val();
-	        let options = { action: blockType };
-
-	        if (blockType === 'CategoryPosts') {
-	        	category_name = $("#categorySelector option:selected").text();
-	        	sortType = $("#sortTypeSelector").val();
-	            options.categoryIdx = $('#categorySelector').val();
-	            options.sortType = $('#sortTypeSelector').val();
-	        }
-	        
-	        addBlockToServer(options);
-	        $('#addBlockModal').hide();
-	        
-	        // 블록 개수 5개 제한
-	        if ($('#contents_grid .generated_block').length >= 4) {
-	             $("#content_plus").hide();
-	             return;
-	        }
-    });
-    
-    $('#addBlockModal').on('click', function(e) { if (e.target.id === 'addBlockModal') $(this).hide(); });
     
     // 6. 위젯 '더보기' 및 전체 목록 모달
     $('#contents_grid').on('click', '.more-btn', function() { 
@@ -650,13 +487,13 @@ $(document).ready(function() {
                     if (posts && posts.length > 0) {
                         posts.forEach(function(post) {
                             listHtml += `<li>
-                                        <a href="postView.do?nidx=\${post.note_idx}">
+                                        <a href="postView.do?nidx=${post.note_idx}">
                                             <div class="post-main-info">
-                                                <span class="widget-post-title">\${post.title}</span>
-                                                <span>조회수 \${post.view_count} | 좋아요 \${post.like_count}</span>
+                                                <span class="widget-post-title">${post.title}</span>
+                                                <span>조회수 ${post.view_count} | 좋아요 ${post.like_count}</span>
                                             </div>
                                             <div class="widget-post-author">
-                                                <span class="widget-post-meta">BY \${post.author_name}</span>
+                                                <span class="widget-post-meta">BY ${post.author_name}</span>
                                             </div>
                                         </a>
                                     </li>`;
@@ -670,6 +507,7 @@ $(document).ready(function() {
                 }
             });
 	 });
+	 
     $('#list-modal').on('click', '.modal-close-btn, .modal-overlay', function(e) { 
     		if ($(e.target).is('.modal-close-btn') || $(e.target).is('.modal-overlay')) {
                 $('#list-modal').hide();
@@ -693,7 +531,7 @@ $(document).ready(function() {
     $('#goto-date-btn').on('click', function() { 
 			const year = $('#year-select').val();
             const month = $('#month-select').val();
-            const targetDate = `\${year}-\${String(month).padStart(2, '0')}-01`;
+            const targetDate = `${year}-${String(month).padStart(2, '0')}-01`;
             calendar.gotoDate(targetDate);
             $datePickerPopover.hide();
 	 });
@@ -704,64 +542,7 @@ $(document).ready(function() {
             $datePickerPopover.hide();
         }
     });
-    
-    // 8. 채팅 관련
-    $('.message_item').on('click', function () { 
-			const senderIdx = $(this).data('sender-idx');
-	      currentChatSenderIdx = senderIdx;
-	      const nickname = $(this).data('nickname');
-	      $('#chatTitle').text(nickname);
-	      
-	      $.ajax({
-	        url: contextPath +'/message.do',
-	        type: 'GET',
-	        data: { senderIdx },
-	        dataType: 'json',
-	        success: function (chatList) {
-	        	$('#chatHistory').empty();
-
-	            if (!chatList || !Array.isArray(chatList) || chatList.length === 0) {
-	                $('#chatHistory').html('<p style="text-align:center; color:grey;">채팅 내역이 없습니다.</p>');
-	                return; 
-	            }
-	            
-	            const chatContainer = $('<div class="chat-container"></div>');
-
-	            chatList.forEach(msg => {
-	                const who = msg.isMine ? 'bubble-me' : 'bubble-other';
-	                const formattedText = msg.text.replace(/\n/g, '<br>');
-
-	                const messageHtml = `
-	                    <div class="chat-bubble \${who}">
-	                        <div class="bubble-text">\${formattedText}</div>
-	                        <div class="bubble-time">\${msg.relativeTime}</div>
-	                    </div>
-	                `;
-	                chatContainer.append(messageHtml);
-	            });
-
-	            $('#chatHistory').append(chatContainer);
-
-	            $('#chatModal').css({
-	                display: 'flex',
-	                top: '50%',
-	                left: '50%',
-	                transform: 'translate(-50%, -50%)',
-	                backgroundColor: 'rgba(0,0,0,0.8)'
-	            });
-	            
-	            if(chatContainer.length) {
-	                chatContainer.scrollTop(chatContainer[0].scrollHeight);
-	            }
-	        },
-	        error: function () {
-	          alert('채팅 내역 불러오기 실패');
-	        }
-	      });
-	 });
-	 
-    $("#sendMessageBtn").on("click", sendChatMessage);
-    $("#chatInput").on("keydown", function(e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChatMessage(); } });
+   
 
     // 9. ESC 키로 모달 닫기
     $(document).on('keydown', function(e) { if (e.key === 'Escape') $('#addBlockModal, #list-modal').hide(); });
@@ -864,7 +645,7 @@ $(document).ready(function() {
                     const dateStr = info.event.start.toISOString().substring(0, 10);
                     
                     // 해당 날짜의 DOM 요소를 직접 찾아 dateClick과 동일한 로직을 수행합니다.
-                    const dayEl = document.querySelector(`.fc-daygrid-day[data-date="\${dateStr}"]`);
+                    const dayEl = document.querySelector(`.fc-daygrid-day[data-date="${dateStr}"]`);
                     if (dayEl) {
                         if (selectedDateCell) {
                             selectedDateCell.classList.remove('fc-day-selected');
@@ -881,7 +662,7 @@ $(document).ready(function() {
     // --- 초기 데이터 로딩 함수 호출 ---
     loadTodoList();
     loadDailySchedules(getTodayString());
-    //loadMyPostsWidget();
-    //loadLikedPostsWidget();
+    loadMyPostsWidget();
+    loadLikedPostsWidget();
     populateDatePicker();
 });

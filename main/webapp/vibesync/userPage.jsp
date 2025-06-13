@@ -22,6 +22,7 @@ while (names.hasMoreElements()) {
   <title>user</title>
   <link rel="icon" href="./sources/favicon.ico" />
   <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.min.js"></script>
   <script defer src="./js/script.js"></script>

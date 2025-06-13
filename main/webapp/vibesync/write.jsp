@@ -19,6 +19,7 @@
   <title>PostView</title>
   <link rel="icon" href="./sources/favicon.ico" />
   <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
   <script src="./js/script.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   
