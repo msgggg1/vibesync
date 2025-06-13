@@ -174,9 +174,14 @@
 												<c:when test="${block.block_type == 'UserStats'}"><i class="fa-solid fa-chart-simple"></i>&nbsp;${block.title}</c:when>
 											</c:choose>
 										</h4>
-										<button class="refresh-block-btn" data-block-id="${block.block_id}" title="새로고침">
-											<i class="fa-solid fa-arrows-rotate"></i>
-										</button>
+										<div class="block-actions">
+									        <button class="refresh-block-btn" data-block-id="${block.block_id}" title="새로고침">
+									            <i class="fa-solid fa-arrows-rotate"></i>
+									        </button>
+									        <button class="delete-block-btn" data-block-id="${block.block_id}" title="삭제">
+									            <i class="fa-solid fa-trash-can"></i>
+									        </button>
+									    </div>
 									</div>
 									<div class="block-content">
 										<%-- 각 블록 타입에 맞는 JSP 프래그먼트를 include --%>
@@ -627,16 +632,6 @@
 <script defer src="./js/workspace.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
 
 
 
