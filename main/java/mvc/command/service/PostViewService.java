@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import javax.naming.NamingException;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.dto.UserNoteDTO;
 import mvc.domain.vo.UserNoteVO;
@@ -23,7 +24,8 @@ public class PostViewService {
 	public UserNoteVO getUserNoteInfo(int note_idx) {
 		Connection conn = null;
 		try {
-            conn = ConnectionProvider.getConnection(); 
+            conn = ConnectionProvider.getConnection();
+            conn.setAutoCommit(false);
 
             NoteDAO noteDAO = new NoteDAOImpl(conn);
             
@@ -33,9 +35,11 @@ public class PostViewService {
 
         } catch (SQLException e) {
             e.printStackTrace(); 
+            JdbcUtil.rollback(conn);
             throw new RuntimeException("노트 정보 오류", e);
         } catch (NamingException e) {
 			e.printStackTrace();
+			JdbcUtil.rollback(conn);
 			throw new RuntimeException("DB 커넥션 설정(JNDI) 오류 발생: " + e.getMessage(), e);
 		} finally {
             if (conn != null) {

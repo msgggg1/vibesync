@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initRotatingHighlight('popular_posts_container', 2800);
         initRotatingHighlight('popular_users_container', 2800);
         
-  } else if (mode.value === 'workspace') {
+  } /* else if (mode.value === 'workspace') {
     console.log(mode.value);
     const plusbtn = document.querySelector('#content_plus');
     const contentsGrid = document.querySelector('#contents_grid');
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     checkItemCount();
-  } /*else if (mode.value === 'board') {
+  } */ /*else if (mode.value === 'board') {
     loadFullBoardData(10);
     function loadFullBoardData(maxPage) {
       const posts = [];
