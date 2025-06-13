@@ -33,7 +33,7 @@
 
             <!-- <div id="loginFormContainer"> -->
             <div id="loginFormContainer" style="${formToShow eq 'signUp' ? 'display:none;' : 'display:flex;'}">
-                <form action="<%= request.getContextPath() %>/vibesync/login.do" method="post" id="loginForm"> <%-- action을 login.jsp 또는 현재 페이지로 명시 --%>
+                <form action="<%= request.getContextPath() %>/vibesync/user.do" method="post" id="loginForm"> <%-- action을 login.jsp 또는 현재 페이지로 명시 --%>
                 	<%-- POST 요청 시 login/signup 구분 --%>
                 	<input type="hidden" name="accessType" value="login">
                 	
@@ -72,7 +72,7 @@
 
             <!-- <div id="signupFormContainer" style="display: none;"> -->
             <div id="signupFormContainer" style="${formToShow eq 'signUp' ? 'display:flex;' : 'display:none;'}">
-                <form action="login.do" method="post" id="signupForm">
+                <form action="user.do" method="post" id="signupForm">
                 	<%-- POST 요청 시 login/signup 구분 --%>
                 	<input type="hidden" name="accessType" value="signUp">
                 	

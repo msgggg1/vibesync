@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>main</title>
-
+  <link rel="icon" href="./sources/favicon.ico" />
   <!-- swiper -->
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
   <link
@@ -15,10 +15,10 @@
     href="https://unpkg.com/swiper/swiper-bundle.min.css"
   />
   <!-- css,js -->
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-  <script defer src="${pageContext.request.contextPath}/js/script.js"></script>
+  <script defer src="./js/script.js"></script>
 </head>
 <body>
   <div id="notion-app">
@@ -62,8 +62,7 @@
             <div class="grid_item" id="recent_posts_container" >
 	            <c:forEach items="${mainPageDTO.latestNotes}" var="post" varStatus="status">
 		            <div class="list-entry" data-id="${post.note_idx}">
-		            	<a href="./postView.jsp?note_idx=${post.note_idx}" >
-			                <img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
+		            	<a href="postView.do?nidx=${post.note_idx}" >
 			                <span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
 			            </a>
 		            </div>
@@ -72,8 +71,7 @@
             <div class="grid_item" id="popular_posts_container">
 	             <c:forEach items="${mainPageDTO.popularNotes}" var="post" varStatus="status">
 	            	<div class="list-entry" data-id="${post.note_idx}">
-	                	<a href="./postView.jsp?note_idx=${ post.note_idx }">
-		                	<img class="entry-image" src="https://placehold.co/300x200.png?text=${post.title}" alt="${post.title}">
+	                	<a href="postView.do?nidx=${ post.note_idx }">
 		                	<span class="entry-number">${status.count}.</span><span class="entry-title">${post.title}</span>
 	            		</a>
 	            	</div>
@@ -82,8 +80,7 @@
             <div class="grid_item" id="popular_users_container">
             	  <c:forEach items="${mainPageDTO.popularUsers}" var="user" varStatus="status">
 	            	<div class="list-entry" data-id="${status.count}">
-	            		<a href="./user.jsp?ui=${ user.ac_idx }" >
-	               	 		<img class="entry-image" src="https://placehold.co/100x100.png?text=${user.nickname}" alt="${user.nickname}">
+	            		<a href="userPage.do?acIdx=${ user.ac_idx }" >
 	                		<span class="entry-number">${status.count}</span>
 	                		<span class="entry-title">${user.nickname}</span>
 	            		</a>
@@ -101,7 +98,7 @@
               		<ul>
               		<c:forEach items="${ posts.value }" var="post">
               			<li>
-              			<a href="./postView.jsp?note_idx=${ post.note_idx }">
+              			<a href="postView.do?nidx=${ post.note_idx }">
               				<div class="post-index" style="display: inline-block; align-self: left;">${ post.note_idx }</div>
 		              		<div class="post-title" style="display: inline-block; align-self: right;">${ post.title }</div>
               			</a>

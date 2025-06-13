@@ -27,10 +27,10 @@ public class MainPageHandler implements CommandHandler {
 		
         if (session == null) { // 세션 만료
         	System.err.println("MainPageHandler: session expired.");
-            response.sendRedirect(request.getContextPath() + "/vibesync/login.do");
+            response.sendRedirect(request.getContextPath() + "/vibesync/user.do");
         } else if (session.getAttribute("userInfo") == null) {
         	System.err.println("MainPageHandler: User not logged in.");
-            response.sendRedirect(request.getContextPath() + "/vibesync/login.do");
+            response.sendRedirect(request.getContextPath() + "/vibesync/user.do");
         	// 로그인 되어 있지 않고, 게스트 계정으로 메인 페이지 오픈하려는 경우
         	/*
             userInfo = new UserSessionVO().builder()
@@ -49,6 +49,7 @@ public class MainPageHandler implements CommandHandler {
         	// 사이드바 로딩
         	SidebarService sidebarService = new SidebarService();
         	SidebarDTO sidebarDTO = sidebarService.loadSidebar(userInfo.getAc_idx());
+        	System.out.println(sidebarDTO);
         	request.setAttribute("sidebarDTO", sidebarDTO);
         	
         	// 메인 페이지 로딩

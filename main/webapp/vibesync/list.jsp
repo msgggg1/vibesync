@@ -1,45 +1,45 @@
-<%@page import="mvc.domain.vo.NoteVO"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="mvc.domain.vo.NoteVO"%>
 <%@page import="com.util.DBConn_vibesync"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-Connection conn = null;
-PreparedStatement pstmt = null;
-String sql =  " select * from note order by note_idx";
-System.out.println(sql);
-ResultSet rs = null;   
-
-NoteVO vo = null;
-ArrayList<NoteVO> list = null;
-Iterator<NoteVO> ir = null;
-
-int note_idx;
-String title;
-
-conn = DBConn_vibesync.getConnection();
-pstmt = conn.prepareStatement(sql);
-rs = pstmt.executeQuery();
-
-
-if( rs.next() ){
-    list = new ArrayList<>();
-    do{
-       
-    	note_idx = rs.getInt("note_idx");
-    	title = rs.getString("title");
-       
-       vo = new NoteVO().builder()
-             .note_idx(note_idx).title(title)
-            .build();
-       list.add(vo);
-    }while( rs.next() );
-}
-
-int count = list.size();
+	Connection conn = null;
+	PreparedStatement pstmt = null;
+	String sql =  " select * from note order by note_idx";
+	System.out.println(sql);
+	ResultSet rs = null;   
+	
+	NoteVO vo = null;
+	ArrayList<NoteVO> list = null;
+	Iterator<NoteVO> ir = null;
+	
+	int note_idx;
+	String title;
+	
+	conn = DBConn_vibesync.getConnection();
+	pstmt = conn.prepareStatement(sql);
+	rs = pstmt.executeQuery();
+	
+	
+	if( rs.next() ){
+	    list = new ArrayList<>();
+	    do{
+	       
+	    	note_idx = rs.getInt("note_idx");
+	    	title = rs.getString("title");
+	       
+	       vo = new NoteVO().builder()
+	             .note_idx(note_idx).title(title)
+	            .build();
+	       list.add(vo);
+	    }while( rs.next() );
+	}
+	
+	int count = list.size();
 
 %>
 <!DOCTYPE html>
@@ -58,7 +58,6 @@ int count = list.size();
     <input type="hidden" id="mode" value="board">
     <div class="notion-app-inner">
       <jsp:include page="./includes/sidebar.jsp" flush="true"></jsp:include>
-
       <!-- content -->
       <div id="content_wrapper">
         <section id="content">

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.vo.CategoryVO;
 import mvc.persistence.dao.CategoryDAO;
@@ -25,9 +26,12 @@ public class CategoryService {
 			
 			// 카테고리 조회
 			list = categoryDAO.CategoryAll();
+			System.out.println(list.toString());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(conn);
 		}
 		
 		return list;

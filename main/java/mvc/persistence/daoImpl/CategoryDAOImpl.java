@@ -28,7 +28,7 @@ public class CategoryDAOImpl implements CategoryDAO {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
     	
-    	String sql = " SELECT category_idx, c_name, img FROM category ";
+    	String sql = " SELECT * FROM category ";
     	
         try {
         	pstmt = conn.prepareStatement(sql);
