@@ -26,7 +26,6 @@ public interface NoteDAO {
     // 포스트 뷰 출력
  	NoteDetailDTO printNote(int noteIdx);
 
- 	
  	// 조회수 증가 **********안쓰면 확인 후 삭제
  	void increaseViewCount(int noteIdx) throws SQLException; 
  	
@@ -55,10 +54,28 @@ public interface NoteDAO {
     // 게시글들의 조회수 총합 조회
     int getViewCountsForMultipleNotes(List<Integer> noteIdx) throws SQLException;
     
-    // 특정 사용자의 최근 N일간의 일별 게시글 작성 수 (일별 통계)
+    // 특정 사용자의 최근 N일간의 일별 게시글 작성수 (일별 통계)
     List<DailyStatsDTO> getDailyPostCounts(int acIdx, int days) throws SQLException;
     
-    // 특정 사용자의 최근 N일간의 일별 게시글 조회 수 (일별 통계)
+    // 특정 사용자의 최근 N주간의 주별 게시글 작성수 (주별 통계)
+    List<DailyStatsDTO> getWeeklyPostCounts(int acIdx, int weeks) throws SQLException;
+    
+    // 특정 사용자의 최근 N달간의 월별 게시글 작성수 (월별 통계)
+    List<DailyStatsDTO> getMonthlyPostCounts(int acIdx, int months) throws SQLException;
+    
+    // 특정 사용자의 최근 N년간의 연도별 게시글 작성수 (연도별 통계)
+    List<DailyStatsDTO> getYearlyPostCounts(int acIdx, int years) throws SQLException;
+    
+    // 특정 사용자의 최근 N주간의 일별 게시글 조회수 (일별 통계)
     List<DailyStatsDTO> getDailyViewCounts(int acIdx, int days) throws SQLException;
+    
+    // 특정 사용자의 최근 N일간의 주별 게시글 조회수 (주별 통계)
+    List<DailyStatsDTO> getWeeklyViewCounts(int acIdx, int weeks) throws SQLException;
+    
+    // 특정 사용자의 최근 N달간의 월별 게시글 조회수 (월별 통계)
+    List<DailyStatsDTO> getMonthlyViewCounts(int acIdx, int months) throws SQLException;
+    
+    // 특정 사용자의 최근 N년간의 연도별 게시글 조회수 (연도별 통계)
+    List<DailyStatsDTO> getYearlyViewCounts(int acIdx, int years) throws SQLException;
     
 }
