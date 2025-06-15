@@ -101,6 +101,12 @@ public class UserHandler implements CommandHandler {
             		if (userInfo == null) { // 자동 로그인으로 로그인 실패 시
             			return "logout.jsp";
 					} else {
+						// 추가
+						Cookie userIdxCookie = new Cookie("login_user_idx", userInfo.getAc_idx() + "");
+	                    userIdxCookie.setMaxAge(60 * 60 * 24 * 7);
+	                    userIdxCookie.setPath("/");
+	                    response.addCookie(userIdxCookie);
+	                    
 						response.sendRedirect(contextPath + "/vibesync/main.do"); // main.jsp로 리디렉션
 						return null;
 					}
@@ -152,6 +158,12 @@ public class UserHandler implements CommandHandler {
                     }
                     // 자동로그인의 경우 로그아웃 실행 시에만 autoLoginUserEmail 쿠키 삭제가 가능
                 	
+                    // 추가
+                    Cookie userIdxCookie = new Cookie("login_user_idx", userInfo.getAc_idx() + "");
+                    userIdxCookie.setMaxAge(60 * 60 * 24 * 7);
+                    userIdxCookie.setPath("/");
+                    response.addCookie(userIdxCookie);
+                    
                     // 로그인 성공에 따른 사용자 정보 저장 및 메인 페이지 리디렉션
                     session.setAttribute("userInfo", userInfo); // 세션에 로그인된 사용자 정보 저장
                     response.sendRedirect(contextPath + "/vibesync/main.do"); // 메인 페이지로 리디렉션

@@ -51,7 +51,7 @@
             <c:forEach items="${ categoryVOList }" var="categoryVO">
                <c:if test="${categoryVO.category_idx != userInfo.category_idx}">
                   <button style="background-image: url( <%= contextPath %>${ categoryVO.img }); background-size: cover;"
-                        onclick="location.href='./list.jsp?category_idx=${categoryVO.category_idx}'">
+                        onclick="location.href='list.do?category_idx=${categoryVO.category_idx}'">
                      <p>${ categoryVO.c_name }</p>
                   </button>
                </c:if>
