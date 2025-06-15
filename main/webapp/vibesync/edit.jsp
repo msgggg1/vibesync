@@ -29,9 +29,108 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
   
   <style>
+  span {
+   color: var(--font-color) !important;
+  }
+  
   .note-editor {
   	background: white;
   }
+  
+  #select_wrapper {
+  	display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 14px;
+    height: 2rem;
+  }
+  
+  #select_wrapper select{
+  	border-radius: 4px;
+  	height: 2rem;
+  }
+  
+  #select_wrapper .sel {
+  	display: flex;
+    gap: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #select_wrapper label {
+  	margin: 0;
+  }
+  
+	#title_info {
+	width: 100%;
+    height: 100%;
+    display: flex;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.4rem;
+	}
+
+	.note-editor {
+	position: relative;
+	width: 100%;
+    min-height: 800px;
+    border: none !important;
+    background: transparent;
+	}
+
+	.note-editing-area {
+		width: 100%;
+    height: 94%;
+    background: transparent;
+	}
+	
+	.note-editable {
+		height: 100% !important;
+	}
+	.note-statusbar{
+		display: none;
+	}
+	
+	.note-toolbar{
+		display: flex;
+		justify-content: space-evenly;
+		border: solid 2px var(--border-color);
+		border-radius: 4px;
+	}
+	
+	.note-editing-area{
+		margin-top: 20px;
+	}
+	
+	.note_op{
+		border: solid 2px var(--border-color);
+	    padding: 10px;
+	    border-radius: 4px;
+	    background-color: var(--background-color);
+	}
+
+	#save_btn {
+		display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+	}
+
+	#saveBtn {
+		background: #8ac4ff;
+		font-weight: bold;
+		margin: 0 !important;
+	}
+	
+	#saveBtn:hover {
+		background: #1f8efdb7;
+		font-weight: bold;
+		margin: 0 !important;
+	}
   </style>
   
 </head>
@@ -54,7 +153,10 @@
 
             <div class="line"></div>
             <div class="text_content">
-            	<form id="postForm" method="post" action="noteedit.do">
+            	<form id="postForm" method="post" action="noteedit.do" style="margin-bottom: 4rem;" >
+            	  <input class="title" type="text" name="title" placeholder="title..." required value="${note.title}">
+	              <textarea id="summernote" name="content">${note.text}</textarea>
+	              <div class="note_op">
             	  <div id="select_wrapper">
             	  	<div class="category">
             	  	  	<label for="category">category</label>
@@ -81,14 +183,13 @@
 	                  </select>
             	  	</div>
             	  </div>
-            	  <input class="title" type="text" name="title" placeholder="title..." required value="${note.title}">
-	              <textarea id="summernote" name="content">${note.text}</textarea>
 	              <input type="hidden" id="images" name="images">
 	              <input type="hidden" id="pageidx" name="pageidx" value="<%= pageidx %>">
 	              <input type="hidden" id="noteidx" name="noteidx" value="${note.note_idx}">
-	              
-	              <button type="button" id="saveBtn" class="btn btn-primary mt-3">저장</button>
-	              
+	              <div id="save_btn">
+	              <button type="button" id="saveBtn" class="btn btn-primary mt-3">SAVE</button>
+	              </div>
+	              </div>
 	            </form>
             </div>
           </div>

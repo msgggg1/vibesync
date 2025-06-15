@@ -251,6 +251,8 @@ $(document).ready(function() {
 
         $.ajax({
             type: 'POST',
+            // 확인 필요
+            //url: '<%= request.getContextPath() %>/sidebar.do',
             url: '<%= request.getContextPath() %>/common.do',
             data: formData,
             dataType: 'json',

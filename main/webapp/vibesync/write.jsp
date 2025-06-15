@@ -40,13 +40,15 @@
   
   #select_wrapper {
   	display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
-    margin-bottom: 21px;
+    margin-top: 1rem;
+    gap: 14px;
     height: 2rem;
   }
   
   #select_wrapper select{
+  	border-radius: 4px;
   	height: 2rem;
   }
   
@@ -64,21 +66,20 @@
   }
   
 	#title_info {
-		width: 100%;
+	width: 100%;
     height: 100%;
     display: flex;
-    gap: 20px;
     font-weight: bold;
     align-items: center;
     justify-content: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.4rem;
 	}
 
 	.note-editor {
 	position: relative;
 	width: 100%;
-    height: 800px;
-    border: 2px solid black !important;
+    min-height: 800px;
+    border: none !important;
     background: transparent;
 	}
 
@@ -90,6 +91,27 @@
 	
 	.note-editable {
 		height: 100% !important;
+	}
+	.note-statusbar{
+		display: none;
+	}
+	
+	.note-toolbar{
+		display: flex;
+		justify-content: space-evenly;
+		border: solid 2px var(--border-color);
+		border-radius: 4px;
+	}
+	
+	.note-editing-area{
+		margin-top: 20px;
+	}
+	
+	.note_op{
+		border: solid 2px var(--border-color);
+	    padding: 10px;
+	    border-radius: 4px;
+	    background-color: var(--background-color);
 	}
 
 	#save_btn {
@@ -133,7 +155,19 @@
 
             <div class="line"></div>
             <div class="text_content">
-            	<form id="postForm" method="post" action="notecreate.do">
+            	<form id="postForm" method="post" action="notecreate.do" style="margin-bottom: 4rem;">
+            	  <div id="title_info">
+	            	  <label for="title"></label>
+	            	  <input class="title" id="title" type="text" name="title" placeholder="title..." required>
+            	  </div>
+            	  
+            	  
+	              <textarea id="summernote" name="content"></textarea>
+	              <div class="note_op">
+            	  <div style="margin-top: 1rem;">
+						<label for="thumbnail_input" style="font-weight:bold;">Thumbnail Image (JPG, JPEG only)</label>
+						<input type="file" id="thumbnail_input" accept=".jpg, .jpeg" required>
+            	  </div>
             	  <div id="select_wrapper">
             	  	<div class="category sel" >
             	  	  	<label for="category">category</label>
@@ -160,17 +194,6 @@
 	                  </select>
             	  	</div>
             	  </div>
-            	  <div id="title_info">
-	            	  <label for="title">TITLE</label>
-	            	  <input class="title" id="title" type="text" name="title" placeholder="title..." required>
-            	  </div>
-            	  
-            	  <div style="margin-bottom: 1rem;">
-						<label for="thumbnail_input" style="font-weight:bold;">Thumbnail Image (JPG, JPEG only)</label>
-						<input type="file" id="thumbnail_input" accept=".jpg, .jpeg" required>
-            	  </div>
-            	  
-	              <textarea id="summernote" name="content"></textarea>
 	              
 	              <input type="hidden" id="images" name="images">
 	              <input type="hidden" name="thumbnail_base64"> <input type="hidden" name="thumbnail_ext">    <input type="hidden" id="pageidx" name="pageidx" value="<%= pageidx %>">
@@ -178,7 +201,7 @@
 	              <div id="save_btn">
 		              <button type="button" id="saveBtn" class="btn btn-primary mt-3">SAVE</button>
 	              </div>
-	              
+	             </div>
 	            </form>
             </div>
           </div>
@@ -191,6 +214,7 @@
   $(function() {
 	    $('#summernote').summernote({
 	        height: 300,
+	        placeholder: '여기에 내용을 입력하세요...',
 	        toolbar: [
 	            ['style', ['style']],
 	            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],

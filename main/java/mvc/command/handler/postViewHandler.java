@@ -17,12 +17,14 @@ import mvc.command.service.PostViewService;
 import mvc.domain.dto.UserNoteDTO;
 import mvc.domain.vo.UserNoteVO;
 import mvc.domain.vo.UserVO;
-import mvc.persistence.dao.UserNoteDAO;
-import mvc.persistence.daoImpl.UserNoteDAOImpl;
+import mvc.persistence.dao.FollowDAO;
+import mvc.persistence.dao.LikeDAO;
+import mvc.persistence.daoImpl.FollowDAOImpl;
+import mvc.persistence.daoImpl.LikeDAOImpl;
 
 public class postViewHandler implements CommandHandler {
-    
-    private PostViewService postviews = new PostViewService();
+	
+	private PostViewService postviews = new PostViewService();
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -94,74 +96,74 @@ public class postViewHandler implements CommandHandler {
         return null;
     }
 
-    private void handleToggleFollow(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json; charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        Connection conn = null;
-        try {
-            conn = ConnectionProvider.getConnection();
-            UserNoteDAO dao = new UserNoteDAOImpl(conn);
+	private void handleToggleFollow(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("application/json; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		Connection conn = null;
+		try {
+			conn = ConnectionProvider.getConnection(); // *******************수정정
+			FollowDAO dao = new FollowDAOImpl(conn);
 
-            int userIdx = Integer.parseInt(request.getParameter("userIdx"));
-            int writerIdx = Integer.parseInt(request.getParameter("writerIdx"));
-            int noteIdx = Integer.parseInt(request.getParameter("nidx"));
+			int userIdx = Integer.parseInt(request.getParameter("userIdx"));
+			int writerIdx = Integer.parseInt(request.getParameter("writerIdx"));
+			int noteIdx = Integer.parseInt(request.getParameter("nidx"));
 
-            // 로그로 파라미터 값 확인
-            System.out.println(">>> handleToggleFollow - userIdx: " + userIdx + ", writerIdx: " + writerIdx + ", noteIdx: " + noteIdx);
+			// 로그로 파라미터 값 확인
+			System.out.println(">>> handleToggleFollow - userIdx: " + userIdx + ", writerIdx: " + writerIdx + ", noteIdx: " + noteIdx);
 
-            boolean following = dao.isFollowing(userIdx, writerIdx);
-            if (following) {
-                dao.deleteFollow(userIdx, writerIdx);
-                following = false;
-            } else {
-                dao.addFollow(userIdx, writerIdx);
-                following = true;
-            }
+			boolean following = dao.isFollowing(userIdx, writerIdx);
+			if (following) {
+				dao.removeFollow(userIdx, writerIdx);
+				following = false;
+			} else {
+				dao.addFollow(userIdx, writerIdx);
+				following = true;
+			}
 
-            out.write("{\"following\":" + following + "}");
-        } catch (NamingException | java.sql.SQLException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.write("{\"error\":\"Unable to toggle follow\"}");
-            e.printStackTrace();
-        } finally {
-            if (conn != null) try { conn.close(); } catch (Exception ignored) {}
-            out.flush();
-            out.close();
-        }
-    }
+			out.write("{\"following\":" + following + "}");
+		} catch (NamingException | java.sql.SQLException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			out.write("{\"error\":\"Unable to toggle follow\"}");
+			e.printStackTrace();
+		} finally {
+			if (conn != null) try { conn.close(); } catch (Exception ignored) {}
+			out.flush();
+			out.close();
+		}
+	}
 
-    private void handleToggleLike(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json; charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        Connection conn = null;
-        try {
-            conn = ConnectionProvider.getConnection();
-            UserNoteDAO dao = new UserNoteDAOImpl(conn);
+	private void handleToggleLike(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("application/json; charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		Connection conn = null;
+		try {
+			conn = ConnectionProvider.getConnection();
+			LikeDAO dao = new LikeDAOImpl(conn);
 
-            int userIdx = Integer.parseInt(request.getParameter("userIdx"));
-            int noteIdx = Integer.parseInt(request.getParameter("noteIdx"));
+			int userIdx = Integer.parseInt(request.getParameter("userIdx"));
+			int noteIdx = Integer.parseInt(request.getParameter("noteIdx"));
 
-            // 로그로 파라미터 값 확인
-            System.out.println(">>> handleToggleLike - userIdx: " + userIdx + ", noteIdx: " + noteIdx);
+			// 로그로 파라미터 값 확인
+			System.out.println(">>> handleToggleLike - userIdx: " + userIdx + ", noteIdx: " + noteIdx);
 
-            boolean liked = dao.isLiked(userIdx, noteIdx);
-            if (liked) {
-                dao.deleteLike(userIdx, noteIdx);
-                liked = false;
-            } else {
-                dao.addLike(userIdx, noteIdx);
-                liked = true;
-            }
+			boolean liked = dao.isLiked(userIdx, noteIdx);
+			if (liked) {
+				dao.removeLike(userIdx, noteIdx);
+				liked = false;
+			} else {
+				dao.addLike(userIdx, noteIdx);
+				liked = true;
+			}
 
-            out.write("{\"liked\":" + liked + "}");
-        } catch (NamingException | java.sql.SQLException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.write("{\"error\":\"Unable to toggle like\"}");
-            e.printStackTrace();
-        } finally {
-            if (conn != null) try { conn.close(); } catch (Exception ignored) {}
-            out.flush();
-            out.close();
-        }
-    }
+			out.write("{\"liked\":" + liked + "}");
+		} catch (NamingException | java.sql.SQLException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			out.write("{\"error\":\"Unable to toggle like\"}");
+			e.printStackTrace();
+		} finally {
+			if (conn != null) try { conn.close(); } catch (Exception ignored) {}
+			out.flush();
+			out.close();
+		}
+	}
 }

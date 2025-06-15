@@ -1,5 +1,10 @@
 /* sidebar */
-.sidebar_icon{
+.notion-sidebar a:hover{
+	text-decoration: none !important;
+	color: var(--font-color) !important;
+}
+
+.notion-sidebar .sidebar_icon{
   filter: var(--icon-filter);
 }
 
@@ -43,7 +48,7 @@
   color: var(--font-color);
 }
 
-.search {
+.notion-sidebar .search {
   display: inline-flex;
   align-items: center;
   position: relative;
@@ -51,7 +56,7 @@
 }
 
 /* 입력창 숨김 상태 */
-.search-input {
+.notion-sidebar .search-input {
   width: 100px;
   height: 22px;
   background: none;
@@ -60,11 +65,11 @@
   color: var(--font-color);
 }
 
-input:focus {
+.notion-sidebar input:focus {
   outline: none;
 }
 
-#follow {
+.notion-sidebar #follow {
   display: flex;
   justify-content: start;
   align-items: center;
@@ -73,19 +78,19 @@ input:focus {
 }
 
 /* 레이블 스타일 */
-.follow_list label {
+.notion-sidebar .follow_list label {
   text-decoration: none;
   color: var(--font-color);
   cursor: pointer;
 }
 
 /* 체크박스 숨김 */
-#follow_toggle {
+.notion-sidebar #follow_toggle {
   display: none;
 }
 
 /* 토글 메뉴 숨김 상태 */
-.follow_items {
+.notion-sidebar .follow_items {
   list-style: none;
   padding: 0;
   margin: 20px 0 0;
@@ -95,21 +100,21 @@ input:focus {
 }
 
 /* 체크되면 메뉴 확장 */
-#follow_toggle:checked ~ .follow_items {
+.notion-sidebar #follow_toggle:checked ~ .follow_items {
   max-height: 200px;
   transition: max-height 0.3s ease-in;
 }
 
-.follow_items li {
+.notion-sidebar .follow_items li {
   margin: 4px 0;
 }
 
-.icon_wrap {
+.notion-sidebar .icon_wrap {
   display: flex;
   gap: 10px;
 }
 
-#logout form {
+.notion-sidebar #logout form {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -117,7 +122,7 @@ input:focus {
   margin-bottom: 20px;
 }
 
-#logout form > button {
+.notion-sidebar #logout form > button {
   width: 150px;
   border: none;
   background-color: red;
@@ -128,3 +133,27 @@ input:focus {
   color: var(--w-fff);
   cursor: pointer;
 }
+
+#toggle-btn {
+  display: none;
+  position: absolute;
+  font-size: 24px;
+  font-weight: bold;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+  color: var(--font-color);
+  z-index: 112;
+  cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+  #toggle-btn {
+    display: block;
+    background-color: var(--card-back);
+    border: solid 2px var(--border-color);
+    border-radius: 0 0 10px 0;
+    border-left: none;
+    border-top: none;
+  }}

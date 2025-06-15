@@ -151,6 +151,15 @@
       $('#edit-comment-form').on('submit', function(e) { e.preventDefault(); const text = $('#edit-comment-text').val(); if(!text.trim()) { alert('수정할 내용을 입력하세요.'); return; } $.ajax({ url: commentUrl, type: 'POST', data: { action: 'update', commentIdx: $('#edit-comment-id').val(), text: text }, dataType: 'json', success: function() { $('#edit-comment-modal').hide(); loadComments(); } }); });
     });
   </script>
+  <style>
+  .postview_ed_btn, .postview_de_btn{
+  padding: 4px 10px;
+  background-color: var(--card-back);
+  font-weight: bold;
+  border: solid 2px var(--border-color);
+  border-radius: 6px;
+  }
+  </style>
 </head>
 <body>
   <div id="notion-app">
@@ -167,8 +176,8 @@
               <p>${note.title}</p>
               <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == note.upac_idx}">
                 <div>
-                  <button><a href="noteedit.do?noteidx=${note.note_idx}">edit</a></button>
-                  <button><a href="notedelete.do?noteidx=${note.note_idx}">delete</a></button>
+                  <button class="postview_ed_btn"><a href="noteedit.do?noteidx=${note.note_idx}">edit</a></button>
+                  <button class="postview_de_btn"><a href="notedelete.do?noteidx=${note.note_idx}">delete</a></button>
                 </div>
               </c:if>
             </div>
@@ -193,7 +202,7 @@
             <div id="comment-section">
                 <h4>Comments</h4>
                 <c:if test="${not empty sessionScope.userInfo}">
-                   <form id="comment-form" style="margin-bottom: 1.864rem;"><input type="hidden" name="noteIdx" value="${note.note_idx}"><div class="textarea-div" style="display: flex; align-items: center;"><textarea name="text" rows="3" placeholder="댓글을 입력하세요..." required style="width:100%; resize:none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none;"></textarea><button type="submit" style="margin: 0px; padding: 5px 10px; height: 65px; border: solid 2px var(--border-color); border-radius: 0 4px 4px 0; border-left: none; background-color: var(--background-color); font-weight: bold; ">작성</button></div></form>
+                   <form id="comment-form" style="margin-bottom: 1.864rem;"><input type="hidden" name="noteIdx" value="${note.note_idx}"><div class="textarea-div" style="display: flex; align-items: center;"><textarea name="text" rows="3" placeholder="댓글을 입력하세요..." required style="width:100%; resize:none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none;"></textarea><button type="submit" style="margin: 0px; padding: 5px 10px; height: 65.51px; border: solid 2px var(--border-color); border-radius: 0 4px 4px 0; border-left: none; background-color: var(--background-color); font-weight: bold; ">작성</button></div></form>
                 </c:if>
                 <div id="comment-list" style="clear:both;"></div>
             </div>
