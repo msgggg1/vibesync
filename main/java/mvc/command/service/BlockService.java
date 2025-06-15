@@ -164,10 +164,7 @@ public class BlockService {
 			e.printStackTrace();
 		} finally {
 			JdbcUtil.close(conn);
-		} finally {
-			JdbcUtil.close(conn);
 		}
-		
 		
 		return blockDTO;
 		

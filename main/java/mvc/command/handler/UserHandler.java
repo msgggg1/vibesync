@@ -201,7 +201,12 @@ public class UserHandler implements CommandHandler {
                 } else if ("rememberedEmail".equals(cookie.getName())) {
                     // rememberEmail 쿠키를 바로 삭제하지 않고, 인스턴스만 저장
                     rememberEmailCookieInstance = cookie;
-                }
+                } else if ("login_user_idx".equals(cookie.getName())) {
+                	cookie.setValue("");
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/"); 
+                    response.addCookie(cookie);
+				}
             }
         }
 

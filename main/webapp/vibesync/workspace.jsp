@@ -480,7 +480,7 @@
 
                         // 2. 만약 블록 타입이 'UserStats'이고 차트 데이터가 있다면 차트를 다시 그림
                         if (res.block_type === 'UserStats' && res.chart_data) {
-                        	res.closest('h4').text('<i class="fa-solid fa-chart-simple"></i>&nbsp;\${res.title}');
+                        	$('#block-' + blockId).find('.block-header h4').html('<i class="fa-solid fa-chart-simple"></i>&nbsp;' + res.title);
                         	createOrUpdateChart(blockId, res.chart_data);
                         }
                     },

@@ -206,12 +206,12 @@ const isLoggedIn = ${not empty user};
                 <img src="${(note.img == null or empty note.img) ? './sources/icons/profile.svg' : note.img}" alt="writer_profile">
                 <a href="userPage.do?acIdx=${note.ac_idx}">${note.nickname}</a>
                 <c:if test="${not empty sessionScope.userInfo and sessionScope.userInfo.ac_idx != note.upac_idx}">
-                  <form id="followForm" style="display:inline; margin:0; padding:0;"><button id="followBtn" type="submit" data-user-idx="<%= (user != null) ? user.getAc_idx() : "" %>" data-writer-idx="${note.upac_idx}" data-nidx="${note.note_idx}" style="background:#99bc85; border-radius:5px; border:none; cursor:pointer; padding:5px 10px;"><%= following ? "Unfollow" : "Follow" %></button></form>
+                  <form id="followForm" style="display:inline; margin:0; padding:0;"><button id="followBtn" type="submit" data-user-idx="${user.ac_idx}" data-writer-idx="${note.upac_idx}" data-nidx="${note.note_idx}" style="background:#99bc85; border-radius:5px; border:none; cursor:pointer; padding:5px 10px;">${isFollowing ? "Unfollow" : "Follow"}</button></form>
                 </c:if>
               </div>
               <div class="like_share">
                 <div><p><span>view : </span><span>${note.view_count}</span></p></div>
-                <form id="likeForm" style="display:inline; margin:0; padding:0;"><button id="likeBtn" type="submit" data-user-idx="<%= (user != null) ? user.getAc_idx() : "" %>" data-note-idx="${note.note_idx}" style="border:none; background:none; cursor:pointer;"><img id="likeImg" src="<%= liking ? "./sources/icons/fill_heart.png" : "./sources/icons/heart.svg" %>" alt="heart" style="vertical-align:middle; width:2rem; height:2rem;"><span id="likeCount" style="vertical-align:middle;">${note.like_num}</span></button></form>
+                <form id="likeForm" style="display:inline; margin:0; padding:0;"><button id="likeBtn" type="submit" data-user-idx="${user.ac_idx}" data-note-idx="${note.note_idx}" style="border:none; background:none; cursor:pointer;"><img id="likeImg" src="${isLiking ? './sources/icons/fill_heart.png' : './sources/icons/heart.svg'}" alt="heart" style="vertical-align:middle; width:2rem; height:2rem;"><span id="likeCount" style="vertical-align:middle;">${note.like_num}</span></button></form>
               </div>
             </div>
             <div class="line"></div>
@@ -247,12 +247,8 @@ const isLoggedIn = ${not empty user};
                       </div>
                   </c:otherwise>
                 </c:choose>
-                <div id="comment-list" style="clear:both;"></div>
-            </div>
-        </c:otherwise>
-    </c:choose>
-							<div id="comment-list" style="clear: both;"></div>
-						</div>
+				<div id="comment-list" style="clear: both;"></div>
+			</div>
 						<div id="edit-comment-modal"
 							style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
 							<div
