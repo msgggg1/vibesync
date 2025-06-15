@@ -74,16 +74,21 @@
   	gap: 10px;
   }
 
-  #add_note_btn {
-    width: 2vw;
-    height: 2vw;
+  #add_note_btn , #delete_page_btn {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: #8ac4ff;
     border: none;
-    font-size: 1.4vw;
+    font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  
+  /* 공통부분 통합 */
+  #delete_page_btn {
+    background: #ff8a8a; /* 삭제를 의미하는 붉은 계열 색상 */
   }
 
   #add_note_btn a {
@@ -92,19 +97,6 @@
     text-decoration: none;
   }
   
-  /* [추가] 페이지 삭제 버튼 스타일 */
-  #delete_page_btn {
-  	width: 2vw;
-    height: 2vw;
-    border-radius: 50%;
-    background: #ff8a8a; /* 삭제를 의미하는 붉은 계열 색상 */
-    border: none;
-    font-size: 1.4vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
   
   #delete_page_btn a {
   	color: white;
@@ -154,9 +146,9 @@
                       
                       <c:forEach var="note" items="${notes}">
                       	<a href="postView.do?nidx=${note.note_idx}&pageidx=<%= selectedIdx %>">
-                          <div class="full-post" style="margin-bottom:8px; border-bottom: 1px solid #666;">
+                          <div class="full-post" style="margin-bottom:8px; border-bottom: 1px solid #666; width: 100%;">
                             <div class="post-index">${note.note_idx}</div>
-                            <div class="post-title"><c:out value="${note.title}"/></div>
+                            <div class="post-title" style="font-weight: bold; margin-left: 10px;"><c:out value="${note.title}"/></div>
                           </div>
                       	</a>
                       </c:forEach>
@@ -167,7 +159,7 @@
 
                       <button type="button" class="searchBtn"
                               onclick="location.href='<c:url value="/vibesync/page.do"/>?page=${currentPage}&size=${pageSize}&searchType=${searchType}&keyword=${keyword}'"
-                              style="margin-top:16px; position: absolute; right: 18px">List</button>
+                              style="margin-top:16px; position: absolute; right: 18px; padding: 4px 10px;">List</button>
                     </div>
                   </c:if>
 
