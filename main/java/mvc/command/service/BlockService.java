@@ -129,6 +129,7 @@ public class BlockService {
 		} catch (NamingException e) {
 			e.printStackTrace();
 			
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -163,7 +164,10 @@ public class BlockService {
 			e.printStackTrace();
 		} finally {
 			JdbcUtil.close(conn);
+		} finally {
+			JdbcUtil.close(conn);
 		}
+		
 		
 		return blockDTO;
 		
@@ -177,6 +181,7 @@ public class BlockService {
 		
 		try {
 			conn = ConnectionProvider.getConnection();
+			conn.setAutoCommit(false);
 			conn.setAutoCommit(false);
 			
 			BlockVO blockVO = BlockVO.builder()
@@ -194,11 +199,19 @@ public class BlockService {
 				JdbcUtil.rollback(conn);
 			}
 			
+			if (addedBlockId != 0) {
+				conn.commit();
+			} else {
+				JdbcUtil.rollback(conn);
+			}
+			
 		} catch (NamingException e) {
 			e.printStackTrace();
 			JdbcUtil.rollback(conn);
+			JdbcUtil.rollback(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			JdbcUtil.rollback(conn);
 			JdbcUtil.rollback(conn);
 		} finally {
 			JdbcUtil.close(conn);
@@ -216,6 +229,7 @@ public class BlockService {
 		try {
 			conn = ConnectionProvider.getConnection();
 			conn.setAutoCommit(false);
+			conn.setAutoCommit(false);
 			
 			BlockDAO blockDAO = new BlockDAOImpl(conn);
 			isRemoved = blockDAO.deleteBlock(ac_idx, blockId);
@@ -226,11 +240,19 @@ public class BlockService {
 				JdbcUtil.rollback(conn);
 			}
 			
+			if (isRemoved) {
+				conn.commit();
+			} else {
+				JdbcUtil.rollback(conn);
+			}
+			
 		} catch (NamingException e) {
 			e.printStackTrace();
 			JdbcUtil.rollback(conn);
+			JdbcUtil.rollback(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			JdbcUtil.rollback(conn);
 			JdbcUtil.rollback(conn);
 		} finally {
 			JdbcUtil.close(conn);

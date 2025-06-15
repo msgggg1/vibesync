@@ -12,6 +12,7 @@ import com.util.JdbcUtil;
 
 import mvc.domain.dto.DailyStatsDTO;
 import mvc.domain.dto.NoteDetailDTO;
+import mvc.domain.dto.NoteListDTO;
 import mvc.domain.dto.NoteSummaryDTO;
 import mvc.domain.vo.UserNoteVO;
 import mvc.persistence.dao.NoteDAO;
@@ -23,6 +24,131 @@ public class NoteDAOImpl implements NoteDAO {
 	public NoteDAOImpl(Connection conn) {
 		this.conn = conn;
 	}
+	
+	@Override
+    public List<NoteListDTO> selectNotes(int categoryIdx, int offset, int limit, String searchType, String keyword) throws SQLException {
+        List<NoteListDTO> list = new ArrayList<>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT note_idx, title, author_name ");
+        sql.append(" FROM ( ");
+        sql.append("     SELECT ROWNUM rnum, r.* ");
+        sql.append("     FROM ( ");
+        sql.append("         SELECT n.note_idx, n.title, ua.nickname AS author_name ");
+        sql.append("         FROM note n ");
+        sql.append("         JOIN userPage up ON n.userPg_idx = up.userPg_idx ");
+        sql.append("         JOIN userAccount ua ON up.ac_idx = ua.ac_idx ");
+        
+        // 동적 WHERE 절
+        StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
+        if (categoryIdx > 0) {
+            whereSql.append(" AND n.category_idx = ? ");
+        }
+        if (keyword != null && !keyword.isEmpty()) {
+            if ("title".equals(searchType)) {
+                whereSql.append(" AND n.title LIKE ? ");
+            } else if ("author".equals(searchType)) {
+                whereSql.append(" AND ua.nickname LIKE ? ");
+            } else if ("title_content".equals(searchType)) {
+                whereSql.append(" AND (n.title LIKE ? OR n.text LIKE ?) ");
+            }
+        }
+        sql.append(whereSql);
+        sql.append("         ORDER BY n.note_idx DESC ");
+        sql.append("     ) r ");
+        sql.append("     WHERE ROWNUM <= ? ");
+        sql.append(" ) ");
+        sql.append(" WHERE rnum > ? ");
+
+        try {
+            pstmt = conn.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            if (categoryIdx > 0) {
+                pstmt.setInt(paramIndex++, categoryIdx);
+            }
+            if (keyword != null && !keyword.isEmpty()) {
+                if ("title_content".equals(searchType)) {
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                } else {
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                }
+            }
+            pstmt.setInt(paramIndex++, offset + limit);
+            pstmt.setInt(paramIndex++, offset);
+
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                NoteListDTO dto = NoteListDTO.builder()
+                        .note_idx(rs.getInt("note_idx"))
+                        .title(rs.getString("title"))
+                        .author_name(rs.getString("author_name"))
+                        .build();
+                list.add(dto);
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return list;
+    }
+
+    /**
+     * [신규] 페이징 처리를 위한 전체 게시물 수 조회
+     */
+    @Override
+    public int selectNoteCount(int categoryIdx, String searchType, String keyword) throws SQLException {
+        int count = 0;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT COUNT(*) ");
+        sql.append(" FROM note n ");
+        sql.append(" JOIN userPage up ON n.userPg_idx = up.userPg_idx ");
+        sql.append(" JOIN userAccount ua ON up.ac_idx = ua.ac_idx ");
+
+        StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
+        if (categoryIdx > 0) {
+            whereSql.append(" AND n.category_idx = ? ");
+        }
+        if (keyword != null && !keyword.isEmpty()) {
+            if ("title".equals(searchType)) {
+                whereSql.append(" AND n.title LIKE ? ");
+            } else if ("author".equals(searchType)) {
+                whereSql.append(" AND ua.nickname LIKE ? ");
+            } else if ("title_content".equals(searchType)) {
+                whereSql.append(" AND (n.title LIKE ? OR n.text LIKE ?) ");
+            }
+        }
+        sql.append(whereSql);
+
+        try {
+            pstmt = conn.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            if (categoryIdx > 0) {
+                pstmt.setInt(paramIndex++, categoryIdx);
+            }
+            if (keyword != null && !keyword.isEmpty()) {
+                if ("title_content".equals(searchType)) {
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                } else {
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                }
+            }
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return count;
+    }
 	
 	// 전체 카테고리 - 각 카테고리별 인기글 목록
 	@Override
@@ -228,6 +354,7 @@ public class NoteDAOImpl implements NoteDAO {
         }
         return posts;
 	}
+	
 	// 포스트 뷰 출력 2
     /**
      * 주어진 note_idx로부터 노트, 작성자, 좋아요 수 정보를

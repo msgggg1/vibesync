@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-// 아래 listener import는 중복 로그인 방지 기능에 필요합니다.
 import com.listener.DuplicateLoginPreventer; 
 
 import mvc.command.service.LoginService;
@@ -144,6 +143,11 @@ public class UserHandler implements CommandHandler {
 
         // 3. 사용자 정보를 세션에 저장
         session.setAttribute("userInfo", userInfo);
+        
+        Cookie userIdxCookie = new Cookie("login_user_idx", userInfo.getAc_idx() + "");
+	                    userIdxCookie.setMaxAge(60 * 60 * 24 * 7);
+	                    userIdxCookie.setPath("/");
+	                    response.addCookie(userIdxCookie);
 
         // 4. 이전 페이지 또는 메인 페이지로 리다이렉트
         redirectToPreviousOrMainPage(session, request, response);

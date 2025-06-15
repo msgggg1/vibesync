@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Enumeration;
-import java.util.HashSet; // 수정: 세션에 저장할 Set 사용
-import java.util.Set;      // 수정: 세션에 저장할 Set 사용
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession; // 수정: 세션 사용을 위한 import
+import javax.servlet.http.HttpSession;
 
 import com.util.ConnectionProvider;
 import mvc.command.service.PostViewService;
@@ -28,7 +28,8 @@ public class postViewHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String method = request.getMethod(); // 요청 메소드 확인 (GET 또는 POST)
+        request.setCharacterEncoding("UTF-8");
+		String method = request.getMethod(); // 요청 메소드 확인 (GET 또는 POST)
 
         // POST 요청은 AJAX (팔로우/좋아요) 처리
         if ("POST".equalsIgnoreCase(method)) {
@@ -119,7 +120,7 @@ public class postViewHandler implements CommandHandler {
         
         Connection conn = null;
 		try {
-			conn = ConnectionProvider.getConnection(); // *******************수정정
+			conn = ConnectionProvider.getConnection();
 			FollowDAO dao = new FollowDAOImpl(conn);
 
 			int userIdx = loggedInUser.getAc_idx();

@@ -63,7 +63,8 @@ public class BlockHandler implements CommandHandler {
 
         // 2. JSP 프래그먼트를 HTML 문자열로 렌더링
         request.setAttribute("block", blockData);
-        // UserStatsBlock인 경우, chartDataJson을 request에 담아야 JSP가 정상적으로 렌더링됩니다.
+        // UserStatsBlock인 경우, chartDataJson을 request에 담음
+
         if (blockData instanceof UserStatsBlockDTO) {
              Gson gson = new Gson();
              String chartDataJsonString = gson.toJson(((UserStatsBlockDTO) blockData).getChartData());
@@ -91,7 +92,7 @@ public class BlockHandler implements CommandHandler {
         out.flush();
     }
     
-    // POST 요청 처리 : 블록 추가, 블록 삭제, 블록 순서 편집 (DELETE, EDIT)
+    // POST 요청 처리 : 블록 추가, 블록 삭제, 블록 순서 편집 (ADD, DELETE, EDIT)
     private void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String methodOverride = request.getParameter("_method");
 

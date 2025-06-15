@@ -6,10 +6,16 @@ import java.util.Map;
 
 import mvc.domain.dto.DailyStatsDTO;
 import mvc.domain.dto.NoteDetailDTO;
+import mvc.domain.dto.NoteListDTO;
 import mvc.domain.dto.NoteSummaryDTO;
 import mvc.domain.vo.UserNoteVO;
 
 public interface NoteDAO {
+	// [신규] 카테고리, 검색, 페이징을 적용하여 게시물 목록 조회
+    List<NoteListDTO> selectNotes(int categoryIdx, int offset, int limit, String searchType, String keyword) throws SQLException;
+    
+    // [신규] 카테고리, 검색을 적용하여 전체 게시물 수 조회
+    int selectNoteCount(int categoryIdx, String searchType, String keyword) throws SQLException;
 	
 	// 전체 카테고리 - 인기글
 	Map<Integer, List<NoteSummaryDTO>> popularNoteByAllCategory(int limit) throws SQLException;

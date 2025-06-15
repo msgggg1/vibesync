@@ -31,6 +31,8 @@ public class WorkspaceService {
         
         System.out.println("MessageService가 반환한 안읽은 메시지 개수: " + (unreadMessages != null ? unreadMessages.size() : "null"));
         
+        System.out.println("MessageService가 반환한 안읽은 메시지 개수: " + (unreadMessages != null ? unreadMessages.size() : "null"));
+        
         dto = new WorkspaceDTO().builder()
         					    .todolists(todolists)
         					    .myPosts(myPosts)
