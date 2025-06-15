@@ -53,7 +53,7 @@ public class UserDAOImpl implements UserDAO {
     		pstmt.setString(5, dto.getName());
     		pstmt.setString(6, salt);
     		pstmt.setInt(7, dto.getCategory_idx());
-    		
+    		System.out.println(sql);
     		if (pstmt.executeUpdate() > 0) {
     			isInserted = true;
     		}

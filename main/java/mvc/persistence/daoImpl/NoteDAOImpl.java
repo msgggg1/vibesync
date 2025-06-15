@@ -35,21 +35,18 @@ public class NoteDAOImpl implements NoteDAO {
 		
 		// 전체 글 중 (좋아요 수 + 조회수) 합산 점수 높은 순, 동점 시 최신순
 		String sql = " SELECT " +
-				"        n.note_idx, " + 
+				"         n.note_idx, " + 
 				" 		  n.title, " + 
-				" 		  n.text, " + 
-				"		  n.img, " + 
-				"		  n.create_at, " + 
-				"		  n.edit_at, " + 
+				" 		  n.img AS thumbnail_img, " + 
 				"		  n.view_count, " + 
-				"		  n.content_idx, " + 
-				"		  n.genre_idx, " +
-				"		  n.category_idx, " + 
-				"		  n.userPg_idx " +
+				"		  rnk.like_count, " + 
+				"		  ua.nickname AS author_name," +
+				" 		  n.category_idx " + 
 				" FROM ( " +
 				"    SELECT " +
 				"        n.note_idx, " + 
 			    "        n.category_idx, " + 
+			    "        COUNT(l.likes_idx) AS like_count, " + 
 				"        ROW_NUMBER() OVER ( " +
 				"				PARTITION BY n.category_idx " +
 				" 				ORDER BY (COALESCE(COUNT(l.likes_idx), 0) + n.view_count) DESC, n.create_at DESC " + 
@@ -59,6 +56,8 @@ public class NoteDAOImpl implements NoteDAO {
 				"    GROUP BY n.note_idx, n.view_count, n.create_at, n.category_idx " +
 				" ) rnk " +
 				" JOIN note n ON rnk.note_idx = n.note_idx " +
+				" JOIN userPage up ON n.userPg_idx = up.userPg_idx " +
+				" JOIN userAccount ua ON up.ac_idx = ua.ac_idx " +
 				" WHERE rnk.rn <= ? " + 
 				" ORDER BY rnk.category_idx, rnk.rn ";
 		
@@ -73,7 +72,10 @@ public class NoteDAOImpl implements NoteDAO {
 					NoteSummaryDTO note = NoteSummaryDTO.builder()
 													   	.note_idx(rs.getInt("note_idx"))
 													   	.title(rs.getString("title"))
-													   	.thumbnail_img(rs.getString("img"))
+													   	.thumbnail_img(rs.getString("thumbnail_img"))
+													   	.view_count(rs.getInt("view_count"))
+													   	.like_count(rs.getInt("like_count"))
+													   	.author_name(rs.getString("author_name"))
 													   	.build();
 					
 					if(!map.containsKey(categoryId)) {
@@ -105,13 +107,36 @@ public class NoteDAOImpl implements NoteDAO {
 	    ResultSet rs = null;
 		
 	    List<NoteSummaryDTO> posts = new ArrayList<>();
-	    String sql = "SELECT note_idx, title, img " +
-                   "FROM ( " +
-                   "    SELECT note_idx, title, img, ROW_NUMBER() OVER (ORDER BY create_at DESC) as rn " +
-                   "    FROM note " +
-                   "    WHERE category_idx = ? " +
-                   ") " +
-                   "WHERE rn <= ?";
+	    String sql = " SELECT "
+	    		   + " note_idx, "
+	    		   + " title, "
+	    		   + " thumbnail_img, "
+	    		   + " view_count, "
+	    		   + " like_count, "
+	    		   + " author_name "
+	    		   + " FROM ( "
+	    		   + " 		SELECT "
+	    		   + "     		n.note_idx, "
+	    		   + "     		n.title, "
+	    		   + "     		n.img AS thumbnail_img, "
+	    		   + "     		n.view_count, "
+	    		   + "    		 ua.nickname AS author_name, "
+	    		   + "     		COALESCE(lc.like_count, 0) AS like_count, "
+	    		   + "    		 ROW_NUMBER() OVER (ORDER BY n.create_at DESC) as rn "
+	    		   + " 		FROM note n "
+	    		   + " 		JOIN userPage up ON n.userPg_idx = up.userPg_idx "
+	    		   + " 		JOIN userAccount ua ON up.ac_idx = ua.ac_idx "
+	    		   + " 		LEFT JOIN ( "
+	    		   + " 				SELECT "
+	    		   + " 					note_idx, "
+	    		   + " 					COUNT(*) AS like_count "
+	    		   + " 				FROM likes "
+	    		   + " 				GROUP BY note_idx "
+	    		   + " 		) lc ON n.note_idx = lc.note_idx "
+	    		   + " 		WHERE n.category_idx = ? "
+	    		   + " ) "
+	    		   + " WHERE rn <= ? "
+	    		   + " ORDER BY rn ";
 
 	     try {
 	    	 	pstmt = conn.prepareStatement(sql);
@@ -123,7 +148,10 @@ public class NoteDAOImpl implements NoteDAO {
 	                NoteSummaryDTO post = NoteSummaryDTO.builder()
 	                        .note_idx(rs.getInt("note_idx"))
 	                        .title(rs.getString("title"))
-	                        .thumbnail_img(rs.getString("img")) 
+	                        .thumbnail_img(rs.getString("thumbnail_img"))
+	                        .view_count(rs.getInt("view_count"))
+	                        .like_count(rs.getInt("like_count"))
+	                        .author_name(rs.getString("author_name"))
 	                        .build();
 	                posts.add(post);
 	            }
@@ -145,20 +173,36 @@ public class NoteDAOImpl implements NoteDAO {
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 		
-		String sql = "SELECT " +
-	             "    rnk.note_idx AS note_idx , n_orig.title AS title , rnk.popularity_score, n_orig.img AS img " + 
-	             " FROM ( " +
-	             "    SELECT " +
-	             "        n.note_idx, " +
-	             "        (COALESCE(COUNT(l.likes_idx), 0) + n.view_count) AS popularity_score, " +
-	             "        ROW_NUMBER() OVER (ORDER BY (COALESCE(COUNT(l.likes_idx), 0) + n.view_count) DESC, n.create_at DESC) as rn " +
-	             "    FROM note n LEFT JOIN likes l ON n.note_idx = l.note_idx " +
-	             "    WHERE n.category_idx = ? " + 
-	             "    GROUP BY n.note_idx, n.view_count, n.create_at " +
-	             "		) rnk " +
-	             " JOIN note n_orig ON rnk.note_idx = n_orig.note_idx " +
-	             " WHERE rnk.rn <= ? " + 
-	             " ORDER BY rnk.rn ";
+		String sql = " SELECT "
+				   + " note_idx, "
+				   + " title, "
+				   + " thumbnail_img, "
+				   + " view_count, "
+				   + " like_count, "
+				   + " author_name "
+				   + " FROM ( "
+				   + " 		SELECT "
+				   + "    		n.note_idx, "
+				   + "   		n.title, "
+				   + "   		n.img AS thumbnail_img, "
+				   + "     		n.view_count, "
+				   + "     		ua.nickname AS author_name, "
+				   + "     		COALESCE(lc.like_count, 0) AS like_count, "
+				   + "     		ROW_NUMBER() OVER (ORDER BY (COALESCE(lc.like_count, 0) + n.view_count) DESC, n.create_at DESC) as rn "
+				   + " 		FROM note n "
+				   + " 		JOIN userPage up ON n.userPg_idx = up.userPg_idx "
+				   + " 		JOIN userAccount ua ON up.ac_idx = ua.ac_idx "
+				   + " 		LEFT JOIN ( "
+				   + " 				SELECT "
+				   + " 					note_idx, "
+				   + " 					COUNT(*) AS like_count "
+				   + " 				FROM likes "
+				   + " 				GROUP BY note_idx "
+				   + " 		) lc ON n.note_idx = lc.note_idx "
+				   + " 		WHERE n.category_idx = ? "
+				   + " ) ranked_notes "
+				   + " WHERE rn <= ? "
+				   + " ORDER BY rn ";
 
         try {
         	pstmt = conn.prepareStatement(sql);
@@ -170,7 +214,10 @@ public class NoteDAOImpl implements NoteDAO {
             	NoteSummaryDTO post = NoteSummaryDTO.builder()
             										.note_idx(rs.getInt("note_idx"))
             										.title(rs.getString("title"))
-            										.thumbnail_img(rs.getString("img"))
+            										.thumbnail_img(rs.getString("thumbnail_img"))
+            				                        .view_count(rs.getInt("view_count"))
+            				                        .like_count(rs.getInt("like_count"))
+            				                        .author_name(rs.getString("author_name"))
             										.build();
                 posts.add(post);
             }
@@ -180,11 +227,7 @@ public class NoteDAOImpl implements NoteDAO {
 			if(rs != null) rs.close();
 			if(pstmt != null) pstmt.close();
         }
-        
-        return posts;
-    }
-	
-
+	}
 	// 포스트 뷰 출력 2
     /**
      * 주어진 note_idx로부터 노트, 작성자, 좋아요 수 정보를

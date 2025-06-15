@@ -174,7 +174,7 @@ public class UserHandler implements CommandHandler {
                 int category_idx = Integer.parseInt(request.getParameter("category")); // 선호 카테고리
                 
                 // 사용자가 입력한 회원가입 정보는 SignUpDTO에 담아서 SignUpService 객체에 전달
-                SignUpDTO signUpDTO = new SignUpDTO().builder()
+                 SignUpDTO signUpDTO = new SignUpDTO().builder()
                 									 .name(name)
                 									 .nickname(nickname)
                 									 .email(email)

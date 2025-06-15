@@ -19,11 +19,10 @@
   <title>PostView</title>
   <link rel="icon" href="./sources/favicon.ico" />
   <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
   <script src="./js/script.js"></script>
-  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   
-  <!-- summernote -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
@@ -42,7 +41,6 @@
     <div class="notion-app-inner">
       <jsp:include page="./includes/sidebar.jsp"></jsp:include>
 
-      <!-- content -->
       <div id="content_wrapper">
         <section id="content">
           <div class="back_icon">
@@ -51,7 +49,7 @@
 
           <div id="postview_Wrapper">
             <div class="title">
-            	<p>Edit</p> <!-- 수정: "Create" → "Edit" -->
+            	<p>Edit</p>
             </div>
 
             <div class="line"></div>
@@ -60,34 +58,34 @@
             	  <div id="select_wrapper">
             	  	<div class="category">
             	  	  	<label for="category">category</label>
-	                    <select id="category" name="category_idx">
-		                    <c:forEach items="${ categoryList }" var="categoryVO">
-		                    	<option value="${ categoryVO.category_idx }" <c:if test="${ categoryVO.category_idx == note.category_idx }">selected</c:if>>${ categoryVO.c_name }</option>
-		                    </c:forEach>
-	                    </select>
+	                  <select id="category" name="category_idx">
+		                  <c:forEach items="${ categoryList }" var="categoryVO">
+		                  	<option value="${ categoryVO.category_idx }" <c:if test="${ categoryVO.category_idx == note.category_idx }">selected</c:if>>${ categoryVO.c_name }</option>
+		                  </c:forEach>
+	                  </select>
             	  	</div>
             	  	<div class="genre">
             	  	  	<label for="genre">genre</label>
-	                    <select id="genre" name="genre_idx">
-		                    <c:forEach items="${ genreList }" var="genreVO">
-		                    	<option value="${ genreVO.genre_idx }" <c:if test="${ genreVO.genre_idx == note.genre_idx }">selected</c:if>>${ genreVO.gen_name }</option>
-		                    </c:forEach>
-	                    </select>
+	                  <select id="genre" name="genre_idx">
+		                  <c:forEach items="${ genreList }" var="genreVO">
+		                  	<option value="${ genreVO.genre_idx }" <c:if test="${ genreVO.genre_idx == note.genre_idx }">selected</c:if>>${ genreVO.gen_name }</option>
+		                  </c:forEach>
+	                  </select>
             	  	</div>
             	  	<div class="contents">
             	  	  	<label for="contents">content</label>
-	                    <select id="contents" name="content_idx">
-		                    <c:forEach items="${ contentList }" var="contentVO">
-		                    	<option value="${ contentVO.content_idx }" <c:if test="${ contentVO.content_idx == note.content_idx }">selected</c:if>>${ contentVO.title }</option>
-		                    </c:forEach>
-	                    </select>
+	                  <select id="contents" name="content_idx">
+		                  <c:forEach items="${ contentList }" var="contentVO">
+		                  	<option value="${ contentVO.content_idx }" <c:if test="${ contentVO.content_idx == note.content_idx }">selected</c:if>>${ contentVO.title }</option>
+		                  </c:forEach>
+	                  </select>
             	  	</div>
             	  </div>
             	  <input class="title" type="text" name="title" placeholder="title..." required value="${note.title}">
 	              <textarea id="summernote" name="content">${note.text}</textarea>
 	              <input type="hidden" id="images" name="images">
 	              <input type="hidden" id="pageidx" name="pageidx" value="<%= pageidx %>">
-	              <input type="hidden" id="noteidx" name="noteidx" value="${note.note_idx}"> <!-- 수정: noteIdx 추가 -->
+	              <input type="hidden" id="noteidx" name="noteidx" value="${note.note_idx}">
 	              
 	              <button type="button" id="saveBtn" class="btn btn-primary mt-3">저장</button>
 	              
@@ -103,6 +101,16 @@
   $(function() {
 	    $('#summernote').summernote({
 	        height: 300,
+            toolbar: [
+	            ['style', ['style']],
+	            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+	            ['fontname', ['fontname']],
+	            ['fontsize', ['fontsize']],
+	            ['color', ['color']],
+	            ['para', ['ul', 'ol', 'paragraph']],
+	            ['height', ['height']],
+	            ['insert'],
+	        ],
 	        callbacks: {
 	            onImageUpload: function(files) {
 	                for (let i = 0; i < files.length; i++) {
@@ -116,7 +124,6 @@
 	        const reader = new FileReader();
 	        reader.onloadend = function() {
 	            const base64Data = reader.result;
-	            // 에디터에 이미지 삽입 (src는 Base64)
 	            $('#summernote').summernote('insertImage', base64Data);
 	        }
 	        reader.readAsDataURL(file);
@@ -130,19 +137,14 @@
 
 	        imgElements.each(function(i) {
 	            var src = $(this).attr('src');
+	            // 새로 추가된 Base64 인코딩된 이미지만 수집
 	            if (src.startsWith('data:image/')) {
 	                base64SrcArray.push(src);
-
-	                // 파일마다 시간 기반으로 고유 이름 + 실제 확장자 추출
-	                var ext = src.substring(src.indexOf('/')+1, src.indexOf(';base64'));
-	                var tempName = 'temp_' + Date.now() + '_' + i + '.' + ext;
-	                
-	                $(this).attr('src', '<%= contextPath %>/sources/noteImg/' + tempName);
 	            }
 	        });
 
-	        $('#images').val(base64SrcArray.join('|')); // Base64 데이터들을 |로 연결하여 hidden 필드에 저장
-	        $('textarea[name=content]').val(tempDiv.html()); // 변경된 content 저장
+	        $('#images').val(base64SrcArray.join('|')); 
+	        $('textarea[name=content]').val(markup); // [수정] 원본 markup을 전송
 	        $('#postForm').submit();
 	    });
 	});

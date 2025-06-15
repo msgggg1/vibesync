@@ -539,12 +539,19 @@
 	
 	            if (!chatList || !Array.isArray(chatList) || chatList.length === 0) {
 	                $('#chatHistory').html('<p style="text-align:center; color:grey;">채팅 내역이 없습니다.</p>');
-	                return; 
+	                return;
 	            }
 	            
 	            const chatContainer = $('<div class="chat-container"></div>');
+	            let lastDate = null;
 	
 	            chatList.forEach(msg => {
+	                if (msg.date !== lastDate) {
+	                    lastDate = msg.date;
+	                    const dateLabel = $('<div class="chat-date-separator"></div>').text(lastDate);
+	                    chatContainer.append(dateLabel);
+	                }
+	            	
 	                const who = msg.isMine ? 'bubble-me' : 'bubble-other';
 	                const formattedText = msg.text.replace(/\n/g, '<br>');
 	
