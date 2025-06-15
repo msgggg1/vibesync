@@ -431,6 +431,7 @@
 	margin-bottom: 24px;
 	transition: box-shadow 0.18s, background 0.13s;
 	animation: fadeInUp 0.33s;
+    width:100%;
 }
 
 #my-posts:hover,
