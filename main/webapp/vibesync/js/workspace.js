@@ -71,7 +71,7 @@ function loadTodoList() {
 				    let rgb = hexToRgb(todo.color);
 				
 				    // 2. li 태그에 CSS 변수로 RGB 값을 전달하고, 체크박스 구조 변경
-				    todoListHtml += `<li data-id="\${todo.todo_idx}" style="--todo-r: ${rgb.r}; --todo-g: ${rgb.g}; --todo-b: ${rgb.b};">
+				    todoListHtml += `<li data-id="${todo.todo_idx}" style="--todo-r: ${rgb.r}; --todo-g: ${rgb.g}; --todo-b: ${rgb.b};">
 				                        <label class="custom-checkbox-label">
 				                            <input type="checkbox" class="todo-checkbox" ${isChecked}>
 				                            <span class="custom-checkbox-span"></span>
@@ -230,7 +230,9 @@ $(document).ready(function() {
         });
     $('#tab_todo').on('click', '.todo-delete-btn', function() {
     	var $li = $(this).closest('li');
-            var todoIdx = $li.data('id');
+        var todoIdx = $li.data('id');
+            
+            console.log("삭제 버튼 클릭! 선택된 Todo의 ID:", todoIdx, "타입:", typeof todoIdx);
 
             if (confirm("정말로 이 할 일을 삭제하시겠습니까?")) {
                 $.ajax({

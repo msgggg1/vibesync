@@ -30,12 +30,8 @@ public class UserPageHandler implements CommandHandler {
 
         // 2. 세션에서 현재 로그인한 사용자 ID 가져오기
         HttpSession session = request.getSession(false);
-        UserVO userInfo = null;
-        Integer loggedInUserAcIdx = null;
-        if (session != null && session.getAttribute("userInfo") != null) {
-        	userInfo = (UserVO) session.getAttribute("userInfo");
-        	loggedInUserAcIdx = userInfo.getAc_idx();
-        }
+        UserVO userInfo = (UserVO) session.getAttribute("userInfo");
+        int loggedInUserAcIdx = userInfo.getAc_idx();
         
         // 3. 초기 페이지 번호 (무한 스크롤용)
         int pageNumber = 1; // 항상 첫 페이지 로드

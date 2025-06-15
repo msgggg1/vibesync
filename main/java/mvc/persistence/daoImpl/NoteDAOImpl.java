@@ -227,6 +227,7 @@ public class NoteDAOImpl implements NoteDAO {
 			if(rs != null) rs.close();
 			if(pstmt != null) pstmt.close();
         }
+        return posts;
 	}
 	// 포스트 뷰 출력 2
     /**

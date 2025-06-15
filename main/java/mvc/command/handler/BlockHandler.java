@@ -43,10 +43,6 @@ public class BlockHandler implements CommandHandler {
     // GET 요청 처리 : 블록 새로고침
     private void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("userInfo") == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인이 필요합니다.");
-            return;
-        }
         UserVO userInfo = (UserVO) session.getAttribute("userInfo");
         int acIdx = userInfo.getAc_idx();
 
@@ -99,10 +95,6 @@ public class BlockHandler implements CommandHandler {
         }
     	
     	HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("userInfo") == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인이 필요합니다.");
-            return;
-        }
         UserVO userInfo = (UserVO) session.getAttribute("userInfo");
         int acIdx = userInfo.getAc_idx();
 
@@ -156,11 +148,6 @@ public class BlockHandler implements CommandHandler {
         Gson gson = new Gson();
 
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("userInfo") == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            out.print(gson.toJson(Map.of("success", false, "message", "로그인이 필요합니다.")));
-            return;
-        }
         UserVO userInfo = (UserVO) session.getAttribute("userInfo");
         int acIdx = userInfo.getAc_idx();
 
