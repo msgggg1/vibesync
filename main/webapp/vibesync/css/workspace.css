@@ -213,6 +213,36 @@
 	#sendMessageBtn:hover {
 	  background: linear-gradient(135deg,#4fbb68 60%,#57a5ec 100%);
 	}
+	
+	.chat-date-separator {
+	  display: inline-block;
+	  padding: 4px 12px;
+	  margin: 16px auto;
+	  font-size: 12px;
+	  color: #666;
+	  background: #f2f2f2;
+	  border-radius: 12px;
+	  position: relative;
+	  text-align: center;
+	}
+	
+	.chat-date-separator::before,
+	.chat-date-separator::after {
+	  content: "";
+	  position: absolute;
+	  top: 50%;
+	  width: 25%;
+	  height: 1px;
+	  background: #ddd;
+	}
+	
+	.chat-date-separator::before {
+	  left: -40%;
+	}
+	
+	.chat-date-separator::after {
+	  right: -40%;
+	}
     
     /* 모달창 */
 	html, body {
@@ -514,6 +544,10 @@
     flex-grow: 1;           /* 헤더를 제외한 나머지 모든 수직 공간을 차지합니다. */
     overflow-y: auto;       /* 내용이 이 영역을 벗어날 경우, 세로 스크롤바가 자동으로 생깁니다. */
     min-height: 0;          /* flex-grow와 overflow를 함께 사용할 때 레이아웃이 깨지지 않도록 보장합니다. */
+    -ms-overflow-style: none;
+}
+.contents_item.generated_block .block-content::-webkit-scrollbar{
+	display: none;
 }
 
 /* 모든 블록의 스크롤바에 디자인 적용 */
@@ -630,10 +664,15 @@
     flex-direction: column;
     min-height: 0; /* 자식 높이가 부모를 초과하지 않도록 보장 */
     
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
+    background-color: var(--card-back);
+    border: 2px solid var(--border-color);
     border-radius: 10px; 
     padding: 20px;
+    -ms-overflow-style: none;
+}
+
+#calendar::-webkit-scrollbar{
+	display: none;
 }
 
 /* FullCalendar의 날짜 그리드 영역이 남는 공간을 모두 차지하도록 설정 */
@@ -667,17 +706,21 @@
 /* 요일(SUN, MON...) 헤더 스타일 */
 .fc .fc-col-header-cell {
     background-color: transparent;
-    border: none;
+    border: solid 2px var(--border-color);
     font-size: 0.85em;
-    color: #666;
 }
 
 /* 날짜 칸(cell) 스타일 */
 .fc .fc-daygrid-day {
-    border: 1px solid #f0f0f0; /* 날짜 칸 사이에 옅은 선 */
+    border: 1px solid var(--border-color); /* 날짜 칸 사이에 옅은 선 */
 }
 .fc .fc-day-other {
-    background-color: #f9f9f9; /* 다른 달의 날짜 배경색 */
+    background-color: var(--card-back); /* 다른 달의 날짜 배경색 */
+}
+
+.fc-theme-standard .fc-scrollgrid{
+	border: solid 2px var(--border-color) !important;
+	border-radius: 4px;
 }
 
 /* --- 하이라이트 스타일 --- */

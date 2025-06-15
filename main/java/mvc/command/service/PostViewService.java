@@ -24,13 +24,9 @@ public class PostViewService {
 	public UserNoteVO getUserNoteInfo(int note_idx) {
 		Connection conn = null;
 		try {
-            conn = ConnectionProvider.getConnection();
-            conn.setAutoCommit(false);
-
-            NoteDAO noteDAO = new NoteDAOImpl(conn);
-            
-            UserNoteVO noteInfo = noteDAO.getUserNoteById(note_idx);
-            
+            conn = ConnectionProvider.getConnection(); 
+            UserNoteDAO dao = new UserNoteDAOImpl(conn);
+            UserNoteVO noteInfo = dao.getUserNoteById(note_idx);
             return noteInfo;
 
         } catch (SQLException e) {
