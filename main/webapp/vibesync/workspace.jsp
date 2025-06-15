@@ -174,7 +174,12 @@
 								<%-- 탭 컨텐츠 영역 --%>
 								<div class="tab-content-wrapper">
 									<div id="tab_schedule" class="tab-content active">
-										<p>캘린더에서 날짜를 선택해주세요.</p>
+										 <%-- 날짜 제목이 표시될 영역 --%>
+									    <h4 class="schedule-date-title"></h4> 
+									    <%-- 실제 일정 목록이 들어갈 컨테이너 --%>
+									    <div id="daily-schedule-list-container">
+									        <p>캘린더에서 날짜를 선택해주세요.</p>
+									    </div>
 									</div>
 									<div id="tab_todo" class="tab-content">
 										<p>로딩 중...</p>

@@ -170,7 +170,6 @@ input:focus {
           </a>
         </div>
       </div>
-
       <div class="search icon_wrap">
         <img src="./sources/icons/search.svg" alt="search icon" class="sidebar_icon">
         <input type="text" class="search-input" placeholder="Search…">

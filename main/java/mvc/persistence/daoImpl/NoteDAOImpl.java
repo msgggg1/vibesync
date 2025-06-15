@@ -226,10 +226,8 @@ public class NoteDAOImpl implements NoteDAO {
 			if(rs != null) rs.close();
 			if(pstmt != null) pstmt.close();
         }
-        
         return posts;
-    }
-	
+	}
 	// 포스트 뷰 출력 2
     /**
      * 주어진 note_idx로부터 노트, 작성자, 좋아요 수 정보를
