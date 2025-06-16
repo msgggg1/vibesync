@@ -17,25 +17,16 @@ public class CommentHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=UTF-8");
 
         String action = request.getParameter("action");
         
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         PrintWriter out = response.getWriter();
-        
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("userInfo") == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            out.print("{\"error\":\"로그인이 필요합니다.\"}");
-            out.flush();
-            return null;
-        }
-        UserVO user = (UserVO) session.getAttribute("userInfo");
 
         try {
             if ("list".equals(action)) {
+            	// 'list' 기능은 로그인 정보가 필요 없으므로 바로 실행합니다.
                 int noteIdx = Integer.parseInt(request.getParameter("noteIdx"));
                 List<CommentVO> comments = commentService.getComments(noteIdx);
                 
@@ -55,6 +46,14 @@ public class CommentHandler implements CommandHandler {
                 out.print(gson.toJson(comments));
 
             } else if ("add".equals(action)) {
+            	HttpSession session = request.getSession(false);
+                if (session == null || session.getAttribute("userInfo") == null) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    out.print("{\"error\":\"login_required\"}");
+                    return null; // 여기서 실행 종료
+                }
+                UserVO user = (UserVO) session.getAttribute("userInfo");
+                
                 int noteIdx = Integer.parseInt(request.getParameter("noteIdx"));
                 String text = request.getParameter("text");
                 String reCommentIdxParam = request.getParameter("reCommentIdx");
@@ -82,12 +81,28 @@ public class CommentHandler implements CommandHandler {
                 out.print("{\"status\":\"success\"}");
 
             } else if ("update".equals(action)) {
+            	HttpSession session = request.getSession(false);
+                if (session == null || session.getAttribute("userInfo") == null) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    out.print("{\"error\":\"login_required\"}");
+                    return null; // 여기서 실행 종료
+                }
+                UserVO user = (UserVO) session.getAttribute("userInfo");
+                
                 int commentIdx = Integer.parseInt(request.getParameter("commentIdx"));
                 String text = request.getParameter("text");
                 commentService.updateComment(commentIdx, text);
                 out.print("{\"status\":\"success\"}");
 
             } else if ("delete".equals(action)) {
+            	HttpSession session = request.getSession(false);
+                if (session == null || session.getAttribute("userInfo") == null) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    out.print("{\"error\":\"login_required\"}");
+                    return null; // 여기서 실행 종료
+                }
+                UserVO user = (UserVO) session.getAttribute("userInfo");
+                
                 int commentIdx = Integer.parseInt(request.getParameter("commentIdx"));
                 commentService.deleteComment(commentIdx);
                 out.print("{\"status\":\"success\"}");

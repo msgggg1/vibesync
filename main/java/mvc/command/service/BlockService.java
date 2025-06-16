@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.NamingException;
 
@@ -26,7 +27,7 @@ import mvc.persistence.daoImpl.BlockDAOImpl;
 public class BlockService {
 	
 	// BlockService 안에서만 사용할 private 메서드
-	private BlockDTO convertVoToDto (BlockVO blockVO, int acIdx) {
+	private BlockDTO convertVoToDto (BlockVO blockVO, int acIdx, String period) {
 		
 		BlockAction blockType = BlockAction.valueOf(blockVO.getBlock_type());
 		BlockDTO blockDTO = null;
@@ -90,7 +91,7 @@ public class BlockService {
 				NoteService noteServiceForUserStats = new NoteService();
 				
 				// 가져온 데이터로 UserStatsBlockDTO를 생성하여 리스트에 추가
-				blockDTO = noteServiceForUserStats.getUserStatsForChart(acIdx);
+				blockDTO = noteServiceForUserStats.getUserStatsForChart(acIdx, period);
 				blockDTO.setBlock_id(blockVO.getBlock_id());
 				blockDTO.setBlock_type(blockVO.getBlock_type());
 				blockDTO.setBlock_order(blockVO.getBlock_order());
@@ -106,7 +107,7 @@ public class BlockService {
 	}
 	
 	// 유저별로 개인화된 추가블록 불러오기
-	public List<BlockDTO> getBlocksForUser(int acIdx) {
+	public List<BlockDTO> getBlocksForUser(int acIdx, String period) {
 		List<BlockDTO> blockDTOList = new ArrayList<BlockDTO>();
 		
 		Connection conn = null;
@@ -120,13 +121,14 @@ public class BlockService {
 			for (int i = 0; i < blockVOList.size(); i++) {
 				BlockVO blockVO = blockVOList.get(i);
 				
-				BlockDTO blockDTO = this.convertVoToDto(blockVO, acIdx);
+				BlockDTO blockDTO = this.convertVoToDto(blockVO, acIdx, period);
 			
 				blockDTOList.add(blockDTO);
 			}
 			
 		} catch (NamingException e) {
 			e.printStackTrace();
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -139,7 +141,7 @@ public class BlockService {
 	};
 	
 	// 특정 블록 ID에 대한 DTO만 생성해서 반환하는 메서드 (특정 블록 새로고침용)
-	public BlockDTO getBlockContentAsDto(int acIdx, int blockId) {
+	public BlockDTO getBlockContentAsDto(int acIdx, int blockId, String period) {
 		BlockDTO blockDTO = null;
 		
 		Connection conn = null;
@@ -150,10 +152,11 @@ public class BlockService {
 			BlockDAO blockDAO = new BlockDAOImpl(conn);
 			BlockVO blockVO = blockDAO.findBlockById(blockId);
 		    if (blockVO == null) {
-		        return null;
+		    	JdbcUtil.close(conn);
+		    	return null;
 		    }
 		    
-		    blockDTO = this.convertVoToDto(blockVO, acIdx);
+		    blockDTO = this.convertVoToDto(blockVO, acIdx, period);
 			
 		} catch (NamingException e) {
 			e.printStackTrace();
@@ -176,17 +179,22 @@ public class BlockService {
 		try {
 			conn = ConnectionProvider.getConnection();
 			conn.setAutoCommit(false);
+			conn.setAutoCommit(false);
 			
-			// 새로운 BlockVO를 생성하고 파라미터로 받은 값들을 설정
 			BlockVO blockVO = BlockVO.builder()
 									 .ac_idx(acIdx)
 									 .block_type(blockType)
 									 .config(configJson)
 									 .build();
 			
-			// BlockDAO.insertBlock(BlockVO block) 호출
 			BlockDAO blockDAO = new BlockDAOImpl(conn);
 			addedBlockId = blockDAO.insertBlock(blockVO);
+			
+			if (addedBlockId != 0) {
+				conn.commit();
+			} else {
+				JdbcUtil.rollback(conn);
+			}
 			
 			if (addedBlockId != 0) {
 				conn.commit();
@@ -197,8 +205,10 @@ public class BlockService {
 		} catch (NamingException e) {
 			e.printStackTrace();
 			JdbcUtil.rollback(conn);
+			JdbcUtil.rollback(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			JdbcUtil.rollback(conn);
 			JdbcUtil.rollback(conn);
 		} finally {
 			JdbcUtil.close(conn);
@@ -216,11 +226,51 @@ public class BlockService {
 		try {
 			conn = ConnectionProvider.getConnection();
 			conn.setAutoCommit(false);
+			conn.setAutoCommit(false);
 			
 			BlockDAO blockDAO = new BlockDAOImpl(conn);
 			isRemoved = blockDAO.deleteBlock(ac_idx, blockId);
 			
 			if (isRemoved) {
+				conn.commit();
+			} else {
+				JdbcUtil.rollback(conn);
+			}
+			
+			if (isRemoved) {
+				conn.commit();
+			} else {
+				JdbcUtil.rollback(conn);
+			}
+			
+		} catch (NamingException e) {
+			e.printStackTrace();
+			JdbcUtil.rollback(conn);
+			JdbcUtil.rollback(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			JdbcUtil.rollback(conn);
+			JdbcUtil.rollback(conn);
+		} finally {
+			JdbcUtil.close(conn);
+		}
+		
+		return isRemoved;
+	}
+	
+	// 블록 순서 변경
+    public boolean changeBlockOrder(int acIdx, List<Map<String, Object>> orders) {
+    	boolean isReordered = false;
+    	Connection conn = null;
+    	
+    	try {
+			conn = ConnectionProvider.getConnection();
+			conn.setAutoCommit(false);
+			
+			BlockDAO blockDAO = new BlockDAOImpl(conn);
+			isReordered = blockDAO.updateBlockOrder(acIdx, orders);
+			
+			if (isReordered) {
 				conn.commit();
 			} else {
 				JdbcUtil.rollback(conn);
@@ -235,8 +285,7 @@ public class BlockService {
 		} finally {
 			JdbcUtil.close(conn);
 		}
-		
-		return isRemoved;
-	}
-	
+    	
+    	return isReordered;
+    }
 }

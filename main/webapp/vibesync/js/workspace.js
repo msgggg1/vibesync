@@ -12,6 +12,19 @@ let isInitialLoad = true;
 
 // [함수] 일별 일정 로딩 (우측 패널)
 function loadDailySchedules(dateString) {
+	
+	// 1. 전달받은 dateString으로 Date 객체 생성
+    const date = new Date(dateString);
+
+    // 2. 요일을 한글로 변환하기 위한 배열
+    const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
+    // 3. 'YYYY년 MM월 DD일 (요일)' 형식으로 날짜 포맷팅
+    const formattedDate = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${weekdays[date.getDay()]})`;
+
+    // 4. JSP에 추가한 h4 태그에 포맷된 날짜 텍스트를 삽입
+    $('#tab_schedule .schedule-date-title').text(formattedDate);
+	
     var schedules = schedulesByDate[dateString];
     var scheduleHtml = '<ul class="schedule-list">';
     if (schedules && schedules.length > 0) {
@@ -37,7 +50,8 @@ function loadDailySchedules(dateString) {
         scheduleHtml += '<li class="no-schedule">등록된 일정이 없습니다.</li>';
     }
     scheduleHtml += '</ul>';
-    $('#tab_schedule').html(scheduleHtml);
+    $('#tab_schedule .schedule-date-title').html('<i class="fa-regular fa-calendar-check"></i>' + formattedDate);
+    $('#daily-schedule-list-container').html(scheduleHtml);
 }
 
 // [함수] 할 일 목록 로딩
@@ -53,12 +67,19 @@ function loadTodoList() {
                 $.each(todos, function(index, todo) {
                     let isChecked = todo.status === 1 ? "checked" : "";
                     let textClass = todo.status === 1 ? "completed" : "";
-                    todoListHtml += `<li data-id="${todo.todo_idx}">
-                                       <input type="checkbox" class="todo-checkbox" ${isChecked}>
-                                       <span class="todo-text ${textClass}">${todo.text}</span>
-                                       <button class="todo-delete-btn">&times;</button>
-                                   </li>`;
-                    todosById[todo.todo_idx] = todo;
+                    // 1. 색상 코드를 RGB 객체로 변환
+				    let rgb = hexToRgb(todo.color);
+				
+				    // 2. li 태그에 CSS 변수로 RGB 값을 전달하고, 체크박스 구조 변경
+				    todoListHtml += `<li data-id="${todo.todo_idx}" style="--todo-r: ${rgb.r}; --todo-g: ${rgb.g}; --todo-b: ${rgb.b};">
+				                        <label class="custom-checkbox-label">
+				                            <input type="checkbox" class="todo-checkbox" ${isChecked}>
+				                            <span class="custom-checkbox-span"></span>
+				                        </label>
+				                        <span class="todo-text \${textClass}">${todo.text}</span>
+				                        <button class="todo-delete-btn">&times;</button>
+				                    </li>`;
+				    todosById[todo.todo_idx] = todo;
                 });
             } else {
                 todoListHtml += '<li style="justify-content:center; color:#888;">등록된 할 일이 없습니다.</li>';
@@ -82,80 +103,45 @@ function getTodayString() {
     return year + '-' + mm + '-' + dd;
 }
     
-// [함수] 내가 쓴 글 위젯 로딩
-function loadMyPostsWidget() {
-    const $widget = $('#my-posts');
-    $widget.html('<p>로딩 중...</p>');
-    $.ajax({
-        url: contextPath + '/note.do',
-        type: 'GET',
-        data: { action: 'getMyPostsPreview' },
-        dataType: 'json',
-        success: function(posts) {
-            // HTML 구조를 다른 블록과 통일하고, 아이콘을 추가합니다.
-            let contentHtml = `<div class="widget-header">
-                                 <h4><i class="fa-solid fa-pen-nib"></i>&nbsp;&nbsp;내가 작성한 글</h4>
-                                 <button class="more-btn" data-type="my-posts">더보기</button>
-                               </div>`;
-            contentHtml += '<ul>';
-            if (posts && posts.length > 0) {
-                posts.forEach(function(post) {
-                    // a 태그 안에 제목과 메타 정보를 함께 넣어 스타일 적용이 용이하게 합니다.
-                    contentHtml += `<li>
-                                        <a href="postView.do?nidx=${post.note_idx}" title="${post.title}">
-                                            <span>${post.title}</span>
-                                            <span class="block-meta">
-                                                <i class="fa-regular fa-eye"></i> ${post.view_count}&nbsp;&nbsp;
-                                                <i class="fa-regular fa-thumbs-up"></i>${post.like_count}
-                                            </span>
-                                        </a>
-                                    </li>`;
-                });
-            } else {
-                contentHtml += '<li class="no-items">작성한 글이 없습니다.</li>';
-            }
-            contentHtml += '</ul>';
-            $widget.html(contentHtml);
-        },
-        error: function() { $widget.html('<p>글을 불러오는 데 실패했습니다.</p>'); }
-    });
-}
+// 하나의 범용 위젯 로딩 함수
+/* 추후 필요시 사용
+function loadPostsWidget(options) {
+    const $widget = $(options.selector);
+    $widget.html('<p>로딩 중...</p>');
 
-// [함수] 좋아요한 글 위젯 로딩
-function loadLikedPostsWidget() {
-    const $widget = $('#liked-posts');
-    $widget.html('<p>로딩 중...</p>');
-    $.ajax({
-        url: contextPath + '/note.do',
-        type: 'GET',
-        data: { action: 'getLikedPostsPreview'},
-        dataType: 'json',
-        success: function(posts) {
-            // HTML 구조를 다른 블록과 통일하고, 아이콘을 추가합니다.
-            // ★★★ 더보기 버튼이 포함된 헤더 구조로 수정 ★★★
-            let contentHtml = `<div class="widget-header">
-                                 <h4><i class="fa-solid fa-heart"></i>&nbsp;&nbsp;좋아요한 글</h4>
-                                 <button class="more-btn" data-type="liked-posts">더보기</button>
+    $.ajax({
+        url: contextPath + '/note.do',
+        type: 'GET',
+        data: { action: options.action },
+        dataType: 'json',
+        success: function(posts) {
+            // 헤더 HTML 생성
+            let contentHtml = `<div class="widget-header">
+                                   <h4><i class="${options.iconClass}"></i>&nbsp;&nbsp;${options.title}</h4>
+                                   <button class="more-btn" data-type="${options.type}">더보기</button>
                                </div>`;
-            contentHtml += '<ul>';
-            if (posts && posts.length > 0) {
-                posts.forEach(function(post) {
-                    contentHtml += `<li>
+            contentHtml += '<ul>';
+
+            if (posts && posts.length > 0) {
+                posts.forEach(function(post) {
+                    // 리스트 아이템 HTML 생성 (options.metaGenerator 함수 사용)
+                    contentHtml += `<li>
                                         <a href="postView.do?nidx=${post.note_idx}" title="${post.title}">
                                             <span>${post.title}</span>
-                                            <span class="block-meta">by ${post.author_name}</span>
+                                            ${options.metaGenerator(post)}
                                         </a>
                                     </li>`;
-                });
-            } else {
-                contentHtml += '<li class="no-items">좋아요한 글이 없습니다.</li>';
-            }
-            contentHtml += '</ul>';
-            $widget.html(contentHtml);
-        },
-        error: function() { $widget.html('<p>글을 불러오는 데 실패했습니다.</p>'); }
-    });
+                });
+            } else {
+                contentHtml += `<li class="no-items">${options.noItemText}</li>`;
+            }
+            contentHtml += '</ul>';
+            $widget.html(contentHtml);
+        },
+        error: function() { $widget.html('<p>글을 불러오는 데 실패했습니다.</p>'); }
+    });
 }
+*/
 
 // [함수] 날짜 선택 팝오버 채우기
 function populateDatePicker() {
@@ -169,6 +155,19 @@ function populateDatePicker() {
     for (let i = 1; i <= 12; i++) {
         $monthSelect.append(`<option value="${i}">${i}월</option>`);
     }
+}
+
+/** 16진수 색상을 RGB 객체로 변환하는 헬퍼 함수 */
+function hexToRgb(hex) {
+    if (!hex || hex.length < 4) {
+        hex = '#3788d8'; // 기본값
+    }
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : { r: 55, g: 136, b: 216 }; // 기본값의 RGB
 }
 
 // ========================================================
@@ -231,7 +230,9 @@ $(document).ready(function() {
         });
     $('#tab_todo').on('click', '.todo-delete-btn', function() {
     	var $li = $(this).closest('li');
-            var todoIdx = $li.data('id');
+        var todoIdx = $li.data('id');
+            
+            console.log("삭제 버튼 클릭! 선택된 Todo의 ID:", todoIdx, "타입:", typeof todoIdx);
 
             if (confirm("정말로 이 할 일을 삭제하시겠습니까?")) {
                 $.ajax({
@@ -662,7 +663,5 @@ $(document).ready(function() {
     // --- 초기 데이터 로딩 함수 호출 ---
     loadTodoList();
     loadDailySchedules(getTodayString());
-    loadMyPostsWidget();
-    loadLikedPostsWidget();
     populateDatePicker();
 });

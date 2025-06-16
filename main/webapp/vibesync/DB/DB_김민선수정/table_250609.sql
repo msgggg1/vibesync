@@ -156,7 +156,6 @@ CREATE TABLE note (
     CONSTRAINT FK_np FOREIGN KEY (userPg_idx) REFERENCES userPage(userPg_idx) ON DELETE CASCADE
 );
 
-
 --------------------------------------------------------------------------------
 -- 12. notification (알람)
 --------------------------------------------------------------------------------

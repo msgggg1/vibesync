@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.util.JdbcUtil;
 
@@ -196,5 +197,47 @@ public class BlockDAOImpl implements BlockDAO {
         
         return isDeleted;
 	}
+
+	// 블록 순서 변경
+	@Override
+	public boolean updateBlockOrder(int acIdx, List<Map<String, Object>> orders) {
+		boolean isUpdated = false;
+		
+		PreparedStatement pstmt = null;
+        String sql = "UPDATE workspace_blocks SET block_order = ? WHERE block_id = ? AND ac_idx = ?";
+        int[] result;
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+
+            for (Map<String, Object> order : orders) {
+                // GSON이 숫자를 Double로 읽을 수 있으므로 Number로 받고 intValue() 사용
+                int blockOrder = ((Number) order.get("block_order")).intValue();
+                int blockId = ((Number) order.get("block_id")).intValue();
+
+                pstmt.setInt(1, blockOrder);
+                pstmt.setInt(2, blockId);
+                pstmt.setInt(3, acIdx);
+                
+                pstmt.addBatch();
+            }
+
+            result = pstmt.executeBatch();
+            JdbcUtil.close(pstmt);
+
+            // 모든 배치 작업이 성공했는지 간단히 확인
+            for (int i : result) {
+                if (i == PreparedStatement.EXECUTE_FAILED) {
+                    throw new SQLException("배치 업데이트 중 일부 실패");
+                }
+            }
+            isUpdated = true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return isUpdated;
+    }
 	
 }

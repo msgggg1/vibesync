@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%-- 세션에서 카테고리 목록 가져오기 (변수명 대소문자 수정: categoryvolist -> categoryVOList) --%>
-<c:set var="categoryList" value="${sessionScope.categoryVOList}" />
+<c:set var="categoryList" value="${applicationScope.categoryVOList}" />
 
 <%-- 컨트롤러에서 전달된 페이징 결과 데이터 --%>
 <c:set var="result" value="${requestScope.result}" />

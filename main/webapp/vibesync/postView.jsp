@@ -1,34 +1,46 @@
-<%@ page import="mvc.domain.dto.UserNoteDTO" %>
-<%@ page import="mvc.domain.vo.UserVO" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%
-    String contextPath = request.getContextPath();  // → "/jspPro"
-    UserVO user = (UserVO) session.getAttribute("userInfo");
-    UserNoteDTO followLike = (UserNoteDTO) request.getAttribute("followLike");
-    boolean following = followLike != null && followLike.isFollowing();
-    boolean liking = followLike != null && followLike.isLiking();
-%>
+<%@ page import="mvc.domain.dto.UserNoteDTO"%>
+<%@ page import="mvc.domain.vo.UserVO"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="contextPath" value="${pageContext.request.contextPath}" />
+<c:set var="user" value="${sessionScope.userInfo}" />
+<c:set var="isFollowing"
+	value="${not empty followLike && followLike.following}" />
+<c:set var="isLiking"
+	value="${not empty followLike && followLike.liking}" />
 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PostView</title>
-  <link rel="icon" href="./sources/favicon.ico" />
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/sidebar.css">
-  <script src="./js/script.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostView</title>
+<link rel="icon" href="./sources/favicon.ico" />
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/sidebar.css">
+<script src="./js/script.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+const isLoggedIn = ${not empty user}; 
+
     $(document).ready(function() {
       // 기존 코드 (Follow, Like, Image Path)
-      const ajaxUrl = '<%= contextPath %>' + '/vibesync/postView.do';
-      const ctx = '<%= contextPath %>';
+      const ajaxUrl = '${contextPath}/vibesync/postView.do';
+      const ctx = '${contextPath}';
+      
+      function requireLogin() {
+          if (confirm('로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?')) {
+              window.location.href = ctx + '/vibesync/user.do';
+          }
+      }
       
       $('#followForm').on('submit', function(e) {
         e.preventDefault();
+        if (!isLoggedIn) {
+            requireLogin();
+            return; 
+        }
         $.ajax({
           url: ajaxUrl, type: 'POST', data: { action: 'toggleFollow', userIdx: $('#followBtn').data('userIdx'), writerIdx: $('#followBtn').data('writerIdx'), nidx: $('#followBtn').data('nidx') }, dataType: 'json',
           success: function(data) { $('#followBtn').text(data.following ? 'Unfollow' : 'Follow'); },
@@ -38,6 +50,10 @@
 
       $('#likeForm').on('submit', function(e) {
         e.preventDefault();
+        if (!isLoggedIn) {
+            requireLogin();
+            return; // AJAX 요청 중단
+        }
         const currentCount = parseInt($('#likeCount').text(), 10);
         $.ajax({
           url: ajaxUrl, type: 'POST', data: { action: 'toggleLike', userIdx: $('#likeBtn').data('userIdx'), noteIdx: $('#likeBtn').data('noteIdx') }, dataType: 'json',
@@ -55,9 +71,9 @@
       });
       
       // =================== 대댓글 기능이 포함된 스크립트 ===================
-      const commentUrl = '<%= contextPath %>' + '/vibesync/comment.do';
-      const loggedInUserIdx = <%= (user != null) ? user.getAc_idx() : -1 %>;
-      const noteIdxForComment = $('#comment-form input[name="noteIdx"]').val();
+      const commentUrl = '${contextPath}/vibesync/comment.do';
+      const loggedInUserIdx = ${not empty user ? user.ac_idx : -1};
+      const noteIdxForComment = ${note.note_idx};
 
       function loadComments() {
         $.ajax({
@@ -101,6 +117,10 @@
 
       $('#comment-form').on('submit', function(e) {
         e.preventDefault();
+        if (!isLoggedIn) {
+            requireLogin();
+            return;
+        }
         const text = $(this).find('textarea[name="text"]').val();
         if(!text.trim()) { alert('댓글 내용을 입력하세요.'); return; }
         $.ajax({
@@ -186,12 +206,12 @@
                 <img src="${(note.img == null or empty note.img) ? './sources/icons/profile.svg' : note.img}" alt="writer_profile">
                 <a href="userPage.do?acIdx=${note.ac_idx}">${note.nickname}</a>
                 <c:if test="${not empty sessionScope.userInfo and sessionScope.userInfo.ac_idx != note.upac_idx}">
-                  <form id="followForm" style="display:inline; margin:0; padding:0;"><button id="followBtn" type="submit" data-user-idx="<%= (user != null) ? user.getAc_idx() : "" %>" data-writer-idx="${note.upac_idx}" data-nidx="${note.note_idx}" style="background:#99bc85; border-radius:5px; border:none; cursor:pointer; padding:5px 10px;"><%= following ? "Unfollow" : "Follow" %></button></form>
+                  <form id="followForm" style="display:inline; margin:0; padding:0;"><button id="followBtn" type="submit" data-user-idx="${user.ac_idx}" data-writer-idx="${note.upac_idx}" data-nidx="${note.note_idx}" style="background:#99bc85; border-radius:5px; border:none; cursor:pointer; padding:5px 10px;">${isFollowing ? "Unfollow" : "Follow"}</button></form>
                 </c:if>
               </div>
               <div class="like_share">
                 <div><p><span>view : </span><span>${note.view_count}</span></p></div>
-                <form id="likeForm" style="display:inline; margin:0; padding:0;"><button id="likeBtn" type="submit" data-user-idx="<%= (user != null) ? user.getAc_idx() : "" %>" data-note-idx="${note.note_idx}" style="border:none; background:none; cursor:pointer;"><img id="likeImg" src="<%= liking ? "./sources/icons/fill_heart.png" : "./sources/icons/heart.svg" %>" alt="heart" style="vertical-align:middle; width:2rem; height:2rem;"><span id="likeCount" style="vertical-align:middle;">${note.like_num}</span></button></form>
+                <form id="likeForm" style="display:inline; margin:0; padding:0;"><button id="likeBtn" type="submit" data-user-idx="${user.ac_idx}" data-note-idx="${note.note_idx}" style="border:none; background:none; cursor:pointer;"><img id="likeImg" src="${isLiking ? './sources/icons/fill_heart.png' : './sources/icons/heart.svg'}" alt="heart" style="vertical-align:middle; width:2rem; height:2rem;"><span id="likeCount" style="vertical-align:middle;">${note.like_num}</span></button></form>
               </div>
             </div>
             <div class="line"></div>
@@ -201,16 +221,54 @@
             <div class="line" style="margin-top: 2rem; margin-bottom: 0px"></div>
             <div id="comment-section">
                 <h4>Comments</h4>
-                <c:if test="${not empty sessionScope.userInfo}">
-                   <form id="comment-form" style="margin-bottom: 1.864rem;"><input type="hidden" name="noteIdx" value="${note.note_idx}"><div class="textarea-div" style="display: flex; align-items: center;"><textarea name="text" rows="3" placeholder="댓글을 입력하세요..." required style="width:100%; resize:none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none;"></textarea><button type="submit" style="margin: 0px; padding: 5px 10px; height: 65.51px; border: solid 2px var(--border-color); border-radius: 0 4px 4px 0; border-left: none; background-color: var(--background-color); font-weight: bold; ">작성</button></div></form>
-                </c:if>
-                <div id="comment-list" style="clear:both;"></div>
-            </div>
-            <div id="edit-comment-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;"><div style="position:relative; top:20%; margin:auto; width:500px; background:white; padding:20px; border-radius:5px;"><h5>댓글 수정</h5><form id="edit-comment-form"><input type="hidden" id="edit-comment-id" name="commentIdx"><textarea id="edit-comment-text" name="text" rows="4" style="width:100%; resize:none; padding: 8px;"></textarea><div style="text-align:right; margin-top:10px;"><button type="button" id="cancel-edit-btn">취소</button><button type="submit">저장</button></div></form></div></div>
-          </div>
-        </section>
-      </div>
-    </div>
-  </div>
+                <c:choose>
+                  <%-- 1. 로그인한 경우: 기존의 댓글 입력창을 보여줌 --%>
+                  <c:when test="${not empty user}">
+                      <form id="comment-form" style="margin-bottom: 1.864rem;">
+                          <input type="hidden" name="noteIdx" value="${note.note_idx}">
+                          <div class="textarea-div"
+                              style="display: flex; align-items: center;">
+                              <textarea name="text" rows="3" placeholder="댓글을 입력하세요..."
+                                  required
+                                  style="width: 100%; resize: none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none;"></textarea>
+                              <button type="submit"
+                                  style="margin: 0px; padding: 5px 10px; height: 65px; border: solid 2px var(--border-color); border-radius: 0 4px 4px 0; border-left: none; background-color: var(--background-color); font-weight: bold;">작성</button>
+                          </div>
+                      </form>
+                  </c:when>
+                  <%-- 2. 로그인하지 않은 경우: 로그인 유도 메시지를 보여줌 --%>
+                  <c:otherwise>
+                      <div class="comment-login-prompt" 
+                          style="margin-bottom: 1.864rem; padding: 20px; border: 2px solid var(--border-color); border-radius: 4px; text-align: center; cursor: pointer;"
+                          onclick="location.href='${contextPath}/vibesync/user.do'">
+                          <a href="${contextPath}/vibesync/user.do" style="text-decoration: none; color: #888; font-weight: bold;">
+                              로그인 후 댓글을 작성할 수 있습니다.
+                          </a>
+                      </div>
+                  </c:otherwise>
+                </c:choose>
+				<div id="comment-list" style="clear: both;"></div>
+			</div>
+						<div id="edit-comment-modal"
+							style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+							<div
+								style="position: relative; top: 20%; margin: auto; width: 500px; background: white; padding: 20px; border-radius: 5px;">
+								<h5>댓글 수정</h5>
+								<form id="edit-comment-form">
+									<input type="hidden" id="edit-comment-id" name="commentIdx">
+									<textarea id="edit-comment-text" name="text" rows="4"
+										style="width: 100%; resize: none; padding: 8px;"></textarea>
+									<div style="text-align: right; margin-top: 10px;">
+										<button type="button" id="cancel-edit-btn">취소</button>
+										<button type="submit">저장</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
