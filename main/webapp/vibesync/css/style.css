@@ -12,6 +12,7 @@
   --chpa: #2a2a2a45;
   --card-back: #000;
   --card-head: #fff;
+  --modal-font: #ddd;
 }
 :root[color-theme='light']{
   --icon-filter: invert(0);
@@ -23,6 +24,7 @@
   --chpa: #dfdfdf40;
   --card-back: #fff;
   --card-head: #000;
+  --modal-font: #333;
 }
 
 :root {
@@ -40,6 +42,7 @@
   --chpa: #dfdfdf40;
   --card-back: #fff;
   --card-head: #000;
+   --modal-font: #333;
 }
 * {
   box-sizing: border-box;
