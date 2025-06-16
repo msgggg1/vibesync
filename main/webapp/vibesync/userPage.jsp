@@ -24,7 +24,6 @@ while (names.hasMoreElements()) {
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/sidebar.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://unpkg.com/infinite-scroll@4/dist/infinite-scroll.pkgd.min.js"></script>
   <script defer src="./js/script.js"></script>
   <style>
     h3 {
@@ -142,7 +141,7 @@ while (names.hasMoreElements()) {
                     <img src="<%=contextPath %>/${userPageData.userProfile.img}" alt="프로필">
                   </c:when>
                   <c:otherwise>
-                    <img src="<%=contextPath %>/sources/icons/default_profile.png" alt="기본 프로필">
+                    <img src="<%=contextPath %>/sources/default/default_user.jpg" alt="기본 프로필">
                   </c:otherwise>
                 </c:choose>
               </div>
@@ -160,8 +159,9 @@ while (names.hasMoreElements()) {
                     </button>
                   </c:if>
                   <%-- Watch Party 버튼 (기능 구현 시 활성화) --%>
-                  <button class="wp_btn" onclick="location.href='waList.jsp'">Watch Party</button>
-
+                  <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == userPageData.userProfile.ac_idx}">
+                     <button class="wp_btn" onclick="location.href='waList.jsp'">Watch Party</button>
+                  </c:if>
                 </div>
                 <div class="user_count">
                   <p>POST <span>${userPageData.userProfile.postCount}</span></p>

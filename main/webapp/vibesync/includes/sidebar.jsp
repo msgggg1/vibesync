@@ -129,7 +129,7 @@ input:focus {
   padding: 2px 4px;
 }
 
-.modal {
+.modal-sidebar {
   display: none; 
   position: absolute;
   top: 100%; 
@@ -138,15 +138,16 @@ input:focus {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  padding: 8px 12px;
   z-index: 1000;
   white-space: nowrap;
+  width: 170px; height: 220px; overflow-x: hidden;
 }
 
 .modal-nickname {
   display: block;
   text-decoration: none;
-  color: #333;
+  color: var(--modal-font);
+  padding: 4px 10px; background-color: #c7e5ff;/*임시 구분용 색상*/
 }
 
 .modal-nickname:hover {
@@ -164,7 +165,7 @@ input:focus {
         <span class="nickname" id="nickname-display">
           ${userInfo.nickname}
         </span>
-        <div id="nickname-modal" class="modal">
+        <div id="nickname-modal" class="modal-sidebar">
           <a href="userPage.do?acIdx=${userInfo.ac_idx}" class="modal-nickname">
             ${userInfo.nickname}
           </a>
