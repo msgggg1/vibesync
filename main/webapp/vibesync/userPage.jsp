@@ -30,7 +30,7 @@ while (names.hasMoreElements()) {
     h3 {
       margin: 0;
     }
-
+	.wp_btn {background: black;}
     #pageCreateBtn {
       position: fixed;
       bottom: 20px;
@@ -142,7 +142,7 @@ while (names.hasMoreElements()) {
                     <img src="<%=contextPath %>/${userPageData.userProfile.img}" alt="프로필">
                   </c:when>
                   <c:otherwise>
-                    <img src="<%=contextPath %>/sources/icons/default_profile.png" alt="기본 프로필">
+                    <img src="<%=contextPath %>/sources/default/default_user.jpg" alt="기본 프로필">
                   </c:otherwise>
                 </c:choose>
               </div>
@@ -160,7 +160,10 @@ while (names.hasMoreElements()) {
                     </button>
                   </c:if>
                   <%-- Watch Party 버튼 (기능 구현 시 활성화) --%>
-                  <%-- <button class="btn_follow_2">Watch Party</button> --%>
+                  <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == userPageData.userProfile.ac_idx}">
+                  	<button class="wp_btn" onclick="location.href='waList.jsp'">Watch Party</button>
+                  </c:if>
+
                 </div>
                 <div class="user_count">
                   <p>POST <span>${userPageData.userProfile.postCount}</span></p>

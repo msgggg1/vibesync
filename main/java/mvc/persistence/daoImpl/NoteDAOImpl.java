@@ -12,6 +12,7 @@ import com.util.JdbcUtil;
 
 import mvc.domain.dto.DailyStatsDTO;
 import mvc.domain.dto.NoteDetailDTO;
+import mvc.domain.dto.NoteListDTO;
 import mvc.domain.dto.NoteSummaryDTO;
 import mvc.domain.vo.UserNoteVO;
 import mvc.persistence.dao.NoteDAO;
@@ -24,9 +25,133 @@ public class NoteDAOImpl implements NoteDAO {
 		this.conn = conn;
 	}
 	
+	@Override
+    public List<NoteListDTO> selectNotes(int categoryIdx, int offset, int limit, String searchType, String keyword) throws SQLException {
+        List<NoteListDTO> list = new ArrayList<>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT note_idx, title, author_name ");
+        sql.append(" FROM ( ");
+        sql.append("     SELECT ROWNUM rnum, r.* ");
+        sql.append("     FROM ( ");
+        sql.append("         SELECT n.note_idx, n.title, ua.nickname AS author_name ");
+        sql.append("         FROM note n ");
+        sql.append("         JOIN userPage up ON n.userPg_idx = up.userPg_idx ");
+        sql.append("         JOIN userAccount ua ON up.ac_idx = ua.ac_idx ");
+        
+        // 동적 WHERE 절
+        StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
+        if (categoryIdx > 0) {
+            whereSql.append(" AND n.category_idx = ? ");
+        }
+        if (keyword != null && !keyword.isEmpty()) {
+            if ("title".equals(searchType)) {
+                whereSql.append(" AND n.title LIKE ? ");
+            } else if ("author".equals(searchType)) {
+                whereSql.append(" AND ua.nickname LIKE ? ");
+            } else if ("title_content".equals(searchType)) {
+                whereSql.append(" AND (n.title LIKE ? OR n.text LIKE ?) ");
+            }
+        }
+        sql.append(whereSql);
+        sql.append("         ORDER BY n.note_idx DESC ");
+        sql.append("     ) r ");
+        sql.append("     WHERE ROWNUM <= ? ");
+        sql.append(" ) ");
+        sql.append(" WHERE rnum > ? ");
+
+        try {
+            pstmt = conn.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            if (categoryIdx > 0) {
+                pstmt.setInt(paramIndex++, categoryIdx);
+            }
+            if (keyword != null && !keyword.isEmpty()) {
+                if ("title_content".equals(searchType)) {
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                } else {
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                }
+            }
+            pstmt.setInt(paramIndex++, offset + limit);
+            pstmt.setInt(paramIndex++, offset);
+
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                NoteListDTO dto = NoteListDTO.builder()
+                        .note_idx(rs.getInt("note_idx"))
+                        .title(rs.getString("title"))
+                        .author_name(rs.getString("author_name"))
+                        .build();
+                list.add(dto);
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return list;
+    }
+
+    /**
+     * [신규] 페이징 처리를 위한 전체 게시물 수 조회
+     */
+    @Override
+    public int selectNoteCount(int categoryIdx, String searchType, String keyword) throws SQLException {
+        int count = 0;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT COUNT(*) ");
+        sql.append(" FROM note n ");
+        sql.append(" JOIN userPage up ON n.userPg_idx = up.userPg_idx ");
+        sql.append(" JOIN userAccount ua ON up.ac_idx = ua.ac_idx ");
+
+        StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
+        if (categoryIdx > 0) {
+            whereSql.append(" AND n.category_idx = ? ");
+        }
+        if (keyword != null && !keyword.isEmpty()) {
+            if ("title".equals(searchType)) {
+                whereSql.append(" AND n.title LIKE ? ");
+            } else if ("author".equals(searchType)) {
+                whereSql.append(" AND ua.nickname LIKE ? ");
+            } else if ("title_content".equals(searchType)) {
+                whereSql.append(" AND (n.title LIKE ? OR n.text LIKE ?) ");
+            }
+        }
+        sql.append(whereSql);
+
+        try {
+            pstmt = conn.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            if (categoryIdx > 0) {
+                pstmt.setInt(paramIndex++, categoryIdx);
+            }
+            if (keyword != null && !keyword.isEmpty()) {
+                if ("title_content".equals(searchType)) {
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                } else {
+                    pstmt.setString(paramIndex++, "%" + keyword + "%");
+                }
+            }
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } finally {
+            JdbcUtil.close(rs);
+            JdbcUtil.close(pstmt);
+        }
+        return count;
+    }
+	
 	// 전체 카테고리 - 각 카테고리별 인기글 목록
 	@Override
-	// 전체 카테고리 - 인기글
 	public Map<Integer, List<NoteSummaryDTO>> popularNoteByAllCategory(int limit) throws SQLException {
 		Map<Integer, List<NoteSummaryDTO>> map = new LinkedHashMap<Integer, List<NoteSummaryDTO>>();
 		
@@ -227,9 +352,8 @@ public class NoteDAOImpl implements NoteDAO {
 			if(rs != null) rs.close();
 			if(pstmt != null) pstmt.close();
         }
-        
         return posts;
-    }
+	}
 	
 	// 포스트 뷰 출력 2
     /**
@@ -302,8 +426,9 @@ public class NoteDAOImpl implements NoteDAO {
         return vo;
     }
 	
-	@Override //***************확인 후 삭제
-	  public NoteDetailDTO printNote(int noteIdx) { 
+    //***************확인 후 삭제
+    @Override
+	public NoteDetailDTO printNote(int noteIdx) { 
       String sql = "SELECT "
                  + "    n.note_idx, "
                  + "    n.title, "
@@ -386,7 +511,7 @@ public class NoteDAOImpl implements NoteDAO {
 		}
 	
 	@Override
-	  public List<NoteSummaryDTO> getPostsByUser(int userAcIdx, int offset, int limit) throws SQLException {
+	public List<NoteSummaryDTO> getPostsByUser(int userAcIdx, int offset, int limit) throws SQLException {
 	      List<NoteSummaryDTO> posts = new ArrayList<>();
 	      PreparedStatement pstmt = null;
 	      ResultSet rs = null;
@@ -428,7 +553,6 @@ public class NoteDAOImpl implements NoteDAO {
 	      return posts;
 	  }
 
-	
 	@Override
 	public List<NoteSummaryDTO> findMyPostsByPopularity(int acIdx) throws SQLException {
 	    List<NoteSummaryDTO> posts = new ArrayList<>();
@@ -464,8 +588,8 @@ public class NoteDAOImpl implements NoteDAO {
 	    return posts;
 	}
 	    
-	    @Override
-	    public List<NoteSummaryDTO> findAllMyPostsByPopularity(int acIdx) throws SQLException {
+	@Override
+	public List<NoteSummaryDTO> findAllMyPostsByPopularity(int acIdx) throws SQLException {
 	        // 위 메소드에서 ROWNUM 제한만 뺀 쿼리
 	        List<NoteSummaryDTO> posts = new ArrayList<>();
 	        PreparedStatement pstmt = null;
@@ -504,8 +628,8 @@ public class NoteDAOImpl implements NoteDAO {
 	        return posts;
 	    }
 
-		@Override
-		public List<NoteSummaryDTO> findLikedPostsByRecent(int acIdx) throws SQLException {
+	@Override
+	public List<NoteSummaryDTO> findLikedPostsByRecent(int acIdx) throws SQLException {
 			List<NoteSummaryDTO> posts = new ArrayList<>();
 		    // likes 테이블을 기준으로 note 테이블과 JOIN하여, 좋아요한 날짜 순으로 정렬합니다.
 		    String sql = "SELECT * FROM ( "
@@ -544,8 +668,8 @@ public class NoteDAOImpl implements NoteDAO {
 		    return posts;
 		}
 
-		@Override
-		public List<NoteSummaryDTO> findAllLikedPostsByRecent(int acIdx) throws SQLException {
+	@Override
+	public List<NoteSummaryDTO> findAllLikedPostsByRecent(int acIdx) throws SQLException {
 			List<NoteSummaryDTO> posts = new ArrayList<>();
 		    String sql = "        SELECT nt.note_idx, nt.title, ua.nickname AS author_name "
 		               + "        FROM likes lk "
@@ -675,19 +799,23 @@ public class NoteDAOImpl implements NoteDAO {
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 	    
+	    // days가 -1이면 전체 기간을 조회
 	    String sql =
 	    		  " SELECT TO_CHAR(TRUNC(create_at),'YYYY-MM-DD') stat_date, COUNT(*) post_count "
 	    		+ " FROM note n "
 	    		+ " JOIN userPage u "
 	    		+ " ON u.userPg_idx = n.userPg_idx "
-	    		+ " WHERE u.ac_idx = ? AND create_at >= TRUNC(SYSDATE) - ? "
+	    		+ " WHERE u.ac_idx = ? "
+	    		+ (days != -1 ? " AND create_at >= TRUNC(SYSDATE) - ? " : "")
 	    		+ " GROUP BY TRUNC(create_at) "
 	    		+ " ORDER BY TRUNC(create_at) ";
 
 	    try {
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setInt(1, acIdx);
-	        pstmt.setInt(2, days -1); // 오늘 포함 7일이면 6일 전부터
+	        if (days != -1) {
+	            pstmt.setInt(2, days - 1);
+	        }
 	        rs = pstmt.executeQuery();
 
 	        while (rs.next()) {
@@ -705,7 +833,93 @@ public class NoteDAOImpl implements NoteDAO {
 	    
 	    return dailyStats;
 	}
-
+	
+	// 특정 사용자의 최근 N주간의 주별 게시글 작성수 (주별 통계)
+	@Override
+	public List<DailyStatsDTO> getWeeklyPostCounts(int acIdx, int weeks) throws SQLException {
+	    List<DailyStatsDTO> weeklyStats = new ArrayList<>();
+	    
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    
+	    // TRUNC(date, 'IW') : 해당 날짜가 속한 주의 월요일을 반환
+	    String sql = " SELECT TO_CHAR(TRUNC(create_at, 'IW'), 'YYYY-MM-DD') AS stat_date, COUNT(*) AS post_count "
+	               + " FROM note n JOIN userPage u ON n.userPg_idx = u.userPg_idx "
+	               + " WHERE u.ac_idx = ? AND create_at >= TRUNC(SYSDATE, 'IW') - (? * 7) "
+	               + " GROUP BY TRUNC(create_at, 'IW') "
+	               + " ORDER BY stat_date ";
+	    
+	    pstmt = conn.prepareStatement(sql);
+	    pstmt.setInt(1, acIdx);
+	    pstmt.setInt(2, weeks - 1);
+	    rs = pstmt.executeQuery();
+	    while (rs.next()) {
+            weeklyStats.add(new DailyStatsDTO(rs.getString("stat_date"), rs.getLong("post_count")));
+        }
+	    JdbcUtil.close(rs);
+	    JdbcUtil.close(pstmt);
+	    
+	    return weeklyStats;
+	}
+	
+	// 특정 사용자의 최근 N달간의 월별 게시글 작성수 (월별 통계)
+	@Override
+	public List<DailyStatsDTO> getMonthlyPostCounts(int acIdx, int months) throws SQLException {
+	    List<DailyStatsDTO> monthlyStats = new ArrayList<>();
+	    
+		PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    
+	    String sql = " SELECT TO_CHAR(create_at, 'YYYY-MM') AS stat_date, COUNT(*) AS post_count "
+	               + " FROM note n JOIN userPage u ON n.userPg_idx = u.userPg_idx "
+	               + " WHERE u.ac_idx = ? "
+	               + (months != -1 ? "AND create_at >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -?) " : "")
+	               + " GROUP BY TO_CHAR(create_at, 'YYYY-MM') "
+	               + " ORDER BY stat_date ";
+	    
+	    pstmt =conn.prepareStatement(sql);
+	    pstmt.setInt(1, acIdx);
+	    if (months != -1) {
+            pstmt.setInt(2, months - 1);
+        }
+	    rs = pstmt.executeQuery();
+	    while (rs.next()) {
+            monthlyStats.add(new DailyStatsDTO(rs.getString("stat_date"), rs.getLong("post_count")));
+        }
+	    
+        JdbcUtil.close(rs);
+        JdbcUtil.close(pstmt);
+	    
+	    return monthlyStats;
+	}
+	
+	// 특정 사용자의 최근 N년간의 연도별 게시글 작성수 (연도별 통계)
+	@Override
+	public List<DailyStatsDTO> getYearlyPostCounts(int acIdx, int years) throws SQLException {
+	    List<DailyStatsDTO> yearlyStats = new ArrayList<>();
+	    
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    
+	    String sql = " SELECT TO_CHAR(create_at, 'YYYY') AS stat_date, COUNT(*) AS post_count "
+	               + " FROM note n JOIN userPage u ON n.userPg_idx = u.userPg_idx "
+	               + " WHERE u.ac_idx = ? AND create_at >= ADD_MONTHS(TRUNC(SYSDATE, 'YYYY'), -((?-1)*12)) "
+	               + " GROUP BY TO_CHAR(create_at, 'YYYY') "
+	               + " ORDER BY stat_date ";
+	    
+	    pstmt = conn.prepareStatement(sql);
+	    pstmt.setInt(1, acIdx);
+	    pstmt.setInt(2, years);
+	    rs = pstmt.executeQuery();
+	    while (rs.next()) {
+            yearlyStats.add(new DailyStatsDTO(rs.getString("stat_date"), rs.getLong("post_count")));
+        }
+	    
+        JdbcUtil.close(rs);
+        JdbcUtil.close(pstmt);
+	    
+	    return yearlyStats;
+	}
 	
 	// 특정 사용자의 최근 N일간의 일별 게시글 조회 수 (일별 통계)
 	@Override
@@ -715,11 +929,13 @@ public class NoteDAOImpl implements NoteDAO {
 		PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 	    
+	    // days가 -1이면 전체 기간을 조회
 	    String sql = " SELECT TO_CHAR(TRUNC(create_at),'YYYY-MM-DD') stat_date, SUM(view_count) AS view_sum "
 	    		   + " FROM note n "
 	    		   + " JOIN userPage u "
 	    		   + " ON u.userPg_idx = n.userPg_idx "
-	               + " WHERE u.ac_idx = ? AND create_at >= TRUNC(SYSDATE) - ? "
+	               + " WHERE u.ac_idx = ? "
+	               + "AND create_at >= TRUNC(SYSDATE) - ? "
 	               + " GROUP BY TRUNC(create_at) "
 	               + " ORDER BY TRUNC(create_at)";
 
@@ -730,9 +946,7 @@ public class NoteDAOImpl implements NoteDAO {
 	        rs = pstmt.executeQuery();
 
 	        while (rs.next()) {
-	            String statDate = rs.getString("stat_date");
-	            long viewSum = rs.getLong("view_sum");
-	            dailyStats.add(new DailyStatsDTO(statDate, viewSum));
+	            dailyStats.add(new DailyStatsDTO(rs.getString("stat_date"), rs.getLong("view_sum")));
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -742,6 +956,90 @@ public class NoteDAOImpl implements NoteDAO {
 	    }
 	    return dailyStats;
 	}
+	
+	// 특정 사용자의 최근 N일간의 주별 게시글 조회수 (주별 통계)
+	@Override
+	public List<DailyStatsDTO> getWeeklyViewCounts(int acIdx, int weeks) throws SQLException {
+	    List<DailyStatsDTO> weeklyStats = new ArrayList<>();
+	    
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    
+	    String sql = " SELECT TO_CHAR(TRUNC(create_at, 'IW'), 'YYYY-MM-DD') AS stat_date, SUM(view_count) AS view_sum "
+	               + " FROM note n JOIN userPage u ON n.userPg_idx = u.userPg_idx "
+	               + " WHERE u.ac_idx = ? AND create_at >= TRUNC(SYSDATE, 'IW') - (? * 7) "
+	               + " GROUP BY TRUNC(create_at, 'IW') "
+	               + " ORDER BY stat_date ";
+	    
+	    pstmt = conn.prepareStatement(sql);
+	    pstmt.setInt(1, acIdx);
+	    pstmt.setInt(2, weeks - 1);
+	    rs = pstmt.executeQuery();
+	    while (rs.next()) {
+            weeklyStats.add(new DailyStatsDTO(rs.getString("stat_date"), rs.getLong("view_sum")));
+        }
+	    
+	    JdbcUtil.close(rs);
+	    JdbcUtil.close(pstmt);
+	    
+	    return weeklyStats;
+	}
 
+	// 특정 사용자의 최근 N달간의 월별 게시글 조회수 (월별 통계)
+	@Override
+	public List<DailyStatsDTO> getMonthlyViewCounts(int acIdx, int months) throws SQLException {
+		List<DailyStatsDTO> monthlyStats = new ArrayList<>();
+		
+		PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+		
+	    String sql = " SELECT TO_CHAR(create_at, 'YYYY-MM') AS stat_date, SUM(view_count) AS view_sum "
+	               + " FROM note n JOIN userPage u ON n.userPg_idx = u.userPg_idx "
+	               + " WHERE u.ac_idx = ? "
+	               + "AND create_at >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -?) "
+	               + " GROUP BY TO_CHAR(create_at, 'YYYY-MM') "
+	               + " ORDER BY stat_date ";
+	    
+	    pstmt = conn.prepareStatement(sql);
+	    pstmt.setInt(1, acIdx);
+	    pstmt.setInt(2, months - 1);
+        rs = pstmt.executeQuery();
+        while (rs.next()) {
+            monthlyStats.add(new DailyStatsDTO(rs.getString("stat_date"), rs.getLong("view_sum")));
+        }
+        
+        JdbcUtil.close(rs);
+        JdbcUtil.close(pstmt);
+        
+	    return monthlyStats;
+	}
+
+	// 특정 사용자의 최근 N년간의 연도별 게시글 조회수 (연도별 통계)
+	@Override
+	public List<DailyStatsDTO> getYearlyViewCounts(int acIdx, int years) throws SQLException {
+		List<DailyStatsDTO> yearlyStats = new ArrayList<>();
+		
+		PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+		
+	    String sql = " SELECT TO_CHAR(create_at, 'YYYY') AS stat_date, SUM(view_count) AS view_sum "
+	               + " FROM note n JOIN userPage u ON n.userPg_idx = u.userPg_idx "
+	               + " WHERE u.ac_idx = ? AND create_at >= ADD_MONTHS(TRUNC(SYSDATE, 'YYYY'), -((?-1)*12)) "
+	               + " GROUP BY TO_CHAR(create_at, 'YYYY') "
+	               + " ORDER BY stat_date ";
+	    
+	    pstmt = conn.prepareStatement(sql);
+	    pstmt.setInt(1, acIdx);
+	    pstmt.setInt(2, years);
+	    rs = pstmt.executeQuery();
+	    while (rs.next()) {
+            yearlyStats.add(new DailyStatsDTO(rs.getString("stat_date"), rs.getLong("view_sum")));
+        }
+	    
+	    JdbcUtil.close(rs);
+	    JdbcUtil.close(pstmt);
+	    
+	    return yearlyStats;
+	}
 	
 }

@@ -431,6 +431,7 @@
 	margin-bottom: 24px;
 	transition: box-shadow 0.18s, background 0.13s;
 	animation: fadeInUp 0.33s;
+    width:100%;
 }
 
 #my-posts:hover,
@@ -574,6 +575,7 @@
 	font-weight: 500;
 	font-size: 14px;
 	transition: color 0.2s;
+	width: 100%;
 }
 #my-posts ul li a:hover,
 #liked-posts ul li a:hover,
@@ -651,7 +653,9 @@
     gap: 10px;
     align-items: stretch;
 }
-
+@media (max-width:760px) {
+#todolist {flex-direction: column;}
+}
 /* 캘린더 (왼쪽) - 2의 비율 */
 #calendar {
     flex: 2 1 0;          /* 팽창 비율 2, 수축 비율 1, 기본 너비 0 */
@@ -749,6 +753,9 @@
     flex-direction: column;
     padding: 15px; /* 내부 여백 */
 }
+@media (max-width:760px) {
+.calendar_contents{flex: 2 1 0;}
+}
 
 /* 탭 버튼 컨테이너 */
 .tab-buttons {
@@ -792,6 +799,26 @@
 }
 
 /* style.css */
+
+.schedule-date-title {
+    display: flex;                   /* 아이콘과 텍스트를 가로로 정렬 */
+    align-items: center;             /* 세로 중앙 정렬 */
+    justify-content: center;         /* 가로 중앙 정렬 */
+    font-size: 18px;
+    font-weight: 600;
+    color: #34495e;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #e9ecef;
+    margin-top: 5px;    /* 제목의 위쪽 여백을 줄입니다. */
+    margin-bottom: 15px; /* 제목과 아래 목록 사이의 여백입니다. */
+}
+
+.schedule-date-title i {
+    color: #5d8aff;                 /* 아이콘 색상 */
+    margin-right: 10px;              /* 아이콘과 날짜 사이 간격 */
+    font-size: 20px;                 /* 아이콘 크기 */
+}
 
 .schedule-list {
     list-style: none;
@@ -854,6 +881,7 @@
     padding: 15px 10px;
     border-bottom: 1px solid #e0e0e0;
     font-size: 15px;
+     gap: 12px; 
 }
 
 .todo-list li:last-child {
@@ -879,6 +907,74 @@
 .todo-text.completed {
     text-decoration: line-through; /* 취소선 */
     color: #aaa;
+}
+
+/* 1. 커스텀 체크박스를 위한 label 컨테이너 */
+.custom-checkbox-label {
+    position: relative;
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    flex-shrink: 0; /* 창이 좁아져도 찌그러지지 않음 */
+}
+
+/* 2. 원래 체크박스는 화면에서 숨김 */
+.custom-checkbox-label .todo-checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* 3. CSS로 새로 만드는 '가짜' 체크박스 */
+.custom-checkbox-span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 22px;
+    width: 22px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+/* 4. 체크되었을 때 '가짜' 체크박스 스타일 변경 */
+.custom-checkbox-label .todo-checkbox:checked + .custom-checkbox-span {
+    /* JS에서 전달한 CSS 변수를 사용해 배경과 테두리 색상 변경 */
+    background-color: rgb(var(--todo-r), var(--todo-g), var(--todo-b));
+    border-color: rgb(var(--todo-r), var(--todo-g), var(--todo-b));
+}
+
+/* 5. 체크 표시(V) 아이콘 생성 */
+.custom-checkbox-span::after {
+    content: "";
+    position: absolute;
+    display: none; /* 평소엔 숨김 */
+    left: 7px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+/* 6. 체크되었을 때만 체크 표시 아이콘 보여주기 */
+.custom-checkbox-label .todo-checkbox:checked + .custom-checkbox-span::after {
+    display: block;
+}
+
+/* 완료된 항목의 텍스트 스타일 (형광펜 효과) */
+.todo-text.completed {
+    /* 기존 스타일 */
+    text-decoration: line-through; 
+    color: #888; 
+
+    /* 형광펜 효과 추가 */
+    background: linear-gradient(to top, rgba(var(--todo-r), var(--todo-g), var(--todo-b), 0.3) 50%, transparent 50%);
+    padding: 2px 4px;
+    border-radius: 3px;
 }
 
 /* 삭제 버튼 스타일 */
