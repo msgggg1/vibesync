@@ -22,6 +22,7 @@ import com.util.JdbcUtil;
 import mvc.domain.dto.MessageDTO;
 import mvc.domain.dto.MessageListDTO;
 import mvc.domain.vo.MessageVO;
+import mvc.domain.vo.UserSummaryVO;
 import mvc.persistence.dao.MessageDAO;
 
 public class MessageDAOImpl implements MessageDAO {
@@ -67,11 +68,7 @@ public class MessageDAOImpl implements MessageDAO {
 		while (rs.next()) {
 			int ac_sender = rs.getInt("ac_sender");
 			
-			// 메시지 내용 길면 ··· 처리
 			text = rs.getString("text");
-			if (text.length() > 25) {
-				text = text.substring(0, 23) + " ···";
-			}
 			
 			// 오전/오후 1:34, 어제, 6월 7일, 1년 전
 			Timestamp sqlTime = rs.getTimestamp("time");
@@ -120,7 +117,6 @@ public class MessageDAOImpl implements MessageDAO {
 		return unreadMessageList;
 	}
 
-	
 	// 전체 메시지 목록 조회
 	@Override
 	public List<MessageListDTO> selectMessageListAll(int acIdx) throws SQLException {
@@ -129,38 +125,66 @@ public class MessageDAOImpl implements MessageDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		String sql = " SELECT m.* " + 
-					 " , u.nickname AS sender_nickname " +
-					 " , u.img AS sender_img " +
-					 " , unreadCnt " +
-					 " FROM message m " +
-					 " JOIN ( " + 
-					 " 		  SELECT ac_sender, MAX(time) AS latest_time, SUM(chk) AS unreadCnt " +
-					 "		  FROM message " +
-					 " 		  WHERE ac_receiver = ? " +
-					 " 		  GROUP BY ac_sender " +
-					 "		) latest_msg " +
-					 " ON m.ac_sender = latest_msg.ac_sender AND m.time = latest_msg.latest_time " +
-					 " JOIN userAccount u " +
-					 " ON m.ac_sender = u.ac_idx " +
-					 " ORDER BY m.time DESC ";
+		String sql = " WITH " +
+	             "     conversations AS ( " +
+	             "         SELECT " +
+	             "             time, " +
+	             "             ac_sender, " +
+	             "             ac_receiver, " +
+	             "             CASE " +
+	             "                 WHEN ac_sender = ? THEN ac_receiver " +
+	             "                 ELSE ac_sender " +
+	             "             END AS other_person_id " +
+	             "         FROM message " +
+	             "         WHERE ac_sender = ? OR ac_receiver = ? " +
+	             "     ), " +
+	             "     latest_conversations AS ( " +
+	             "         SELECT " +
+	             "             other_person_id, " +
+	             "             MAX(time) AS latest_time " +
+	             "         FROM conversations " +
+	             "         GROUP BY other_person_id " +
+	             "     ), " +
+	             "     unread_counts AS ( " +
+	             "         SELECT " +
+	             "             ac_sender, " +
+	             "             SUM(chk) AS unread_count " +
+	             "         FROM message " +
+	             "         WHERE ac_receiver = ? AND chk = 1 " +
+	             "         GROUP BY ac_sender " +
+	             "     ) " +
+	             " SELECT " +
+	             "     m.*, " +
+	             "     u.ac_idx AS other_ac_idx, " +
+	             "     u.nickname AS other_nickname, " +
+	             "     u.img AS other_img, " +
+	             "     COALESCE(uc.unread_count, 0) AS unread_count " +
+	             " FROM message m " +
+	             " JOIN latest_conversations lc ON m.time = lc.latest_time " +
+	             "     AND ( " +
+	             "         		(m.ac_sender = lc.other_person_id AND m.ac_receiver = ?) " +
+	             "         		OR " +
+	             "         		(m.ac_receiver = lc.other_person_id AND m.ac_sender = ?) " +
+	             "     ) " +
+	             " JOIN userAccount u ON u.ac_idx = lc.other_person_id " +
+	             " LEFT JOIN unread_counts uc ON uc.ac_sender = lc.other_person_id " +
+	             " ORDER BY m.time DESC ";
 
 		pstmt = conn.prepareStatement(sql);
-		pstmt.setInt(1, acIdx);
+        pstmt.setInt(1, acIdx);
+        pstmt.setInt(2, acIdx);
+        pstmt.setInt(3, acIdx);
+        pstmt.setInt(4, acIdx);
+        pstmt.setInt(5, acIdx);
+        pstmt.setInt(6, acIdx);
 		rs = pstmt.executeQuery();
 		
 		LocalDateTime today = LocalDateTime.now().withHour(0);
 		DateTimeFormatter formatter;
 		String time, text;
 		
-		while (rs.next()) {
-			int ac_sender = rs.getInt("ac_sender");
-			
-			// 메시지 내용 길면 ··· 처리
+		while (rs.next()) {			
 			text = rs.getString("text");
-			if (text.length() > 25) {
-				text = text.substring(0, 23) + " ···";
-			}
 			
 			// 오전/오후 1:34, 어제, 6월 7일, 1년 전
 			Timestamp sqlTime = rs.getTimestamp("time");
@@ -182,25 +206,30 @@ public class MessageDAOImpl implements MessageDAO {
 				time = days/365 + "년 전"; // 1년 전
 			}
 			
-			MessageDTO unreadMessage = MessageDTO.builder()
-										 .msg_idx(rs.getInt("msg_idx"))
-										 .text(text)
-										 .time(sqlTime)
-										 .relativeTime(time)
-										 .img(rs.getString("img"))
-										 .ac_sender(ac_sender)
-										 .sender_nickname(rs.getString("sender_nickname"))
-										 .sender_img(rs.getString("sender_img"))
-										 .build();
+            UserSummaryVO other = UserSummaryVO.builder()
+                    .ac_idx(rs.getInt("other_ac_idx"))
+                    .nickname(rs.getString("other_nickname"))
+                    .profile_img(rs.getString("other_img"))
+                    .build();
 			
-			MessageListDTO messageInfo = MessageListDTO.builder()
-											   			.ac_sender(ac_sender)
-											   			.numOfUnreadMessages(rs.getInt("unreadCnt"))
-											   			.latestMessage(unreadMessage)
-											   			.build();
+            MessageDTO latestMessage = MessageDTO.builder()
+                    .msg_idx(rs.getInt("msg_idx"))
+                    .text(text)
+                    .time(sqlTime)
+                    .relativeTime(time)
+                    .img(rs.getString("img"))
+                    .ac_sender(rs.getInt("ac_sender"))
+                    .ac_receiver(rs.getInt("ac_receiver"))
+                    .chk(rs.getInt("chk"))
+                    .build();
+			
+            MessageListDTO messageInfo = MessageListDTO.builder()
+                    .other(other)
+                    .numOfUnreadMessages(rs.getInt("unread_count"))
+                    .latestMessage(latestMessage)
+                    .build();
 			
 			messageList.add(messageInfo);
-			
 		}
 		
 		JdbcUtil.close(rs);

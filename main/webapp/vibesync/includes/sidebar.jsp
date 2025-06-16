@@ -129,7 +129,7 @@ input:focus {
   padding: 2px 4px;
 }
 
-.modal {
+.modal-sidebar {
   display: none; 
   position: absolute;
   top: 100%; 
@@ -164,7 +164,7 @@ input:focus {
         <span class="nickname" id="nickname-display">
           ${userInfo.nickname}
         </span>
-        <div id="nickname-modal" class="modal">
+        <div id="nickname-modal" class="modal-sidebar">
           <a href="userPage.do?acIdx=${userInfo.ac_idx}" class="modal-nickname">
             ${userInfo.nickname}
           </a>
