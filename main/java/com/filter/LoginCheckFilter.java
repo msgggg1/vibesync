@@ -50,7 +50,7 @@ public class LoginCheckFilter extends HttpFilter implements Filter {
 	    }
 	    
 	    // 리소스 파일(css, js, 이미지 등)은 항상 허용
-	    //웹 페이지를 올바르게 표시하는 데 필요한 정적 파일(CSS, JavaScript, 이미지, 폰트 등)에 대해서는 로그인 여부와 상관없이 항상 접근을 허용
+	    // 웹 페이지를 올바르게 표시하는 데 필요한 정적 파일(CSS, JavaScript, 이미지, 폰트 등)에 대해서는 로그인 여부와 상관없이 항상 접근을 허용
 	    if (requestURI.startsWith(request.getContextPath() + "/resources/")) {
 	        isPublicPath = true;
 	    }

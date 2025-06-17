@@ -15,7 +15,6 @@
   background: var(--sidebar-color);
   background-image: url(./back4.png);
   width: 200px;
-  overflow: hidden;
   white-space: nowrap;
   padding: 10px;
   z-index: 111;
@@ -43,9 +42,12 @@
   margin-block: 60px;
 }
 .notion-app-inner .notion-sidebar-container .notion-sidebar .menu_content .nickname {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   text-decoration: none;
   text-transform: uppercase;
-  color: var(--font-color);
+  color: var(--font-color);d
 }
 
 .notion-sidebar .search {
@@ -70,13 +72,13 @@
 }
 
 .notion-sidebar #follow {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  flex-direction: column;
-  padding: 0;
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 0;
 }
-
 /* 레이블 스타일 */
 .notion-sidebar .follow_list label {
   text-decoration: none;
@@ -108,6 +110,14 @@
 .notion-sidebar .follow_items li {
   margin: 4px 0;
 }
+.notion-sidebar .follow_items li p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+} 
+.follow_list {
+    width: 100%;
+}
 
 .notion-sidebar .icon_wrap {
   display: flex;
@@ -137,10 +147,11 @@
 #toggle-btn {
   display: none;
   position: absolute;
-  font-size: 24px;
   font-weight: bold;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
+  top: 10px;
+  left: 10px;
   background-color: transparent;
   border: none;
   color: var(--font-color);
@@ -151,9 +162,8 @@
 @media (max-width: 1000px) {
   #toggle-btn {
     display: block;
-    background-color: var(--card-back);
+    background-color: var(--font-color);
+    color: var(--card-back);
     border: solid 2px var(--border-color);
-    border-radius: 0 0 10px 0;
-    border-left: none;
-    border-top: none;
+    border-radius: 50%;
   }}

@@ -258,7 +258,7 @@ public class UserHandler implements CommandHandler {
      */
     private void redirectToPreviousOrMainPage(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String referer = (String) session.getAttribute("referer");
-        if (referer != null && !referer.isEmpty()) {
+        if (referer != null && !referer.isEmpty() && !referer.contains("index.html")) {
             session.removeAttribute("referer");
             response.sendRedirect(referer);
         } else {

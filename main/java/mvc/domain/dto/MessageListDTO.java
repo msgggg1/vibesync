@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import mvc.domain.vo.MessageVO;
+import mvc.domain.vo.UserSummaryVO;
 
 @Getter
 @Setter
@@ -17,6 +18,7 @@ import mvc.domain.vo.MessageVO;
 public class MessageListDTO {
 
 	private int ac_sender;
+	private UserSummaryVO other;
 	private int numOfUnreadMessages;
 	private MessageDTO latestMessage;
 	

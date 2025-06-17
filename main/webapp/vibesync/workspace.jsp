@@ -839,7 +839,10 @@
 	      $.ajax({
 	        url: '${pageContext.request.contextPath}/message.do',
 	        type: 'GET',
-	        data: { senderIdx },
+	        data: { 
+	        	sender_idx: senderIdx,
+	        	view: 'CHAT'
+	        },
 	        dataType: 'json',
 	        success: function (chatList) {
 	        	$('#chatHistory').empty();
@@ -918,7 +921,7 @@
 	      url: '${pageContext.request.contextPath}/message.do',
 	      type: 'POST',
 	      data: JSON.stringify({
-	        receiverIdx: currentChatSenderIdx,
+	    	receiver_idx: currentChatSenderIdx,
 	        text: message
 	      }),
 	      contentType: "application/json; charset=utf-8",

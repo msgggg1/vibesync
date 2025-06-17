@@ -143,7 +143,7 @@
       <div id="content_wrapper">
         <section id="content">
           <div class="back_icon">
-            <a onclick="location.href = history.go(-1)"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
+            <a href="postView.do?nidx=${note.note_idx}"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
           </div>
 
           <div id="postview_Wrapper">

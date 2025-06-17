@@ -521,7 +521,7 @@ public class NoteDAOImpl implements NoteDAO {
 	                   "FROM ( " +
 	                   "    SELECT r.*, ROWNUM RNUM " + 
 	                   "    FROM ( " +
-	                   "        SELECT n.note_idx, n.title, n.img AS thumbnail_img " + // 실제 가져올 컬럼
+	                   "        SELECT n.note_idx, n.title, n.titleImg AS thumbnail_img " + // 실제 가져올 컬럼
 	                   "        FROM note n " +
 	                   "        JOIN userPage up ON n.userPg_idx = up.userPg_idx " +
 	                   "        WHERE up.ac_idx = ? " + // 조건: 특정 사용자

@@ -328,7 +328,7 @@ public class UserNoteDAOImpl implements UserNoteDAO {
     @Override
     public NoteVO getNote(int noteIdx) {
     	NoteVO note = null;
-    	String sql = "select * FROM note WHERE note_idx = ?";
+    	String sql = "select note_idx, title, text, img, titleImg, view_count, content_idx, genre_idx, category_idx, userPg_idx FROM note WHERE note_idx = ?";
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, noteIdx);
@@ -336,16 +336,17 @@ public class UserNoteDAOImpl implements UserNoteDAO {
 
             if (rs.next()) {
                 note = NoteVO.builder()
-                    .note_idx(         rs.getInt("note_idx"))
-                    .title(            rs.getString("title"))
-                    .text(             rs.getString("text"))
-                    .img(        	   rs.getString("img"))
-                    .view_count(       rs.getInt("view_count"))
-                    .content_idx(      rs.getInt("content_idx"))
-                    .genre_idx(        rs.getInt("genre_idx"))
-                    .category_idx(     rs.getInt("category_idx"))
-                    .userPg_idx(       rs.getInt("userPg_idx"))
-                    .build();
+                        .note_idx(       rs.getInt("note_idx"))
+                        .title(          rs.getString("title"))
+                        .text(           rs.getString("text"))
+                        .img(            rs.getString("img"))
+                        .titleImg(       rs.getString("titleImg")) // [추가] titleImg 필드 설정
+                        .view_count(     rs.getInt("view_count"))
+                        .content_idx(    rs.getInt("content_idx"))
+                        .genre_idx(      rs.getInt("genre_idx"))
+                        .category_idx(   rs.getInt("category_idx"))
+                        .userPg_idx(     rs.getInt("userPg_idx"))
+                        .build();
             }
         } catch (Exception e) {
             e.printStackTrace();

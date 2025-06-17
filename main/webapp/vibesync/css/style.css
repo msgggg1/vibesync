@@ -12,6 +12,7 @@
   --chpa: #2a2a2a45;
   --card-back: #000;
   --card-head: #fff;
+  --modal-font: #ddd;
 }
 :root[color-theme='light']{
   --icon-filter: invert(0);
@@ -23,6 +24,7 @@
   --chpa: #dfdfdf40;
   --card-back: #fff;
   --card-head: #000;
+  --modal-font: #333;
 }
 
 :root {
@@ -40,6 +42,7 @@
   --chpa: #dfdfdf40;
   --card-back: #fff;
   --card-head: #000;
+   --modal-font: #333;
 }
 * {
   box-sizing: border-box;
@@ -54,12 +57,13 @@ button{
   display: flex;
 }
 body {
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: "Noto Sans KR", sans-serif !important;
   margin: 0;
   padding: 0;
-  background-color: var(--background-color);
+  background-color: var(--background-color) !important;
   background-image:  linear-gradient(var(--chpa) 1.1px, transparent 1.1px), linear-gradient(to right, var(--chpa) 1.1px, transparent 1.1px);
   background-size: 22px 22px;
+  color: var(--font-color) !important;
 }
 a {
   text-decoration: none;
@@ -387,6 +391,34 @@ p {
 #con_wrapper .con_item {
   background-color: gray;
   width: 100%;
+}
+
+.con_item {
+  position: relative; /* 자식 요소를 absolute로 위치시키기 위한 기준 */
+  
+  /* --- 핵심: 순수 CSS로 4:5 비율 만들기 --- */
+  height: 0;
+  padding-top: 125%; /* (세로/가로 비율) * 100 = (5/4) * 100 = 125% */
+  
+  overflow: hidden;
+}
+
+.con_item img {
+  object-fit: cover; /* 이미지가 비율에 맞게 잘리며 꽉 차도록 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.con_item img,
+.con_item .title_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /* workspace */

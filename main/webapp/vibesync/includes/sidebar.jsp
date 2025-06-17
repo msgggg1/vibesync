@@ -29,27 +29,6 @@
   color: var(--font-color);
 }
 
-.search {
-  display: inline-flex;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-}
-
-/* 입력창 숨김 상태 */
-.search-input {
-  width: 100px;
-  height: 22px;
-  background: none;
-  border: none;
-  border-bottom: var(--border-color) 2px solid;
-  color: var(--font-color);
-}
-
-input:focus {
-  outline: none;
-}
-
 #follow {
   display: flex;
   justify-content: start;
@@ -115,6 +94,7 @@ input:focus {
 }
 
 .nickname-container {
+  width: 100%;
   position: relative; 
   display: inline-block;
 }
@@ -138,15 +118,19 @@ input:focus {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  padding: 8px 12px;
   z-index: 1000;
   white-space: nowrap;
+  width: 170px;
+  height: 220px;
+  overflow-x: hidden;
 }
 
 .modal-nickname {
   display: block;
   text-decoration: none;
-  color: #333;
+  color: var(--modal-font);
+  padding: 4px 10px;
+  background-color: #c7e5ff;/*임시 구분용 색상*/
 }
 
 .modal-nickname:hover {
@@ -169,10 +153,6 @@ input:focus {
             ${userInfo.nickname}
           </a>
         </div>
-      </div>
-      <div class="search icon_wrap">
-        <img src="./sources/icons/search.svg" alt="search icon" class="sidebar_icon">
-        <input type="text" class="search-input" placeholder="Search…">
       </div>
 
       <a href="main.do" class="home icon_wrap">
@@ -250,9 +230,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: 'POST',
-            // 확인 필요
-            //url: '<%= request.getContextPath() %>/sidebar.do',
-            url: '<%= request.getContextPath() %>/common.do',
+            url: '<%= request.getContextPath() %>/sidebar.do',
             data: formData,
             dataType: 'json',
             success: function(response) {

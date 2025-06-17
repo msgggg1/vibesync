@@ -515,6 +515,7 @@
 #my-posts ul li,
 #liked-posts ul li,
 .generated_block ul li {
+	width: 100%;
 	padding: 12px 0;
 	border-bottom: 1px solid #eef3fa;
 	display: flex;
@@ -1073,6 +1074,12 @@
 /* calendar*/
 .fc-day-today {
     background-color: #fff9c4 !important; /* !important를 사용하여 라이브러리 기본 스타일 덮어쓰기 */
+}
+.fc-view-harness-active {
+	font-size: clamp(41.6%, 1.74vw, 90%) !important;
+}
+#calendar .fc-header-toolbar {
+    font-size: clamp(44%, 1.54vw, 84%) !important;
 }
 
 #calendar .fc-toolbar-title {

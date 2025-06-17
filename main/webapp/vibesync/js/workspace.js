@@ -556,8 +556,9 @@ $(document).ready(function() {
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek'
+                    right: 'dayGridMonth,timeGridWeek',
                 },
+                titleFormat: { year:"numeric", month: "short"},
                 dayMaxEvents: 2,
                 height: '100%',
                 aspectRatio: 1.8,

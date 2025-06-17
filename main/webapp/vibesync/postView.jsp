@@ -22,6 +22,20 @@
 <script src="./js/script.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+//[신규] 조건부 뒤로가기 함수
+function goBackSmartly() {
+    // 이전 페이지의 URL을 확인합니다.
+    const referrer = document.referrer;
+
+    // 이전 페이지 URL에 'noteedit.do'가 포함되어 있으면 두 페이지 뒤로 이동합니다.
+    if (referrer && referrer.includes('noteedit.do')) {
+        history.go(-2);
+    } else {
+        // 그 외의 경우에는 한 페이지만 뒤로 갑니다.
+        history.back();
+    }
+}
+
 const isLoggedIn = ${not empty user}; 
 
     $(document).ready(function() {
@@ -189,7 +203,7 @@ const isLoggedIn = ${not empty user};
       <div id="content_wrapper">
         <section id="content">
           <div class="back_icon">
-            <a onclick="history.back()"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
+             <a href="javascript:void(0);" onclick="goBackSmartly()"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
           </div>
           <div id="postview_Wrapper">
             <div class="title">
@@ -197,7 +211,7 @@ const isLoggedIn = ${not empty user};
               <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == note.upac_idx}">
                 <div>
                   <button class="postview_ed_btn"><a href="noteedit.do?noteidx=${note.note_idx}">edit</a></button>
-                  <button class="postview_de_btn"><a href="notedelete.do?noteidx=${note.note_idx}">delete</a></button>
+                  <button class="postview_de_btn"><a href="notedelete.do?noteidx=${note.note_idx}" onclick="return confirm('정말로 삭제하시겠습니까?');">delete</a></button>
                 </div>
               </c:if>
             </div>
