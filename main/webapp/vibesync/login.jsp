@@ -37,15 +37,14 @@
 			</div>
 			<div class="login-wrapper">
 				<div id="findYourVibeSync">
-					Find<br>Your<br>
-					<span class="highlight">VibeSync</span><br>
+					Find<br>Your<br> <span class="highlight">VibeSync</span><br>
 					<br>
 				</div>
 
 				<!-- <div id="loginFormContainer"> -->
 				<div id="loginFormContainer"
 					style="${formToShow eq 'signUp' ? 'display:none;' : 'display:flex;'}">
-					<form action="<%= request.getContextPath() %>/vibesync/user.do"
+					<form action="<%=request.getContextPath()%>/vibesync/user.do"
 						method="post" id="loginForm">
 						<%-- action을 login.jsp 또는 현재 페이지로 명시 --%>
 						<%-- POST 요청 시 login/signup 구분 --%>
@@ -140,6 +139,30 @@
 							Login</a>
 					</div>
 				</div>
+				<div id="resetPasswordContainer" style="display: none;">
+					<form action="<%=request.getContextPath()%>/vibesync/user.do"
+						method="post" id="resetPasswordForm">
+						<input type="hidden" name="accessType"
+							value="requestPasswordReset">
+
+						<div class="form-notice">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+								viewBox="0 0 24 24" fill="none" stroke="currentColor"
+								stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+								class="notice-icon">
+								<circle cx="12" cy="12" r="10"></circle>
+								<line x1="12" y1="16" x2="12" y2="12"></line>
+								<line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+							<p>Please enter the email address you used to sign up.</p>
+						</div>
+
+						<input type="email" name="email" placeholder="Email" required>
+						<button type="submit">Get Reset Link</button>
+					</form>
+					<div class="links">
+						<a href="#" id="switchToLoginFromReset">Back to Login</a>
+					</div>
+				</div>
 
 				<!-- <div class="links switch-form-link" > -->
 				<div class="links switch-form-link"
@@ -147,6 +170,7 @@
 					Not a member yet?<a href="#" id="switchToSignupLink">Sign Up</a>
 				</div>
 			</div>
+
 		</div>
 	</div>
 
