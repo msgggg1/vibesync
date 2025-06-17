@@ -6,6 +6,7 @@ import mvc.persistence.daoImpl.UserDAOImpl;
 import java.sql.Connection;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.dto.LoginDTO;
 import mvc.domain.vo.UserVO;
@@ -29,7 +30,7 @@ public class LoginService {
 		} catch (Exception e) {
         	e.printStackTrace();
 		} finally {
-			if (conn != null) conn.close();
+			if (conn != null) JdbcUtil.close(conn);
 		}
 		
         return userVO;
@@ -52,7 +53,7 @@ public class LoginService {
 		} catch (Exception e) {
         	e.printStackTrace();
 		} finally {
-			if (conn != null) conn.close();
+			if (conn != null) JdbcUtil.close(conn);
 		}
 		
         return userVO;

@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.util.ConnectionProvider; // ConnectionProvider는 프로젝트에 맞게 import 해야 합니다.
+import com.util.JdbcUtil;
 
 import mvc.persistence.dao.PageDAO;
 import mvc.persistence.daoImpl.PageDAOImpl;
@@ -43,7 +44,7 @@ public class PageDeleteHandler implements CommandHandler {
             // 4. DB 커넥션을 닫습니다.
             if (conn != null) {
                 try {
-                    conn.close();
+                	JdbcUtil.close(conn);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

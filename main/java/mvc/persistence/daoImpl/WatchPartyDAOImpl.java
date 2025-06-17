@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.dto.WatchPartyDTO;
 import mvc.domain.vo.UserSummaryVO;
@@ -54,7 +55,7 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
             if (rs != null) try { rs.close(); } catch (Exception ignored) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
             try {
-            	conn.close();
+            	JdbcUtil.close(conn);
             } catch (Exception e) {
             	e.printStackTrace();
             }
@@ -95,7 +96,7 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
             if (rs != null) try { rs.close(); } catch (Exception ignored) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
             try {
-            	conn.close();
+            	JdbcUtil.close(conn);
             } catch (Exception e) {
             	e.printStackTrace();
             }
@@ -128,7 +129,7 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
 		} finally {
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
             try {
-            	conn.close();
+            	JdbcUtil.close(conn);
             } catch (Exception e) {
             	e.printStackTrace();
             }
@@ -171,7 +172,7 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
             if (rs != null) try { rs.close(); } catch (Exception ignored) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
             try {
-            	conn.close();
+            	JdbcUtil.close(conn);
             } catch (Exception e) {
             	e.printStackTrace();
             }
@@ -217,7 +218,7 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
             if (rs != null) try { rs.close(); } catch (Exception ignored) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
             try {
-            	conn.close();
+            	JdbcUtil.close(conn);
             } catch (Exception e) {
             	e.printStackTrace();
             }

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.naming.NamingException;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.dto.NoteSummaryDTO;
 import mvc.domain.dto.UserPageDataDTO;
@@ -84,11 +85,7 @@ public class UserPageService {
 			e.printStackTrace();
 		} finally {
             if (conn != null) {
-                try {
-                    conn.close(); 
-                } catch (SQLException e) {
-                    e.printStackTrace(); 
-                }
+                JdbcUtil.close(conn);
             }
         }
         return pageData;
@@ -106,7 +103,7 @@ public class UserPageService {
         } catch (NamingException e) {
 			e.printStackTrace();
 		} finally {
-            if (conn != null) conn.close();
+            if (conn != null) JdbcUtil.close(conn);
         }
         return posts;
     }

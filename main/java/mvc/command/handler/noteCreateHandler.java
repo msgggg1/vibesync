@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Random; // Random 클래스 임포트
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.vo.CategoryVO;
 import mvc.domain.vo.ContentsVO;
@@ -61,7 +63,7 @@ public class noteCreateHandler implements CommandHandler {
             } catch (NamingException | java.sql.SQLException e) {
                 throw new RuntimeException("리스트 조회 오류", e);
             } finally {
-                if (conn != null) try { conn.close(); } catch (Exception ignored) {}
+                if (conn != null) try { JdbcUtil.close(conn); } catch (Exception ignored) {}
             }
             return "write.jsp";
 
@@ -84,15 +86,16 @@ public class noteCreateHandler implements CommandHandler {
             File saveDir = new File(saveDirPath);
             if (!saveDir.exists()) saveDir.mkdirs();
 
-            String safeTitle = title.replaceAll("[^a-zA-Z0-9가-힣]", "_");
-
-            // [추가] 썸네일 이미지 저장 로직
+            // [수정] 썸네일 이미지 저장 로직 (파일명 난수화)
             if (thumbnailBase64 != null && !thumbnailBase64.isEmpty() && thumbnailExt != null) {
                 try {
                     String[] parts = thumbnailBase64.split(",");
                     if (parts.length == 2) {
                         byte[] imageBytes = Base64.getDecoder().decode(parts[1]);
-                        String thumbnailFileName = "title_" + safeTitle + "." + thumbnailExt;
+                        
+                        // 파일명을 10자리 난수로 생성
+                        String thumbnailFileName = generateRandomString(10) + "." + thumbnailExt;
+                        
                         File outFile = new File(saveDir, thumbnailFileName);
                         try (FileOutputStream fos = new FileOutputStream(outFile)) {
                             fos.write(imageBytes);
@@ -104,8 +107,7 @@ public class noteCreateHandler implements CommandHandler {
                 }
             }
             
-            // Summernote 본문 이미지 저장 로직
-            int imgCounter = 1;
+            // [수정] Summernote 본문 이미지 저장 로직 (파일명 난수화)
             List<String> dbRelativePaths = new ArrayList<>();
             if (base64Images != null && !base64Images.isEmpty()) {
                 String[] imageDataArray = base64Images.split("\\|");
@@ -118,9 +120,8 @@ public class noteCreateHandler implements CommandHandler {
                         String imageType = parts[0].substring("data:image/".length(), parts[0].indexOf(";base64"));
                         byte[] imageBytes = Base64.getDecoder().decode(parts[1]);
 
-                        // 본문 이미지는 원래 이름 규칙 유지
-                        String fileName = safeTitle + "_" + imgCounter + "." + imageType;
-                        imgCounter++;
+                        // 파일명을 10자리 난수로 생성
+                        String fileName = generateRandomString(10) + "." + imageType;
 
                         File outFile = new File(saveDir, fileName);
                         try (FileOutputStream fos = new FileOutputStream(outFile)) {
@@ -145,26 +146,41 @@ public class noteCreateHandler implements CommandHandler {
             int userPgIdx   = Integer.parseInt(request.getParameter("pageidx"));
 
             NoteVO note = NoteVO.builder()
-                .title(title)
-                .text(processedContent)
-                .img(imagesForDB)
-                .titleImg(thumbnailDbPath) // [추가] 썸네일 경로 설정
-                .category_idx(categoryIdx)
-                .genre_idx(genreIdx)
-                .content_idx(contentIdx)
-                .userPg_idx(userPgIdx)
-                .build();
+                    .title(title)
+                    .text(processedContent)
+                    .img(imagesForDB)
+                    .titleImg(thumbnailDbPath) // [추가] 썸네일 경로 설정
+                    .category_idx(categoryIdx)
+                    .genre_idx(genreIdx)
+                    .content_idx(contentIdx)
+                    .userPg_idx(userPgIdx)
+                    .build();
 
             Connection conn = ConnectionProvider.getConnection();
             UserNoteDAO dao = new UserNoteDAOImpl(conn);
             dao.createNote(note);
 
-            if(conn != null) conn.close();
+            if(conn != null) JdbcUtil.close(conn);
 
             response.sendRedirect(request.getContextPath() + "/vibesync/page.do");
             return null;
         }
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         return null;
+    }
+
+    /**
+     * [신규] 지정된 길이의 영문/숫자 난수 문자열을 생성하는 헬퍼 메서드
+     * @param length 생성할 문자열의 길이
+     * @return 생성된 난수 문자열
+     */
+    private String generateRandomString(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder(length);
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 }

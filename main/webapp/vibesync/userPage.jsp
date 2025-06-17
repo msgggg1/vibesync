@@ -30,7 +30,7 @@ while (names.hasMoreElements()) {
     h3 {
       margin: 0;
     }
-	.wp_btn {background: black;}
+   .wp_btn {background: black;}
     #pageCreateBtn {
       position: fixed;
       bottom: 20px;
@@ -122,235 +122,232 @@ while (names.hasMoreElements()) {
   
   <style> /* Message */
   
-	#up_msg_btn {
-	  background: #7fa6c9;
-	  color: #fff;
-	  border: none;
-	  padding: 11px 32px 11px 23px;
-	  border-radius: 999px;
-	  font-weight: 700;
-	  font-size: 1.06rem;
-	  box-shadow: 0 1px 8px 0 rgba(127,166,201,0.12);
-	  display: flex;
-	  align-items: center;
-	  gap: 13px;
-	  letter-spacing: 0.3px;
-	  cursor: pointer;
-	  outline: none;
-	  transition: background 0.18s, box-shadow 0.14s, transform 0.12s;
-	}
-	
-	#up_msg_btn i {
-	  font-size: 1.18em;
-	  color: #fff;
-	}
-	
-	#up_msg_btn:hover {
-	  background: #45607d;
-	  color: #fff;
-	  box-shadow: 0 2px 13px 0 rgba(70,96,125,0.14);
-	}
+   #up_msg_btn {
+     background-color: #fe4f4f;
+     color: #fff;
+     border: none;
+     padding: 11px 32px 11px 23px;
+     font-weight: 700;
+     font-size: 1.06rem;
+     display: flex;
+     align-items: center;
+     gap: 13px;
+     letter-spacing: 0.3px;
+     cursor: pointer;
+     outline: none;
+     transition: background-color 0.18s ease-in-out, transform 0.12s;
+   }
+   
+   #up_msg_btn i {
+     font-size: 1.18em;
+     color: #fff;
+   }
+   
+   #up_msg_btn:hover {
+     background: #fe1717;
+     color: #fff;
+   }
   
-  	/* 메시지 목록 뒷배경 */
-	.modal-msglist {
-	  display: none;
-	  position: fixed;
-	  z-index: 999;
-	  left: 0; top: 0;
-	  width: 100vw; height: 100vh;
-	  background: rgba(0,0,0,0.6);
-	  backdrop-filter: blur(2.5px);
-	  justify-content: center;
-	  align-items: center;
-	}
-	
-	/* 메시지 목록 본문 */
-	.modal-msg {
-	  position: relative;
-	  background: #f5f8fb;
-	  border-radius: 20px;
-	  box-shadow: 0 4px 32px 0 rgba(80,110,150,0.10), 0 0 0 1.5px #c7d3e8;
-	  width: 92%; max-width: 415px; min-width: 330px;
-	  min-height: 390px; max-height: 78vh;
-	  display: flex; flex-direction: column;
-	  padding-bottom: 13px;
-	  border: none;
-	  animation: zoomIn 0.21s;  
-	}
-	
-	@keyframes zoomIn {
-	  from { transform: scale(0.97); opacity: 0; }
-	  to { transform: scale(1); opacity: 1; }
-	}
-	
-	/* 메시지 목록 모달창 제목 */
-	#msgRoomTitle {
-	  font-size: 18px;
-	  font-weight: 700;
-	  color: #223355;
-	  padding: 18px 0 12px 0;
-	  border-bottom: 1.5px solid #e3ecf6;
-	  background: transparent;
-	  margin: 0 0 6px 0;
-	  text-align: center;
-	  letter-spacing: 0.02em;
-	}
-	
-	#msgRoomTitle i {
-	  margin-right: 9px;
-	  color: #7fa6c9;
-	  font-size: 20px;
-	}
-	
-	/* 닫기 버튼 */
-	.close-modal {
-	  position: absolute;
-	  top: 13px; right: 17px;
-	  color: #bcb8ad;
-	  font-size: 26px;
-	  font-weight: 400;
-	  cursor: pointer;
-	  background: none;
-	  border: none;
-	  border-radius: 50%;
-	  width: 32px; height: 32px;
-	  display: flex; align-items: center; justify-content: center;
-	  transition: background 0.13s, color 0.12s;
-	}
-	.close-modal:hover,
-	.close-modal:focus {
-	  font-weight: bold;
-	  color: #333;
-	  text-decoration: none;
-	}
-	
-	/* 메시지 목록이 표시될 영역 */
-	#msgList {
-	  padding: 13px 25px 10px 25px;
-	  overflow-y: auto;
-	  flex-grow: 1;
-	  flex-direction: column;
-	  min-height: 150px;
-	  display: flex;
-	  align-items: stretch;
-	  justify-content: flex-start;
-	  background: transparent;
-	}
-	
-	/* "메시지 내역이 없습니다" 문구 스타일 */
-	.no-message-placeholder {
-	  display: flex;
-	  flex-direction: column;
-	  align-items: center;
-	  justify-content: center;
-	  color: #888;
-	  text-align: center;
-	  padding: 20px;
-	}
-	.no-message-placeholder i {
-	  font-size: 48px;
-	  margin-bottom: 16px;
-	  color: #e0e0e0;
-	}
-	.no-message-placeholder p {
-	  margin: 0;
-	  font-size: 1rem;
-	  font-weight: 500;
-	}
-	
-	.msg_item {
-	  display: flex;
-	  align-items: flex-start;
-	  gap: 15px;
-	  width: 100%;
-	  background: #fff;
-	  padding: 19px 18px 17px 15px;
-	  border-radius: 11px;
-	  box-shadow: 0 2px 8px 0 rgba(120,150,190,0.06);
-	  color: #223355;
-	  animation: fadeInUp 0.26s;
-	  border: 1.5px solid #c7d3e8;
-	  margin-bottom: 18px;
-	  transition: background 0.14s;  
-	}	
-	.msg_item:last-child {
-	  margin-bottom: 0;
-	}
-	
-	.msg_item:hover {
-	  background: #bfcfe1;
-	  cursor: pointer;
-	}
-	
-	@keyframes fadeInUp {
-	  from { opacity: 0; transform: translateY(20px);}
-	  to { opacity: 1; transform: translateY(0);}
-	}
-	
-	.msg_profile img {
-	  width: 44px;
-	  height: 44px;
-	  object-fit: cover;
-	  border-radius: 50%;
-	  aspect-ratio: 1/1;
-	  margin-left: 8px;
-	  margin-right: 5px;
-	  border: 1.5px solid lightgrey;
-	  background: #faf9f6;
-	  display: block;
-	}
-	  
-	.msg_text_area {
-	  flex: 1 1 auto;
-	  min-width: 0;
-	  display: flex;
-	  flex-direction: column;
-	  align-items: flex-start;
-	}
-	
-	.msg_sender_row {
-	  display: flex;
-	  align-items: center;
-	  gap: 7px;
-	  margin-bottom: 1px;
-	}
-	.msg_sender {
-	  font-weight: 700;
-	  font-size: 17px;
-	  color: #2d3440;
-	  margin-bottom: 1px;
-	}
-	.msg_preview {
-	  font-size: 14px;
-	  font-weight: 450;
-	  color: black; /* #223355; */
-	  margin: 2px 0 0 0;
-	  word-break: break-all;
-	  opacity: 0.93;
-	  text-overflow: ellipsis;
-	}
-	.msg_time {
-	  font-size: 12px;
-	  color: #7890a2;
-	  margin-top: 5px;
-	  white-space: nowrap;
-	}
-	  
-	/* 읽지 않은 뱃지 */
-	.unread-badge {
-	  display: flex;
-	  align-items: center; justify-content: center;
-	  min-width: 20px; height: 20px;
-	  padding: 0 5px;
-	  background: #45607d;
-	  color: #fff;
-	  font-size: 12px;
-	  font-weight: 700;
-	  border-radius: 50%;
-	  box-shadow: 0 1px 3px rgba(175,175,160,0.10);
-	  margin-left: 5px;
-	  user-select: none;
-	}
+     /* 메시지 목록 뒷배경 */
+   .modal-msglist {
+     display: none;
+     position: fixed;
+     z-index: 999;
+     left: 0; top: 0;
+     width: 100vw; height: 100vh;
+     background: rgba(0,0,0,0.6);
+     backdrop-filter: blur(2.5px);
+     justify-content: center;
+     align-items: center;
+   }
+   
+   /* 메시지 목록 본문 */
+   .modal-msg {
+     position: relative;
+     background: #f5f8fb;
+     border-radius: 20px;
+     box-shadow: 0 4px 32px 0 rgba(80,110,150,0.10), 0 0 0 1.5px #c7d3e8;
+     width: 92%; max-width: 415px; min-width: 330px;
+     min-height: 390px; max-height: 78vh;
+     display: flex; flex-direction: column;
+     padding-bottom: 13px;
+     border: none;
+     animation: zoomIn 0.21s;  
+   }
+   
+   @keyframes zoomIn {
+     from { transform: scale(0.97); opacity: 0; }
+     to { transform: scale(1); opacity: 1; }
+   }
+   
+   /* 메시지 목록 모달창 제목 */
+   #msgRoomTitle {
+     font-size: 18px;
+     font-weight: 700;
+     color: var(--font-size);
+     padding: 18px 0 12px 0;
+     border-bottom: 2px solid var(--border-color);
+     background: transparent;
+     margin: 0 0 6px 0;
+     text-align: center;
+     letter-spacing: 0.02em;
+   }
+   
+   #msgRoomTitle i {
+    margin-right: 9px;
+    color: var(--font-color);
+    font-size: 20px;
+}
+
+   
+   /* 닫기 버튼 */
+   .close-modal {
+     position: absolute;
+     top: 13px; right: 17px;
+     color: #bcb8ad;
+     font-size: 26px;
+     font-weight: 400;
+     cursor: pointer;
+     background: none;
+     border: none;
+     border-radius: 50%;
+     width: 32px; height: 32px;
+     display: flex; align-items: center; justify-content: center;
+     transition: background 0.13s, color 0.12s;
+   }
+   
+   close-modal:hover,
+   .close-modal:focus {
+     font-weight: bold;
+     color: var(--font-color);
+     text-decoration: none;
+   }
+   
+   /* 메시지 목록이 표시될 영역 */
+   #msgList {
+     padding: 13px 25px 10px 25px;
+     overflow-y: auto;
+     flex-grow: 1;
+     flex-direction: column;
+     min-height: 150px;
+     display: flex;
+     align-items: stretch;
+     justify-content: flex-start;
+     background: transparent;
+   }
+   
+   /* "메시지 내역이 없습니다" 문구 스타일 */
+   .no-message-placeholder {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     color: #888;
+     text-align: center;
+     padding: 20px;
+   }
+   .no-message-placeholder i {
+     font-size: 48px;
+     margin-bottom: 16px;
+     color: #e0e0e0;
+   }
+   .no-message-placeholder p {
+     margin: 0;
+     font-size: 1rem;
+     font-weight: 500;
+   }
+   
+   .msg_item {
+     display: flex;
+     align-items: flex-start;
+     gap: 15px;
+     width: 100%;
+     background: var(--card-back);
+     padding: 19px 18px 17px 15px;
+     border-radius: 11px;
+     animation: fadeInUp 0.26s;
+     border: 2px solid var(--border-color);
+     margin-bottom: 18px;
+     transition: background-color 0.14s ease-in-out;  
+   } 
+   .msg_item:last-child {
+     margin-bottom: 0;
+   }
+   
+   .msg_item:hover {
+     background-color: #a7ffa193;
+     cursor: pointer;
+   }
+   
+   @keyframes fadeInUp {
+     from { opacity: 0; transform: translateY(20px);}
+     to { opacity: 1; transform: translateY(0);}
+   }
+   
+   .msg_profile img {
+     width: 44px;
+     height: 44px;
+     object-fit: cover;
+     border-radius: 50%;
+     aspect-ratio: 1/1;
+     margin-left: 8px;
+     margin-right: 5px;
+     border: 1.5px solid lightgrey;
+     background: #faf9f6;
+     display: block;
+   }
+     
+   .msg_text_area {
+     flex: 1 1 auto;
+     min-width: 0;
+     display: flex;
+     flex-direction: column;
+     align-items: flex-start;
+   }
+   
+   .msg_sender_row {
+     display: flex;
+     align-items: center;
+     gap: 7px;
+     margin-bottom: 1px;
+   }
+   .msg_sender {
+     font-weight: 700;
+     font-size: 17px;
+     color: #2d3440;
+     margin-bottom: 1px;
+   }
+   .msg_preview {
+     font-size: 14px;
+     font-weight: 450;
+     color: black; /* #223355; */
+     margin: 2px 0 0 0;
+     word-break: break-all;
+     opacity: 0.93;
+     text-overflow: ellipsis;
+   }
+   .msg_time {
+     font-size: 12px;
+     color: #7890a2;
+     margin-top: 5px;
+     white-space: nowrap;
+   }
+     
+   /* 읽지 않은 뱃지 */
+   .unread-badge {
+     display: flex;
+     align-items: center; justify-content: center;
+     min-width: 20px; height: 20px;
+     padding: 0 5px;
+     background: #45607d;
+     color: #fff;
+     font-size: 12px;
+     font-weight: 700;
+     border-radius: 50%;
+     box-shadow: 0 1px 3px rgba(175,175,160,0.10);
+     margin-left: 5px;
+     user-select: none;
+   }
   
   </style>
   
@@ -553,10 +550,10 @@ while (names.hasMoreElements()) {
             <div id="con_wrapper">
               <c:forEach var="post" items="${userPageData.posts}">
                   <a href="<%=contextPath %>/postView.do?nidx=${post.note_idx}">
-                	<div class="con_item">
+                   <div class="con_item">
                     <c:choose>
                       <c:when test="${not empty post.thumbnail_img}">
-                        <img src="${pageContext.request.contextPath}/${post.thumbnail_img}" alt="${post.title} 썸네일" style="width: 100%; height: 100%; object-fit:cover;" >
+                        <img src="${pageContext.request.contextPath}/${post.thumbnail_img}" alt="${post.title} 썸네일" >
                       </c:when>
                       <c:otherwise>
                         <img src="${pageContext.request.contextPath}/sources/images/default_thumbnail.png" alt="기본 썸네일">
@@ -575,15 +572,15 @@ while (names.hasMoreElements()) {
   
   <!-- 페이지 생성 모달 트리거 버튼 -->
   <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == userPageData.userProfile.ac_idx}">
-  	<button id="pageCreateBtn">＋</button>
+     <button id="pageCreateBtn">＋</button>
   </c:if>
 
   <!-- 모달 오버레이 및 컨텐츠 -->
   <div id="pageModalOverlay" class="modal-overlay">
     <div id="modalWrapper">
-    	<div class="modal-content" id="pageModalContent">
-	    <button class="modal-close" id="pageModalClose">&times;</button>
-	    <!-- AJAX로 로드된 <select> + 버튼들 삽입 -->
+       <div class="modal-content" id="pageModalContent">
+       <button class="modal-close" id="pageModalClose">&times;</button>
+       <!-- AJAX로 로드된 <select> + 버튼들 삽입 -->
     </div>
     </div>
   </div>
@@ -615,6 +612,76 @@ while (names.hasMoreElements()) {
   <script>
     // 채팅 기능에 사용할 전역변수 (상대방 ac_idx)
     let currentChatSenderIdx = 0;
+    
+    /*무한스크롤 함수*/
+    
+    var isLoading = false; // 중복 요청 방지 플래그
+    function loadMorePosts(){
+       // 중복 로딩 방지 및 더 이상 게시물이 없는 경우 실행 중단
+       var hasMore = ($('#hasMorePosts').val() === 'true');
+        if (!hasMore || isLoading) return;
+    
+    isLoading = true;
+    $('#loadingIndicator').show();
+    var nextPage = parseInt($('#currentPageNumber').val()) + 1;
+    var profileUserId = $('#profileUserAcIdx').val();
+    
+    $.ajax({
+          url: '${pageContext.request.contextPath}/loadMorePosts.do', 
+          type: 'GET', 
+          data: {
+            userId: profileUserId,
+            page: nextPage
+          },
+          dataType: 'json',
+          success: function(response) {
+            if (response.posts && response.posts.length > 0) {
+                  var postsHtml = '';
+                var contextPath = '${pageContext.request.contextPath}';
+                
+                $.each(response.posts, function(index, post) {
+                    var thumbnailUrl = post.thumbnail_img 
+                                     ? contextPath + post.thumbnail_img 
+                                     : contextPath + 'vibesync/sources/default/default_thumbnail.png';
+                    
+                    // JSP와 동일한 구조로 만들고, 불필요한 <p> 태그와 인라인 스타일을 제거합니다.
+                    postsHtml += '<a href="' + contextPath + '/vibesync/postView.do?nidx=' + post.note_idx + '">';
+                    postsHtml += '    <div class="con_item">';
+                    postsHtml += '        <img src="' + thumbnailUrl + '" alt="' + post.title + ' 썸네일">';
+                    postsHtml += '    </div>';
+                    postsHtml += '</a>';
+                });
+                $('#con_wrapper').append(postsHtml);
+                $('#currentPageNumber').val(nextPage); // 현재 페이지 번호 업데이트
+            }
+            
+            if (!response.hasMore) {
+              $('#hasMorePosts').val('false');
+              $('#loadingIndicator').text('더 이상 게시물이 없습니다.');
+            } else {
+              $('#loadingIndicator').hide();
+              setTimeout(function() {
+                  checkAndLoadIfNeeded();
+              }, 100);
+            }
+            isLoading = false;
+          },
+          error: function() {
+            alert('게시물을 추가로 불러오는 중 오류가 발생했습니다.');
+            $('#loadingIndicator').hide();
+            isLoading = false;
+          }
+        });
+      }
+    
+   function checkAndLoadIfNeeded() {
+        // 문서 전체 높이가 브라우저 창 높이보다 작거나 같고 (스크롤바가 없고),
+        // 더 불러올 게시물이 있다면
+        if ($(document).height() <= $(window).height() && ($('#hasMorePosts').val() === 'true')) {
+            console.log("콘텐츠가 부족하여 새 게시물을 자동으로 로드합니다.");
+            loadMorePosts();
+        }
+    }
   
     $(document).ready(function() {
       // 프로필 페이지의 팔로우 버튼 처리
@@ -656,56 +723,15 @@ while (names.hasMoreElements()) {
       });
 
       // 무한 스크롤 로직
-      var isLoading = false; // 중복 요청 방지 플래그
-      $(window).scroll(function() {
-        var hasMore = ($('#hasMorePosts').val() === 'true');
-        if (!hasMore || isLoading) return;
-
-        // (window의 높이 + 스크롤된 양) >= (문서 전체의 높이 - 특정 버퍼값)
-        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
-          isLoading = true;
-          $('#loadingIndicator').show();
-          var nextPage = parseInt($('#currentPageNumber').val()) + 1;
-          var profileUserId = $('#profileUserAcIdx').val();
-
-          $.ajax({
-            url: '${pageContext.request.contextPath}/loadMorePosts.do', 
-            type: 'GET', 
-            data: {
-              userId: profileUserId,
-              page: nextPage
-            },
-            dataType: 'json',
-            success: function(response) {
-              if (response.posts && response.posts.length > 0) {
-                var postsHtml = '';
-                $.each(response.posts, function(index, post) {
-                  postsHtml += '<div class="con_item">';
-                  postsHtml += '  <a href="${pageContext.request.contextPath}/noteView.do?noteIdx=' + post.note_idx + '">';
-                  postsHtml += '    <img src="${pageContext.request.contextPath}/' + (post.thumbnail_img ? post.thumbnail_img : 'sources/images/default_thumbnail.png') + '" alt="' + post.title + ' 썸네일">';
-                  postsHtml += '    <p>' + post.title + '</p>';
-                  postsHtml += '  </a>';
-                  postsHtml += '</div>';
-                });
-                $('#con_wrapper').append(postsHtml);
-                $('#currentPageNumber').val(nextPage); // 현재 페이지 번호 업데이트
-              }
-              if (!response.hasMore) {
-                $('#hasMorePosts').val('false');
-                $('#loadingIndicator').text('더 이상 게시물이 없습니다.');
-              } else {
-                $('#loadingIndicator').hide();
-              }
-              isLoading = false;
-            },
-            error: function() {
-              alert('게시물을 추가로 불러오는 중 오류가 발생했습니다.');
-              $('#loadingIndicator').hide();
-              isLoading = false;
-            }
-          });
-        }
-      });
+     $(window).scroll(function() {
+         if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
+             loadMorePosts();
+         }
+     });
+     
+     $(window).on('resize', function() {
+         checkAndLoadIfNeeded();
+     });
       
       // 모달 열기: 페이지 목록 로드
       $('#pageCreateBtn').on('click', function() {
@@ -738,13 +764,13 @@ while (names.hasMoreElements()) {
       });
       
       $('#pageModalOverlay').on('click', '#newNoteBtn', function() {
-    	  // select 박스에서 현재 선택된 페이지 idx
-    	  var selectedIdx = $('#pageSelect').val();
-    	  // 새 글쓰기 링크 href 업데이트
-    	  $('#newNoteLink').attr('href', 'notecreate.do?pageidx=' + selectedIdx);
-    	  // 실제 이동
-    	  window.location.href = $('#newNoteLink').attr('href');
-    	});
+         // select 박스에서 현재 선택된 페이지 idx
+         var selectedIdx = $('#pageSelect').val();
+         // 새 글쓰기 링크 href 업데이트
+         $('#newNoteLink').attr('href', 'notecreate.do?pageidx=' + selectedIdx);
+         // 실제 이동
+         window.location.href = $('#newNoteLink').attr('href');
+       });
 
       // 폼 제출 시 pageCreateHandler 호출
       $('#pageModalOverlay').on('submit', '#pageCreateForm', function(e) {
@@ -775,8 +801,8 @@ while (names.hasMoreElements()) {
       const isOwnProfile = ${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == userPageData.userProfile.ac_idx};
       
       // 메시지 목록 모달창 열기
-	  $('#up_msg_btn').on('click', function () {
-		  const isLoggedIn = ${sessionScope.userInfo != null};
+     $('#up_msg_btn').on('click', function () {
+        const isLoggedIn = ${sessionScope.userInfo != null};
           if (!isLoggedIn) {
               alert("로그인이 필요합니다.");
               location.href = "${pageContext.request.contextPath}/vibesync/user.do";
@@ -792,31 +818,32 @@ while (names.hasMoreElements()) {
               const profileUserNickname = $('#profileUserNickname').val();
               openChatWithUser(profileUserId, profileUserNickname);
           }
-	  });
+     });
       
-	  // 메시지 목록의 아이템 클릭 시 채팅방 열기 (이벤트 위임)
+     // 메시지 목록의 아이템 클릭 시 채팅방 열기 (이벤트 위임)
       $('#msgList').on('click', '.msg_item', function() {
           const senderIdx = $(this).data('sender-idx');
           const nickname = $(this).data('nickname');
           openChatWithUser(senderIdx, nickname);
       });
-	  
+     
       // 채팅 메시지 전송 (버튼 클릭)
       $("#sendMessageBtn").on("click", sendChatMessage);
-	
+   
       // 채팅 메시지 전송 (엔터 키)
-	  $("#chatInput").on("keydown", function(e) {
-	      if (e.key === "Enter" && !e.shiftKey) {
-	        e.preventDefault();
-	        sendChatMessage();
-	      }
-	  });
+     $("#chatInput").on("keydown", function(e) {
+         if (e.key === "Enter" && !e.shiftKey) {
+           e.preventDefault();
+           sendChatMessage();
+         }
+     });
      
-    });
+     checkAndLoadIfNeeded();
+    }); // DOM
     
     // 메시지 모달창 새로고침
     $(window).on('load', function() {
-    	if (window.location.hash === "#msg") {
+       if (window.location.hash === "#msg") {
             openMessageModal();
         }
     });
@@ -964,7 +991,7 @@ while (names.hasMoreElements()) {
           url: '${pageContext.request.contextPath}/message.do',
           type: 'POST',
           data: JSON.stringify({
-        	  receiver_idx: currentChatSenderIdx,
+             receiver_idx: currentChatSenderIdx,
               text: message
           }),
           contentType: "application/json; charset=utf-8",
@@ -983,9 +1010,9 @@ while (names.hasMoreElements()) {
   
   // 채팅 내역 새로고침
   function reloadChatHistory() {
-	  if (currentChatSenderIdx) {
-      	const currentNickname = $('#chatTitle').text().replace('님과의 대화', '');
-      	openChatWithUser(currentChatSenderIdx, currentNickname);
+     if (currentChatSenderIdx) {
+         const currentNickname = $('#chatTitle').text().replace('님과의 대화', '');
+         openChatWithUser(currentChatSenderIdx, currentNickname);
       }
   }
   

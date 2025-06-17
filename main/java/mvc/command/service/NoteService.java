@@ -50,7 +50,7 @@ public class NoteService {
 	        List<NoteSummaryDTO> posts = noteDAO.findMyPostsByPopularity(acIdx);
 	        return posts;
 	    } finally {
-	        if (conn != null) conn.close();
+	        if (conn != null) JdbcUtil.close(conn);
 	    }
 	}
 	
@@ -64,7 +64,7 @@ public class NoteService {
             NoteDAO noteDAO = new NoteDAOImpl(conn);
             return noteDAO.findAllMyPostsByPopularity(acIdx);
         } finally {
-            if (conn != null) conn.close();
+            if (conn != null) JdbcUtil.close(conn);
         }
     }
     
@@ -78,7 +78,7 @@ public class NoteService {
             // DAO에 구현할 findLikedPostsByRecent 메소드 호출 (limit: 7)
             return noteDAO.findLikedPostsByRecent(acIdx);
         } finally {
-            if (conn != null) conn.close();
+            if (conn != null) JdbcUtil.close(conn);
         }
     }
 
@@ -91,7 +91,7 @@ public class NoteService {
             // DAO에 구현할 findAllLikedPostsByRecent 메소드 호출
             return noteDAO.findAllLikedPostsByRecent(acIdx);
         } finally {
-            if (conn != null) conn.close();
+            if (conn != null) JdbcUtil.close(conn);
         }
     }
 	

@@ -266,7 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
       
       renderPage(1);
     }
-  }*/ else if (mode.value === 'user') {
+  }*/ 
+  /*else if (mode.value === 'user') {
     setOffsetHeight();
     function setOffsetHeight() {
       console.log('user resize')
@@ -280,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('resize', setOffsetHeight);
 
-  } else if (mode.value === 'login') {
+  } */else if (mode.value === 'login') {
     const login = document.querySelector('#login')
     const singup = document.querySelector('#signUp')
     const changeSingup = document.querySelector('#changeSingup')
