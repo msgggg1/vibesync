@@ -140,14 +140,17 @@ input:focus {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   white-space: nowrap;
-  width: 170px; height: 220px; overflow-x: hidden;
+  width: 170px;
+  height: 220px;
+  overflow-x: hidden;
 }
 
 .modal-nickname {
   display: block;
   text-decoration: none;
   color: var(--modal-font);
-  padding: 4px 10px; background-color: #c7e5ff;/*임시 구분용 색상*/
+  padding: 4px 10px;
+  background-color: #c7e5ff;/*임시 구분용 색상*/
 }
 
 .modal-nickname:hover {
