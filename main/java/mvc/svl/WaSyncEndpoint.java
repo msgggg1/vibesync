@@ -4,14 +4,16 @@ import javax.naming.NamingException;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
-
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.util.ConnectionProvider;
 
 import mvc.domain.vo.WaSyncVO;
 import mvc.persistence.dao.WaSyncDAO;
+import mvc.persistence.daoImpl.WaSyncDAOImpl;
 
 /**
  * 클라이언트 간 재생 동기화를 담당하는 Endpoint
@@ -23,7 +25,6 @@ public class WaSyncEndpoint {
     // 접속된 세션들을 관리 (watchPartyIdx 별로 분류)
     private static Map<Integer, Set<Session>> partySessions = Collections.synchronizedMap(new HashMap<>());
 
-    private WaSyncDAO syncDao = new WaSyncDAO();
     private Gson gson = new Gson();
 
     // 클라이언트가 연결됐을 때 호출
@@ -38,10 +39,19 @@ public class WaSyncEndpoint {
         JsonObject json = gson.fromJson(message, JsonObject.class);
         String type = json.get("type").getAsString();
         int wpIdx = json.get("watchPartyIdx").getAsInt();
+        
+        Connection conn = null;
 
         // 1) initSync: 최초 접속 시, DB의 마지막 sync 정보 조회해서 클라이언트에 전달
         if ("initSync".equals(type)) {
-            WaSyncVO lastSync = syncDao.selectLatestByWatchParty(wpIdx);
+        	WaSyncVO lastSync = null;
+        	try {
+        		 conn = ConnectionProvider.getConnection();
+                 WaSyncDAOImpl syncDao = new WaSyncDAOImpl(conn);
+                 lastSync = syncDao.selectLatestByWatchParty(wpIdx);
+        	}finally {
+        		if (conn != null) conn.close();
+        	}
             if (lastSync != null) {
                 Map<String, Object> resp = new HashMap<>();
                 resp.put("type", "sync");
@@ -62,7 +72,16 @@ public class WaSyncEndpoint {
             newSync.setWatchPartyIdx(wpIdx);
             newSync.setTimeline(timeline);
             newSync.setPlay(playState);
-            syncDao.upsertByWatchParty(newSync);
+            
+            try {
+                // 1. DB 작업 직전에 커넥션을 얻습니다.
+                conn = ConnectionProvider.getConnection();
+                WaSyncDAOImpl syncDao = new WaSyncDAOImpl(conn);
+                syncDao.upsertByWatchParty(newSync);
+            } finally {
+                // 2. 작업이 끝나면 무조건 커넥션을 닫습니다.
+                if (conn != null) conn.close();
+            }
 
             // 2-2) 같은 watchPartyIdx에 연결된 모든 클라이언트에 브로드캐스트
             Map<String, Object> broadcastMsg = new HashMap<>();

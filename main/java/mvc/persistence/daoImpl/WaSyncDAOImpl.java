@@ -8,8 +8,9 @@ import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 
 import mvc.domain.vo.WaSyncVO;
+import mvc.persistence.dao.WaSyncDAO;
 
-public class WaSyncDAOImpl {
+public class WaSyncDAOImpl implements WaSyncDAO {
 	
 	private Connection conn = null;
 

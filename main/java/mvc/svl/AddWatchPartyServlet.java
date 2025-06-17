@@ -2,10 +2,14 @@ package mvc.svl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.vo.WaSyncVO;
 import mvc.domain.vo.WatchPartyVO;
 import mvc.persistence.dao.WaSyncDAO;
+import mvc.persistence.dao.WatchPartyDAO;
+import mvc.persistence.daoImpl.WaSyncDAOImpl;
 import mvc.persistence.daoImpl.WatchPartyDAOImpl;
 
 import javax.naming.NamingException;
@@ -17,6 +21,7 @@ import javax.servlet.http.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
@@ -24,8 +29,6 @@ import java.sql.Timestamp;
 public class AddWatchPartyServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private WatchPartyDAOImpl dao = new WatchPartyDAOImpl();
-	private WaSyncDAO   wsDao = new WaSyncDAO();
     private Gson gson = new Gson();
 
     @Override
@@ -53,38 +56,71 @@ public class AddWatchPartyServlet extends HttpServlet {
         wp.setTitle(title);
         wp.setVideoId(videoId);
         wp.setHost(host);
+        
+        Connection conn = null;
+        boolean success = false; // 최종 성공 여부 플래그
+        
+        try {
+        conn = ConnectionProvider.getConnection();
+        conn.setAutoCommit(false); // 자동 커밋 비활성화
 
-        int inserted = dao.insert(wp);
+        // 모든 DAO는 반드시 같은 커넥션으로 생성해야 합니다.
+        WatchPartyDAO partyDao = new WatchPartyDAOImpl(conn);
+        WaSyncDAO syncDao = new WaSyncDAOImpl(conn);
+
+
+        int inserted = partyDao.insert(wp);
         
         if (inserted > 0) {
         	// 1) 방금 insert 한 watchParty_idx를 조회
         	//    (WatchPartyDAO.insert 메서드 자체에서 시퀀스를 사용하기 때문에, 
         	//     selectOne 혹은 별도 DAO 메서드로 마지막 idx를 조회)
         	// ▶ 간단하게, title + host + videoId 조합으로 최신 행 조회 (예시)
-        	WatchPartyVO insertedWp = dao.selectLatestByUniqueFields(title, videoId, host);
+        	WatchPartyVO insertedWp = partyDao.selectLatestByUniqueFields(title, videoId, host);
         	if (insertedWp != null) {
         	WaSyncVO initialSync = new WaSyncVO();
         	initialSync.setWatchPartyIdx(insertedWp.getWatchPartyIdx());
         	initialSync.setTimeline(0.0);       // 초기 타임라인 0
         	initialSync.setPlay("PAUSE");       // 초기 상태는 PAUSE
-        	try {
-				wsDao.insert(initialSync);
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}          // wa_sync 테이블에 저장
+        	syncDao.insert(initialSync);
+        	
+        	success= true;
         	}
         }
+        if(success) {
+        	conn.commit();
+        } else {
+        	conn.rollback();
+        }
+        
+        }catch (NamingException | SQLException e) {
+            e.printStackTrace();
+            // 예외 발생 시 롤백
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            success = false; // 실패 처리
+            
+        } finally {
+        	if (conn != null) {
+				try {
+					conn.setAutoCommit(true);
+					JdbcUtil.close(conn);
+				} catch (SQLException e) {
+					 e.printStackTrace();
+				}
+			}
+        }
+        
         
         response.setContentType("application/json; charset=UTF-8");
         JsonObject jsonResp = new JsonObject();
-        if (inserted > 0) {
-            jsonResp.addProperty("success", true);
-        } else {
-            jsonResp.addProperty("success", false);
+        jsonResp.addProperty("success", success);
+        if (!success) {
             jsonResp.addProperty("error", "DB 삽입 실패");
         }
         response.getWriter().write(gson.toJson(jsonResp));
