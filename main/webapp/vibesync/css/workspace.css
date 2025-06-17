@@ -14,6 +14,13 @@
 	  flex-direction: column;
 	  gap: 10px;
 	}
+	
+	.fc-day-today {
+	    background-color: #fff9c4 !important; /* !important를 사용하여 라이브러리 기본 스타일 덮어쓰기 */
+	}
+	.fc-view-harness-active {
+	   font-size: clamp(41.6%, 1.74vw, 90%) !important;
+	}
   
     /* 메시지 */
 	#unread_messages.contents_item {

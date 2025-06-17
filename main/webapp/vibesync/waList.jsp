@@ -5,7 +5,7 @@
 %>
 
 <!DOCTYPE html>
-<html>
+<jsp:include page="/vibesync/includes/header.jsp" />
 <head>
   <meta charset="UTF-8">
   <title>User Page - Watch Party</title>
@@ -81,7 +81,9 @@
       </form>
     </div>
   </div>
-  
-
+<jsp:include page="/vibesync/includes/footer.jsp" />
 </body>
+
+<script src="<%= request.getContextPath() %>/js/theme.js"></script>
+
 </html>

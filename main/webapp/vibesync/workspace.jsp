@@ -6,7 +6,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
-<html lang="ko">
+<jsp:include page="/vibesync/includes/header.jsp" />
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -953,6 +953,7 @@
 </script>
 <script defer src="./js/workspace.js"></script>
 </body>
+<jsp:include page="/vibesync/includes/footer.jsp" />
 </html>
 
 

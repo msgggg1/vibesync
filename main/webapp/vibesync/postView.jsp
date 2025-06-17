@@ -1,17 +1,17 @@
 <%@ page import="mvc.domain.dto.UserNoteDTO"%>
 <%@ page import="mvc.domain.vo.UserVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="user" value="${sessionScope.userInfo}" />
 <c:set var="isFollowing"
-	value="${not empty followLike && followLike.following}" />
+   value="${not empty followLike && followLike.following}" />
 <c:set var="isLiking"
-	value="${not empty followLike && followLike.liking}" />
+   value="${not empty followLike && followLike.liking}" />
 
 <!DOCTYPE html>
-<html lang="ko">
+<jsp:include page="/vibesync/includes/header.jsp" />
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +22,20 @@
 <script src="./js/script.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+//[신규] 조건부 뒤로가기 함수
+function goBackSmartly() {
+    // 이전 페이지의 URL을 확인합니다.
+    const referrer = document.referrer;
+
+    // 이전 페이지 URL에 'noteedit.do'가 포함되어 있으면 두 페이지 뒤로 이동합니다.
+    if (referrer && referrer.includes('noteedit.do')) {
+        history.go(-2);
+    } else {
+        // 그 외의 경우에는 한 페이지만 뒤로 갑니다.
+        history.back();
+    }
+}
+
 const isLoggedIn = ${not empty user}; 
 
     $(document).ready(function() {
@@ -189,7 +203,7 @@ const isLoggedIn = ${not empty user};
       <div id="content_wrapper">
         <section id="content">
           <div class="back_icon">
-            <a onclick="history.back()"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
+             <a href="javascript:void(0);" onclick="goBackSmartly()"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
           </div>
           <div id="postview_Wrapper">
             <div class="title">
@@ -197,7 +211,7 @@ const isLoggedIn = ${not empty user};
               <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == note.upac_idx}">
                 <div>
                   <button class="postview_ed_btn"><a href="noteedit.do?noteidx=${note.note_idx}">edit</a></button>
-                  <button class="postview_de_btn"><a href="notedelete.do?noteidx=${note.note_idx}">delete</a></button>
+                  <button class="postview_de_btn"><a href="notedelete.do?noteidx=${note.note_idx}" onclick="return confirm('정말로 삭제하시겠습니까?');">delete</a></button>
                 </div>
               </c:if>
             </div>
@@ -247,28 +261,29 @@ const isLoggedIn = ${not empty user};
                       </div>
                   </c:otherwise>
                 </c:choose>
-				<div id="comment-list" style="clear: both;"></div>
-			</div>
-						<div id="edit-comment-modal"
-							style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
-							<div
-								style="position: relative; top: 20%; margin: auto; width: 500px; background: white; padding: 20px; border-radius: 5px;">
-								<h5>댓글 수정</h5>
-								<form id="edit-comment-form">
-									<input type="hidden" id="edit-comment-id" name="commentIdx">
-									<textarea id="edit-comment-text" name="text" rows="4"
-										style="width: 100%; resize: none; padding: 8px;"></textarea>
-									<div style="text-align: right; margin-top: 10px;">
-										<button type="button" id="cancel-edit-btn">취소</button>
-										<button type="submit">저장</button>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-				</section>
-			</div>
-		</div>
-	</div>
+            <div id="comment-list" style="clear: both;"></div>
+         </div>
+                  <div id="edit-comment-modal"
+                     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+                     <div
+                        style="position: relative; top: 20%; margin: auto; width: 500px; background: white; padding: 20px; border-radius: 5px;">
+                        <h5>댓글 수정</h5>
+                        <form id="edit-comment-form">
+                           <input type="hidden" id="edit-comment-id" name="commentIdx">
+                           <textarea id="edit-comment-text" name="text" rows="4"
+                              style="width: 100%; resize: none; padding: 8px;"></textarea>
+                           <div style="text-align: right; margin-top: 10px;">
+                              <button type="button" id="cancel-edit-btn">취소</button>
+                              <button type="submit">저장</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </section>
+         </div>
+      </div>
+   </div>
 </body>
+<jsp:include page="/vibesync/includes/footer.jsp" />
 </html>

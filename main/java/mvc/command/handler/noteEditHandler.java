@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Random; // Random 클래스 임포트
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -81,13 +82,10 @@ public class noteEditHandler implements CommandHandler {
             String saveDirPath = request.getServletContext().getRealPath("/sources/noteImg");
             File saveDir = new File(saveDirPath);
             if (!saveDir.exists()) saveDir.mkdirs();
-
-            String safeTitle = title.replaceAll("[^a-zA-Z0-9가-힣]", "_");
             
-            // [수정] noteCreateHandler와 동일한 이미지 처리 로직 적용
+            // [수정] noteCreateHandler와 동일한 이미지 처리 로직 적용 (파일명 난수화)
             if (base64Images != null && !base64Images.isEmpty()) {
                 String[] imageDataArray = base64Images.split("\\|");
-                int imgCounter = (int) (System.currentTimeMillis() / 1000); // 파일명 중복 방지를 위해 시간 사용
 
                 for (String base64Data : imageDataArray) {
                     if (base64Data == null || base64Data.isEmpty()) continue;
@@ -97,7 +95,9 @@ public class noteEditHandler implements CommandHandler {
 
                         String imageType = parts[0].substring("data:image/".length(), parts[0].indexOf(";base64"));
                         byte[] imageBytes = Base64.getDecoder().decode(parts[1]);
-                        String fileName = safeTitle + "_" + imgCounter++ + "." + imageType;
+                        
+                        // 파일명을 10자리 난수로 생성
+                        String fileName = generateRandomString(10) + "." + imageType;
                         
                         File outFile = new File(saveDir, fileName);
                         try (FileOutputStream fos = new FileOutputStream(outFile)) {
@@ -119,14 +119,14 @@ public class noteEditHandler implements CommandHandler {
             int contentIdx  = Integer.parseInt(request.getParameter("content_idx"));
 
             NoteVO note = NoteVO.builder()
-                .note_idx(noteIdx)
-                .title(title)
-                .text(content)
-                //.img(imagesForDB) // img 필드는 본문에 포함되므로 별도 저장은 필요 없을 수 있음 (필요 시 로직 추가)
-                .category_idx(categoryIdx)
-                .genre_idx(genreIdx)
-                .content_idx(contentIdx)
-                .build();
+                    .note_idx(noteIdx)
+                    .title(title)
+                    .text(content)
+                    //.img(imagesForDB) // img 필드는 본문에 포함되므로 별도 저장은 필요 없을 수 있음 (필요 시 로직 추가)
+                    .category_idx(categoryIdx)
+                    .genre_idx(genreIdx)
+                    .content_idx(contentIdx)
+                    .build();
 
             Connection conn = null;
             try {
@@ -146,5 +146,20 @@ public class noteEditHandler implements CommandHandler {
         
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         return null;
+    }
+
+    /**
+     * [신규] 지정된 길이의 영문/숫자 난수 문자열을 생성하는 헬퍼 메서드
+     * @param length 생성할 문자열의 길이
+     * @return 생성된 난수 문자열
+     */
+    private String generateRandomString(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder(length);
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 }

@@ -19,7 +19,7 @@ if (user != null) {
     WatchPartyVO wp = wpDao.selectOne(watchPartyIdx);
 %>
 <!DOCTYPE html>
-<html>
+<jsp:include page="/vibesync/includes/header.jsp" />
 <head>
   <meta charset="UTF-8">
   <title>Watch Party - <%= wp.getTitle() %></title>
@@ -255,4 +255,5 @@ if (user != null) {
     }
   </script>
 </body>
+<jsp:include page="/vibesync/includes/footer.jsp" />
 </html>
