@@ -20,7 +20,7 @@ public class UserHandler implements CommandHandler {
 
     private final LoginService loginService = new LoginService();
     private final SignUpService signUpService = new SignUpService();
-    private final PasswordResetService passwordResetService = new PasswordResetService(); // ★ 새로 추가
+    private final PasswordResetService passwordResetService = new PasswordResetService(); 
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {

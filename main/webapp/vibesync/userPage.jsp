@@ -30,7 +30,8 @@ while (names.hasMoreElements()) {
     h3 {
       margin: 0;
     }
-   .wp_btn {background: black;}
+   .wp_btn {background: linear-gradient(90deg, rgba(138, 196, 255, 1) 0%, rgba(227, 176, 255, 1) 50%, rgba(165, 250, 120, 1) 100%);}
+   .wp_btn img{width: 24px; height: 25px; margin-right: 6px;}
     #pageCreateBtn {
       position: fixed;
       bottom: 20px;
@@ -71,7 +72,7 @@ while (names.hasMoreElements()) {
       justify-content: space-evenly;
       align-items: center;
 
-      background: #fff;
+      background-color: var(--card-back);
       padding: 20px;
       border-radius: 8px;
       width: 90%; max-width: 400px;
@@ -117,6 +118,7 @@ while (names.hasMoreElements()) {
       font-size: 18px;
       border: none;
       background: none;
+      color: var(--font-color);
     }
   </style>
   
@@ -141,6 +143,7 @@ while (names.hasMoreElements()) {
    #up_msg_btn i {
      font-size: 1.18em;
      color: #fff;
+     filter: invert(0) !important;
    }
    
    #up_msg_btn:hover {
@@ -532,7 +535,8 @@ while (names.hasMoreElements()) {
                   <button id="up_msg_btn"><i class="fa-solid fa-paper-plane"></i> Message</button>
                   <%-- Watch Party 버튼 (기능 구현 시 활성화) --%>
                   <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == userPageData.userProfile.ac_idx}">
-                     <button class="wp_btn" onclick="location.href='waList.jsp'">Watch Party</button>
+                     <button class="wp_btn" onclick="location.href='waList.jsp'">
+                     <img src="./sources/icons/watch.svg">Watch Party</button>
                   </c:if>
                 </div>
                 <div class="user_count">
@@ -576,7 +580,7 @@ while (names.hasMoreElements()) {
   <!-- 모달 오버레이 및 컨텐츠 -->
   <div id="pageModalOverlay" class="modal-overlay">
     <div id="modalWrapper">
-       <div class="modal-content" id="pageModalContent">
+       <div class="modal-content" id="pageModalContent" style="border: solid 2px var(--border-color);">
        <button class="modal-close" id="pageModalClose">&times;</button>
        <!-- AJAX로 로드된 <select> + 버튼들 삽입 -->
     </div>

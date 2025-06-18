@@ -15,7 +15,7 @@
     String getPageTitle    = (String) request.getAttribute("pagetitle");
     Integer selectedIdx    = (Integer) request.getAttribute("selectedUserPgIdx");
     int totalPages         = (int) Math.ceil((double) totalCount / pageSize);
- 	// 로그인한 사용자 정보 및 선택된 페이지의 ac_idx 확인
+    // 로그인한 사용자 정보 및 선택된 페이지의 ac_idx 확인
     UserVO user = (UserVO) session.getAttribute("userInfo");
     Integer userAcIdx = user != null ? user.getAc_idx() : null;
     Integer selAcIdx = null;
@@ -51,13 +51,21 @@
   .searchInput {
     background: none;
     border: none;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--font-color);
     font-weight: bold;
+  }
+
+  .searchInput option {
+    background: var(--card-back);
+    color: var(--font-color);
   }
 
   .searchBtn {
     background: none;
-    border: 1px solid black;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--font-color);
     border-radius: 5px;
     padding-block: 2px;
     padding-inline: 8px;
@@ -65,13 +73,14 @@
   }
 
   .searchBtn:hover {
+    color: var(--card-back);
     background: rgba(256, 256, 256, 0.88) !important;
   }
 
   /* [수정] 버튼들을 감싸는 컨테이너 스타일 추가 */
   .page-action-buttons {
-  	display: flex;
-  	gap: 10px;
+     display: flex;
+     gap: 10px;
   }
 
   #add_note_btn , #delete_page_btn {
@@ -99,9 +108,9 @@
   
   
   #delete_page_btn a {
-  	color: white;
-  	font-weight: bold;
-  	text-decoration: none;
+     color: white;
+     font-weight: bold;
+     text-decoration: none;
   }
   
   </style>
@@ -125,14 +134,14 @@
               
               <%-- [수정] 로그인 사용자와 선택 페이지의 작성자가 일치할 때 버튼 영역 표시 --%>
               <div class="page-action-buttons">
-	              <% if (selectedIdx != null && userAcIdx != null && selAcIdx != null && userAcIdx.equals(selAcIdx)) { %>
-	                <button id="add_note_btn"><a href="notecreate.do?pageidx=<%= selectedIdx %>">+</a></button>
-	                
-	                <%-- [추가] 페이지 삭제 버튼 --%>
-	                <button id="delete_page_btn">
-	                	<a href="pagedelete.do?userPgIdx=<%= selectedIdx %>">-</a>
-	                </button>
-	              <% } %>
+                 <% if (selectedIdx != null && userAcIdx != null && selAcIdx != null && userAcIdx.equals(selAcIdx)) { %>
+                   <button id="add_note_btn"><a href="notecreate.do?pageidx=<%= selectedIdx %>">+</a></button>
+                   
+                   <%-- [추가] 페이지 삭제 버튼 --%>
+                   <button id="delete_page_btn">
+                      <a href="pagedelete.do?userPgIdx=<%= selectedIdx %>">-</a>
+                   </button>
+                 <% } %>
               </div>
             </div>
             <div class="line"></div>
@@ -145,12 +154,12 @@
                     <div class="full-list subfont" id="full-list-notes" style="position: relative;">
                       
                       <c:forEach var="note" items="${notes}">
-                      	<a href="postView.do?nidx=${note.note_idx}&pageidx=<%= selectedIdx %>">
+                         <a href="postView.do?nidx=${note.note_idx}&pageidx=<%= selectedIdx %>">
                           <div class="full-post" style="margin-bottom:8px; border-bottom: 1px solid #666; width: 100%;">
                             <div class="post-index">${note.note_idx}</div>
                             <div class="post-title" style="font-weight: bold; margin-left: 10px;"><c:out value="${note.title}"/></div>
                           </div>
-                      	</a>
+                         </a>
                       </c:forEach>
                       
                       <c:if test="${empty notes}">

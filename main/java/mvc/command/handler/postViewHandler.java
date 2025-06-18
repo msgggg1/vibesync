@@ -111,7 +111,7 @@ public class postViewHandler implements CommandHandler {
 		
 		HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("userInfo") == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized 에러
             out.write("{\"error\":\"login_required\"}");
             out.flush();
             return;

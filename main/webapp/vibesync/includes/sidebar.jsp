@@ -145,8 +145,8 @@ input:focus {
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: var(--card-back);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 1000;
@@ -162,7 +162,7 @@ input:focus {
   text-decoration: none;
   color: var(--modal-font);
   padding: 4px 10px;
-  background-color: #c7e5ff; /*임시 구분용 색상*/
+  margin-bottom: 10px;
 }
 
 .modal-nickname:hover {
@@ -207,10 +207,11 @@ input:focus {
 .modal-btn i {
   font-size: 18px;
   margin-right: 2px;
+  color: var(--font-color);
 }
 .modal-btn img {
-	max-height: 20px;
-	max-width: 20px;
+	max-height: 22px;
+	max-width: 22px;
 }
 
 /* 
@@ -270,7 +271,7 @@ input:focus {
   }
 
   .theme-option-label:hover {
-    background-color: #f0f0f0;
+    background-color: var(--hover-color);
   }
   
   /* 기본 라디오 버튼 숨기기 */
@@ -365,10 +366,9 @@ input:focus {
 	          <a href="userPage.do?acIdx=${userInfo.ac_idx}" class="modal-nickname">
 	            ${userInfo.nickname}
 	          </a>
-	          <br>
 	          <div id="setting">
 		      	<button type="button" id="setting-btn" class="modal-btn">
-		      		<img src="./sources/icons/settings.svg" alt="setting icon"> Setting
+		      		<img src="./sources/icons/settings.svg" alt="setting icon"> Theme
 		      	</button>
 		      </div>
 		      <div id="logout">
