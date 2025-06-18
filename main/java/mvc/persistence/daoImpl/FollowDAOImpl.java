@@ -32,8 +32,8 @@ public class FollowDAOImpl implements FollowDAO {
 	    
 	    String sql = "SELECT " + 
 	    			 " ac_idx, nickname, img, category_idx " +
-	    			 "FROM follows f JOIN userAccount u ON u.ac_idx = f.ac_following " +
-	    			 "WHERE ac_follow = ?";
+	    			 "FROM follows f JOIN userAccount u ON u.ac_idx = f.ac_follow  " +
+	    			 "WHERE ac_following = ?";
 	    
 	    try {
 			pstmt = conn.prepareStatement(sql);

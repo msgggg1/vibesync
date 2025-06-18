@@ -1,137 +1,134 @@
 @charset "UTF-8";
     /* 모든 블록 공통 */
-    
-    .fc-day-today {
-    background-color: #fff9c4 !important; /* !important를 사용하여 라이브러리 기본 스타일 덮어쓰기 */
-}
-.fc-view-harness-active {
-   font-size: clamp(41.6%, 1.74vw, 90%) !important;
-}
   
-	.contents_item {
-	  background: #fff;
-	  border-radius: 20px;
-	  box-shadow: 0 3px 16px rgba(110,120,140,0.06);
-	  border: 1.3px solid #f1f2f6;
-	  padding: 24px 24px 18px 24px;
-	  margin-bottom: 22px;
-	  min-width: 220px;
-	  transition: box-shadow 0.16s, border 0.16s, background 0.13s;
-	  display: flex;
-	  flex-direction: column;
-	  gap: 10px;
-	}
-	
-	.fc-day-today {
-	    background-color: #fff9c4 !important; /* !important를 사용하여 라이브러리 기본 스타일 덮어쓰기 */
-	}
-	.fc-view-harness-active {
-	   font-size: clamp(41.6%, 1.74vw, 90%) !important;
-	}
+   .contents_item {
+     background: #fff;
+     border-radius: 20px;
+     box-shadow: 0 3px 16px rgba(110,120,140,0.06);
+     border: 1.3px solid #f1f2f6;
+     padding: 24px 24px 18px 24px;
+     margin-bottom: 22px;
+     min-width: 220px;
+     transition: box-shadow 0.16s, border 0.16s, background 0.13s;
+     display: flex;
+     flex-direction: column;
+     gap: 10px;
+   }
+   
+   .fc-day-today {
+       background-color: #b5f5ff8f !important; /* !important를 사용하여 라이브러리 기본 스타일 덮어쓰기 */
+   }
+   .fc-view-harness-active {
+      font-size: clamp(41.6%, 1.74vw, 90%) !important;
+   }
   
     /* 메시지 */
-	#unread_messages.contents_item {
-	  background: #fffbe7 !important;
-	  border: 1.5px solid #ffe7ad !important;
-	  box-shadow: 0 3px 16px rgba(255,223,112,0.10);
-	}
-	
-	#unread_messages h3 i {
-	  color: #ff9900;
-	  margin-right: 7px;
-	}
-	
-	#unread_messages .no_message {
-	  color: #a3a096;
-	  font-style: italic;
-	  font-size: 15px;
-	  padding: 16px 0 0 0;
-	  text-align: left;
-	}
-	 
-	.message_card_list {
-	    display: flex;
-	    flex-direction: column;
-	    gap: 12px;
-	    max-height: 100%;
-	    overflow-y: auto;
-	    padding-right: 6px;
-	}
-	  
-	.message_card {
-	  display: flex;
-	  justify-content: space-between;
-	  align-items: center;
-	  gap: 12px;
-	  padding: 12px;
-	  border-radius: 9px; /* 10px 14px */
-	  background-color: #fafbfc; /* #e8edf2 */
-	  border: 1px solid #f2eac2;
-	  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-	  min-width: 0;
-	  position: relative;
-	}
-	  .message_card:hover {
-	    background-color: var(--hover-color); /* #e2f3f7 */
-	    cursor: pointer;
-	  }
-	  .msg_profile img {
-	    width: 46px;
-	    height: 46px;
-	    object-fit: cover;
-	    border-radius: 50%;
-	    border: 2px solid var(--border-color);
-	  }
-	  
-	  .msg_text_area {
-	    flex: 1 1 auto;
-	    overflow: hidden;
-	    min-width: 0;
-  	  }
-	
-	  .msg_sender_row {
-	    display: flex;
-	    align-items: center;
-	  }
-	
-	  .msg_sender {
-	    font-weight: bold;
-	    font-size: 16px;
-	    color: black;
-	    margin-bottom: 4px;
-	  }
-	  .msg_preview {
-	    font-size: 14px;
-	    color: #111;
-	    white-space: nowrap;
-	    overflow: hidden;
-	    text-overflow: ellipsis;
-	  }
-	  .msg_time {
-	    font-size: 12px;
-	    color: gray;
-	    margin-top: 4px;
-	    white-space: nowrap;
-	  }
-	  
-	.unread-badge {
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  width: 22px;
-	  height: 22px;
-	  background: linear-gradient(135deg, #6fdc88 60%, #6ac8fa 100%);
-	  color: #fff;
-	  font-size: 13px;
-	  font-weight: bold;
-	  border-radius: 50%;
-	  box-shadow: 0 1px 5px rgba(0,0,0,0.10);
-	  user-select: none;
-	  letter-spacing: -0.5px;
-	  margin-left: 10px;
-	}
+   #unread_messages.contents_item {
+     background: var(--workspace-noti-card) !important;
+     border: 1.5px solid #ffe7ad !important;
+     box-shadow: 0 3px 16px rgba(255,223,112,0.10);
+   }
+   
+   #unread_messages.contents_item:hover {
+     background: var(--workspace-noti-card-hover) !important;
+   }
+   
+   #unread_messages h3 i {
+     color: #ff9900;
+     margin-right: 7px;
+   }
+   
+   #unread_messages .no_message {
+     color: #a3a096;
+     font-style: italic;
+     font-size: 15px;
+     padding: 16px 0 0 0;
+     text-align: left;
+   }
+    
+   .message_card_list {
+       display: flex;
+       flex-direction: column;
+       gap: 12px;
+       max-height: 100%;
+       overflow-y: auto;
+       padding-right: 6px;
+   }
+     
+   .message_card {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     gap: 12px;
+     padding: 12px;
+     border-radius: 9px; /* 10px 14px */
+     background-color: #fafbfc; /* #e8edf2 */
+     border: 1px solid #f2eac2;
+     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+     min-width: 0;
+     position: relative;
+   }
+     .message_card:hover {
+       background-color: var(--hover-color); /* #e2f3f7 */
+       cursor: pointer;
+     }
+     .msg_profile img {
+       width: 46px;
+       height: 46px;
+       object-fit: cover;
+       border-radius: 50%;
+       border: 2px solid var(--border-color);
+     }
+     
+     .msg_text_area {
+       flex: 1 1 auto;
+       overflow: hidden;
+       min-width: 0;
+       }
+   
+     .msg_sender_row {
+       display: flex;
+       align-items: center;
+     }
+   
+     .msg_sender {
+       font-weight: bold;
+       font-size: 16px;
+       color: black;
+       margin-bottom: 4px;
+     }
+     .msg_preview {
+       font-size: 14px;
+       color: #111;
+       white-space: nowrap;
+       overflow: hidden;
+       text-overflow: ellipsis;
+     }
+     .msg_time {
+       font-size: 12px;
+       color: gray;
+       margin-top: 4px;
+       white-space: nowrap;
+     }
+     
+   .unread-badge {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     width: 22px;
+     height: 22px;
+     background: linear-gradient(135deg, #6fdc88 60%, #6ac8fa 100%);
+     color: #fff;
+     font-size: 13px;
+     font-weight: bold;
+     border-radius: 50%;
+     box-shadow: 0 1px 5px rgba(0,0,0,0.10);
+     user-select: none;
+     letter-spacing: -0.5px;
+     margin-left: 10px;
+   }
 
-	  
+     
     /* 채팅방 */
   
     #chatHistory {
@@ -174,172 +171,176 @@
         text-align: right;
     }
     
-	.chat-input-row {
-	  display: flex;
-	  align-items: center;
-	  gap: 8px;
-	  margin-top: 16px;
-	  background: #f2f5fa;
-	  border-radius: 12px;
-	  border: 1.5px solid #e2e5ea;
-	  padding: 7px 12px;
-	  box-shadow: 0 1px 4px rgba(80,110,140,0.08);
-	}
-	
-	#chatInput {
-	  flex: 1;
-	  border: none;
-	  background: #f9fafb;
-	  font-size: 15px;
-	  color: #23272f;
-	  outline: none;
-	  padding: 8px 0;
-	  height: 38px;
-	  background: none;
-	}
-	
-	#chatInput::placeholder {
-	  color: #b7b8bd;
-	  font-size: 14px;
-	}
-	
-	#sendMessageBtn {
-	  display: flex;
-	  align-self: center;
-	  justify-content: center;
-	  width: 38px;
-	  height: 38px;
-	  background: linear-gradient(135deg,#6fdc88 60%,#6ac8fa 100%);
-	  border: none;
-	  border-radius: 50%;
-	  box-shadow: 0 2px 6px rgba(140,200,255,0.13);
-	  transition: background 0.16s, transform 0.12s;
-	  cursor: pointer;
-	  padding: 0;
-	  margin-bottom: 0;
-	}
-	
-	#sendMessageBtn svg {
-	  display: block;
-	  margin: auto;
-	}
-	
-	#sendMessageBtn:hover {
-	  background: linear-gradient(135deg,#4fbb68 60%,#57a5ec 100%);
-	}
-	
-	.chat-date-separator {
-	  display: inline-block;
-	  padding: 4px 12px;
-	  margin: 16px auto;
-	  font-size: 12px;
-	  color: #666;
-	  background: #f2f2f2;
-	  border-radius: 12px;
-	  position: relative;
-	  text-align: center;
-	}
-	
-	.chat-date-separator::before,
-	.chat-date-separator::after {
-	  content: "";
-	  position: absolute;
-	  top: 50%;
-	  width: 25%;
-	  height: 1px;
-	  background: #ddd;
-	}
-	
-	.chat-date-separator::before {
-	  left: -40%;
-	}
-	
-	.chat-date-separator::after {
-	  right: -40%;
-	}
+   .chat-input-row {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     margin-top: 16px;
+     background: #f2f5fa;
+     border-radius: 12px;
+     border: 1.5px solid #e2e5ea;
+     padding: 7px 12px;
+     box-shadow: 0 1px 4px rgba(80,110,140,0.08);
+   }
+   
+   #chatInput {
+     flex: 1;
+     border: none;
+     background: #f9fafb;
+     font-size: 15px;
+     color: #23272f;
+     outline: none;
+     padding: 8px 0;
+     height: 38px;
+     background: none;
+   }
+   
+   #chatInput::placeholder {
+     color: #b7b8bd;
+     font-size: 14px;
+   }
+   
+   #sendMessageBtn {
+     display: flex;
+     align-self: center;
+     justify-content: center;
+     width: 38px;
+     height: 38px;
+     background: linear-gradient(135deg,#6fdc88 60%,#6ac8fa 100%);
+     border: none;
+     border-radius: 50%;
+     box-shadow: 0 2px 6px rgba(140,200,255,0.13);
+     transition: background 0.16s, transform 0.12s;
+     cursor: pointer;
+     padding: 0;
+     margin-bottom: 0;
+   }
+   
+   #sendMessageBtn svg {
+     display: block;
+     margin: auto;
+   }
+   
+   #sendMessageBtn:hover {
+     background: linear-gradient(135deg,#4fbb68 60%,#57a5ec 100%);
+   }
+   
+    .chart-container {
+        background-color: #fff;
+    }
+
+   .chat-date-separator {
+     display: inline-block;
+     padding: 4px 12px;
+     margin: 16px auto;
+     font-size: 12px;
+     color: #666;
+     background: #f2f2f2;
+     border-radius: 12px;
+     position: relative;
+     text-align: center;
+   }
+   
+   .chat-date-separator::before,
+   .chat-date-separator::after {
+     content: "";
+     position: absolute;
+     top: 50%;
+     width: 25%;
+     height: 1px;
+     background: #ddd;
+   }
+   
+   .chat-date-separator::before {
+     left: -40%;
+   }
+   
+   .chat-date-separator::after {
+     right: -40%;
+   }
     
     /* 모달창 */
-	html, body {
-	  height: 100%;
-	  margin: 0;
-	  padding: 0;
-	  overflow-x: hidden;
-	}
-	
-	.modal {
-	  display: none;
-	  justify-content: center;
-	  align-items: center;
-	  position: fixed;
-	  z-index: 9999;
-	  top: 0;
-	  left: 0;
-	  width: 100vw;
-	  height: 100vh;
-	  backdrop-filter: blur(4px);
-	}
-	
-	.modal-content {
-	  position: relative;
-	  max-width: 420px;
-	  width: 90%;
-	  background-color: var(--background-color);
-	  padding: 30px;
-	  border-radius: 16px;
-	  color: var(--font-color);
-	  text-align: center;
-	  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
-	  animation: fadeInUp 0.3s ease-out;
-	}
-	
-	#categorySelector {
-	  display: flex;
-	  flex-direction: column;
-	  gap: 10px;
-	}
-	
-	.modal-content select,
-	.modal-content button {
-	  width: 100%;
-	  padding: 12px;
-	  font-size: 1rem;
-	  border: 2px solid var(--border-color);
-	  border-radius: 8px;
-	  background-color: var(--sidebar-color);
-	  color: var(--font-color);
-	  margin-bottom: 10px;
-	}
-	
-	.modal-content button {
-	  background-color: #5DAED7;
-	  color: white;
-	  font-weight: bold;
-	  cursor: pointer;
-	  transition: background-color 0.3s;
-	}
-	
-	.modal-content button:hover {
-	  background-color: #4297bf;
-	}
-	
-	.close-modal {
-	  position: absolute;
-	  top: 15px;
-	  right: 20px;
-	  background: none;
-	  border: none;
-	  font-size: 2em;
-	  color: grey;
-	  font-weight: bold;
-	  cursor: pointer;
-	  /* white-space: pre; */
-	}
-	
-	.close-modal:hover {
-	  color: black;
-	}
-	
-	/* ===================================================================
+   html, body {
+     height: 100%;
+     margin: 0;
+     padding: 0;
+     overflow-x: hidden;
+   }
+   
+   .modal {
+     display: none;
+     justify-content: center;
+     align-items: center;
+     position: fixed;
+     z-index: 9999;
+     top: 0;
+     left: 0;
+     width: 100vw;
+     height: 100vh;
+     backdrop-filter: blur(4px);
+   }
+   
+   .modal-content {
+     position: relative;
+     max-width: 420px;
+     width: 90%;
+     background-color: var(--background-color);
+     padding: 30px;
+     border-radius: 16px;
+     color: var(--font-color);
+     text-align: center;
+     box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+     animation: fadeInUp 0.3s ease-out;
+   }
+   
+   #categorySelector {
+     display: flex;
+     flex-direction: column;
+     gap: 10px;
+   }
+   
+   .modal-content select,
+   .modal-content button {
+     width: 100%;
+     padding: 12px;
+     font-size: 1rem;
+     border: 2px solid var(--border-color);
+     border-radius: 8px;
+     background-color: var(--sidebar-color);
+     color: var(--font-color);
+     margin-bottom: 10px;
+   }
+   
+   .modal-content button {
+     background-color: #5DAED7;
+     color: white;
+     font-weight: bold;
+     cursor: pointer;
+     transition: background-color 0.3s;
+   }
+   
+   .modal-content button:hover {
+     background-color: #4297bf;
+   }
+   
+   .close-modal {
+     position: absolute;
+     top: 15px;
+     right: 20px;
+     background: none;
+     border: none;
+     font-size: 2em;
+     color: grey;
+     font-weight: bold;
+     cursor: pointer;
+     /* white-space: pre; */
+   }
+   
+   .close-modal:hover {
+     color: black;
+   }
+   
+   /* ===================================================================
    모달창 스크롤 및 정렬 수정
 =================================================================== */
 
@@ -419,48 +420,48 @@
     color: #8f9bb3;
     font-size: 12px;
 }
-	
-	@keyframes fadeInUp {
-	  from {
-	    transform: translateY(30px);
-	    opacity: 0;
-	  }
-	  to {
-	    transform: translateY(0);
-	    opacity: 1;
-	  }
-	}
+   
+   @keyframes fadeInUp {
+     from {
+       transform: translateY(30px);
+       opacity: 0;
+     }
+     to {
+       transform: translateY(0);
+       opacity: 1;
+     }
+   }
 
     /* 추가 블록 */
   
-	/* 모든 블록의 기본 컨테이너 */
+   /* 모든 블록의 기본 컨테이너 */
 #my-posts,
 #liked-posts,
 .contents_item.generated_block {
-	background: #f8fafd !important;
-	border: 1.3px solid #e2eafd;
-	border-radius: 18px;
-	box-shadow: 0 2px 10px rgba(90, 120, 180, 0.06);
-	padding: 24px;
-	margin-bottom: 24px;
-	transition: box-shadow 0.18s, background 0.13s;
-	animation: fadeInUp 0.33s;
+   background: var(--workspace-card-back) !important;
+   border: 1.3px solid #e2eafd;
+   border-radius: 18px;
+   box-shadow: 0 2px 10px rgba(90, 120, 180, 0.06);
+   padding: 24px;
+   margin-bottom: 24px;
+   transition: box-shadow 0.18s, background 0.13s;
+   animation: fadeInUp 0.33s;
     width:100%;
 }
 
 #my-posts:hover,
 #liked-posts:hover,
 .contents_item.generated_block:hover {
-	box-shadow: 0 6px 32px rgba(40, 80, 120, 0.16);
-	background: #f0f5ff !important;
+   box-shadow: 0 6px 32px rgba(40, 80, 120, 0.16);
+   background: var(--workspace-card-hover) !important;
 }
 
 /* 블록 공통 헤더 (h4) */
 .generated_block h4 {
-	margin-top: 0;
-	margin-bottom: 12px;
-	padding-bottom: 12px;
-	border-bottom: 1px solid #eef3fa;
+   margin-top: 0;
+   margin-bottom: 12px;
+   padding-bottom: 12px;
+   border-bottom: 1px solid #eef3fa;
 }
 
 /* '더보기' 버튼이 있는 블록의 헤더 (.widget-header) */
@@ -479,11 +480,11 @@
 #my-posts .widget-header h4,
 #liked-posts .widget-header h4,
 .generated_block h4 {
-	font-size: 16px;
-	font-weight: 600;
-	color: #2e3a59;
-	display: flex;
-	align-items: center;
+   font-size: 16px;
+   font-weight: 600;
+   color: var(--workspace-card-font-title);
+   display: flex;
+   align-items: center;
     /* 내부 h4는 자체 여백/테두리 제거 */
     margin: 0;
     padding: 0;
@@ -493,8 +494,8 @@
 #my-posts h4 i,
 #liked-posts h4 i,
 .generated_block h4 i {
-	margin-right: 8px;
-	font-size: 18px;
+   margin-right: 8px;
+   font-size: 18px;
 }
 
 /* '더보기' 버튼 스타일 */
@@ -519,25 +520,25 @@
 #my-posts ul,
 #liked-posts ul,
 .generated_block ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	overflow-y: auto;
-	flex-grow: 1;
+   margin: 0;
+   padding: 0;
+   list-style: none;
+   overflow-y: auto;
+   flex-grow: 1;
 }
 
 #my-posts ul li,
 #liked-posts ul li,
 .generated_block ul li {
-	padding: 12px 0;
-	border-bottom: 1px solid #eef3fa;
-	display: flex;
-	overflow: hidden; /* li 자체에서 넘치는 것을 방지 */
+   padding: 12px 0;
+   border-bottom: 1px solid #eef3fa;
+   display: flex;
+   overflow: hidden; /* li 자체에서 넘치는 것을 방지 */
 }
 #my-posts ul li:last-child,
 #liked-posts ul li:last-child,
 .generated_block ul li:last-child {
-	border-bottom: none;
+   border-bottom: none;
 }
 #my-posts ul li.no-items,
 #liked-posts ul li.no-items {
@@ -547,7 +548,6 @@
     justify-content: center;
     padding: 20px 0;
 }
-
 
 .contents_item.generated_block {
     display: flex;          /* 내부 요소를 flexbox로 제어합니다. */
@@ -562,57 +562,46 @@
     -ms-overflow-style: none;
 }
 .contents_item.generated_block .block-content::-webkit-scrollbar{
-	display: none;
+   display: none;
 }
 
-/* 모든 블록의 스크롤바에 디자인 적용 */
-.contents_item ::-webkit-scrollbar {
-    width: 6px;
-}
-.contents_item ::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 3px;
-}
-.contents_item ::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
-}
 /* 블록 공통 링크 (a) 및 메타 정보 */
 #my-posts ul li a,
 #liked-posts ul li a,
 .generated_block ul li a {
-	flex: 1;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	text-decoration: none;
-	color: #5a6b87;
-	font-weight: 500;
-	font-size: 14px;
-	transition: color 0.2s;
+   flex: 1;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   text-decoration: none;
+   color: var(--workspace-card-font-info);
+   font-weight: 500;
+   font-size: 14px;
+   transition: color 0.2s;
 }
 #my-posts ul li a:hover,
 #liked-posts ul li a:hover,
 .generated_block ul li a:hover {
-	color: #4a72ff;
+   color: #4a72ff;
 }
 
 #my-posts ul li a > span:first-child,
 #liked-posts ul li a > span:first-child,
 .generated_block ul li a > span:first-child { /* 제목 부분 */
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 
 #my-posts .block-meta,
 #liked-posts .block-meta,
 .generated_block .block-meta {
-	font-size: 12.5px;
-	color: #a6b0be;
-	margin-left: auto;
-	padding-left: 16px;
-	white-space: nowrap;
-	font-weight: 500;
+   font-size: 12.5px;
+   color: #a6b0be;
+   margin-left: auto;
+   padding-left: 16px;
+   white-space: nowrap;
+   font-weight: 500;
 }
 #my-posts .block-meta i,
 #liked-posts .block-meta i,
@@ -638,26 +627,26 @@
 /* '내 활동 통계' 아이콘 색상 */
 .generated_block h4 i.fa-chart-simple { color: #9b59b6; }
 
-	
-	/* + 버튼만 강조 색상 */
-	#content_plus.contents_item {
-	  display: flex;
-	  background: #f3f6fa;
-	  border: 2.5px dashed #e3e9f2;
-	  color: #6cb7e6;
-	  font-size: 44px;
-	  text-align: center;
-	  justify-content: center;
-	  align-items: center;
-	  cursor: pointer;
-	  transition: background 0.2s, border-color 0.2s;
-	}
-	
-	#content_plus.contents_item:hover {
-	  background: #eaf4fc;
-	  border-color: #6cb7e6;
-	  color: #3183c3;
-	}
+   
+   /* + 버튼만 강조 색상 */
+   #content_plus.contents_item {
+     display: flex;
+     background: #f3f6fa;
+     border: 2.5px dashed #e3e9f2;
+     color: #6cb7e6;
+     font-size: 44px;
+     text-align: center;
+     justify-content: center;
+     align-items: center;
+     cursor: pointer;
+     transition: background 0.2s, border-color 0.2s;
+   }
+   
+   #content_plus.contents_item:hover {
+     background: #eaf4fc;
+     border-color: #6cb7e6;
+     color: #3183c3;
+   }
 
 #todolist {
     width: 100%;
@@ -687,7 +676,7 @@
 }
 
 #calendar::-webkit-scrollbar{
-	display: none;
+   display: none;
 }
 
 /* FullCalendar의 날짜 그리드 영역이 남는 공간을 모두 차지하도록 설정 */
@@ -734,20 +723,20 @@
 }
 
 .fc-theme-standard .fc-scrollgrid{
-	border: solid 2px var(--border-color) !important;
-	border-radius: 4px;
+   border: solid 2px var(--border-color) !important;
+   border-radius: 4px;
 }
 
 /* --- 하이라이트 스타일 --- */
 /* 오늘 날짜 & 사용자가 선택한 날짜에 적용될 하이라이트 스타일 */
 .fc .fc-day-today,
 .fc .fc-day-selected {  
-    background-color: #fff9c4 !important; /* 노란색 계열 하이라이트 */
+    background-color: var(--workspace-cal-back) !important; /* 노란색 계열 하이라이트 */
 }
 
 /* 일정 이벤트(점) 스타일 */
 .fc-daygrid-event {
-    background-color: rgba(255, 255, 0, 0.3) !important;
+    background-color: var(--workspace-cal-event) !important;
 }
 
 /* 일정 표시 영역 (오른쪽) - 1의 비율 */
@@ -875,108 +864,114 @@
     color: #666;
 }
 
-/*todo*/
-/* 전체 목록 (ul) */
+/* 할 일 목록 ul 스타일 */
 .todo-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-/* 각 항목 (li) */
+/* 할 일 목록 li (각 항목) 스타일 */
 .todo-list li {
     display: flex;
-    align-items: center; /* 수직 중앙 정렬 */
-    border-bottom: 1px solid #f0f0f0;
-    padding: 12px 10px 12px 20px;
+    align-items: center;
+    padding: 15px 10px;
+    border-bottom: 1px solid #e0e0e0;
     font-size: 15px;
-    gap: 12px;
-    position: relative;
+     gap: 12px; 
 }
+
 .todo-list li:last-child {
     border-bottom: none;
 }
 
-/* ★ 신규: li의 가상요소를 사용해 '색상 바' 만들기 */
-.todo-list li::before {
-    content: '';
-    position: absolute;
-    left: 4px; /* 왼쪽으로부터의 여백 */
-    top: 20%; /* 위에서 20% 지점에서 시작 */
-    bottom: 20%; /* 아래에서 20% 지점에서 끝 (길이 60%) */
-    width: 5px; /* 바의 굵기 */
-    
-    /* JS에서 전달한 변수로 색상 적용 */
-    background-color: rgb(var(--todo-r), var(--todo-g), var(--todo-b));
-    border-radius: 2px; /* 부드러운 모서리 */
+/* 체크박스 스타일 */
+.todo-checkbox {
+    margin-right: 15px;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
 }
 
-/* --- 커스텀 체크박스 (중앙 정렬 미세 조정) --- */
+/* 텍스트 영역 (체크 시 취소선 적용 위해) */
+.todo-text {
+    flex-grow: 1; /* 남은 공간을 모두 차지 */
+    color: #333;
+    transition: color 0.3s;
+}
+
+/* 완료된 항목의 텍스트 스타일 */
+.todo-text.completed {
+    text-decoration: line-through; /* 취소선 */
+    color: #aaa;
+}
+
+/* 1. 커스텀 체크박스를 위한 label 컨테이너 */
 .custom-checkbox-label {
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: inline-block;
     width: 22px;
     height: 22px;
     cursor: pointer;
-    flex-shrink: 0;
+    flex-shrink: 0; /* 창이 좁아져도 찌그러지지 않음 */
 }
 
+/* 2. 원래 체크박스는 화면에서 숨김 */
 .custom-checkbox-label .todo-checkbox {
-    opacity: 0; /* 실제 체크박스는 숨김 */
+    opacity: 0;
     width: 0;
     height: 0;
-    position: absolute;
 }
 
+/* 3. CSS로 새로 만드는 '가짜' 체크박스 */
 .custom-checkbox-span {
-    height: 100%;
-    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 22px;
+    width: 22px;
     background-color: #fff;
     border: 2px solid #ccc;
-    border-radius: 6px; /* 살짝 더 둥글게 */
+    border-radius: 5px;
     transition: all 0.2s ease;
 }
 
+/* 4. 체크되었을 때 '가짜' 체크박스 스타일 변경 */
 .custom-checkbox-label .todo-checkbox:checked + .custom-checkbox-span {
+    /* JS에서 전달한 CSS 변수를 사용해 배경과 테두리 색상 변경 */
     background-color: rgb(var(--todo-r), var(--todo-g), var(--todo-b));
     border-color: rgb(var(--todo-r), var(--todo-g), var(--todo-b));
 }
 
+/* 5. 체크 표시(V) 아이콘 생성 */
 .custom-checkbox-span::after {
     content: "";
     position: absolute;
-    display: none;
-    box-sizing: border-box; /* border 계산을 정확하게 */
-    
-    /* V자 모양 크기 */
-    width: 7px;
-    height: 13px;
+    display: none; /* 평소엔 숨김 */
+    left: 7px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
     border: solid white;
     border-width: 0 3px 3px 0;
-
-    /* V 모양을 회전 후 정밀하게 중앙으로 이동 */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -55%) rotate(45deg);
+    transform: rotate(45deg);
 }
 
+/* 6. 체크되었을 때만 체크 표시 아이콘 보여주기 */
 .custom-checkbox-label .todo-checkbox:checked + .custom-checkbox-span::after {
     display: block;
 }
 
-
-.todo-text {
-    flex-grow: 1;
-    color: #333;
-    line-height: 1.5;
-}
-
+/* 완료된 항목의 텍스트 스타일 (형광펜 효과) */
 .todo-text.completed {
-    text-decoration: line-through;
-    text-decoration-color: #999;
-    color: #b0b0b0;
+    /* 기존 스타일 */
+    text-decoration: line-through; 
+    color: #888; 
+
+    /* 형광펜 효과 추가 */
+    background: linear-gradient(to top, rgba(var(--todo-r), var(--todo-g), var(--todo-b), 0.3) 50%, transparent 50%);
+    padding: 2px 4px;
+    border-radius: 3px;
 }
 
 /* 삭제 버튼 스타일 */
@@ -1243,7 +1238,7 @@
     background: none;
     border: 1px solid #ced4da;
     border-radius: 5px;
-    color: #495057;
+    color: var(--workspace-card-font-morebtn);
     font-weight: bold;
     font-size: 12px;
     padding: 4px 8px;
@@ -1314,8 +1309,8 @@
     color: #dee2e6;
 }
 
-	@media (max-width: 800px) {
-	  .contents_item, .generated_block { padding: 12px 7px !important; }
-	  #content_plus.contents_item { font-size: 30px; }
-	}
+   @media (max-width: 800px) {
+     .contents_item, .generated_block { padding: 12px 7px !important; }
+     #content_plus.contents_item { font-size: 30px; }
+   }
   

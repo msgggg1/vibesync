@@ -63,6 +63,7 @@ body {
   background-color: var(--background-color);
   background-image:  linear-gradient(var(--chpa) 1.1px, transparent 1.1px), linear-gradient(to right, var(--chpa) 1.1px, transparent 1.1px);
   background-size: 22px 22px;
+  color: var(--font-color) !important;
 }
 a {
   text-decoration: none;
