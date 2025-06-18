@@ -138,6 +138,11 @@
 		color: var(--font-color) !important;
 	}
 	
+	   .popover{
+      background-color: var(--card-back) !important;
+      border: solid 2px var(--border-color) !important;
+   }
+	
   </style>
   
 </head>

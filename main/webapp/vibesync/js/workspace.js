@@ -558,6 +558,7 @@ $(document).ready(function() {
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek'
                 },
+                titleFormat: { year:"numeric", month: "short"},
                 dayMaxEvents: 2,
                 height: '100%',
                 aspectRatio: 1.8,

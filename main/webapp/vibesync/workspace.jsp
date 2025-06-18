@@ -195,9 +195,9 @@
 						<div class="workspace-controls">
 						    <h3><i class="fa-solid fa-shapes"></i>&nbsp;&nbsp;My Workspace</h3>
 						    <div class="workspace-buttons">
-						        <button id="edit-order-btn" class="control-btn"><i class="fa-solid fa-pen-to-square"></i> 편집</button>
-						        <button id="save-order-btn" class="control-btn" style="display: none;"><i class="fa-solid fa-save"></i> 저장</button>
-						        <button id="cancel-order-btn" class="control-btn" style="display: none;"><i class="fa-solid fa-times"></i> 취소</button>
+						        <button id="edit-order-btn" class="control-btn"><i class="fa-solid fa-pen-to-square" style="filter: invert(0) !important;"></i> 편집</button>
+						        <button id="save-order-btn" class="control-btn" style="display: none;"><i class="fa-solid fa-save" style="filter: invert(0) !important;"></i> 저장</button>
+						        <button id="cancel-order-btn" class="control-btn" style="display: none;"><i class="fa-solid fa-times" style="filter: invert(0) !important;"></i> 취소</button>
 						    </div>
 						</div>
 
@@ -412,7 +412,7 @@
 	<div id="addBlockModal" class="modal">
 		<div class="modal-content" style="text-align: center;">
 			<h4>추가할 블록 선택</h4>
-			<hr><br>
+			<hr style="width: 100%; border: solid 1px var(--border-color);"><br>
 			<select id="blockTypeSelector">
 				<option value="CategoryPosts">카테고리별 글</option>
 				<option value="WatchParties">구독 워치파티</option>

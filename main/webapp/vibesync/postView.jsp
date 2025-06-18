@@ -192,6 +192,7 @@ const isLoggedIn = ${not empty user};
   font-weight: bold;
   border: solid 2px var(--border-color);
   border-radius: 6px;
+  text-transform: uppercase;
   }
   </style>
 </head>

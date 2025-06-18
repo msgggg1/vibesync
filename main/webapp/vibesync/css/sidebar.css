@@ -43,7 +43,6 @@
 }
 .notion-app-inner .notion-sidebar-container .notion-sidebar .menu_content .nickname {
   text-decoration: none;
-  text-transform: uppercase;
   color: var(--font-color);
   overflow: hidden;
   text-overflow: ellipsis;

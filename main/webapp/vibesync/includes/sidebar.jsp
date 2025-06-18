@@ -32,7 +32,6 @@
 }
 .notion-sidebar .menu_content .nickname {
   text-decoration: none;
-  text-transform: uppercase;
   color: var(--font-color);
 }
 
@@ -108,15 +107,17 @@ input:focus {
 }
 
 .profile img {
-  width: 100x;
+  width: 100px;
   height: 100px;
   object-fit: cover;
   border-radius: 50%;
   aspect-ratio: 1/1;
   margin-bottom: 13px;
-  border: 1.5px solid lightgrey;
-  background: #faf9f6;
+  border: 4px solid transparent;
   display: block;
+  background-image: linear-gradient(var(--card-back), var(--card-back)), linear-gradient(90deg, rgba(138, 196, 255, 1) 0%, rgba(227, 176, 255, 1) 50%, rgba(165, 250, 120, 1) 100%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
 }
 
 .nickname {
@@ -132,7 +133,7 @@ input:focus {
 .accountDataLabel {
   font-weight: 400;
   font-size: medium;
-  color: grey;
+  color: grey !important;
 }
 
 .accountDataValue {
@@ -350,7 +351,7 @@ input:focus {
         <span class="profile" id="profile-display">
           <c:choose>
           	<c:when test="${not empty userInfo.img}">
-          		<img src="<%= contextPath %>${userInfo.img}" alt="프로필">
+                <img src="${pageContext.request.contextPath}/vibesync/${userInfo.img}" alt="프로필">
             </c:when>
             <c:otherwise>
             	<img src="<%= contextPath %>/sources/default/default_user.jpg" alt="기본 프로필">
