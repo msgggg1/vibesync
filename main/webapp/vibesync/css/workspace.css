@@ -578,6 +578,7 @@
    font-weight: 500;
    font-size: 14px;
    transition: color 0.2s;
+   width: 100%;
 }
 #my-posts ul li a:hover,
 #liked-posts ul li a:hover,
