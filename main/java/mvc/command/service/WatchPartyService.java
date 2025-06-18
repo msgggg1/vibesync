@@ -37,7 +37,6 @@ public class WatchPartyService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 		return followingWatchParties;
 	}
 

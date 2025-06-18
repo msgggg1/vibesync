@@ -47,7 +47,10 @@ public class MainPageService {
 			mainPageDTO = MainPageDTO.builder()
 						            .latestNotes(latestNotes)
 						            .popularNotes(popularNotesByMyCategory)
-			
+						            .popularUsers(popularUsers)
+						            .popularNotesNotByMyCategory(popularNotesNotByMyCategory)
+						            .build();
+		} catch (Exception e) {
         	e.printStackTrace();
 		} finally {
 			if (conn != null)

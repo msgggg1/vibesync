@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initRotatingHighlight('popular_posts_container', 2800);
         initRotatingHighlight('popular_users_container', 2800);
         
-  } else if (mode.value === 'workspace') {
+  } /* else if (mode.value === 'workspace') {
     console.log(mode.value);
     const plusbtn = document.querySelector('#content_plus');
     const contentsGrid = document.querySelector('#contents_grid');
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     checkItemCount();
-  } /*else if (mode.value === 'board') {
+  } */ /*else if (mode.value === 'board') {
     loadFullBoardData(10);
     function loadFullBoardData(maxPage) {
       const posts = [];
@@ -266,7 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
       
       renderPage(1);
     }
-  }*/ else if (mode.value === 'user') {
+  }*/ 
+  /*else if (mode.value === 'user') {
     setOffsetHeight();
     function setOffsetHeight() {
       console.log('user resize')
@@ -280,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('resize', setOffsetHeight);
 
-  } else if (mode.value === 'login') {
+  } */else if (mode.value === 'login') {
     const login = document.querySelector('#login')
     const singup = document.querySelector('#signUp')
     const changeSingup = document.querySelector('#changeSingup')

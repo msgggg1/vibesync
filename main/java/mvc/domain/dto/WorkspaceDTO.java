@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mvc.domain.vo.TodolistVO;
+import mvc.domain.vo.TodoVO;
 
 @Getter
 @Setter
@@ -18,12 +18,10 @@ import mvc.domain.vo.TodolistVO;
 @ToString
 public class WorkspaceDTO {
 	
-    private List<TodolistVO> todolists;
+    private List<TodoVO> todolists;
     private List<NoteSummaryDTO> myPosts;
     private List<NoteSummaryDTO> likedPosts;
     private List<MessageListDTO> unreadMessages;
-    // private List<NoteSummaryDTO> postsByCategory;
-    // private List<WatchPartyDTO> followingWatchParties;
-    // private NoteStatsDTO userNoteStats;
+    private List<BlockDTO> blocks;
     
 }

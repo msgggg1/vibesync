@@ -5,217 +5,282 @@ let wsSyncHost = null;
 // 여러 개의 YT.Player 인스턴스를 관리하기 위해 Map을 사용
 const hostPlayers = new Map(); // key: watchPartyIdx, value: YT.Player 인스턴스
 let hostSyncIntervalIds = new Map(); // key: watchPartyIdx, value: intervalId
+// [신규] 호스트 탭의 각 영상별 채팅 WebSocket을 관리하는 Map
+const commentSockets = new Map();
 
 // 페이지 로드 시 실행
 window.addEventListener('DOMContentLoaded', () => {
-  console.log("Loading watchparty.js");
-  
-  connectSyncWebSocketForHost();
-  
-  document.getElementById('btn-list').classList.add('active');
-  loadWatchPartyList();
+    console.log("Loading watchparty.js");
+    
+    connectSyncWebSocketForHost();
+    
+    document.getElementById('btn-list').classList.add('active');
+    loadWatchPartyList();
 
-  document.getElementById('btn-list').addEventListener('click', () => {
-    switchTab('list');
-  });
-  document.getElementById('btn-host').addEventListener('click', () => {
-    switchTab('host');
-  });
+    document.getElementById('btn-list').addEventListener('click', () => {
+        switchTab('list');
+    });
+    document.getElementById('btn-host').addEventListener('click', () => {
+        switchTab('host');
+    });
 
-  // 추가 시작: "+ 버튼"과 "모달" 관련 요소 가져오기
-  const btnAdd = document.getElementById('btn-add-video');
-  const addModal = document.getElementById('add-modal');
-  const addCancel = document.getElementById('add-cancel');
-  // 추가 끝
+    // 추가 시작: "+ 버튼"과 "모달" 관련 요소 가져오기
+    const btnAdd = document.getElementById('btn-add-video');
+    const addModal = document.getElementById('add-modal');
+    const addCancel = document.getElementById('add-cancel');
+    // 추가 끝
 
-  // 기존 switchTab, loadWatchPartyList, loadHostWatchPartyList, renderList 등 생략…
+    document.getElementById('host-container').addEventListener('click', function(e) {
+        if (e.target.classList.contains('host-chat-send-btn')) {
+            const watchPartyIdx = e.target.dataset.wpIdx;
+            const input = document.getElementById(`chat-input-${watchPartyIdx}`);
+            const text = input.value.trim();
+
+            if (text === "") return;
+
+            const ws = commentSockets.get(parseInt(watchPartyIdx));
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                // [수정] 해당 영상의 플레이어 객체에서 현재 재생 시간을 가져옴
+                const player = hostPlayers.get(parseInt(watchPartyIdx));
+                const currentTime = player ? player.getCurrentTime() : 0.0;
+
+                const chatMsg = JSON.stringify({
+                    type: "comment",
+                    watchPartyIdx: watchPartyIdx,
+                    nickname: "host", 
+                    chatting: text,
+                    timeline: currentTime
+                });
+                ws.send(chatMsg);
+                input.value = "";
+            } else {
+                console.error(`WebSocket for watchPartyIdx=${watchPartyIdx} is not open.`);
+            }
+        }
+    });
+
 });
 
 // 탭 전환 함수
 function switchTab(tab) {
-  const listBtn = document.getElementById('btn-list');
-  const hostBtn = document.getElementById('btn-host');
-  const listContainer = document.getElementById('list-container');
-  const hostContainer = document.getElementById('host-container');
+    const listBtn = document.getElementById('btn-list');
+    const hostBtn = document.getElementById('btn-host');
+    const listContainer = document.getElementById('list-container');
+    const hostContainer = document.getElementById('host-container');
+    const btnAdd = document.getElementById('btn-add-video');
 
-  // 추가 시작: "+ 버튼" 참조
-  const btnAdd = document.getElementById('btn-add-video');
-  // 추가 끝
-
-  if (tab === 'list') {
-    listBtn.classList.add('active');
-    hostBtn.classList.remove('active');
-    listContainer.style.display = 'block';
-    hostContainer.style.display = 'none';
-
-    // 추가 시작: "+ 버튼 숨김"
-    btnAdd.style.display = 'none';
-    // 추가 끝
-
-    loadWatchPartyList();
-  } else {
-    hostBtn.classList.add('active');
-    listBtn.classList.remove('active');
-    listContainer.style.display = 'none';
-    hostContainer.style.display = 'block';
-
-    // 추가 시작: "+ 버튼 보이기"
-    btnAdd.style.display = 'block';
-    // 추가 끝
-
-    loadHostWatchPartyList();
-  }
+    if (tab === 'list') {
+        listBtn.classList.add('active');
+        hostBtn.classList.remove('active');
+        listContainer.style.display = 'block';
+        hostContainer.style.display = 'none';
+        btnAdd.style.display = 'none';
+        loadWatchPartyList();
+    } else {
+        hostBtn.classList.add('active');
+        listBtn.classList.remove('active');
+        listContainer.style.display = 'none';
+        hostContainer.style.display = 'block';
+        btnAdd.style.display = 'block';
+        loadHostWatchPartyList();
+    }
 }
 
 // 전체 WatchParty 목록을 AJAX로 가져와서 #list-container에 표시
 function loadWatchPartyList() {
-  fetch(`${CONTEXT_PATH}/WatchPartyListServlet`)
-    .then(response => {
-      if (!response.ok) throw new Error('서버 응답 실패: ' + response.status);
-      return response.json();
-    })
-    .then(data => {
-      renderList(data, 'list-container');
-    })
-    .catch(err => {
-      console.error('loadWatchPartyList 에러:', err);
-      document.getElementById('list-container').innerHTML = '<p>목록을 불러오지 못했습니다.</p>';
-    });
+    fetch(`${CONTEXT_PATH}/WatchPartyListServlet`)
+        .then(response => {
+            if (!response.ok) throw new Error('서버 응답 실패: ' + response.status);
+            return response.json();
+        })
+        .then(data => {
+            renderList(data, 'list-container');
+        })
+        .catch(err => {
+            console.error('loadWatchPartyList 에러:', err);
+            document.getElementById('list-container').innerHTML = '<p>목록을 불러오지 못했습니다.</p>';
+        });
 }
 
 // 로그인한 유저의 Host 목록을 AJAX로 가져와서 #host-container에 표시
 function loadHostWatchPartyList() {
-  fetch(`${CONTEXT_PATH}/HostWatchPartyListServlet`)
-    .then(response => {
-      if (!response.ok) throw new Error('서버 응답 실패: ' + response.status);
-      return response.json();
-    })
-    .then(data => {
-      renderHostTable(data);
-    })
-    .catch(err => {
-      console.error('loadHostWatchPartyList 에러:', err);
-      document.getElementById('host-container').innerHTML = '<p>목록을 불러오지 못했습니다.</p>';
-    });
+    fetch(`${CONTEXT_PATH}/HostWatchPartyListServlet`)
+        .then(response => {
+            if (!response.ok) throw new Error('서버 응답 실패: ' + response.status);
+            return response.json();
+        })
+        .then(data => {
+            renderHostTable(data);
+        })
+        .catch(err => {
+            console.error('loadHostWatchPartyList 에러:', err);
+            document.getElementById('host-container').innerHTML = '<p>목록을 불러오지 못했습니다.</p>';
+        });
 }
 
 // 받은 JSON 데이터를 li 태그로 렌더링
 function renderList(data, containerId) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
 
-  if (!data || data.length === 0) {
-    container.innerHTML = '<p>표시할 영상이 없습니다.</p>';
-    return;
-  }
+    if (!data || data.length === 0) {
+        container.innerHTML = '<p>표시할 영상이 없습니다.</p>';
+        return;
+    }
 
-  const ul = document.createElement('ul');
-  data.forEach(item => {
-    const li = document.createElement('li');
-    li.textContent = item.title;
-    li.dataset.watchPartyIdx = item.watchParty_idx || item.watchPartyIdx;
-    li.addEventListener('click', () => {
-      window.location.href = `${CONTEXT_PATH}/vibesync/watch.jsp?watchPartyIdx=${item.watchParty_idx || item.watchPartyIdx}`;
+    const ul = document.createElement('ul');
+    data.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item.title;
+        li.dataset.watchPartyIdx = item.watchParty_idx || item.watchPartyIdx;
+        li.addEventListener('click', () => {
+            window.location.href = `${CONTEXT_PATH}/vibesync/watch.jsp?watchPartyIdx=${item.watchParty_idx || item.watchPartyIdx}`;
+        });
+        ul.appendChild(li);
     });
-    ul.appendChild(li);
-  });
-  container.appendChild(ul);
+    container.appendChild(ul);
 }
 
+// [수정] 호스트 테이블 렌더링 함수에 채팅 컬럼 추가
 function renderHostTable(data) {
-  const container = document.getElementById('host-container');
-  container.innerHTML = ''; // 우선 비운다
+    const container = document.getElementById('host-container');
+    container.innerHTML = '';
 
-  if (!data || data.length === 0) {
-    container.innerHTML = '<p>표시할 영상이 없습니다.</p>';
-    return;
-  }
+    if (!data || data.length === 0) {
+        container.innerHTML = '<p>표시할 영상이 없습니다.</p>';
+        return;
+    }
 
-  // 1) 테이블 생성
-  const table = document.createElement('table');
-  table.style.width = '100%';
-  table.style.borderCollapse = 'collapse';
+    const table = document.createElement('table');
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
 
-  // 2) 테이블 헤더
-  const thead = document.createElement('thead');
-  const headerRow = document.createElement('tr');
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    
+    const thId = document.createElement('th');
+    thId.textContent = 'ID';
+    const thTitle = document.createElement('th');
+    thTitle.textContent = '제목';
+    const thVideo = document.createElement('th');
+    thVideo.textContent = '영상';
+    // [신규] 채팅 관리 헤더 추가
+    const thChat = document.createElement('th');
+    thChat.textContent = '채팅 관리';
 
-  const thId = document.createElement('th');
-  thId.textContent = 'ID';
-  const thTitle = document.createElement('th');
-  thTitle.textContent = '제목';
-  const thVideo = document.createElement('th');
-  thVideo.textContent = '영상';
+    [thId, thTitle, thVideo, thChat].forEach(th => { // thChat 추가
+        th.style.border = '1px solid #ccc';
+        th.style.padding = '0.5rem';
+        th.style.backgroundColor = '#f2f2f2';
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
 
-  [thId, thTitle, thVideo].forEach(th => {
-    th.style.border = '1px solid #ccc';
-    th.style.padding = '0.5rem';
-    th.style.backgroundColor = '#f2f2f2';
-    headerRow.appendChild(th);
-  });
-  thead.appendChild(headerRow);
-  table.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    data.forEach(item => {
+        const tr = document.createElement('tr');
+        const watchPartyIdx = item.watchParty_idx || item.watchPartyIdx;
 
-  // 3) 테이블 바디
-  const tbody = document.createElement('tbody');
+        const tdId = document.createElement('td');
+        tdId.textContent = watchPartyIdx;
+        const tdTitle = document.createElement('td');
+        tdTitle.textContent = item.title;
+        const tdVideo = document.createElement('td');
+        tdVideo.style.textAlign = 'center';
 
-  data.forEach(item => {
-    const tr = document.createElement('tr');
+        const iframe = document.createElement('iframe');
+        iframe.id = `host-player-${watchPartyIdx}`;
+        iframe.width = '320';
+        iframe.height = '180';
+        iframe.src = `https://www.youtube.com/embed/${item.video_id || item.videoId}?enablejsapi=1`;
+        iframe.frameBorder = '0';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        tdVideo.appendChild(iframe);
 
-    // ID 셀
-    const tdId = document.createElement('td');
-    tdId.textContent = item.watchParty_idx || item.watchPartyIdx;
-    tdId.style.border = '1px solid #ccc';
-    tdId.style.padding = '0.5rem';
+        // [신규] 채팅 관리 셀 생성
+        const tdChat = document.createElement('td');
+        tdChat.style.verticalAlign = 'top';
 
-    // 제목 셀
-    const tdTitle = document.createElement('td');
-    tdTitle.textContent = item.title;
-    tdTitle.style.border = '1px solid #ccc';
-    tdTitle.style.padding = '0.5rem';
+        const chatLog = document.createElement('div');
+        chatLog.id = `chat-log-${watchPartyIdx}`;
+        chatLog.className = 'host-chat-log';
 
-    // video_id → iframe으로 보여줄 셀
-    const tdVideo = document.createElement('td');
-    tdVideo.style.border = '1px solid #ccc';
-    tdVideo.style.padding = '0.5rem';
-    tdVideo.style.textAlign = 'center';
+        const chatInputWrapper = document.createElement('div');
+        chatInputWrapper.className = 'chat-input-wrapper';
+        chatInputWrapper.innerHTML = `
+            <input type="text" id="chat-input-${watchPartyIdx}" placeholder="메시지 전송...">
+            <button class="host-chat-send-btn" data-wp-idx="${watchPartyIdx}">전송</button>
+        `;
+        tdChat.appendChild(chatLog);
+        tdChat.appendChild(chatInputWrapper);
 
-    // 3-3-1) iframe 생성, enablejsapi=1 반드시 포함
-    const iframe = document.createElement('iframe');
-    iframe.id = `host-player-${item.watchParty_idx || item.watchPartyIdx}`; // 고유 ID
-    iframe.width = '200';    // 임시값, 디자인 맞춰서 수정
-    iframe.height = '112';   // 임시값 (16:9 비율)
-    iframe.src = `https://www.youtube.com/embed/${item.video_id || item.videoId}?enablejsapi=1`;
-    iframe.frameBorder = '0';
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-    iframe.allowFullscreen = true;
-    tdVideo.appendChild(iframe);
+        // 각 셀에 스타일 적용 및 행에 추가
+        [tdId, tdTitle, tdVideo, tdChat].forEach(td => {
+            td.style.border = '1px solid #ccc';
+            td.style.padding = '0.5rem';
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
 
-    // 3-3-2) YT.Player 인스턴스를 생성하고 이벤트 핸들러 등록
-    //    → onYouTubeIframeAPIReady 이후에 이 인스턴스가 동작하므로 약간의 지연을 두거나, 
-    //      전역 YT 로드 콜백 안에서 생성해도 됩니다.
-    setTimeout(() => {
-      const player = new YT.Player(iframe.id, {
-        events: {
-          onReady: () => {
-            // 페이지 로드 직후 플레이어 준비 상태, 필요 시 초기 동작 없음
-          },
-          onStateChange: (event) => {
-            handleHostPlayerStateChange(event, item.watchParty_idx || item.watchPartyIdx);
-          }
+        // YT 플레이어 인스턴스 생성
+        setTimeout(() => {
+            const player = new YT.Player(iframe.id, {
+                events: {
+                    onStateChange: (event) => handleHostPlayerStateChange(event, watchPartyIdx)
+                }
+            });
+            hostPlayers.set(watchPartyIdx, player);
+        }, 500);
+
+        // [신규] 각 영상별 채팅 WebSocket 연결
+        connectCommentWebSocket(watchPartyIdx);
+    });
+
+    table.appendChild(tbody);
+    container.appendChild(table);
+}
+
+// [신규] 특정 Watch Party의 채팅 WebSocket 연결 함수
+function connectCommentWebSocket(watchPartyIdx) {
+    const ws = new WebSocket("ws://" + location.host + CONTEXT_PATH + "/waCommentEndpoint");
+    commentSockets.set(watchPartyIdx, ws);
+
+    ws.onopen = () => {
+        console.log(`Comment WS for ${watchPartyIdx} connected.`);
+        // 연결 성공 시, 초기 채팅 목록 요청
+        const initMsg = JSON.stringify({ type: "initComment", watchPartyIdx: watchPartyIdx });
+        ws.send(initMsg);
+    };
+
+    ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        const chatLog = document.getElementById(`chat-log-${watchPartyIdx}`);
+        if (!chatLog) return;
+
+        if (msg.type === "comment") {
+            appendHostChat(chatLog, msg.nickname, msg.chatting);
+        } else if (msg.type === "initCommentList") {
+            msg.comments.forEach(c => {
+                appendHostChat(chatLog, c.nickname, c.chatting);
+            });
         }
-      });
-      hostPlayers.set(item.watchParty_idx || item.watchPartyIdx, player);
-    }, 500); // 0.5초 정도 지연하면 API가 로드된 뒤 정상적으로 Player를 생성할 수 있음
+    };
 
-    tr.appendChild(tdId);
-    tr.appendChild(tdTitle);
-    tr.appendChild(tdVideo);
-    tbody.appendChild(tr);
-  });
+    ws.onclose = () => console.log(`Comment WS for ${watchPartyIdx} disconnected.`);
+    ws.onerror = (err) => console.error(`Comment WS for ${watchPartyIdx} error:`, err);
+}
 
-  table.appendChild(tbody);
-  container.appendChild(table);
+// [신규] 호스트 채팅 로그에 메시지를 추가하는 헬퍼 함수
+function appendHostChat(chatLogElement, nickname, text) {
+    const p = document.createElement('p');
+    p.textContent = `${nickname}: ${text}`;
+    // 호스트가 보낸 메시지인 경우 'host-chat' 클래스 추가
+    if (nickname === "host") {
+        p.classList.add('host-chat');
+    }
+    chatLogElement.appendChild(p);
+    chatLogElement.scrollTop = chatLogElement.scrollHeight; // 항상 최신 메시지가 보이도록 스크롤
 }
 
 function handleHostPlayerStateChange(event, watchPartyIdx) {

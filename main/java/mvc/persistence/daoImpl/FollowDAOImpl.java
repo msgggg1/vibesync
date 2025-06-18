@@ -30,10 +30,10 @@ public class FollowDAOImpl implements FollowDAO {
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 	    
-	    String sql = "SELECT " + 
-	    			 " ac_idx, nickname, img, category_idx " +
-	    			 "FROM follows f JOIN userAccount u ON u.ac_idx = f.ac_following " +
-	    			 "WHERE ac_follow = ?";
+	       String sql = "SELECT " + 
+	                 " ac_idx, nickname, img, category_idx " +
+	                 "FROM follows f JOIN userAccount u ON u.ac_idx = f.ac_follow " +
+	                 "WHERE ac_following = ?";
 	    
 	    try {
 			pstmt = conn.prepareStatement(sql);
@@ -70,8 +70,8 @@ public class FollowDAOImpl implements FollowDAO {
 	    
 	    String sql = "SELECT " + 
 	    			 " ac_idx, nickname, img, category_idx " +
-	    			 "FROM follows f JOIN userAccount u ON u.ac_idx = f.ac_follow " +
-	    			 "WHERE ac_following = ?";
+	    			 "FROM follows f JOIN userAccount u ON u.ac_idx = f.ac_following " +
+	    			 "WHERE ac_follow = ?";
 	    
 	    try {
 			pstmt = conn.prepareStatement(sql);
@@ -107,9 +107,9 @@ public class FollowDAOImpl implements FollowDAO {
 	    ResultSet rs = null;
 	    
 	    String sql = "SELECT " + 
-	    			 " ac_follow " +
+	    			 " ac_following " +
 	    			 " FROM follows " +
-	    			 " WHERE ac_following = ?";
+	    			 " WHERE ac_follow = ?";
 	    
 	    try {
 			pstmt = conn.prepareStatement(sql);
@@ -117,7 +117,7 @@ public class FollowDAOImpl implements FollowDAO {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
-				userIdList.add(rs.getInt("ac_follow"));
+				userIdList.add(rs.getInt("ac_following"));
 			}
 			
 		} catch (Exception e) {
@@ -292,9 +292,7 @@ public class FollowDAOImpl implements FollowDAO {
         }
     }
 
-    @Override
-    public SidebarDTO getFollowingList(int acFollow) {
-        List<UserVO> followingList = new ArrayList<>();
+    /*
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -336,6 +334,7 @@ public class FollowDAOImpl implements FollowDAO {
         dto.setFollowingList(followingList);
         return dto;
     }
+    */
     
     @Override
     public int getFollowerCount(int userAcIdx) throws SQLException {

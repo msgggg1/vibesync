@@ -28,13 +28,8 @@ public class MessageHandler implements CommandHandler {
 	    Gson gson = new Gson();
 
 	    HttpSession session = request.getSession(false);
-	    if (session == null || session.getAttribute("userInfo") == null) {
-	        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-	        out.print(gson.toJson(Map.of("success", false, "message", "로그인 필요")));
-	        return null;
-	    }
 	    UserVO userInfo = (UserVO) session.getAttribute("userInfo");
-	    int senderIdx = userInfo.getAc_idx();
+	    int acIdx = userInfo.getAc_idx();
 
 	    String method = request.getMethod();
 
@@ -47,21 +42,30 @@ public class MessageHandler implements CommandHandler {
 	        }
 	        Map<String, Object> body = gson.fromJson(sb.toString(), Map.class);
 
-	        int receiverIdx = ((Double)body.get("receiverIdx")).intValue(); // gson이 double로 파싱함
+	        int receiverIdx = (int) Double.parseDouble(body.get("receiver_idx").toString());
 	        String text = (String) body.get("text");
 
 	        // 메시지 저장 (인서트 작업)
-	        boolean insertResult = messageService.sendMessage(senderIdx, receiverIdx, text);
+	        boolean insertResult = messageService.sendMessage(acIdx, receiverIdx, text);
 
 	        out.print(gson.toJson(Map.of("success", insertResult)));
 	        return null;
 	        
 	    } else if ("GET".equalsIgnoreCase(method)) {
-	        // GET 요청 : 채팅 내역 조회
-	        int otherIdx = Integer.parseInt(request.getParameter("senderIdx"));
-	        Object serviceResult = messageService.getChatHistory(senderIdx, otherIdx);
-	        out.print(gson.toJson(serviceResult));
-	        return null;
+	        // GET 요청 : 채팅 목록 조회, 채팅 내역 조회
+	    	String view = request.getParameter("view");
+	    	
+	    	if ("LISTALL".equalsIgnoreCase(view)) { // 채팅 목록 조회
+	    		Object serviceResult = messageService.getMessageListAll(acIdx);
+		        out.print(gson.toJson(serviceResult));
+		        return null;
+	    		
+			} else if("CHAT".equalsIgnoreCase(view)) { // 채팅 내역 조회
+		        int otherIdx = Integer.parseInt(request.getParameter("sender_idx"));
+		        Object serviceResult = messageService.getChatHistory(acIdx, otherIdx);
+		        out.print(gson.toJson(serviceResult));
+		        return null;
+			}
 	        
 	    }
 	    

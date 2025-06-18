@@ -3,6 +3,7 @@
 -- 시퀀스 삭제
 --------------------------------------------------------------------------------
 DROP SEQUENCE schedule_seq;
+DROP SEQUENCE workspace_blocks_seq;
 DROP SEQUENCE commentlist_seq;
 DROP SEQUENCE noteAccess_seq;
 DROP SEQUENCE likes_seq;
@@ -161,9 +162,16 @@ CREATE SEQUENCE seq_wa_comment
   
 -- 19. schedule 시퀀스
 CREATE SEQUENCE schedule_seq 
-	START WITH 1
+	START WITH 31
     INCREMENT BY 1
 	NOCACHE
+    NOCYCLE;
+ 
+-- workspace_blocks
+CREATE SEQUENCE workspace_blocks_seq
+    START WITH 6     -- 이후 실제 MAX(block_id)+1 로 조정
+    INCREMENT BY 1
+    NOCACHE
     NOCYCLE;
 
 SELECT COUNT(*) AS sequence_count FROM user_sequences;
@@ -377,3 +385,8 @@ END;
 /
 
 SELECT COUNT(*) AS trigger_count FROM user_triggers;
+
+commit;
+
+select *
+from useraccount;
