@@ -7,8 +7,14 @@
     <title>Set a New Password</title>
     <link rel="stylesheet" href="./css/login.css"> <%-- 기존 login.css를 재활용합니다. --%>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        /* 'password-reset-page' 클래스를 가진 body 안의 #login::before 요소만 선택 */
+        .password-reset-page #login::before {
+            display: none !important;
+        }
+    </style>
 </head>
-<body ondragstart="return false" ondrop="return false" onselectstart="return false">
+<body ondragstart="return false" ondrop="return false" onselectstart="return false" class="password-reset-page">
     <canvas id="starfield"></canvas>
     <div class="container" style="justify-content: center; align-items: center;">
         

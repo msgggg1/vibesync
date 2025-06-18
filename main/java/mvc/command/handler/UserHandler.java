@@ -312,7 +312,7 @@ public class UserHandler implements CommandHandler {
         }
         
         request.setAttribute("token", token);
-        return "/resetPasswordForm.jsp"; // 새 비밀번호 입력 폼 JSP로 포워딩
+        return "resetPasswordForm.jsp"; // 새 비밀번호 입력 폼 JSP로 포워딩
     }
     
     /**

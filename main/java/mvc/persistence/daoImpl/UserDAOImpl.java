@@ -395,7 +395,7 @@ public class UserDAOImpl implements UserDAO {
             rs = pstmt.executeQuery();
             
             if (rs.next()) {
-                email = rs.getString("user_email");
+                email = rs.getString("userEmail");
             }
         } finally {
             if (rs != null) rs.close();
