@@ -156,8 +156,8 @@ const isLoggedIn = ${not empty user};
                 <form class="reply-form">
                     <input type="hidden" name="reCommentIdx" value="\${$parentComment.data('comment-id')}">
                     <div class="reco-div" style="display:flex; align-items: center; ">
-                    <textarea name="text" rows="2" placeholder="답글을 입력하세요..." required style="width:100%; resize:none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none;"></textarea>
-                    <button type="submit" style="padding: 5px 10px; height: 50px; border: solid 2px var(--border-color); border-left: none; border-radius: 0 4px 4px 0; font-weight: bold;">작성</button>
+                    <textarea name="text" rows="2" placeholder="답글을 입력하세요..." required style="width:100%; resize:none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none; background-color: var(--background-color); color: var(--font-color);"></textarea>
+                    <button type="submit" style="padding: 5px 10px; height: 50px; border: solid 2px var(--border-color); border-left: none; border-radius: 0 4px 4px 0; font-weight: bold; background-color: var(--card-head); color: var(--card-back);">작성</button>
                     </div>
                 </form>
             </div>
@@ -192,6 +192,7 @@ const isLoggedIn = ${not empty user};
   font-weight: bold;
   border: solid 2px var(--border-color);
   border-radius: 6px;
+  text-transform: uppercase;
   }
   </style>
 </head>
@@ -244,9 +245,9 @@ const isLoggedIn = ${not empty user};
                               style="display: flex; align-items: center;">
                               <textarea name="text" rows="3" placeholder="댓글을 입력하세요..."
                                   required
-                                  style="width: 100%; resize: none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none;"></textarea>
+                                  style="width: 100%; resize: none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none; background-color: var(--background-color); color: var(--font-color);"></textarea>
                               <button type="submit"
-                                  style="margin: 0px; padding: 5px 10px; height: 65px; border: solid 2px var(--border-color); border-radius: 0 4px 4px 0; border-left: none; background-color: var(--background-color); font-weight: bold;">작성</button>
+                                  style="margin: 0px; padding: 5px 10px; height: 65px; border: solid 2px var(--border-color); border-radius: 0 4px 4px 0; border-left: none; background-color: var(--card-head); color:var(--card-back); font-weight: bold;">작성</button>
                           </div>
                       </form>
                   </c:when>

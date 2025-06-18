@@ -380,7 +380,6 @@
     margin-top: 0; /* 기존 마진 제거 */
     border-top: 1px solid #e9ecef;
     flex-shrink: 0; /* 스크롤 되어도 버튼 영역은 줄어들지 않음 */
-    background-color: #f8f9fa;
     border-bottom-left-radius: 16px; /* 모달 컨테이너의 둥근 모서리에 맞춤 */
     border-bottom-right-radius: 16px;
 }
@@ -582,6 +581,7 @@
    font-weight: 500;
    font-size: 14px;
    transition: color 0.2s;
+   width: 100%;
 }
 #my-posts ul li a:hover,
 #liked-posts ul li a:hover,
@@ -691,6 +691,10 @@
 .fc-header-toolbar {
     margin-bottom: 1.5em !important; /* !important로 라이브러리 기본값 덮어쓰기 */
     padding: 0 10px; /* 좌우 패딩으로 내용 정렬 */
+}
+
+#calendar .fc-header-toolbar {
+    font-size: clamp(44%, 1.54vw, 84%) !important;
 }
 
 /* 툴바의 버튼들 (prev, next, today 등) */
@@ -1009,8 +1013,9 @@
 }
 
 .modal-content {
-    background-color: white;
+    background-color: var(--card-back);
     padding: 30px;
+    border: solid 2px var(--border-color);
     border-radius: 10px;
     width: 90%;
     max-width: 500px;
@@ -1068,8 +1073,9 @@
 #todo-form input[type="color"]{
     width: 30%;
     height: 40px;
-    border: 1px solid #ccc;
+    border: none;
     padding: 5px;
+    background-color: var(--card-back);
 }
 
 /* calendar*/

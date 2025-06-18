@@ -14,6 +14,7 @@ import mvc.domain.dto.DailyStatsDTO;
 import mvc.domain.dto.NoteDetailDTO;
 import mvc.domain.dto.NoteListDTO;
 import mvc.domain.dto.NoteSummaryDTO;
+import mvc.domain.vo.NoteVO;
 import mvc.domain.vo.UserNoteVO;
 import mvc.persistence.dao.NoteDAO;
 
@@ -1041,5 +1042,30 @@ public class NoteDAOImpl implements NoteDAO {
 	    
 	    return yearlyStats;
 	}
+	
+	@Override
+    public List<NoteVO> getAllNotesByAccount(int acIdx) throws SQLException {
+        List<NoteVO> list = new ArrayList<>();
+        // userPage와 조인하여 특정 ac_idx를 가진 사용자의 모든 노트를 찾습니다.
+        String sql = "SELECT n.titleImg, n.img " +
+                     "FROM note n " +
+                     "JOIN userPage up ON n.userPg_idx = up.userPg_idx " +
+                     "WHERE up.ac_idx = ?";
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, acIdx);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    NoteVO note = NoteVO.builder()
+                                    .titleImg(rs.getString("titleImg"))
+                                    .img(rs.getString("img"))
+                                    .build();
+                    list.add(note);
+                }
+            }
+        }
+        return list;
+    }
+	
 	
 }

@@ -91,7 +91,6 @@ body {
 }
 a {
   text-decoration: none;
-  text-transform: uppercase;
   color: var(--font-color) !important;
   cursor: pointer;
   display: flex;
@@ -336,11 +335,33 @@ p {
   align-items: center;
 }
 
+@property --gradient-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 .user_profile_img img {
   width: min(20vw,130px);
   height: min(20vw,130px);
-  background: red;
   border-radius: 50%;
+  border: 6px solid transparent;
+  display: block;
+    background-image: 
+        linear-gradient(var(--card-back), var(--card-back)), 
+        linear-gradient(var(--gradient-angle), rgba(138, 196, 255, 1) 0%, rgba(227, 176, 255, 1) 50%, rgba(165, 250, 120, 1) 100%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  object-fit: cover;
+  animation: rotate-border 4s linear infinite;
+}
+@keyframes rotate-border {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
 }
 
 .userInfo_detail {
@@ -358,6 +379,7 @@ p {
   display: flex;
   justify-content: left;
   align-items: center;
+  justify-content: space-between;
   gap: 20px;
   font-size: 20px;
   font-weight: bold;
@@ -509,7 +531,6 @@ p {
 #postview_Wrapper .title p {
   font-size: min(6.2vw, 26px);
   font-weight: bold;
-  text-transform: uppercase;
 
 }
 
@@ -541,6 +562,11 @@ p {
   height: min(12.2vw, 50px);
   background-color: red;
   border-radius: 50px;
+  border: solid 2px transparent;
+  background-image: linear-gradient(var(--card-back), var(--card-back)), linear-gradient(90deg, rgba(138, 196, 255, 1) 0%, rgba(227, 176, 255, 1) 50%, rgba(165, 250, 120, 1) 100%);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  object-fit: cover;
 }
 .writer_info .writer p {
   font-size: min(4vw, 16px);
