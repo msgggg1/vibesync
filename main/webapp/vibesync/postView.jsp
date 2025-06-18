@@ -1,17 +1,17 @@
 <%@ page import="mvc.domain.dto.UserNoteDTO"%>
 <%@ page import="mvc.domain.vo.UserVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="user" value="${sessionScope.userInfo}" />
 <c:set var="isFollowing"
-	value="${not empty followLike && followLike.following}" />
+   value="${not empty followLike && followLike.following}" />
 <c:set var="isLiking"
-	value="${not empty followLike && followLike.liking}" />
+   value="${not empty followLike && followLike.liking}" />
 
 <!DOCTYPE html>
-<html lang="ko">
+<jsp:include page="/vibesync/includes/header.jsp" />
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -156,8 +156,8 @@ const isLoggedIn = ${not empty user};
                 <form class="reply-form">
                     <input type="hidden" name="reCommentIdx" value="\${$parentComment.data('comment-id')}">
                     <div class="reco-div" style="display:flex; align-items: center; ">
-                    <textarea name="text" rows="2" placeholder="답글을 입력하세요..." required style="width:100%; resize:none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none;"></textarea>
-                    <button type="submit" style="padding: 5px 10px; height: 50px; border: solid 2px var(--border-color); border-left: none; border-radius: 0 4px 4px 0; font-weight: bold;">작성</button>
+                    <textarea name="text" rows="2" placeholder="답글을 입력하세요..." required style="width:100%; resize:none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none; background-color: var(--background-color); color: var(--font-color);"></textarea>
+                    <button type="submit" style="padding: 5px 10px; height: 50px; border: solid 2px var(--border-color); border-left: none; border-radius: 0 4px 4px 0; font-weight: bold; background-color: var(--card-head); color: var(--card-back);">작성</button>
                     </div>
                 </form>
             </div>
@@ -192,6 +192,7 @@ const isLoggedIn = ${not empty user};
   font-weight: bold;
   border: solid 2px var(--border-color);
   border-radius: 6px;
+  text-transform: uppercase;
   }
   </style>
 </head>
@@ -225,7 +226,7 @@ const isLoggedIn = ${not empty user};
               </div>
               <div class="like_share">
                 <div><p><span>view : </span><span>${note.view_count}</span></p></div>
-                <form id="likeForm" style="display:inline; margin:0; padding:0;"><button id="likeBtn" type="submit" data-user-idx="${user.ac_idx}" data-note-idx="${note.note_idx}" style="border:none; background:none; cursor:pointer;"><img id="likeImg" src="${isLiking ? './sources/icons/fill_heart.png' : './sources/icons/heart.svg'}" alt="heart" style="vertical-align:middle; width:2rem; height:2rem;"><span id="likeCount" style="vertical-align:middle;">${note.like_num}</span></button></form>
+                <form id="likeForm" style="display:inline; margin:0; padding:0;"><button id="likeBtn" type="submit" data-user-idx="${user.ac_idx}" data-note-idx="${note.note_idx}" style="border:none; background:none; cursor:pointer; filter: var(--icon-filter);"><img id="likeImg" src="${isLiking ? './sources/icons/fill_heart.png' : './sources/icons/heart.svg'}" alt="heart" style="vertical-align:middle; width:2rem; height:2rem;"><span id="likeCount" style="vertical-align:middle;">${note.like_num}</span></button></form>
               </div>
             </div>
             <div class="line"></div>
@@ -244,9 +245,9 @@ const isLoggedIn = ${not empty user};
                               style="display: flex; align-items: center;">
                               <textarea name="text" rows="3" placeholder="댓글을 입력하세요..."
                                   required
-                                  style="width: 100%; resize: none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none;"></textarea>
+                                  style="width: 100%; resize: none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none; background-color: var(--background-color); color: var(--font-color);"></textarea>
                               <button type="submit"
-                                  style="margin: 0px; padding: 5px 10px; height: 65px; border: solid 2px var(--border-color); border-radius: 0 4px 4px 0; border-left: none; background-color: var(--background-color); font-weight: bold;">작성</button>
+                                  style="margin: 0px; padding: 5px 10px; height: 65px; border: solid 2px var(--border-color); border-radius: 0 4px 4px 0; border-left: none; background-color: var(--card-head); color:var(--card-back); font-weight: bold;">작성</button>
                           </div>
                       </form>
                   </c:when>
@@ -261,28 +262,29 @@ const isLoggedIn = ${not empty user};
                       </div>
                   </c:otherwise>
                 </c:choose>
-				<div id="comment-list" style="clear: both;"></div>
-			</div>
-						<div id="edit-comment-modal"
-							style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
-							<div
-								style="position: relative; top: 20%; margin: auto; width: 500px; background: white; padding: 20px; border-radius: 5px;">
-								<h5>댓글 수정</h5>
-								<form id="edit-comment-form">
-									<input type="hidden" id="edit-comment-id" name="commentIdx">
-									<textarea id="edit-comment-text" name="text" rows="4"
-										style="width: 100%; resize: none; padding: 8px;"></textarea>
-									<div style="text-align: right; margin-top: 10px;">
-										<button type="button" id="cancel-edit-btn">취소</button>
-										<button type="submit">저장</button>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-				</section>
-			</div>
-		</div>
-	</div>
+            <div id="comment-list" style="clear: both;"></div>
+         </div>
+                  <div id="edit-comment-modal"
+                     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+                     <div
+                        style="position: relative; top: 20%; margin: auto; width: 500px; background: white; padding: 20px; border-radius: 5px;">
+                        <h5>댓글 수정</h5>
+                        <form id="edit-comment-form">
+                           <input type="hidden" id="edit-comment-id" name="commentIdx">
+                           <textarea id="edit-comment-text" name="text" rows="4"
+                              style="width: 100%; resize: none; padding: 8px;"></textarea>
+                           <div style="text-align: right; margin-top: 10px;">
+                              <button type="button" id="cancel-edit-btn">취소</button>
+                              <button type="submit">저장</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </section>
+         </div>
+      </div>
+   </div>
 </body>
+<jsp:include page="/vibesync/includes/footer.jsp" />
 </html>

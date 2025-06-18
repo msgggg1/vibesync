@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import com.listener.DuplicateLoginPreventer; 
 
 import mvc.command.service.LoginService;
+import mvc.command.service.SettingService;
 import mvc.command.service.SignUpService;
 import mvc.domain.dto.LoginDTO;
 import mvc.domain.dto.SignUpDTO;
@@ -143,6 +144,9 @@ public class UserHandler implements CommandHandler {
 
         // 3. 사용자 정보를 세션에 저장
         session.setAttribute("userInfo", userInfo);
+        
+        SettingService settingService = new SettingService();
+        session.setAttribute("theme", settingService.getTheme(userInfo.getAc_idx()));
         
         Cookie userIdxCookie = new Cookie("login_user_idx", userInfo.getAc_idx() + "");
 	                    userIdxCookie.setMaxAge(60 * 60 * 24 * 7);

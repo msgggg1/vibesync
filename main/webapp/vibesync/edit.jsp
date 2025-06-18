@@ -12,7 +12,7 @@
 %>
 
 <!DOCTYPE html>
-<html lang="ko">
+<jsp:include page="/vibesync/includes/header.jsp" />
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -131,6 +131,16 @@
 		font-weight: bold;
 		margin: 0 !important;
 	}
+	
+	.dropdown-menu{
+		background-color: var(--card-back) !important;
+		color: var(--font-color) !important;
+	}
+	.popover{
+      background-color: var(--card-back) !important;
+      border: solid 2px var(--border-color) !important;
+   }
+	
   </style>
   
 </head>
@@ -143,7 +153,7 @@
       <div id="content_wrapper">
         <section id="content">
           <div class="back_icon">
-            <a href="postView.do?nidx=${note.note_idx}"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
+            <a onclick="location.href = history.go(-1)"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
           </div>
 
           <div id="postview_Wrapper">
@@ -198,6 +208,8 @@
     </div>
   </div>
   
+  <script src="<%= request.getContextPath() %>/js/theme.js"></script>
+  
   <script>
   $(function() {
 	    $('#summernote').summernote({
@@ -250,5 +262,6 @@
 	    });
 	});
   </script>
+<jsp:include page="/vibesync/includes/footer.jsp" />
 </body>
 </html>

@@ -12,7 +12,7 @@
 %>
 
 <!DOCTYPE html>
-<html lang="ko">
+<jsp:include page="/vibesync/includes/header.jsp" />
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -132,6 +132,15 @@
 		font-weight: bold;
 		margin: 0 !important;
 	}
+	
+	.dropdown-menu{
+		background-color: var(--card-back) !important;
+		color: var(--font-color) !important;
+	}
+	.popover{
+      background-color: var(--card-back) !important;
+      border: solid 2px var(--border-color) !important;
+   }
   </style>
   
 </head>
@@ -295,4 +304,5 @@
 	});
   </script>
 </body>
+<jsp:include page="/vibesync/includes/footer.jsp" />
 </html>

@@ -42,12 +42,11 @@
   margin-block: 60px;
 }
 .notion-app-inner .notion-sidebar-container .notion-sidebar .menu_content .nickname {
+  text-decoration: none;
+  color: var(--font-color);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-decoration: none;
-  text-transform: uppercase;
-  color: var(--font-color);d
 }
 
 .notion-sidebar .search {
@@ -79,6 +78,17 @@
     flex-direction: column;
     padding: 0;
 }
+
+.notion-sidebar .follow_items li p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.follow_list {
+    width: 100%;
+}
+
 /* 레이블 스타일 */
 .notion-sidebar .follow_list label {
   text-decoration: none;
@@ -110,38 +120,10 @@
 .notion-sidebar .follow_items li {
   margin: 4px 0;
 }
-.notion-sidebar .follow_items li p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-} 
-.follow_list {
-    width: 100%;
-}
 
 .notion-sidebar .icon_wrap {
   display: flex;
   gap: 10px;
-}
-
-.notion-sidebar #logout form {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  height: 40px;
-  margin-bottom: 20px;
-}
-
-.notion-sidebar #logout form > button {
-  width: 150px;
-  border: none;
-  background-color: red;
-  border-radius: 5px;
-  font-size: 14px;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: var(--w-fff);
-  cursor: pointer;
 }
 
 #toggle-btn {

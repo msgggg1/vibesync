@@ -327,8 +327,8 @@ public class UserNoteDAOImpl implements UserNoteDAO {
     
     @Override
     public NoteVO getNote(int noteIdx) {
-    	NoteVO note = null;
-    	String sql = "select note_idx, title, text, img, titleImg, view_count, content_idx, genre_idx, category_idx, userPg_idx FROM note WHERE note_idx = ?";
+       NoteVO note = null;
+       String sql = "select note_idx, title, text, img, titleImg, view_count, content_idx, genre_idx, category_idx, userPg_idx FROM note WHERE note_idx = ?";
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, noteIdx);

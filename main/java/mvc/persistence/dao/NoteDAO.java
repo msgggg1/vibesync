@@ -8,6 +8,7 @@ import mvc.domain.dto.DailyStatsDTO;
 import mvc.domain.dto.NoteDetailDTO;
 import mvc.domain.dto.NoteListDTO;
 import mvc.domain.dto.NoteSummaryDTO;
+import mvc.domain.vo.NoteVO;
 import mvc.domain.vo.UserNoteVO;
 
 public interface NoteDAO {
@@ -83,5 +84,13 @@ public interface NoteDAO {
     
     // 특정 사용자의 최근 N년간의 연도별 게시글 조회수 (연도별 통계)
     List<DailyStatsDTO> getYearlyViewCounts(int acIdx, int years) throws SQLException;
+    
+    /**
+     * [신규] 특정 사용자가 작성한 모든 노트의 이미지 경로들을 조회합니다. (회원 탈퇴 시 파일 삭제용)
+     * @param acIdx 사용자 ID
+     * @return NoteVO 리스트 (titleImg, img 필드만 채워짐)
+     * @throws SQLException
+     */
+    List<NoteVO> getAllNotesByAccount(int acIdx) throws SQLException;
     
 }
