@@ -15,5 +15,5 @@
         }
     }
     // 2. 로그인 페이지로 리디렉션
-    response.sendRedirect("../login.jsp");
+    response.sendRedirect("vibesync/user.do");
 %>

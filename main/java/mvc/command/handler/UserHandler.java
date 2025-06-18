@@ -57,15 +57,17 @@ public class UserHandler implements CommandHandler {
             response.sendRedirect(request.getContextPath() + "/vibesync/main.do");
             return null;
         }
-
-        // JavaScript를 통해 직접 로그인 페이지로 이동된 경우, 이전 페이지 주소 저장
-        if (session.getAttribute("referer") == null) {
+        
+        // 'from=logout' 파라미터가 없는 경우에만 referer를 설정하도록 수정
+        String from = request.getParameter("from");
+        if (!"logout".equals(from) && session.getAttribute("referer") == null) {
             String httpReferer = request.getHeader("Referer");
+        	// 이전 페이지가 있고, 그 페이지가 로그인 페이지 자신이 아닐 때만 저장
             if (httpReferer != null && !httpReferer.contains("/user.do")) {
                 session.setAttribute("referer", httpReferer);
             }
         }
-        
+                
         // 자동 로그인 쿠키 확인
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -237,7 +239,7 @@ public class UserHandler implements CommandHandler {
         session.invalidate();
 
         // 로그아웃 후 login.jsp로 리디렉션
-        response.sendRedirect(request.getContextPath() + "/vibesync/user.do");
+        response.sendRedirect(request.getContextPath() + "/vibesync/user.do?from=logout");
         return null;
     }
 
@@ -273,6 +275,7 @@ public class UserHandler implements CommandHandler {
      */
     private void redirectToPreviousOrMainPage(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String referer = (String) session.getAttribute("referer");
+        System.out.println("[redirectToPreviousOrMainPage] referer 값 확인: " + referer);
         if (referer != null && !referer.isEmpty() && !referer.contains("index.html")) {
             session.removeAttribute("referer");
             response.sendRedirect(referer);
