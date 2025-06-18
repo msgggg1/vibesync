@@ -18,6 +18,7 @@ public class UserProfileViewDTO {
     private String nickname;       
     private String img;         
     private int postCount;          
+    private int postViewCount;          
     private int followerCount;     
     private int followingCount;     
     

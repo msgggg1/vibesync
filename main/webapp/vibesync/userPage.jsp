@@ -15,7 +15,7 @@ while (names.hasMoreElements()) {
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
-<html lang="ko">
+<jsp:include page="/vibesync/includes/header.jsp" />
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -194,11 +194,10 @@ while (names.hasMoreElements()) {
    }
    
    #msgRoomTitle i {
-    margin-right: 9px;
-    color: var(--font-color);
-    font-size: 20px;
-}
-
+     margin-right: 9px;
+     color: var(--font-color);
+     font-size: 20px;
+   }
    
    /* 닫기 버튼 */
    .close-modal {
@@ -215,8 +214,7 @@ while (names.hasMoreElements()) {
      display: flex; align-items: center; justify-content: center;
      transition: background 0.13s, color 0.12s;
    }
-   
-   close-modal:hover,
+   .close-modal:hover,
    .close-modal:focus {
      font-weight: bold;
      color: var(--font-color);
@@ -1019,4 +1017,5 @@ while (names.hasMoreElements()) {
   </script>
   
 </body>
+<jsp:include page="/vibesync/includes/footer.jsp" />
 </html>

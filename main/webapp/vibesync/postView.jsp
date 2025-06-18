@@ -11,7 +11,7 @@
    value="${not empty followLike && followLike.liking}" />
 
 <!DOCTYPE html>
-<html lang="ko">
+<jsp:include page="/vibesync/includes/header.jsp" />
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -285,4 +285,5 @@ const isLoggedIn = ${not empty user};
       </div>
    </div>
 </body>
+<jsp:include page="/vibesync/includes/footer.jsp" />
 </html>

@@ -23,7 +23,7 @@
 </c:if>
 
 <!DOCTYPE html>
-<html lang="ko">
+<jsp:include page="/vibesync/includes/header.jsp" />
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -135,6 +135,8 @@
     </div>
 </div>
 
+<script src="<%= request.getContextPath() %>/vibesync/js/theme.js"></script>
+
 <script>
 $(function() {
     function loadContent(url) {
@@ -170,6 +172,6 @@ $(function() {
     });
 });
 </script>
-
+<jsp:include page="/vibesync/includes/footer.jsp" />
 </body>
 </html>
