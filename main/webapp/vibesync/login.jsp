@@ -49,25 +49,53 @@
 						<%-- action을 login.jsp 또는 현재 페이지로 명시 --%>
 						<%-- POST 요청 시 login/signup 구분 --%>
 						<input type="hidden" name="accessType" value="login">
+						
+						<%-- 비밀번호 재설정 요청 메시지 --%>
+				        <c:if test="${ loginMessage != null && !loginMessage.isEmpty() }">
+				            <div class="form-notice"> <%-- 기본 파란색 스타일 --%>
+				                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+				                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+				                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+				                    class="notice-icon">
+				                    <circle cx="12" cy="12" r="10"></circle>
+				                    <line x1="12" y1="16" x2="12" y2="12"></line>
+				                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+				                </svg>
+				                <p>${ loginMessage }</p>
+				            </div>
+				        </c:if>
 
 						<%-- 회원가입 성공 메시지 --%>
 						<c:if
 							test="${ signupSuccessForDisplay != null && !signupSuccessForDisplay.isEmpty()}">
-							<div style="color: green; text-align: left; margin: 0px;">${ signupSuccessForDisplay }</div>
+							<div class="form-notice form-notice-success">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+									viewBox="0 0 24 24" fill="none" stroke="currentColor"
+									stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+									class="notice-icon">
+            					<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            					<polyline points="22 4 12 14.01 9 11.01"></polyline>
+        						</svg>
+								<p>${ signupSuccessForDisplay }</p>
+							</div>
 						</c:if>
 
 						<label for="userId" class="sr-only">이메일</label> <input
 							type="email" id="userId" name="userId" placeholder="Email"
 							required value="${ rememberedEmail }"> <label
 							for="userPw" class="sr-only">비밀번호</label> <input type="password"
-							id="userPw" name="userPw" placeholder="Password" required
-							pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
-							title="8자 이상, 영문자, 숫자, 특수문자를 모두 포함해야 합니다.">
+							id="userPw" name="userPw" placeholder="Password" required>
 
 						<%-- 로그인 에러 메시지 --%>
-						<c:if
-							test="${ loginErrorForDisplay != null && !loginErrorForDisplay.isEmpty() }">
-							<div style="color: red; text-align: left; margin: 0;">${ loginErrorForDisplay }</div>
+						<c:if test="${ loginErrorForDisplay != null && !loginErrorForDisplay.isEmpty() }">
+						    <div class="form-notice form-notice-error">
+						        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="notice-icon">
+						            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+						            <line x1="12" y1="9" x2="12" y2="13"></line>
+						            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+						        </svg>
+						        <p>${ loginErrorForDisplay }</p>
+						    </div>
 						</c:if>
 
 						<div class="checkbox-group">
@@ -97,9 +125,15 @@
 						<input type="hidden" name="accessType" value="signUp">
 
 						<%-- 회원가입 에러 메시지 --%>
-						<c:if
-							test="${ signupErrorForDisplay != null && !signupErrorForDisplay.isEmpty() }">
-							<div style="color: red; text-align: left; margin: 0px;">${ signupErrorForDisplay }</div>
+						<c:if test="${ signupErrorForDisplay != null && !signupErrorForDisplay.isEmpty() }">
+						    <div class="form-notice form-notice-error">
+						        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="notice-icon">
+						            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+						            <line x1="12" y1="9" x2="12" y2="13"></line>
+						            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+						        </svg>
+						        <p>${ signupErrorForDisplay }</p>
+						    </div>
 						</c:if>
 
 						<label for="signupName" class="sr-only">이름</label> <input

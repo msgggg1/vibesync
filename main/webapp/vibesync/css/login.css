@@ -371,5 +371,32 @@
 	    outline: none; /* 기본 포커스 아웃라인 제거 */
 	}
 	
+	.form-notice.form-notice-success {
+            background-color: #e8f5e9;
+            /* border-left-color가 아닌 border-left 전체를 덮어씁니다. */
+            border-left: 5px solid #4CAF50;
+        }
+
+        .form-notice.form-notice-success .notice-icon {
+            stroke: #4CAF50;
+        }
+
+        .form-notice.form-notice-success p {
+            color: #2e7d32;
+        }
+
+        /* 에러 메시지 박스 스타일 (빨간색 테마) */
+        .form-notice.form-notice-error {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+
+        .form-notice.form-notice-error .notice-icon {
+            stroke: #f44336;
+        }
+
+        .form-notice.form-notice-error p {
+            color: #c62828;
+        }
 
 	        
