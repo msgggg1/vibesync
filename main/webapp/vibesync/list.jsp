@@ -83,7 +83,7 @@
                         <div id="note-list">
                             <c:if test="${not empty list}">
                                 <c:forEach var="note" items="${list}">
-                                    <div class="full-post" onclick="location.href='postview.do?noteIdx=${note.note_idx}'">
+                                        <div class="full-post" onclick="location.href='postView.do?nidx=${note.note_idx}'">
                                         <div class="post-index">${note.note_idx}</div>
                                         <div class="post-title"><c:out value="${note.title}"/></div>
                                         <div class="post-author"><c:out value="${note.author_name}"/></div>
