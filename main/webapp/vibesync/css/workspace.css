@@ -21,6 +21,10 @@
    .fc-view-harness-active {
       font-size: clamp(41.6%, 1.74vw, 90%) !important;
    }
+   
+   #calendar .fc-header-toolbar {
+    font-size: clamp(44%, 1.54vw, 84%) !important;
+}
   
     /* 메시지 */
    #unread_messages.contents_item {
@@ -669,7 +673,6 @@
     min-height: 0; /* 자식 높이가 부모를 초과하지 않도록 보장 */
     
     background-color: var(--card-back);
-    border: 2px solid var(--border-color);
     border-radius: 10px; 
     padding: 20px;
     -ms-overflow-style: none;
@@ -714,33 +717,29 @@
 /* 요일(SUN, MON...) 헤더 스타일 */
 .fc .fc-col-header-cell {
     background-color: transparent;
-    border: solid 2px var(--border-color);
+    border: none;
     font-size: 0.85em;
+    color: #666;
 }
 
 /* 날짜 칸(cell) 스타일 */
 .fc .fc-daygrid-day {
-    border: 1px solid var(--border-color); /* 날짜 칸 사이에 옅은 선 */
+    border: 1px solid #f0f0f0; /* 날짜 칸 사이에 옅은 선 */
 }
 .fc .fc-day-other {
-    background-color: var(--card-back); /* 다른 달의 날짜 배경색 */
+    background-color: var(--workspace-cal-other); /* 다른 달의 날짜 배경색 */
 }
 
-.fc-theme-standard .fc-scrollgrid{
+/* .fc-theme-standard .fc-scrollgrid{
    border: solid 2px var(--border-color) !important;
    border-radius: 4px;
-}
+} */
 
 /* --- 하이라이트 스타일 --- */
 /* 오늘 날짜 & 사용자가 선택한 날짜에 적용될 하이라이트 스타일 */
 .fc .fc-day-today,
 .fc .fc-day-selected {  
     background-color: var(--workspace-cal-back) !important; /* 노란색 계열 하이라이트 */
-}
-
-/* 일정 이벤트(점) 스타일 */
-.fc-daygrid-event {
-    background-color: var(--workspace-cal-event) !important;
 }
 
 /* 일정 표시 영역 (오른쪽) - 1의 비율 */
@@ -756,6 +755,12 @@
     display: flex;
     flex-direction: column;
     padding: 15px; /* 내부 여백 */
+}
+
+/* 모든 이벤트 내부의 글자(시간, 제목) 스타일을 일관성 있게 만듭니다. */
+.fc-event-main {
+    color: var(--workspace-cal-font) !important;      /* 모든 이벤트의 기본 글자색을 어두운 색으로 강제 지정 */
+    font-weight: 700;              /* 폰트 굵기를 중간(medium) 정도로 설정하여 통일성 부여 */
 }
 
 /* 탭 버튼 컨테이너 */
@@ -833,6 +838,7 @@
     padding: 15px 10px;
     border-bottom: 1px solid #e0e0e0;
     gap: 10px;
+    cursor: pointer;
 }
 
 .schedule-list li:last-child {
@@ -859,6 +865,7 @@
 }
 
 .schedule-title {
+	color: #000;
     font-weight: 600;
     margin-bottom: 5px;
 }
@@ -866,6 +873,10 @@
 .schedule-desc {
     font-size: 0.85em;
     color: #666;
+}
+
+.schedule-item-content{
+	width: 100%;
 }
 
 /* 할 일 목록 ul 스타일 */
@@ -878,104 +889,99 @@
 /* 할 일 목록 li (각 항목) 스타일 */
 .todo-list li {
     display: flex;
-    align-items: center;
-    padding: 15px 10px;
-    border-bottom: 1px solid #e0e0e0;
+    align-items: center; /* 수직 중앙 정렬 */
+    border-bottom: 1px solid #f0f0f0;
+    padding: 12px 10px 12px 20px;
     font-size: 15px;
-     gap: 12px; 
+    gap: 12px;
+    position: relative;
+    cursor: pointer;
 }
 
 .todo-list li:last-child {
     border-bottom: none;
 }
 
-/* 체크박스 스타일 */
-.todo-checkbox {
-    margin-right: 15px;
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
+/* ★ 신규: li의 가상요소를 사용해 '색상 바' 만들기 */
+.todo-list li::before {
+    content: '';
+    position: absolute;
+    left: 4px; /* 왼쪽으로부터의 여백 */
+    top: 20%; /* 위에서 20% 지점에서 시작 */
+    bottom: 20%; /* 아래에서 20% 지점에서 끝 (길이 60%) */
+    width: 5px; /* 바의 굵기 */
+    
+    /* JS에서 전달한 변수로 색상 적용 */
+    background-color: rgb(var(--todo-r), var(--todo-g), var(--todo-b));
+    border-radius: 2px; /* 부드러운 모서리 */
 }
 
-/* 텍스트 영역 (체크 시 취소선 적용 위해) */
-.todo-text {
-    flex-grow: 1; /* 남은 공간을 모두 차지 */
-    color: #333;
-    transition: color 0.3s;
-}
-
-/* 완료된 항목의 텍스트 스타일 */
-.todo-text.completed {
-    text-decoration: line-through; /* 취소선 */
-    color: #aaa;
-}
-
-/* 1. 커스텀 체크박스를 위한 label 컨테이너 */
+/* --- 커스텀 체크박스 (중앙 정렬 미세 조정) --- */
 .custom-checkbox-label {
     position: relative;
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 22px;
     height: 22px;
     cursor: pointer;
-    flex-shrink: 0; /* 창이 좁아져도 찌그러지지 않음 */
+    flex-shrink: 0;
 }
 
-/* 2. 원래 체크박스는 화면에서 숨김 */
 .custom-checkbox-label .todo-checkbox {
-    opacity: 0;
+    opacity: 0; /* 실제 체크박스는 숨김 */
     width: 0;
     height: 0;
+    position: absolute;
 }
 
-/* 3. CSS로 새로 만드는 '가짜' 체크박스 */
 .custom-checkbox-span {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 22px;
-    width: 22px;
+    height: 100%;
+    width: 100%;
     background-color: #fff;
     border: 2px solid #ccc;
-    border-radius: 5px;
+    border-radius: 6px; /* 살짝 더 둥글게 */
     transition: all 0.2s ease;
 }
 
-/* 4. 체크되었을 때 '가짜' 체크박스 스타일 변경 */
 .custom-checkbox-label .todo-checkbox:checked + .custom-checkbox-span {
-    /* JS에서 전달한 CSS 변수를 사용해 배경과 테두리 색상 변경 */
     background-color: rgb(var(--todo-r), var(--todo-g), var(--todo-b));
     border-color: rgb(var(--todo-r), var(--todo-g), var(--todo-b));
 }
 
-/* 5. 체크 표시(V) 아이콘 생성 */
 .custom-checkbox-span::after {
     content: "";
     position: absolute;
-    display: none; /* 평소엔 숨김 */
-    left: 7px;
-    top: 3px;
-    width: 6px;
-    height: 12px;
+    display: none;
+    box-sizing: border-box; /* border 계산을 정확하게 */
+    
+    /* V자 모양 크기 */
+    width: 7px;
+    height: 13px;
     border: solid white;
     border-width: 0 3px 3px 0;
-    transform: rotate(45deg);
+
+    /* V 모양을 회전 후 정밀하게 중앙으로 이동 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%) rotate(45deg);
 }
 
-/* 6. 체크되었을 때만 체크 표시 아이콘 보여주기 */
 .custom-checkbox-label .todo-checkbox:checked + .custom-checkbox-span::after {
     display: block;
 }
 
-/* 완료된 항목의 텍스트 스타일 (형광펜 효과) */
-.todo-text.completed {
-    /* 기존 스타일 */
-    text-decoration: line-through; 
-    color: #888; 
 
-    /* 형광펜 효과 추가 */
-    background: linear-gradient(to top, rgba(var(--todo-r), var(--todo-g), var(--todo-b), 0.3) 50%, transparent 50%);
-    padding: 2px 4px;
-    border-radius: 3px;
+.todo-text {
+    flex-grow: 1;
+    color: #333;
+    line-height: 1.5;
+}
+
+.todo-text.completed {
+    text-decoration: line-through;
+    text-decoration-color: #999;
+    color: #b0b0b0;
 }
 
 /* 삭제 버튼 스타일 */

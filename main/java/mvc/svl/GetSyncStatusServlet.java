@@ -2,9 +2,11 @@ package mvc.svl;
 
 
 import com.google.gson.Gson;
+import com.util.ConnectionProvider;
 
 import mvc.domain.vo.WaSyncVO;
 import mvc.persistence.dao.WaSyncDAO;
+import mvc.persistence.daoImpl.WaSyncDAOImpl;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -13,13 +15,13 @@ import javax.servlet.http.*;
 
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebServlet("/GetSyncStatusServlet")
 public class GetSyncStatusServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private WaSyncDAO wsDao = new WaSyncDAO();
     private Gson gson = new Gson();
 
     @Override
@@ -28,7 +30,11 @@ public class GetSyncStatusServlet extends HttpServlet {
 
         int wpIdx = Integer.parseInt(request.getParameter("watchPartyIdx"));
         WaSyncVO lastSync = null;
+        Connection conn = null;
 		try {
+			conn = ConnectionProvider.getConnection();
+	        WaSyncDAOImpl wsDao = new WaSyncDAOImpl(conn);
+	            
 			lastSync = wsDao.selectLatestByWatchParty(wpIdx);
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block

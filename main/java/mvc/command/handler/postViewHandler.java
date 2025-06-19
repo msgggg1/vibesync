@@ -105,7 +105,7 @@ public class postViewHandler implements CommandHandler {
         return null;
     }
 
-	private void handleToggleFollow(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleToggleFollow(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.setContentType("application/json; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		
@@ -118,80 +118,56 @@ public class postViewHandler implements CommandHandler {
         }
         UserVO loggedInUser = (UserVO) session.getAttribute("userInfo");
         
-        Connection conn = null;
 		try {
-			conn = ConnectionProvider.getConnection();
-			FollowDAO dao = new FollowDAOImpl(conn);
-
+			// 1. 파라미터 받기
 			int userIdx = loggedInUser.getAc_idx();
 			int writerIdx = Integer.parseInt(request.getParameter("writerIdx"));
-			int noteIdx = Integer.parseInt(request.getParameter("nidx"));
 
-			// 로그로 파라미터 값 확인
-			System.out.println(">>> handleToggleFollow - userIdx: " + userIdx + ", writerIdx: " + writerIdx + ", noteIdx: " + noteIdx);
+			// 2. 서비스에 작업 위임
+			boolean isFollowing = postviews.toggleFollow(userIdx, writerIdx);
 
-			boolean following = dao.isFollowing(userIdx, writerIdx);
-			if (following) {
-				dao.removeFollow(userIdx, writerIdx);
-				following = false;
-			} else {
-				dao.addFollow(userIdx, writerIdx);
-				following = true;
-			}
-
-			out.write("{\"following\":" + following + "}");
+			// 3. 결과 응답
+			out.write("{\"following\":" + isFollowing + "}");
 			
-		} catch (NamingException | java.sql.SQLException e) {
+		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			out.write("{\"error\":\"Unable to toggle follow\"}");
 			e.printStackTrace();
 		} finally {
-			if (conn != null) try { conn.close(); } catch (Exception ignored) {}
 			out.flush();
 			out.close();
 		}
 	}
 
-	private void handleToggleLike(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleToggleLike(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.setContentType("application/json; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		
 		HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("userInfo") == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized 에러
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             out.write("{\"error\":\"login_required\"}");
             out.flush();
             return;
         }
         UserVO loggedInUser = (UserVO) session.getAttribute("userInfo");
 		
-		Connection conn = null;
 		try {
-			conn = ConnectionProvider.getConnection();
-			LikeDAO dao = new LikeDAOImpl(conn);
-
+			// 1. 파라미터 받기
 			int userIdx = loggedInUser.getAc_idx();
 			int noteIdx = Integer.parseInt(request.getParameter("noteIdx"));
 
-			// 로그로 파라미터 값 확인
-			System.out.println(">>> handleToggleLike - userIdx: " + userIdx + ", noteIdx: " + noteIdx);
+			// 2. 서비스에 작업 위임
+			boolean isLiking = postviews.toggleLike(userIdx, noteIdx);
 
-			boolean liked = dao.isLiked(userIdx, noteIdx);
-			if (liked) {
-				dao.removeLike(userIdx, noteIdx);
-				liked = false;
-			} else {
-				dao.addLike(userIdx, noteIdx);
-				liked = true;
-			}
+			// 3. 결과 응답
+			out.write("{\"liked\":" + isLiking + "}");
 
-			out.write("{\"liked\":" + liked + "}");
-		} catch (NamingException | java.sql.SQLException e) {
+		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			out.write("{\"error\":\"Unable to toggle like\"}");
 			e.printStackTrace();
 		} finally {
-			if (conn != null) try { conn.close(); } catch (Exception ignored) {}
 			out.flush();
 			out.close();
 		}

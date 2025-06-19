@@ -7,6 +7,7 @@ import java.util.List;
 import javax.naming.NamingException;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.vo.WaCommentVO;
 
@@ -45,7 +46,7 @@ public class WaCommentDAO {
         } finally {
             if (rs != null) try { rs.close(); } catch (Exception ignored) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
-            conn.close();
+            JdbcUtil.close(conn);
         }
         return list;
     }
@@ -71,7 +72,7 @@ public class WaCommentDAO {
             e.printStackTrace();
         } finally {
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
-            conn.close();
+            JdbcUtil.close(conn);
         }
         return result;
     }

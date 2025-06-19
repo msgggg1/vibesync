@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.persistence.dao.FollowDAO;
 import mvc.persistence.daoImpl.FollowDAOImpl;
@@ -74,7 +75,7 @@ public class FollowService {
                 } catch (SQLException e) {
                     System.err.println("Failed to reset auto-commit in FollowService: " + e.getMessage());
                 } finally {
-                    conn.close();
+                    JdbcUtil.close(conn);
                 }
             }
         }
@@ -94,7 +95,7 @@ public class FollowService {
 			e.printStackTrace();
 		} finally {
             if (conn != null) {
-            	conn.close();
+            	JdbcUtil.close(conn);
             }
         }
 		return isUserFollowing;

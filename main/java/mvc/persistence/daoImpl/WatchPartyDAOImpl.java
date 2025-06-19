@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.dto.WatchPartyDTO;
 import mvc.domain.vo.UserSummaryVO;
@@ -13,50 +14,63 @@ import mvc.persistence.dao.WatchPartyDAO;
 
 public class WatchPartyDAOImpl implements WatchPartyDAO {
 
-	Connection conn = null;
-	
-	public WatchPartyDAOImpl() {}
-	
+   Connection conn = null;
+   
+   public WatchPartyDAOImpl() {}
+   
     public WatchPartyDAOImpl(Connection conn) {
-		this.conn = conn;
-	}
+      this.conn = conn;
+   }
 
-	// 1) 전체 WatchParty 목록 조회 (비로그인 / 비호스트 시)
+   // 1) 전체 WatchParty 목록 조회 (비로그인 / 비호스트 시)
     public List<WatchPartyVO> selectAll() {
-    	Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
         List<WatchPartyVO> list = new ArrayList<>();
-        String sql = "SELECT watchParty_idx, title, video_id, created_at, host FROM watchParty ORDER BY created_at DESC";
+        String sql = "SELECT " +
+                "    wp.watchParty_idx, " +
+                "    wp.title, " +
+                "    wp.video_id, " +
+                "    wp.created_at, " +
+                "    wp.host, " +
+                "    ua.nickname, ua.img " +
+                "FROM " +
+                "    watchParty wp " +
+                "JOIN " +
+                "    userAccount ua ON wp.host = ua.ac_idx " +
+                "ORDER BY " +
+                "    wp.created_at DESC";
 
         try {
 
-			conn = ConnectionProvider.getConnection();
+         conn = ConnectionProvider.getConnection();
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
-            	WatchPartyVO wp = new WatchPartyVO();
+               WatchPartyVO wp = new WatchPartyVO();
                 wp.setWatchPartyIdx(rs.getInt("watchParty_idx"));
                 wp.setTitle(rs.getString("title"));
                 wp.setVideoId(rs.getString("video_id"));
                 wp.setCreatedAt(rs.getTimestamp("created_at"));
                 wp.setHost(rs.getInt("host"));
+                wp.setHostNickname(rs.getString("nickname"));
+                wp.setHostImg(rs.getString("img"));
                 list.add(wp);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
-			e.printStackTrace();
-		}
+         e.printStackTrace();
+      }
         finally {
             if (rs != null) try { rs.close(); } catch (Exception ignored) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
             try {
-            	conn.close();
+               JdbcUtil.close(conn);
             } catch (Exception e) {
-            	e.printStackTrace();
+               e.printStackTrace();
             }
         }
 
@@ -65,7 +79,6 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
 
     // 2) 특정 호스트의 WatchParty 목록 조회
     public List<WatchPartyVO> selectByHost(int hostIdx) {
-    	Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
@@ -74,12 +87,12 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
                      "FROM watchParty WHERE host = ? ORDER BY created_at DESC";
 
         try {
-        	conn = ConnectionProvider.getConnection();
+           conn = ConnectionProvider.getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, hostIdx);
             rs = pstmt.executeQuery();
             while (rs.next()) {
-            	WatchPartyVO wp = new WatchPartyVO();
+               WatchPartyVO wp = new WatchPartyVO();
                 wp.setWatchPartyIdx(rs.getInt("watchParty_idx"));
                 wp.setTitle(rs.getString("title"));
                 wp.setVideoId(rs.getString("video_id"));
@@ -90,31 +103,54 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
-			e.printStackTrace();
-		} finally {
+         e.printStackTrace();
+      } finally {
             if (rs != null) try { rs.close(); } catch (Exception ignored) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
             try {
-            	conn.close();
+               JdbcUtil.close(conn);
             } catch (Exception e) {
-            	e.printStackTrace();
+               e.printStackTrace();
             }
         }
 
         return list;
     }
 
+    public int checkExit(int hostIdx) {
+       PreparedStatement pstmt = null;
+       ResultSet rs = null;
+       
+       int result = -1;
+       String sql = "select count(*) cnt from watchParty where host = ?";
+       try {
+         pstmt = conn.prepareStatement(sql);
+         pstmt.setInt(1, hostIdx);
+         rs = pstmt.executeQuery();
+         while (rs.next()) {
+            result = rs.getInt("cnt");
+            }
+      } catch (SQLException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } finally {
+         if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
+      }
+       
+       return result;
+    }
+
+    
     // 3) 새로운 WatchParty 삽입
     public int insert(WatchPartyVO wp) {
-    	Connection conn = null;
         PreparedStatement pstmt = null;
         
         String sql = "INSERT INTO watchParty (title, video_id, host) VALUES (?, ?, ?)";
         int result = 0;
 
         try {
-        	
-        	conn = ConnectionProvider.getConnection();
+           
+           conn = ConnectionProvider.getConnection();
             pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, wp.getTitle());
@@ -124,13 +160,13 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
-			e.printStackTrace();
-		} finally {
+         e.printStackTrace();
+      } finally {
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
             try {
-            	conn.close();
+               JdbcUtil.close(conn);
             } catch (Exception e) {
-            	e.printStackTrace();
+               e.printStackTrace();
             }
         }
         return result;
@@ -138,17 +174,16 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
 
     // 4) 단일 WatchParty 조회 (watch.jsp에서 영상 재생 시)
     public WatchPartyVO selectOne(int watchPartyIdx) {
-    	Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
-    	WatchPartyVO wp = null;
+       WatchPartyVO wp = null;
         String sql = "SELECT watchParty_idx, title, video_id, created_at, host " +
                      "FROM watchParty WHERE watchParty_idx = ?";
 
         try {
-        	
-			conn = ConnectionProvider.getConnection();
+           
+         conn = ConnectionProvider.getConnection();
 
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, watchPartyIdx);
@@ -166,39 +201,38 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
-			e.printStackTrace();
-		} finally {
+         e.printStackTrace();
+      } finally {
             if (rs != null) try { rs.close(); } catch (Exception ignored) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
             try {
-            	conn.close();
+               JdbcUtil.close(conn);
             } catch (Exception e) {
-            	e.printStackTrace();
+               e.printStackTrace();
             }
         }
         return wp;
     }
 
     // 5) ???
-	public WatchPartyVO selectLatestByUniqueFields(String title, String videoId, int host) {
-		Connection conn = null;
+   public WatchPartyVO selectLatestByUniqueFields(String title, String videoId, int host) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
-		WatchPartyVO wp = null;
-	    String sql = "SELECT watchParty_idx, title, video_id, created_at, host "
-	               + "FROM watchParty "
-	               + "WHERE title = ? AND video_id = ? AND host = ? "
-	               + "ORDER BY created_at DESC";
-	    try {
+      WatchPartyVO wp = null;
+       String sql = "SELECT watchParty_idx, title, video_id, created_at, host "
+                  + "FROM watchParty "
+                  + "WHERE title = ? AND video_id = ? AND host = ? "
+                  + "ORDER BY created_at DESC";
+       try {
 
-			conn = ConnectionProvider.getConnection();
+         conn = ConnectionProvider.getConnection();
 
             pstmt = conn.prepareStatement(sql);
-	        pstmt.setString(1, title);
-	        pstmt.setString(2, videoId);
-	        pstmt.setInt(3, host);
-	        rs = pstmt.executeQuery();
+           pstmt.setString(1, title);
+           pstmt.setString(2, videoId);
+           pstmt.setInt(3, host);
+           rs = pstmt.executeQuery();
 
             if (rs.next()) {
                 wp = new WatchPartyVO();
@@ -208,80 +242,98 @@ public class WatchPartyDAOImpl implements WatchPartyDAO {
                 wp.setCreatedAt(rs.getTimestamp("created_at"));
                 wp.setHost(rs.getInt("host"));
             }
-	        
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } catch (Exception e) {
-			e.printStackTrace();
-		} finally {
+           
+       } catch (SQLException e) {
+           e.printStackTrace();
+       } catch (Exception e) {
+         e.printStackTrace();
+      } finally {
             if (rs != null) try { rs.close(); } catch (Exception ignored) {}
             if (pstmt != null) try { pstmt.close(); } catch (Exception ignored) {}
             try {
-            	conn.close();
+               JdbcUtil.close(conn);
             } catch (Exception e) {
-            	e.printStackTrace();
+               e.printStackTrace();
             }
         }
-	    return wp;
-	}
+       return wp;
+   }
 
-	
-	// 6) 여러 명의 호스트의 WatchParty 목록 조회
-	@Override
-	public List<WatchPartyDTO> selectWatchPartyListByHostId(List<Integer> hostList) throws SQLException {
-		
-		// 1. hostList가 비어있는 경우, DB에 접근할 필요 없이 즉시 빈 리스트를 반환합니다. (오류 방지)
-	    if (hostList == null || hostList.isEmpty()) {
-	        return new ArrayList<>();
-	    }
-	    
-		List<WatchPartyDTO> watchPartyListByHost = new ArrayList<WatchPartyDTO>();
-		
+   // 6) 여러 명의 호스트의 WatchParty 목록 조회
+   @Override
+   public List<WatchPartyDTO> selectWatchPartyListByHostId(List<Integer> hostList) throws SQLException {
+      
+      // 1. hostList가 비어있는 경우, DB에 접근할 필요 없이 즉시 빈 리스트를 반환합니다. (오류 방지)
+       if (hostList == null || hostList.isEmpty()) {
+           return new ArrayList<>();
+       }
+       
+      List<WatchPartyDTO> watchPartyListByHost = new ArrayList<WatchPartyDTO>();
+      
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         StringBuffer sql = new StringBuffer(" SELECT "
-        								  + " watchparty_idx, title, video_id, w.created_at, host, nickname, img AS profile_img, category_idx "
-        								  + " FROM watchparty w "
-        								  + " JOIN userAccount u ON w.host = u.ac_idx "
-        								  + " WHERE w.host IN ( ");
-		
+                                  + " watchparty_idx, title, video_id, w.created_at, host, nickname, img AS profile_img, category_idx "
+                                  + " FROM watchparty w "
+                                  + " JOIN userAccount u ON w.host = u.ac_idx "
+                                  + " WHERE w.host IN ( ");
+      
         for (int i = 0; i < hostList.size(); i++) {
-			sql.append(hostList.get(i));
-			if (i != hostList.size() - 1) {
-				sql.append(", ");
-			} else {
-				sql.append(" ) ");
-			}
-		}
+         sql.append(hostList.get(i));
+         if (i != hostList.size() - 1) {
+            sql.append(", ");
+         } else {
+            sql.append(" ) ");
+         }
+      }
         
         pstmt = conn.prepareStatement(sql.toString());
         rs = pstmt.executeQuery();
         
         while (rs.next()) {
-    		WatchPartyVO watchPartyVO = WatchPartyVO.builder()
-													.watchPartyIdx(rs.getInt("watchparty_idx"))
-													.title(rs.getString("title"))
-													.videoId(rs.getString("video_id"))
-													.createdAt(rs.getTimestamp("created_at"))
-													.build();
-			
-			UserSummaryVO host = UserSummaryVO.builder()
-										 	  .ac_idx(rs.getInt("host"))
-										 	  .nickname(rs.getString("nickname"))
-										 	  .profile_img(rs.getString("profile_img"))
-										 	  .category_idx(rs.getInt("category_idx"))
-										 	  .build();
-			
-			WatchPartyDTO watchPartDTO = WatchPartyDTO.builder()
-													  .watchparty(watchPartyVO)
-													  .host(host)
-													  .build();
-			
-			watchPartyListByHost.add(watchPartDTO);
-		}
-		
-		return watchPartyListByHost;
-	}
-	
+          WatchPartyVO watchPartyVO = WatchPartyVO.builder()
+                                       .watchPartyIdx(rs.getInt("watchparty_idx"))
+                                       .title(rs.getString("title"))
+                                       .videoId(rs.getString("video_id"))
+                                       .createdAt(rs.getTimestamp("created_at"))
+                                       .build();
+         
+         UserSummaryVO host = UserSummaryVO.builder()
+                                    .ac_idx(rs.getInt("host"))
+                                    .nickname(rs.getString("nickname"))
+                                    .profile_img(rs.getString("profile_img"))
+                                    .category_idx(rs.getInt("category_idx"))
+                                    .build();
+         
+         WatchPartyDTO watchPartDTO = WatchPartyDTO.builder()
+                                         .watchparty(watchPartyVO)
+                                         .host(host)
+                                         .build();
+         
+         watchPartyListByHost.add(watchPartDTO);
+      }
+      
+      return watchPartyListByHost;
+   }
+   
+   @Override
+   public int deleteByHost(int hostIdx) throws SQLException {
+      PreparedStatement pstmt = null;
+      int result = 0;
+      String sql = "DELETE FROM watchParty WHERE host = ?";
+
+      try {
+         // 이 메서드는 외부에서 트랜잭션으로 관리될 수 있으므로
+         // Connection을 새로 생성하지 않고, 생성자에서 받은 conn을 사용합니다.
+         // 만약 단독으로 사용된다면 conn = ConnectionProvider.getConnection(); 이 필요합니다.
+         pstmt = conn.prepareStatement(sql);
+         pstmt.setInt(1, hostIdx);
+         result = pstmt.executeUpdate();
+      } finally {
+         // 핸들러에서 Connection을 닫을 것이므로 여기서는 PreparedStatement만 닫습니다.
+         JdbcUtil.close(pstmt);
+      }
+      return result;
+   }
 }
 

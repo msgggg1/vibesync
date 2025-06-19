@@ -22,7 +22,13 @@
   --workspace-noti-card-hover: #ffee9781;
   --workspace-card-font-morebtn: #fff;
   --workspace-cal-back: #1700ff73;
-  --workspace-cal-event: rgb(0 83 255 / 42%);
+  --workspace-cal-other: #3b3b3b;
+  --workspace-cal-font: #e4e4e4;
+  
+  --msg-sub-font: #d8d8d8;
+  --msg-date-font: #afafaf;
+  --chat-date-font: #d0d0d0;
+  --chat-date-back: #656565;
 }
 :root[color-theme='light']{
   --icon-filter: invert(0);
@@ -44,7 +50,13 @@
   --workspace-noti-card-hover: #ffee9a;
   --workspace-card-font-morebtn: #495057;
   --workspace-cal-back: #ffd4f973;
-  --workspace-cal-event: rgb(78 0 255 / 42%);
+  --workspace-cal-other: #dddddd;
+  --workspace-cal-font: #1E1E1E;
+
+  --msg-sub-font: #7f7f7f;
+  --msg-date-font: #7890a2;
+  --chat-date-font: #666;
+  --chat-date-back: #e9ecef;
 }
 
 :root {
@@ -487,7 +499,10 @@ p {
   #contents_grid, .grid_wrapper {grid-template-columns: repeat(3, 1fr);}
 }
 @media (max-width:1200px) {
-  #contents_grid, .grid_wrapper {grid-template-columns: repeat(2, 1fr);}
+  #contents_grid {grid-template-columns: repeat(2, 1fr);}
+}
+@media (max-width:953px) {
+  .grid_wrapper {grid-template-columns: repeat(1, 1fr);}
 }
 
 #contents_grid .contents_item,
@@ -967,7 +982,7 @@ p {
 
 @media (max-width:600px) {
   #todolist {flex-direction: column;}
-  #contents_grid, .grid_wrapper {grid-template-columns: repeat(1, 1fr);}
+  #contents_grid {grid-template-columns: repeat(1, 1fr);}
   #swiper2 .swiper-wrapper .swiper-slide {width: 100% !important}
 }
 

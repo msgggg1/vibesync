@@ -17,9 +17,11 @@ import lombok.ToString;
 @Builder
 
 public class WatchPartyVO {
-	private int watchPartyIdx;
+   private int watchPartyIdx;
     private String title;
     private String videoId;
     private Timestamp createdAt;
     private int host;
+    private String hostNickname;
+    private String hostImg;
 }

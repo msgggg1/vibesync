@@ -38,8 +38,8 @@ public class LoginCheckFilter extends HttpFilter implements Filter {
 		
 		String requestURI = request.getRequestURI();
 		
-		// ▼▼▼ 1. 공개적으로 접근 가능한 '허용된 경로(Whitelist)' 목록 정의 ▼▼▼
-	    List<String> publicPaths = Arrays.asList("/user.do", "/postView.do", "/comment.do");
+		// 1. 공개적으로 접근 가능한 '허용된 경로(Whitelist)' 목록 정의
+	    List<String> publicPaths = Arrays.asList("/user.do", "/postView.do", "/comment.do", "/sidebar.do");
 	    
 	    boolean isPublicPath = false;
 	    for (String path : publicPaths) {
@@ -65,15 +65,13 @@ public class LoginCheckFilter extends HttpFilter implements Filter {
 	        // 3. 로그인을 안 했고, 허용된 경로도 아닌 경우 -> 로그인 페이지로!
 	        HttpSession newSession = request.getSession();
 	        
-
-	        // ★★★★★ 디버깅 코드 추가 ① ★★★★★
-	        System.out.println("--- [LoginCheckFilter] ---");
-	        System.out.println("세션 ID: " + newSession.getId());
-	        System.out.println("저장할 Referer: " + requestURI);
-	        System.out.println("-------------------------");
-	        // ★★★★★★★★★★★★★★★★★★★★★
+	        String refererUrl = request.getHeader("Referer");
 	        
-	        newSession.setAttribute("referer", requestURI);
+	        if (refererUrl == null || refererUrl.isEmpty()) {
+	            refererUrl = request.getContextPath() + "/vibesync/main.do";
+	        }
+	        
+	        newSession.setAttribute("referer",refererUrl);
 	        
 	        String loginPage = request.getContextPath() + "/vibesync/user.do";
 	        response.sendRedirect(loginPage);

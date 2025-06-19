@@ -70,7 +70,8 @@
 
     /* 폼 컨테이너 (로그인/회원가입 공통) */
     #loginFormContainer,
-    #signupFormContainer {
+    #signupFormContainer,
+    #resetPasswordContainer {
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -78,7 +79,8 @@
     }
 
     #loginForm,
-    #signupForm {
+    #signupForm,
+    #resetPasswordForm {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -87,9 +89,9 @@
     }
 
     /* 폼 입력 요소 스타일 */
-    #login form input[type="email"],
-    #login form input[type="password"],
-    #login form input[type="text"] {
+    #login input[type="email"],
+    #login input[type="password"],
+    #login input[type="text"] {
         width: 100%;
         padding: 12px 5px;
         margin: 0; /* gap 사용하므로 제거 */
@@ -102,9 +104,9 @@
     }
 
     /* 입력 필드 포커스 스타일 */
-    #login form input[type="email"]:focus,
-    #login form input[type="password"]:focus,
-    #login form input[type="text"]:focus {
+    #login input[type="email"]:focus,
+    #login input[type="password"]:focus,
+    #login input[type="text"]:focus {
         outline: none;
         border-bottom-color: #5DAED7; /* 하이라이트 색상 */
     }
@@ -161,6 +163,37 @@
     #login form button:hover {
         background-color: #4a9ac4;
     }
+    
+    /* 비밀번호 재설정 폼의 안내 문구 p 태그 스타일 */
+	/* 정보 상자 전체를 감싸는 div 스타일 */
+	.form-notice {
+	    display: flex;             /* 아이콘과 텍스트를 가로로 배치 */
+	    align-items: center;       /* 세로 중앙 정렬 */
+	    padding: 12px 15px;        /* 내부 여백 */
+	    width: 100%;
+	    margin-bottom: 20px;       /* 정보 상자와 아래 입력창 사이의 간격 */
+	
+	    background-color: #f0f6fa; /* 부드러운 하늘색 배경 */
+	    border-left: 5px solid #5DAED7; /* 왼쪽 테두리에 포인트 색상 */
+	    border-radius: 4px;        /* 모서리를 살짝 둥글게 */
+	}
+	
+	/* 정보 아이콘(SVG) 스타일 */
+	.notice-icon {
+	    width: 20px;               /* 아이콘 너비 */
+	    height: 20px;              /* 아이콘 높이 */
+	    margin-right: 12px;        /* 아이콘과 텍스트 사이 간격 */
+	    stroke: #5DAED7;           /* 아이콘 색상 */
+	    flex-shrink: 0;            /* 창이 줄어들어도 아이콘이 찌그러지지 않음 */
+	}
+	
+	/* 정보 상자 안의 p 태그 스타일 */
+	.form-notice p {
+	    font-size: 1.1em;
+	    color: #334e68;            /* 배경색과 어울리는 짙은 글자색 */
+	    line-height: 1.5;
+	    margin: 0;                 /* p 태그의 기본 마진 제거 */
+	}
 
     /* 링크 스타일 (Forget password, Already have account 등) */
     .links {
@@ -241,6 +274,7 @@
         #login::before {
             display: none;
         }
+        
         
     }
 
@@ -337,5 +371,32 @@
 	    outline: none; /* 기본 포커스 아웃라인 제거 */
 	}
 	
+	.form-notice.form-notice-success {
+            background-color: #e8f5e9;
+            /* border-left-color가 아닌 border-left 전체를 덮어씁니다. */
+            border-left: 5px solid #4CAF50;
+        }
+
+        .form-notice.form-notice-success .notice-icon {
+            stroke: #4CAF50;
+        }
+
+        .form-notice.form-notice-success p {
+            color: #2e7d32;
+        }
+
+        /* 에러 메시지 박스 스타일 (빨간색 테마) */
+        .form-notice.form-notice-error {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+
+        .form-notice.form-notice-error .notice-icon {
+            stroke: #f44336;
+        }
+
+        .form-notice.form-notice-error p {
+            color: #c62828;
+        }
 
 	        

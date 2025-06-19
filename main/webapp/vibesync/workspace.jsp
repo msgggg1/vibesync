@@ -30,7 +30,7 @@
         .block-actions button { background: none; border: none; cursor: pointer; color: #888; font-size: 14px; margin-left: 5px; }
         .block-actions button:hover { color: #000; }
         .chart-toggles { margin-bottom: 10px; }
-        .chart-toggles label { margin-right: 15px; font-size: 13px; cursor: pointer; }
+        .chart-toggles label { margin-right: 15px; font-size: 13px; cursor: pointer; display: none; }
         .loading-spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -116,7 +116,7 @@
     <style> /* 통계 기간 변경 */
 		.stats-controls {
 		    display: flex;
-		    justify-content: space-between;
+		    justify-content: center;
 		    align-items: center;
 		    margin-bottom: 15px;
 		    flex-wrap: wrap; /* 창이 좁을 때 줄바꿈 */

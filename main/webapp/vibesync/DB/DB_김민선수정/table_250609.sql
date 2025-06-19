@@ -21,6 +21,7 @@ DROP TABLE wa_comment;
 DROP TABLE watchParty;
 DROP TABLE userAccount;
 DROP TABLE category;
+DROP TABLE passwordResetTokens;
 
 
 --------------------------------------------------------------------------------
@@ -276,6 +277,13 @@ CREATE TABLE workspace_blocks (
     block_type    VARCHAR2(50)    NOT NULL,
     block_order   NUMBER(3)       NOT NULL,
     config        VARCHAR2(4000)
+);
+
+-- 비밀번호 찾기 
+CREATE TABLE passwordResetTokens (
+    token VARCHAR(255) PRIMARY KEY, -- 고유한 토큰 값
+    userEmail VARCHAR(255) NOT NULL, -- 요청한 사용자의 이메일
+    expiryDate TIMESTAMP NOT NULL -- 토큰 만료 시간
 );
 
 SELECT COUNT(*)

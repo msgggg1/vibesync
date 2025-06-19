@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import com.util.DBConn_vibesync;
-
 import mvc.domain.vo.NoteVO;
 import mvc.domain.vo.UserNoteVO;
 import mvc.persistence.dao.UserNoteDAO;
@@ -148,7 +146,6 @@ public class UserNoteDAOImpl implements UserNoteDAO {
             "DELETE FROM likes WHERE note_idx = ? AND ac_idx = ?";
 
         try {
-            conn = DBConn_vibesync.getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, noteIdx);
             pstmt.setInt(2, userIdx);

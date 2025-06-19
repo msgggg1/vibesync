@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
+import com.util.JdbcUtil;
 import com.util.PasswordMigrator;
 
 import mvc.domain.dto.LoginDTO;
@@ -208,6 +211,7 @@ public class UserDAOImpl implements UserDAO {
 		return duplicateTest;
 	}
 	
+	/*
 	// 닉네임 중복 검사
 	@Override
 	public boolean isNicknameExists(String nickname) {
@@ -273,6 +277,7 @@ public class UserDAOImpl implements UserDAO {
 		
 		return isEmailExists;
 	}
+	*/
 	
 	// 사용자 선호 카테고리
 	@Override
@@ -295,6 +300,7 @@ public class UserDAOImpl implements UserDAO {
 	    }
 	    return preferredCategoryIdx;
 	}
+	
 	
 	// id로 사용자 정보 조회
 	@Override
@@ -349,6 +355,90 @@ public class UserDAOImpl implements UserDAO {
             if (pstmt != null) pstmt.close();
         }
         return count;
+    }
+	
+	
+	/*비밀번호 재설정 관련 메서드*/ 
+    public void saveResetToken(String email, String token) {
+        // 토큰 만료 시간 설정 (예: 1시간 후)
+        Timestamp expiryDate = Timestamp.valueOf(LocalDateTime.now().plusHours(1));
+        String sql = "INSERT INTO passwordResetTokens (token, userEmail, expiryDate) VALUES (?, ?, ?)";
+        
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, token);
+            pstmt.setString(2, email);
+            pstmt.setTimestamp(3, expiryDate);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+            if (pstmt != null) JdbcUtil.close(pstmt);
+        }
+    }
+
+    /**
+     * 유효한(만료되지 않은) 토큰으로 이메일을 조회합니다.
+     * @param token 사용자가 받은 토큰
+     * @return 토큰이 유효하면 이메일 주소, 아니면 null
+     */
+    public String findEmailByValidToken(String token) throws SQLException {
+        String sql = "SELECT userEmail FROM passwordResetTokens WHERE token = ? AND expiryDate  > SYSTIMESTAMP";
+        String email = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, token);
+            rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                email = rs.getString("userEmail");
+            }
+        } finally {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+        }
+        return email;
+    }
+
+    /**
+     * 이메일 주소를 기준으로 사용자의 비밀번호를 업데이트합니다.
+     * @param email 비밀번호를 변경할 계정의 이메일
+     * @param hashedPassword 해싱된 새 비밀번호
+     */
+    public void updatePasswordAndSalt(String email, String hashedPassword, String newSalt) {
+    	String sql = "UPDATE userAccount SET pw = ?, salt = ? WHERE email = ?";
+        PreparedStatement pstmt = null;
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, hashedPassword);
+            pstmt.setString(2, newSalt);
+            pstmt.setString(3, email);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+            if (pstmt != null) JdbcUtil.close(pstmt);
+        }
+    }
+
+    public void deleteToken(String token) {
+        String sql = "DELETE FROM passwordResetTokens WHERE token = ?";
+        PreparedStatement pstmt = null;
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, token);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+            if (pstmt != null) JdbcUtil.close(pstmt);
+        }
     }
 	
 }

@@ -3,6 +3,7 @@ package mvc.command.service;
 import java.sql.Connection;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.dto.SignUpDTO;
 import mvc.persistence.dao.UserDAO;
@@ -43,7 +44,7 @@ public class SignUpService {
         	}
         }
     	
-        if (conn != null) conn.close();
+        if (conn != null) JdbcUtil.close(conn);
     	
     	return isRegisterd;
     }

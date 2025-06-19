@@ -2,7 +2,7 @@ package mvc.command.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
-
+import java.io.FilenameFilter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Base64;
@@ -24,52 +24,53 @@ import mvc.persistence.dao.UserAccountDAO;
 import mvc.persistence.daoImpl.NoteDAOImpl;
 import mvc.persistence.daoImpl.SettingDAOImpl;
 import mvc.persistence.daoImpl.UserAccountDAOImpl;
+import net.coobird.thumbnailator.Thumbnails;
 
 public class SettingService {
 
-	// 변경된 테마 설정값 적용
-	public void setTheme (int userAcIdx, String theme) {
-		Connection conn = null;
-		
-		try {
-			conn = ConnectionProvider.getConnection();
-			
-			SettingDAO settingDAO = new SettingDAOImpl(conn);
-			settingDAO.updateTheme(userAcIdx, theme);
-			
-		} catch (NamingException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-		}
-	}
+   // 변경된 테마 설정값 적용
+   public void setTheme (int userAcIdx, String theme) {
+      Connection conn = null;
+      
+      try {
+         conn = ConnectionProvider.getConnection();
+         
+         SettingDAO settingDAO = new SettingDAOImpl(conn);
+         settingDAO.updateTheme(userAcIdx, theme);
+         
+      } catch (NamingException e) {
+         e.printStackTrace();
+      } catch (SQLException e) {
+         e.printStackTrace();
+      } finally {
+         JdbcUtil.close(conn);
+      }
+   }
 
-	// 기존의 테마 설정값 불러오기
-	public String getTheme (int userAcIdx) {
-		String theme = null;
-		
-		Connection conn = null;
-		
-		try {
-			conn = ConnectionProvider.getConnection();
-			
-			SettingDAO settingDAO = new SettingDAOImpl(conn);
-			theme = settingDAO.selectTheme(userAcIdx);
-			
-		} catch (NamingException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(conn);
-		}
-		
-		return theme;
-	}
+   // 기존의 테마 설정값 불러오기
+   public String getTheme (int userAcIdx) {
+      String theme = null;
+      
+      Connection conn = null;
+      
+      try {
+         conn = ConnectionProvider.getConnection();
+         
+         SettingDAO settingDAO = new SettingDAOImpl(conn);
+         theme = settingDAO.selectTheme(userAcIdx);
+         
+      } catch (NamingException e) {
+         e.printStackTrace();
+      } catch (SQLException e) {
+         e.printStackTrace();
+      } finally {
+         JdbcUtil.close(conn);
+      }
+      
+      return theme;
+   }
 
-	/**
+   /**
      * 사용자의 비밀번호를 확인하고, 성공 시 사용자 정보를 반환합니다.
      * @param acIdx 확인할 사용자의 ID
      * @param inputPassword 사용자가 입력한 비밀번호
@@ -114,6 +115,7 @@ public class SettingService {
      */
     public String updateProfileImage(int acIdx, String base64Image, String rootPath) throws Exception {
         String newDbPath = null;
+        String newthumbPath = null;
         try (Connection conn = ConnectionProvider.getConnection()) {
             UserAccountDAO dao = new UserAccountDAOImpl(conn);
             
@@ -122,45 +124,58 @@ public class SettingService {
                 throw new Exception("사용자 정보를 찾을 수 없습니다.");
             }
 
-            String oldImgPath = user.getImg();
-            System.out.println("user.getAc_idx() : " + user.getAc_idx());
-            System.out.println("oldImgPath : " + oldImgPath);
-            if (oldImgPath != null && !oldImgPath.isEmpty()) {
-                File oldFile = new File(rootPath, oldImgPath);
-                if (oldFile.exists()) {
-                    oldFile.delete();
+            // [수정] 기존 프로필 이미지 및 썸네일 파일 삭제 로직 개선
+            final String userNickname = user.getNickname();
+            String profileDirPathStr = rootPath + "vibesync/sources" + File.separator + "profile";
+            File profileDir = new File(profileDirPathStr);
+
+            if (profileDir.exists() && profileDir.isDirectory()) {
+                // 닉네임으로 시작하는 모든 파일 (e.g., duckhammer.png, t_duckhammer.jpg)을 찾기 위한 필터
+                File[] oldFiles = profileDir.listFiles(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File dir, String name) {
+                        return name.startsWith(userNickname + ".") || name.startsWith("t_" + userNickname + ".");
+                    }
+                });
+                if (oldFiles != null) {
+                    for (File file : oldFiles) {
+                        file.delete();
+                    }
                 }
             }
             
             // 1. Base64 데이터 파싱
             String[] parts = base64Image.split(",");
-            if (parts.length != 2) {
-                throw new IllegalArgumentException("잘못된 Base64 이미지 형식입니다.");
-            }
-            // "data:image/png;base64" -> "png"
+            if (parts.length != 2) throw new IllegalArgumentException("잘못된 Base64 이미지 형식입니다.");
+            
             String mimeType = parts[0].split(":")[1].split(";")[0];
             String extension = mimeType.substring(mimeType.indexOf('/') + 1);
             byte[] imageBytes = Base64.getDecoder().decode(parts[1]);
 
             // 2. 새 파일명 및 경로 설정
-            String newFileName = user.getNickname() + "." + extension;
-            String saveDirPathStr = rootPath + "vibesync/sources" + File.separator + "profile";
-            File saveDir = new File(saveDirPathStr);
-            if (!saveDir.exists()) {
-                saveDir.mkdirs();
+            String newFileName = userNickname + "." + extension;
+            if (!profileDir.exists()) {
+                profileDir.mkdirs();
             }
-            File newFile = new File(saveDir, newFileName);
-            newDbPath = "sources/profile/" + newFileName;
+            File newFile = new File(profileDir, newFileName);
+            newDbPath = "sources/profile/" + newFileName; // DB에는 원본 경로만 저장
+            newthumbPath = "sources/profile/t_" + newFileName; // DB에는 원본 경로만 저장
 
-            // 3. 파일 저장
+            // 3. 원본 파일 저장
             try (FileOutputStream fos = new FileOutputStream(newFile)) {
                 fos.write(imageBytes);
             }
             
-            // 4. DB에 새 이미지 경로 업데이트
+            // [신규] 4. 썸네일 생성
+            File thumbnailFile = new File(profileDir, "t_" + newFileName);
+            Thumbnails.of(newFile)
+                      .size(150, 150)
+                      .toFile(thumbnailFile);
+            
+            // 5. DB에 새 이미지 경로 업데이트
             dao.updateProfileImagePath(acIdx, newDbPath);
         }
-        return newDbPath;
+        return newthumbPath;
     }
 
     /**

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.vo.CategoryVO;
 import mvc.domain.vo.ContentsVO;
@@ -68,7 +69,7 @@ public class noteEditHandler implements CommandHandler {
             } catch (Exception e) {
                 throw new RuntimeException("수정 페이지 로드 오류", e);
             } finally {
-                if (conn != null) try { conn.close(); } catch (Exception ignored) {}
+                if (conn != null) try { JdbcUtil.close(conn); } catch (Exception ignored) {}
             }
             return "edit.jsp"; 
 
@@ -136,7 +137,7 @@ public class noteEditHandler implements CommandHandler {
             } catch (Exception e) {
                 throw new RuntimeException("노트 업데이트 오류", e);
             } finally {
-                if (conn != null) conn.close();
+                if (conn != null) JdbcUtil.close(conn);
             }
 
             // 수정 완료 후 해당 게시글 보기 페이지로 리다이렉트

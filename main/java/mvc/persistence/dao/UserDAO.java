@@ -21,11 +21,13 @@ public interface UserDAO {
 	// 회원가입 시 중복 검사 : 닉네임, 이메일 한번에
 	String[] duplicateTest(String nickname, String email);
 	
+	/*
 	// 닉네임 중복 검사
 	boolean isNicknameExists(String nickname);
 	
 	// 이메일 중복 검사
 	boolean isEmailExists(String email);
+	*/
 	
 	//////회원 활동 관련
 	int preferredCategoryIdx(int acIdx) throws SQLException;
@@ -35,5 +37,19 @@ public interface UserDAO {
 
     //특정 사용자가 작성한 총 게시글 수를 조회
     int getPostCount(int userAcIdx) throws SQLException;
+    
+    /*비밀번호 재설정*/
+    //비밀번호 재설정 토큰 DB저장
+    public void saveResetToken(String email, String token) throws SQLException;
+    
+    // 유효한 토큰 사용하여 이메일 조회
+    public String findEmailByValidToken(String token) throws SQLException;
+    
+    // 사용된 토큰 DB삭제
+    public void deleteToken(String token) throws SQLException;
+    
+    // 이메일 주소를 기준으로 사용자의 비밀번호 업데이트
+    public void updatePasswordAndSalt(String email, String hashedPassword , String newSalt);
+    
     
 }

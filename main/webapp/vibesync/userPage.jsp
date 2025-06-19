@@ -21,7 +21,7 @@
     <style>
         h3 { margin: 0; }
         #left-wrapper {display: flex; height: 100%; gap: 20px; justify-content: center; align-items: center;}
-		.wp_btn {background: linear-gradient(90deg, rgba(138, 196, 255, 1) 0%, rgba(227, 176, 255, 1) 50%, rgba(165, 250, 120, 1) 100%);}
+      .wp_btn {background: linear-gradient(90deg, rgba(138, 196, 255, 1) 0%, rgba(227, 176, 255, 1) 50%, rgba(165, 250, 120, 1) 100%);}
         .wp_btn img{width: 24px; height: 25px; margin-right: 6px;}
         #settingBtn { background: #6c757d; color: white; border: none; font-weight: 700; cursor: pointer; transition: background-color 0.18s; }
         #settingBtn img {width: 26px; height: 26px;}
@@ -30,21 +30,21 @@
         #pageCreateBtn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #8ac4ff; color: #fff; font-size: 24px; z-index: 1000; border: none; cursor: pointer; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; }
         #modalWrapper { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        .modal-content { display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; background: #fff; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; min-height: 14rem; position: relative; }
+        .modal-content { display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; background: var(--background-color); padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; min-height: 14rem; position: relative; }
         #pageSelect { width: 100%; height: 2rem; text-align: center; border-radius: 10px; font-weight: bold; text-transform: uppercase; }
         #btn_wrapper { display: flex; gap: 2rem; }
         .btn_deco { background: #8ac4ff; border: none; color: white; padding: 4px 12px; border-radius: 6px; }
         .btn_deco:hover { background: #4da3f9; }
         #pageCreateForm { display: flex; flex-direction: column; }
-        .modal-close { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 18px; border: none; background: none; }
+        .modal-close { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 18px; border: none; background: none; color: var(--font-color); }
     </style>
-   
+    
     <style> /* Message */
         #up_msg_btn { background-color: #fe4f4f; color: #fff; border: none; padding: 11px 32px 11px 23px; font-weight: 700; font-size: 1.06rem; display: flex; align-items: center; gap: 13px; letter-spacing: 0.3px; cursor: pointer; outline: none; transition: background-color 0.18s ease-in-out, transform 0.12s; }
         #up_msg_btn i { filter: invert(0) !important; font-size: 1.18em; color: #fff; }
         #up_msg_btn:hover { background: #fe1717; color: #fff; }
         .modal-msglist { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); backdrop-filter: blur(2.5px); justify-content: center; align-items: center; }
-        .modal-msg { position: relative; background: #f5f8fb; border-radius: 20px; box-shadow: 0 4px 32px 0 rgba(80,110,150,0.10), 0 0 0 1.5px #c7d3e8; width: 92%; max-width: 415px; min-width: 330px; min-height: 390px; max-height: 78vh; display: flex; flex-direction: column; padding-bottom: 13px; border: none; animation: zoomIn 0.21s;  }
+        .modal-msg { position: relative; background: var(--background-color); border-radius: 20px; width: 92%; max-width: 415px; min-width: 330px; min-height: 390px; max-height: 78vh; display: flex; flex-direction: column; padding-bottom: 13px; border: none; animation: zoomIn 0.21s;  }
         @keyframes zoomIn { from { transform: scale(0.97); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         #msgRoomTitle { font-size: 18px; font-weight: 700; color: var(--font-size); padding: 18px 0 12px 0; border-bottom: 2px solid var(--border-color); background: transparent; margin: 0 0 6px 0; text-align: center; letter-spacing: 0.02em; }
         #msgRoomTitle i { margin-right: 9px; color: var(--font-color); font-size: 20px; }
@@ -54,22 +54,22 @@
         .no-message-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #888; text-align: center; padding: 20px; }
         .no-message-placeholder i { font-size: 48px; margin-bottom: 16px; color: #e0e0e0; }
         .no-message-placeholder p { margin: 0; font-size: 1rem; font-weight: 500; }
-        .msg_item { display: flex; align-items: flex-start; gap: 15px; width: 100%; background: var(--card-back); padding: 19px 18px 17px 15px; border-radius: 11px; animation: fadeInUp 0.26s; border: 2px solid var(--border-color); margin-bottom: 18px; transition: background-color 0.14s ease-in-out;  }
+        .msg_item { display: flex; align-items: flex-start; gap: 15px; width: 100%; background: var(--card-back); padding: 19px 18px 17px 15px; border-radius: 11px; animation: fadeInUp 0.26s; border: 2px solid var(--border-color); margin-bottom: 18px; transition: background-color 0.14s ease-in-out;  } 
         .msg_item:last-child { margin-bottom: 0; }
-        .msg_item:hover { background-color: #a7ffa193; cursor: pointer; }
+        .msg_item:hover { background-color: var(--hover-color); cursor: pointer; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
-        .msg_profile img { width: 44px; height: 44px; object-fit: cover; border-radius: 50%; aspect-ratio: 1/1; margin-left: 8px; margin-right: 5px; border: 1.5px solid lightgrey; background: #faf9f6; display: block; }
+        .msg_profile img { width: 44px; height: 44px; object-fit: cover; border-radius: 50%; aspect-ratio: 1/1; margin-left: 8px; margin-right: 5px; border: 1.5px solid lightgrey; background: #faf9f6; display: block; background-image:linear-gradient(var(--card-back), var(--card-back)), linear-gradient(90deg, rgba(138, 196, 255, 1) 0%, rgba(227, 176, 255, 1) 50%, rgba(165, 250, 120, 1) 100%); background-origin: border-box; background-clip: content-box, border-box; border: solid 2px transparent; }
         .msg_text_area { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
         .msg_sender_row { display: flex; align-items: center; gap: 7px; margin-bottom: 1px; }
-        .msg_sender { font-weight: 700; font-size: 17px; color: #2d3440; margin-bottom: 1px; }
-        .msg_preview { font-size: 14px; font-weight: 450; color: black; margin: 2px 0 0 0; word-break: break-all; opacity: 0.93; text-overflow: ellipsis; }
-        .msg_time { font-size: 12px; color: #7890a2; margin-top: 5px; white-space: nowrap; }
+        .msg_sender { font-weight: 700; font-size: 17px; color: var(--font-color); margin-bottom: 1px; }
+        .msg_preview { font-size: 14px; font-weight: 450; color: var(--msg-sub-font); margin: 2px 0 0 0; word-break: break-all; opacity: 0.93; text-overflow: ellipsis; }
+        .msg_time { font-size: 12px; color: var(--msg-date-font); margin-top: 5px; white-space: nowrap; }
         .unread-badge { display: flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 5px; background: #45607d; color: #fff; font-size: 12px; font-weight: 700; border-radius: 50%; box-shadow: 0 1px 3px rgba(175,175,160,0.10); margin-left: 5px; user-select: none; }
     </style>
-   
+    
     <style> /* Chat */
         .chat-modal-super-container { display: none; justify-content: center; align-items: center; position: fixed; z-index: 9999; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-        .chat-modal-content { position: relative; max-width: 430px; min-width: 350px; width: 90%; background-color: #f5f8fb; padding: 0; border-radius: 16px; color: #223355; box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3); animation: fadeInUp 0.3s ease-out; display: flex; flex-direction: column; max-height: 85vh; }
+        .chat-modal-content { position: relative; max-width: 430px; min-width: 350px; width: 90%; background-color: var(--background-color); padding: 0; border-radius: 16px; color: var(--font-color); box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3); animation: fadeInUp 0.3s ease-out; display: flex; flex-direction: column; max-height: 85vh; }
         #chatTitle { padding: 18px 24px 16px 24px; margin: 0; text-align: center; border-bottom: 1.5px solid #e3ecf6; flex-shrink: 0; font-size: 17px; font-weight: 700; }
         #chatHistory { padding: 10px; overflow-y: auto; flex-grow: 1; }
         .chat-container { display: flex; flex-direction: column; gap: 12px; }
@@ -83,9 +83,9 @@
         #chatInput::placeholder { color: #b7b8bd; font-size: 14px; }
         #sendMessageBtn { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; background: #7fa6c9; border: none; border-radius: 50%; transition: background 0.16s; cursor: pointer; padding: 0; }
         #sendMessageBtn:hover { background: #45607d; }
-        .chat-date-separator { display: inline-block; padding: 4px 12px; margin: 16px auto; font-size: 12px; color: #666; background: #e9ecef; border-radius: 12px; text-align: center; }
+        .chat-date-separator { display: inline-block; padding: 4px 12px; margin: 16px auto; font-size: 12px; color: var(--chat-date-font); background: var(--chat-date-back); border-radius: 12px; text-align: center; }
     </style>
-   
+    
     <style> /* Setting Modal */
         .modal-setting-container { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); backdrop-filter: blur(3px); justify-content: center; align-items: center; }
         .setting-modal-content { color: #333; background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 420px; text-align: center; position: relative; animation: zoomIn 0.2s; }
@@ -123,7 +123,7 @@
                                         <img id="mainProfileImage" src="<%=contextPath %>/sources/default/default_user.jpg" alt="기본 프로필">
                                     </c:otherwise>
                                 </c:choose>
-                            </div> 	
+                            </div>    
                             <div class="userInfo_detail">
                                 <div class="name_function">
                                     <div id="left-wrapper">
@@ -136,7 +136,7 @@
                                         <button id="up_msg_btn"><i class="fa-solid fa-paper-plane"></i> Message</button>
                                         <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == userPageData.userProfile.ac_idx}">
                                             <button class="wp_btn" onclick="location.href='waList.jsp'"><img src="./sources/icons/watch.svg">Watch Party</button>
-	                                    </c:if>
+                                       </c:if>
                                     </div>
                                     <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == userPageData.userProfile.ac_idx}">
                                         <button id="settingBtn"><img src="./sources/icons/settings_gear.svg" alt="setting"></button>
@@ -161,7 +161,7 @@
                                         <c:otherwise>
                                             <img src="${pageContext.request.contextPath}/sources/images/default_thumbnail.png" alt="기본 썸네일">
                                         </c:otherwise>
-                                    </c:choose>                                  
+                                    </c:choose>                                   
                                   </div>
                                 </a>
                             </c:forEach>
@@ -172,19 +172,19 @@
             </div>
         </div>
     </div>
-   
+    
     <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == userPageData.userProfile.ac_idx}">
         <button id="pageCreateBtn">＋</button>
     </c:if>
 
     <div id="pageModalOverlay" class="modal-overlay">
         <div id="modalWrapper">
-            <div class="modal-content" id="pageModalContent">
+            <div class="modal-content" id="pageModalContent" style="border: solid 2px var(--border-color);">
             <button class="modal-close" id="pageModalClose">&times;</button>
             </div>
         </div>
     </div>
-   
+    
     <div id="msgListModal" class="modal-msglist">
         <div class="modal-msg" style="min-width:350px; max-width:430px;">
             <span class="close-modal" onclick="closeMsgListModal()"> &times; </span>
@@ -192,7 +192,7 @@
             <div id="msgList"></div>
         </div>
     </div>
-   
+    
     <div id="chatModal" class="chat-modal-super-container">
          <div class="chat-modal-content">
             <span class="close-modal" onclick="closeChatModal()"> &times; </span>
@@ -201,12 +201,12 @@
             <div class="chat-input-row">
                 <input type="text" id="chatInput" placeholder="메시지를 입력하세요..." autocomplete="off" />
                 <button type="button" id="sendMessageBtn" title="전송">
-                    <i class="fa-solid fa-paper-plane" style="color:white; font-size: 16px;"></i>
+                    <i class="fa-solid fa-paper-plane" style="color:white; font-size: 16px; filter: invert(0) !important;"></i>
                 </button>
             </div>
          </div>
     </div>
-   
+    
     <div id="modal-setting-container" class="modal-setting-container">
         <div class="setting-modal-content">
             <button class="setting-modal-close">&times;</button>
@@ -220,11 +220,11 @@
 
         /*무한스크롤 함수*/
         var isLoading = false; // 중복 요청 방지 플래그
-       
+        
         $.ajaxSetup({
-       	  cache: false
-       	});
-       
+            cache: false
+          });
+        
         function loadMorePosts(){
             var hasMore = ($('#hasMorePosts').val() === 'true');
             if (!hasMore || isLoading) return;
@@ -232,10 +232,10 @@
             $('#loadingIndicator').show();
             var nextPage = parseInt($('#currentPageNumber').val()) + 1;
             var profileUserId = $('#profileUserAcIdx').val();
-           
+            
             $.ajax({
-                url: '${pageContext.request.contextPath}/loadMorePosts.do',
-                type: 'GET',
+                url: '${pageContext.request.contextPath}/loadMorePosts.do', 
+                type: 'GET', 
                 data: { userId: profileUserId, page: nextPage },
                 dataType: 'json',
                 success: function(response) {
@@ -269,26 +269,26 @@
                 }
             });
         }
-       
+        
        function checkAndLoadIfNeeded() {
             if ($(document).height() <= $(window).height() && ($('#hasMorePosts').val() === 'true')) {
                 console.log("콘텐츠가 부족하여 새 게시물을 자동으로 로드합니다.");
                 loadMorePosts();
             }
        }
-   
+    
        $(document).ready(function() {
             $('#profileFollowBtn').on('click', function() {
                 var $button = $(this);
                 var authorId = $button.data('author-id');
-                var isLoggedIn = ${sessionScope.userInfo != null};
+                var isLoggedIn = ${sessionScope.userInfo != null}; 
                 if (!isLoggedIn) {
                     alert("로그인이 필요합니다.");
-                    location.href = "${pageContext.request.contextPath}/login.jsp";
+                    location.href = "${pageContext.request.contextPath}/login.jsp"; 
                     return;
                 }
                 $.ajax({
-                    url: '${pageContext.request.contextPath}/followToggle.do',
+                    url: '${pageContext.request.contextPath}/followToggle.do', 
                     type: 'POST',
                     data: { authorId: authorId },
                     dataType: 'json',
@@ -317,11 +317,11 @@
                     loadMorePosts();
                 }
             });
-           
+            
             $(window).on('resize', function() {
                 checkAndLoadIfNeeded();
             });
-           
+            
             $('#pageCreateBtn').on('click', function() {
                 var acIdx = $('#profileUserAcIdx').val();
                 $.get('${pageContext.request.contextPath}/page/modalList.do', { ac_idx: acIdx }, function(html) {
@@ -348,7 +348,7 @@
                   + '</form>';
                 $('#pageModalContent').append(formHtml);
             });
-           
+            
             $('#pageModalOverlay').on('click', '#newNoteBtn', function() {
                  var selectedIdx = $('#pageSelect').val();
                  $('#newNoteLink').attr('href', 'notecreate.do?pageidx=' + selectedIdx);
@@ -378,9 +378,9 @@
                     }
                 });
             });
-           
+            
             const isOwnProfile = ${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == userPageData.userProfile.ac_idx};
-           
+            
             $('#up_msg_btn').on('click', function () {
                 const isLoggedIn = ${sessionScope.userInfo != null};
                 if (!isLoggedIn) {
@@ -396,15 +396,15 @@
                     openChatWithUser(profileUserId, profileUserNickname);
                 }
            });
-           
+            
             $('#msgList').on('click', '.msg_item', function() {
                 const senderIdx = $(this).data('sender-idx');
                 const nickname = $(this).data('nickname');
                 openChatWithUser(senderIdx, nickname);
             });
-           
+            
             $("#sendMessageBtn").on("click", sendChatMessage);
-       
+        
             $("#chatInput").on("keydown", function(e) {
                 if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -447,11 +447,11 @@
                     }
                 });
             });
-           
+            
             $('#modal-setting-container').on('change', '#profileImageInput', function() {
                 if (this.files && this.files[0]) {
                     const reader = new FileReader();
-                   
+                    
                     reader.onload = function(e) {
                         $('#profileImagePreview').attr('src', e.target.result);
                     }
@@ -469,10 +469,10 @@
                 }
                 const file = fileInput.files[0];
                 const reader = new FileReader();
-               
+                
                 reader.onload = function(event) {
                     const base64Image = event.target.result;
-                   
+                    
                     $.ajax({
                         url: '${pageContext.request.contextPath}/setting/setProfile.do',
                         type: 'POST',
@@ -486,28 +486,20 @@
                                 // 1. 새 이미지 경로에 캐시 무효화를 위한 타임스탬프 추가
                                 const newImgSrc = '${pageContext.request.contextPath}/vibesync/' + response.newImagePath + '?t=' + new Date().getTime();
 
-                                // 2. 새 이미지를 미리 로드하기 위한 임시 Image 객체 생성
-                                const tempImg = new Image();
-                                tempImg.src = newImgSrc;
+                                // 4. 화면에 보이는 이미지들의 src를 교체 (이제 즉시 반영됨)
+                                $('#mainProfileImage').attr('src', newImgSrc);
+                                $('#profileImagePreview').attr('src', newImgSrc);
+                                $('#profile-display img').attr('src', newImgSrc);
+                                if(currentUserData) currentUserData.img = response.newImagePath;
 
-                                // 3. 이미지 로딩이 완료되면 실행될 콜백 함수
-                                tempImg.onload = function() {
-                                    // 4. 화면에 보이는 이미지들의 src를 교체 (이제 즉시 반영됨)
-                                    $('#mainProfileImage').attr('src', newImgSrc);
-                                    $('#profileImagePreview').attr('src', newImgSrc);
-                                    $('#profile-display img').attr('src', newImgSrc);
-                                    if(currentUserData) currentUserData.img = response.newImagePath;
-
-                                    // 5. 모든 시각적 업데이트가 끝난 후 사용자에게 알림
-                                    alert('프로필 이미지가 변경되었습니다.');
-
-                                };
-                               
+                                // 5. 모든 시각적 업데이트가 끝난 후 사용자에게 알림
+                                alert('프로필 이미지가 변경되었습니다.');
+                                
                                 // 이미지 로딩 실패 시 에러 처리
                                 tempImg.onerror = function() {
                                     alert('새 프로필 이미지를 불러오는 데 실패했습니다.');
                                 };
-                               
+                                
                             } else {
                                 alert('오류: ' + response.message);
                             }
@@ -519,14 +511,14 @@
                 };
                 reader.readAsDataURL(file);
             });
-           
+            
             $('#modal-setting-container').on('submit', '#changePasswordForm', function(e) {
                 e.preventDefault();
                 const newPassword = $(this).find('input[name="newPassword"]').val();
                 const confirmPassword = $(this).find('input[name="confirmPassword"]').val();
-               
+                
                 $('.setting-error-msg').text('');
-               
+                
                 if (newPassword !== confirmPassword) {
                     $(this).find('.setting-error-msg').text('비밀번호가 일치하지 않습니다.');
                     return;
@@ -535,7 +527,7 @@
                     $(this).find('.setting-error-msg').text('비밀번호는 8자 이상이어야 합니다.');
                     return;
                 }
-               
+                
                 $.ajax({
                     url: '${pageContext.request.contextPath}/setting/alterPassword.do',
                     type: 'POST',
@@ -554,7 +546,7 @@
                     }
                 });
             });
-           
+            
             $('#modal-setting-container').on('click', '#btnDeleteAccount', function() {
                 if (confirm('정말로 탈퇴하시겠습니까? 모든 정보는 복구되지 않습니다.')) {
                     location.href = '${pageContext.request.contextPath}/setting/deleteAccount.do';
@@ -563,17 +555,17 @@
          
            checkAndLoadIfNeeded();
         });
-       
+        
         $(window).on('load', function() {
             if (window.location.hash === "#msg") {
                 openMessageModal();
             }
         });
-       
+        
     </script>
-   
+    
     <script> /* 함수 */
-   
+    
     function openMessageModal() {
         window.location.hash = "msg";
         const acIdx = ${sessionScope.userInfo.ac_idx};
@@ -612,7 +604,7 @@
         window.location.hash = "";
         $('#msgListModal').hide();
     }
-   
+    
     function openChatWithUser(userIdx, nickname) {
         currentChatSenderIdx = userIdx;
         $('#chatTitle').text(nickname + '님과의 대화');
@@ -649,7 +641,7 @@
             error: function () { alert('채팅 내역을 불러오는 데 실패했습니다.'); }
         });
     }
-   
+    
     function closeChatModal() {
         $('#chatModal').hide();
         currentChatSenderIdx = null;
@@ -657,7 +649,7 @@
             openMessageModal();
         }
     }
-   
+    
     function sendChatMessage() {
         const message = $("#chatInput").val().trim();
         if (!message || !currentChatSenderIdx) return;
@@ -678,14 +670,14 @@
             error: function() { alert('메시지 전송 중 오류 발생!'); }
         });
     }
-   
+    
     function reloadChatHistory() {
        if (currentChatSenderIdx) {
            const currentNickname = $('#chatTitle').text().replace('님과의 대화', '');
            openChatWithUser(currentChatSenderIdx, currentNickname);
         }
     }
-   
+    
     function showPasswordCheckView() {
         const passwordCheckHtml = `<h4>비밀번호 확인</h4><p style="font-size:0.9em; color:#555; margin-top:-10px; margin-bottom:20px;">계정 설정을 위해 현재 비밀번호를 입력해주세요.</p><form id="passwordCheckForm"><div class="setting-error-msg"></div><input type="password" name="password" placeholder="비밀번호" required autocomplete="current-password"><button type="submit">확인</button></form>`;
         $('#settingContent').html(passwordCheckHtml);
@@ -694,10 +686,10 @@
     function showCombinedSettingsView() {
         const defaultImgSrc = '<%=contextPath %>/vibesync/sources/default/default_user.jpg';
         const currentImgSrc = currentUserData && currentUserData.img ? '${pageContext.request.contextPath}/' + currentUserData.img : defaultImgSrc;
-       
+        
         const combinedHtml = `
             <h4>계정 설정</h4>
-           
+            
             <h5>프로필 사진 변경</h5>
             <form id="profileImageForm">
                 <img id="profileImagePreview" src="/vibesync\${currentImgSrc}" alt="프로필 미리보기">
@@ -717,7 +709,7 @@
         `;
         $('#settingContent').html(combinedHtml);
     }
-   
+    
     </script>
 </body>
 <jsp:include page="/vibesync/includes/footer.jsp" />

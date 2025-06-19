@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
+
 import mvc.domain.vo.TodoVO;
 import mvc.persistence.dao.TodoDAO;
 import mvc.persistence.daoImpl.TodoDAOImpl;
@@ -19,7 +21,7 @@ public class TodoService {
             TodoDAO todoDAO = new TodoDAOImpl(conn);
             return todoDAO.findAllByUser(acIdx);
         } finally {
-            if (conn != null) conn.close();
+            if (conn != null) JdbcUtil.close(conn);
         }
     }
     
@@ -45,7 +47,7 @@ public class TodoService {
             if (conn != null) conn.rollback(); // ★ 3. 에러 발생 시 모든 변경사항 취소 (롤백)
             throw e; // 예외를 다시 던져서 상위 계층에 알림
         } finally {
-            if (conn != null) conn.close(); // ★ 4. 작업이 끝나면 커넥션 반납
+            if (conn != null) JdbcUtil.close(conn);
         }
     }
 
@@ -70,7 +72,7 @@ public class TodoService {
             if (conn != null) conn.rollback(); // ★ 3. 에러 발생 시 롤백
             throw e;
         } finally {
-            if (conn != null) conn.close(); // ★ 4. 커넥션 반납
+            if (conn != null) JdbcUtil.close(conn);
         }
     }
     
@@ -94,7 +96,7 @@ public class TodoService {
             if (conn != null) conn.rollback(); // 에러 발생 시 롤백
             throw e; // 예외를 상위로 던져서 문제 인지시키기
         } finally {
-            if (conn != null) conn.close(); // 커넥션 반납
+            if (conn != null) JdbcUtil.close(conn);
         }
         return false;
     }
@@ -114,7 +116,7 @@ public class TodoService {
             if (conn != null) conn.rollback();
             throw e;
         } finally {
-            if (conn != null) conn.close();
+            if (conn != null) JdbcUtil.close(conn);
         }
         return false;
     }

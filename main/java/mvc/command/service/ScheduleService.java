@@ -10,7 +10,9 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
-import com.util.ConnectionProvider; 
+import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
+
 import mvc.domain.dto.CalendarEventDTO;
 import mvc.domain.vo.ScheduleVO;
 import mvc.persistence.dao.ScheduleDAO;
@@ -30,7 +32,7 @@ public class ScheduleService {
      * @throws Exception
      */
     public List<CalendarEventDTO> getMonthlySchedules(int acIdx, Timestamp start, Timestamp end) throws Exception {
-        Connection conn = null; // finally 블록에서 conn.close()를 위해 try-with-resources 밖에서 선언
+        Connection conn = null;
         try {
             conn = ConnectionProvider.getConnection(); // ConnectionProvider.getConnection() 호출
             ScheduleDAO scheduleDAO = new ScheduleDAOImpl(conn);
@@ -62,7 +64,7 @@ public class ScheduleService {
         } finally {
             if (conn != null) {
                 try {
-                    conn.close(); // 연결 닫기
+                	JdbcUtil.close(conn);
                 } catch (Exception e) {
                     System.err.println("DB 연결 닫는 중 오류 발생: " + e.getMessage());
                     e.printStackTrace();
@@ -82,11 +84,7 @@ public class ScheduleService {
             throw e;
         } finally {
             if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                JdbcUtil.close(conn);
             }
         }
     }
@@ -117,7 +115,7 @@ public class ScheduleService {
             if (conn != null) conn.rollback();
             throw e;
         } finally {
-            if (conn != null) conn.close();
+            if (conn != null) JdbcUtil.close(conn);
         }
         return false;
     }
@@ -139,7 +137,7 @@ public class ScheduleService {
             if (conn != null) conn.rollback();
             throw e;
         } finally {
-            if (conn != null) conn.close();
+            if (conn != null) JdbcUtil.close(conn);
         }
         return false;
     }
@@ -164,7 +162,7 @@ public class ScheduleService {
             if (conn != null) conn.rollback();
             throw e;
         } finally {
-            if (conn != null) conn.close();
+            if (conn != null) JdbcUtil.close(conn);
         }
     }
 }

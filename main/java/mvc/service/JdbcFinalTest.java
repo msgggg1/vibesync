@@ -5,6 +5,8 @@ import java.sql.DriverManager; // DriverManager를 직접 사용
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.util.JdbcUtil;
+
 public class JdbcFinalTest {
 
     public static void main(String[] args) {
@@ -79,7 +81,7 @@ public class JdbcFinalTest {
             e.printStackTrace();
              try { if(conn != null) conn.rollback(); } catch(Exception ex) {}
         } finally {
-            try { if(conn != null) conn.close(); } catch(Exception e) {}
+            try { if(conn != null) JdbcUtil.close(conn);} catch(Exception e) {}
             System.out.println("====== 최종 JDBC 테스트 종료 ======");
         }
     }

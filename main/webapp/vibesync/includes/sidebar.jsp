@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
 
-	String contextPath = request.getContextPath() + "/vibesync";
+   String contextPath = request.getContextPath() + "/vibesync";
 
 %>
 
@@ -211,8 +211,8 @@ input:focus {
   color: var(--font-color);
 }
 .modal-btn img {
-	max-height: 22px;
-	max-width: 22px;
+   max-height: 22px;
+   max-width: 22px;
 }
 
 /* 
@@ -339,6 +339,20 @@ input:focus {
   #nickname-modal-2 #back-btn {
     margin-bottom: 10px;
   }
+  
+  .sidebar-profile img {
+	min-width: 30px;
+    max-width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 2px solid transparent;
+    display: block;
+    background-image: linear-gradient(var(--card-back), var(--card-back)), linear-gradient(90deg, rgba(138, 196, 255, 1) 0%, rgba(227, 176, 255, 1) 50%, rgba(165, 250, 120, 1) 100%);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+  }
 </style>
 
 <button id="toggle-btn">☰</button>
@@ -350,11 +364,11 @@ input:focus {
       <div class="nickname-container">
         <span class="profile" id="profile-display">
           <c:choose>
-          	<c:when test="${not empty userInfo.img}">
+             <c:when test="${not empty userInfo.img}">
                 <img src="${pageContext.request.contextPath}/vibesync/${userInfo.img}" alt="프로필">
             </c:when>
             <c:otherwise>
-            	<img src="<%= contextPath %>/sources/default/default_user.jpg" alt="기본 프로필">
+               <img src="<%= contextPath %>/sources/default/default_user.jpg" alt="기본 프로필">
             </c:otherwise>
           </c:choose>
         </span>
@@ -364,59 +378,59 @@ input:focus {
         <div class="accountData" id="accountData-display"></div>
         <div id="nickname-modal" class="modal-sidebar">
           <div id="nickname-modal-1">
-	          <a href="userPage.do?acIdx=${userInfo.ac_idx}" class="modal-nickname">
-	            ${userInfo.nickname}
-	          </a>
-	          <div id="setting">
-		      	<button type="button" id="setting-btn" class="modal-btn">
-		      		<img src="./sources/icons/settings.svg" alt="setting icon"> Theme
-		      	</button>
-		      </div>
-		      <div id="logout">
-		        <form action="user.do" method="post">
-		          <input type="hidden" name="accessType" value="logout">
-		          <button type="submit" class="modal-btn">
-		          	<i class="fa-solid fa-right-from-bracket"></i> Logout
-		          </button>
-		        </form>
-		      </div>
-	      </div>
-	      <div id="nickname-modal-2">
-	        <button type="button" id="back-btn" class="modal-btn">
-	            <i class="fa-solid fa-arrow-left"></i> 뒤로가기
-	        </button>
-			<div class="theme-selector-container">
-			  
-			  <label class="theme-option-label">
-			    <input type="radio" name="theme" value="light" ${sessionScope.theme == 'light' || empty sessionScope.theme ? 'checked' : ''}>
-			    <div class="custom-radio">
-			      <div class="inner-circle"></div>
-			    </div>
-			    <span class="theme-label-text">Light</span>
-			    <div class="theme-icon-svg">
-			      <img src="./sources/sidebar/light_icon.svg">
-			    </div>
-			  </label>
-			
-			  <label class="theme-option-label">
-			    <input type="radio" name="theme" value="dark" ${sessionScope.theme == 'dark' ? 'checked' : ''}>
-			    <div class="custom-radio">
-			        <div class="inner-circle"></div>
-			    </div>
-			    <span class="theme-label-text">Dark</span>
-			    <div class="theme-icon-svg">
-			      <img src="./sources/sidebar/dark_icon.svg">
-			    </div>
-			  </label>
-			
-			</div>
-	      </div>
+             <a href="userPage.do?acIdx=${userInfo.ac_idx}" class="modal-nickname">
+               ${userInfo.nickname}
+             </a>
+             <div id="setting">
+               <button type="button" id="setting-btn" class="modal-btn">
+                  <img src="./sources/icons/settings.svg" alt="setting icon"> Theme
+               </button>
+            </div>
+            <div id="logout">
+              <form action="user.do" method="post">
+                <input type="hidden" name="accessType" value="logout">
+                <button type="submit" class="modal-btn">
+                   <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+              </form>
+            </div>
+         </div>
+         <div id="nickname-modal-2">
+           <button type="button" id="back-btn" class="modal-btn">
+               <i class="fa-solid fa-arrow-left"></i> 뒤로가기
+           </button>
+         <div class="theme-selector-container">
+           
+           <label class="theme-option-label">
+             <input type="radio" name="theme" value="light" ${sessionScope.theme == 'light' || empty sessionScope.theme ? 'checked' : ''}>
+             <div class="custom-radio">
+               <div class="inner-circle"></div>
+             </div>
+             <span class="theme-label-text">Light</span>
+             <div class="theme-icon-svg">
+               <img src="./sources/sidebar/light_icon.svg">
+             </div>
+           </label>
+         
+           <label class="theme-option-label">
+             <input type="radio" name="theme" value="dark" ${sessionScope.theme == 'dark' ? 'checked' : ''}>
+             <div class="custom-radio">
+                 <div class="inner-circle"></div>
+             </div>
+             <span class="theme-label-text">Dark</span>
+             <div class="theme-icon-svg">
+               <img src="./sources/sidebar/dark_icon.svg">
+             </div>
+           </label>
+         
+         </div>
+         </div>
         </div>
       </div>
-      <div class="search icon_wrap">
+      <!-- <div class="search icon_wrap">
         <img src="./sources/icons/search.svg" alt="search icon" class="sidebar_icon">
         <input type="text" class="search-input" placeholder="Search…">
-      </div>
+      </div> -->
 
       <a href="main.do" class="home icon_wrap">
         <img src="./sources/icons/home.svg" alt="home icon" class="sidebar_icon">
@@ -458,10 +472,10 @@ input:focus {
 
 <script>
 $(document).ready(function() {
-	// 페이지 로드될 때 팔로워 수 불러오기
-	updateFollowerCount();
-	
-	var isExpanded = false;
+   // 페이지 로드될 때 팔로워 수 불러오기
+   updateFollowerCount();
+   
+   var isExpanded = false;
 
     $('#followButton').on('click', function(e) {
         // [수정] 클릭된 대상이 <a> 태그이거나 그 자식일 경우, 아무것도 하지 않고 기본 동작(링크 이동)을 허용
@@ -494,6 +508,7 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 var items = response.followingList;
+                console.log(items)
                 $ul.empty();
 
                 if (!items || items.length === 0) {
@@ -501,8 +516,9 @@ $(document).ready(function() {
                 } else {
                     $.each(items, function(i, user) {
                         var liHtml = ''
-                            + '<li>'
+                            + '<li class="sidebar-profile">'
                             +   '<a href="userPage.do?acIdx=' + user.ac_idx + '">' 
+                            +     '<img src="'+ user.profile_img +'" alt="profileImg">'
                             +     user.nickname 
                             +   '</a>'
                             + '</li>';
@@ -565,16 +581,16 @@ function updateFollowerCount() {
             var viewCnt = sidebarDTO.userProfile.postViewCount;
             
             var fHtml = `<div>
-	            			 <span class="accountDataValue">\${followingCnt}</span> <span class="accountDataLabel">팔로잉</span>
-	            			 <span class="accountDataValue">\${followerCnt}</span> <span class="accountDataLabel">팔로워</span>
-            			 </div>
-            			 
+                         <span class="accountDataValue">\${followingCnt}</span> <span class="accountDataLabel">팔로잉</span>
+                         <span class="accountDataValue">\${followerCnt}</span> <span class="accountDataLabel">팔로워</span>
+                      </div>
+                      
             `;
             /* 총 게시글 수, 조회수
-             			 <div>
-	            			 <span class="accountDataValue">\${postCnt}</span> <span class="accountDataLabel">posts</span>
-	            			 <span class="accountDataValue">\${viewCnt}</span> <span class="accountDataLabel">views</span>
-            			 </div>
+                       <div>
+                         <span class="accountDataValue">\${postCnt}</span> <span class="accountDataLabel">posts</span>
+                         <span class="accountDataValue">\${viewCnt}</span> <span class="accountDataLabel">views</span>
+                      </div>
             */
             
             $(".accountData").empty();

@@ -3,6 +3,8 @@ package mvc.command.handler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
+
 import mvc.domain.vo.NoteVO; // NoteVO 임포트
 import mvc.persistence.dao.UserNoteDAO; // UserNoteDAO 임포트
 import mvc.persistence.daoImpl.UserNoteDAOImpl;
@@ -60,7 +62,7 @@ public class noteDeleteHandler implements CommandHandler {
             e.printStackTrace();
             // 필요 시 에러 페이지로 리다이렉트
         } finally {
-            if (conn != null) try { conn.close(); } catch(Exception ignored) {}
+            if (conn != null) try { JdbcUtil.close(conn); } catch(Exception ignored) {}
         }
 
         response.sendRedirect("page.do");

@@ -37,20 +37,21 @@
         .board_info { display: flex; justify-content: space-between; align-items: center; }
         .board_info p { font-size: 24px; font-weight: bold; }
         #filterForm { display: flex; gap: 10px; }
-        .filter_select, .searchInput { padding: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        .filter_select, .searchInput { padding: 5px; border: 1px solid var(--border-color); color:var(--font-color); border-radius: 4px; background-color: var(--card-back); }
         #search_bar { margin-bottom: 20px; display: flex; justify-content: center; }
         #note-list { display: flex; flex-direction: column; gap: 2px; margin-bottom: 2rem }
-        #note-list .full-post { display: flex; padding: 10px; border-bottom: 1px solid #000; cursor: pointer; }
-        #note-list .full-post:hover { background-color: #f5f5f5; }
-        #note-list .post-index { min-width: 50px; color: #888; }
+        #note-list .full-post { display: flex; padding: 10px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+        #note-list .full-post:hover { background-color: var(--hover-color); }
+        #note-list .post-index { min-width: 50px; color: #c3c3c3; }
         #note-list .post-title { font-weight: bold; }
-        #note-list .post-author { margin-left: auto; color: #555; }
+        #note-list .post-author { margin-left: auto; color: #c3c3c3; }
         #searchForm { display: flex; justify-content: center; align-items: center; gap: 0.2rem; }
-		.searchInput { background: none; border: none; border-bottom: 1px solid black; font-weight: bold; }
-		.searchBtn { background: none; border: 1px solid black; border-radius: 5px; padding-block: 2px; padding-inline: 8px; font-weight: bold; }
-		.searchBtn:hover { background: rgba(256, 256, 256, 0.88) !important; }
+		.searchInput { background: none; border: none; border-bottom: 1px solid var(--border-color); font-weight: bold; }
+		.searchInput option{ background-color: var(--card-back);}
+		.searchBtn { background: none; border: 1px solid var(--border-color); border-radius: 5px; color:var(--font-color); padding-block: 2px; padding-inline: 8px; font-weight: bold; }
+		.searchBtn:hover { background: var(--hover-color) !important; }
         .pagination { display: flex; justify-content: center; align-items: center; gap: 10px;}
-        .pagination a, .pagination strong { margin: 0 5px; text-decoration: none; color: #333; }
+        .pagination a, .pagination strong { margin: 0 5px; text-decoration: none; }
         .pagination strong { font-weight: bold; transform: scale(1.4); }
     </style>
 </head>
@@ -83,7 +84,7 @@
                         <div id="note-list">
                             <c:if test="${not empty list}">
                                 <c:forEach var="note" items="${list}">
-                                    <div class="full-post" onclick="location.href='postview.do?noteIdx=${note.note_idx}'">
+                                    <div class="full-post" onclick="location.href='postView.do?nidx=${note.note_idx}'">
                                         <div class="post-index">${note.note_idx}</div>
                                         <div class="post-title"><c:out value="${note.title}"/></div>
                                         <div class="post-author"><c:out value="${note.author_name}"/></div>

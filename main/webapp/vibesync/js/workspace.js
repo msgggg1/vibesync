@@ -552,12 +552,34 @@ $(document).ready(function() {
      var calendarEl = document.getElementById('calendar');
         if (calendarEl) {
             calendar = new FullCalendar.Calendar(calendarEl, {
+				eventDidMount: function(info) {
+        // 1. 이벤트의 원본 색상을 가져옵니다. 색상이 지정되지 않았다면 기본값을 사용합니다.
+        const originalColor = info.event.backgroundColor || info.event.borderColor || '#3788d8';
+        
+        // 2. 이미 작성된 hexToRgb 함수를 사용해 HEX를 RGB 객체로 변환합니다.
+        const rgb = hexToRgb(originalColor);
+        
+        if (rgb) {
+            // 3. RGB에 투명도(alpha)를 추가하여 연한 배경색(rgba)을 만듭니다. (0.3은 30% 투명도)
+            const lightBackgroundColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3)`;
+            
+            // 4. 이벤트 요소에 직접 스타일을 적용합니다.
+            info.el.style.backgroundColor = lightBackgroundColor; // 배경색을 연한 색으로 변경
+            info.el.style.borderColor = lightBackgroundColor;           // 테두리는 원본 색상 유지
+            
+            // 5. 배경색이 밝아졌으므로, 이벤트 제목(title)의 글자색을 어둡게 하여 가독성을 높입니다.
+            const eventTitleEl = info.el.querySelector('.fc-event-title');
+            if (eventTitleEl) {
+                eventTitleEl.style.color = 'var(--workspace-cal-font)'; // 진한 회색 계열
+	            }
+	        }
+	    },
                 initialView: 'dayGridMonth',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek'
-                },
+                },      
                 titleFormat: { year:"numeric", month: "short"},
                 dayMaxEvents: 2,
                 height: '100%',
