@@ -528,6 +528,12 @@
    list-style: none;
    overflow-y: auto;
    flex-grow: 1;
+  -ms-overflow-style: none;
+}
+#my-posts ul::-webkit-scrollbar,
+#liked-posts ul::-webkit-scrollbar,
+.generated_block ul::-webkit-scrollbar{
+   display: none;
 }
 
 #my-posts ul li,
@@ -1322,7 +1328,9 @@
 }
 
    @media (max-width: 800px) {
+     #todolist {flex-direction: column; height: 800px;}
      .contents_item, .generated_block { padding: 12px 7px !important; }
      #content_plus.contents_item { font-size: 30px; }
+     .calendar_contents{flex: 2 1 0;}
    }
   

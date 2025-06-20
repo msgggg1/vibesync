@@ -19,5 +19,6 @@ public class UserSummaryVO { // 조회에 필요한 최소한의 정보
 	private String nickname;
 	private String profile_img;
 	private int category_idx;
+	private boolean followedByCurrentUser;
 	
 }

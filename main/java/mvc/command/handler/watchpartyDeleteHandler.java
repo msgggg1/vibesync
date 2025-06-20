@@ -27,7 +27,7 @@ public class watchpartyDeleteHandler implements CommandHandler {
         try {
             // 2. DB 커넥션 가져오기 및 DAO 생성
             conn = ConnectionProvider.getConnection();
-            WatchPartyDAO dao = new WatchPartyDAOImpl(conn);
+            WatchPartyDAO dao = new WatchPartyDAO();
             
             // 3. DAO를 통해 데이터 삭제
             dao.deleteByHost(hostIdx);

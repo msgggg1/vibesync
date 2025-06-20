@@ -3,6 +3,7 @@ package mvc.svl;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.util.ConnectionProvider;
+import com.util.JdbcUtil;
 
 import mvc.domain.vo.WaSyncVO;
 import mvc.persistence.dao.WaSyncDAO;
@@ -24,9 +25,9 @@ import java.sql.SQLException;
 public class UpdateSyncServlet extends HttpServlet {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    * 
+    */
+   private static final long serialVersionUID = 1L;
     private Gson gson = new Gson();
 
     @Override
@@ -55,18 +56,20 @@ public class UpdateSyncServlet extends HttpServlet {
 
         int inserted = 0;
         Connection conn = null;
-		try {
-			conn = ConnectionProvider.getConnection(); 
+      try {
+         conn = ConnectionProvider.getConnection(); 
             WaSyncDAOImpl wsDao = new WaSyncDAOImpl(conn);
             
-			inserted = wsDao.insert(sync);
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} // 성공 시 > 0
+         inserted = wsDao.insert(sync);
+      } catch (NamingException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (SQLException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } finally {
+         JdbcUtil.close(conn);
+      }
 
         response.setContentType("application/json; charset=UTF-8");
         JsonObject jsonResp = new JsonObject();

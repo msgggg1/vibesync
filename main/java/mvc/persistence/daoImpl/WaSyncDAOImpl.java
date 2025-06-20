@@ -11,24 +11,24 @@ import mvc.domain.vo.WaSyncVO;
 import mvc.persistence.dao.WaSyncDAO;
 
 public class WaSyncDAOImpl implements WaSyncDAO {
-	
-	private Connection conn = null;
+   
+   private Connection conn = null;
 
-	public WaSyncDAOImpl(Connection conn) {
-		this.conn  = conn;
-	}
+   public WaSyncDAOImpl(Connection conn) {
+      this.conn  = conn;
+   }
 
     // 특정 WatchParty의 최근 sync 정보 가져오기 (마지막 재생 상태)
     public WaSyncVO selectLatestByWatchParty(int watchPartyIdx) throws NamingException, SQLException {
-		 PreparedStatement pstmt = null;
-		 ResultSet rs = null;
-		 
-    	WaSyncVO sync = null;
+       PreparedStatement pstmt = null;
+       ResultSet rs = null;
+       
+       WaSyncVO sync = null;
         String sql = "SELECT sync_idx, timeline, play, watchParty_idx " +
                      "FROM wa_sync WHERE watchParty_idx = ? ORDER BY sync_idx DESC";
 
         try {
-        	conn = ConnectionProvider.getConnection();
+           conn = ConnectionProvider.getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, watchPartyIdx);
             rs = pstmt.executeQuery();
@@ -46,19 +46,20 @@ public class WaSyncDAOImpl implements WaSyncDAO {
         } finally {
             if (rs != null) try { JdbcUtil.close(rs); } catch (Exception ignored) {}
             if (pstmt != null) try { JdbcUtil.close(pstmt); } catch (Exception ignored) {}
+            JdbcUtil.close(conn);
         }
         return sync;
     }
 
     // 실시간 재생 정보 삽입 (WebSocket에서 호출)
     public int insert(WaSyncVO sync) throws NamingException, SQLException {
-		 PreparedStatement pstmt = null;
-		 
+       PreparedStatement pstmt = null;
+       
         String sql = "INSERT INTO wa_sync (timeline, play, watchParty_idx) VALUES (?, ?, ?)";
         int result = 0;
 
         try {
-        	conn = ConnectionProvider.getConnection();
+           conn = ConnectionProvider.getConnection();
             pstmt = conn.prepareStatement(sql);
             
             pstmt.setDouble(1, sync.getTimeline());
@@ -69,6 +70,7 @@ public class WaSyncDAOImpl implements WaSyncDAO {
             e.printStackTrace();
         } finally {
             if (pstmt != null) try { JdbcUtil.close(pstmt); } catch (Exception ignored) {}
+            JdbcUtil.close(conn);
         }
         return result;
     }
@@ -88,7 +90,7 @@ public class WaSyncDAOImpl implements WaSyncDAO {
                 // 기존 레코드가 있으면 UPDATE
                 int syncIdx = rs.getInt("sync_idx");
                 JdbcUtil.close(rs);
-            	JdbcUtil.close(pstmt);
+               JdbcUtil.close(pstmt);
 
                 String updateSql = "UPDATE wa_sync SET timeline = ?, play = ? WHERE sync_idx = ?";
                 pstmt = conn.prepareStatement(updateSql);
@@ -98,8 +100,8 @@ public class WaSyncDAOImpl implements WaSyncDAO {
                 return pstmt.executeUpdate();
             } else {
                 // 없으면 INSERT
-            	JdbcUtil.close(rs);
-            	JdbcUtil.close(pstmt);
+               JdbcUtil.close(rs);
+               JdbcUtil.close(pstmt);
 
                 String insertSql = "INSERT INTO wa_sync (timeline, play, watchParty_idx) VALUES (?, ?, ?)";
                 pstmt = conn.prepareStatement(insertSql);
@@ -114,6 +116,7 @@ public class WaSyncDAOImpl implements WaSyncDAO {
         } finally {
             try { if (rs != null) JdbcUtil.close(rs); } catch (Exception ignore) {}
             try { if (pstmt != null) JdbcUtil.close(pstmt); } catch (Exception ignore) {}
+            JdbcUtil.close(conn);
         }
     }
 }

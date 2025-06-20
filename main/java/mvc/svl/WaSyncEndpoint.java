@@ -39,19 +39,19 @@ public class WaSyncEndpoint {
         JsonObject json = gson.fromJson(message, JsonObject.class);
         String type = json.get("type").getAsString();
         int wpIdx = json.get("watchPartyIdx").getAsInt();
-        
+       
         Connection conn = null;
 
         // 1) initSync: 최초 접속 시, DB의 마지막 sync 정보 조회해서 클라이언트에 전달
         if ("initSync".equals(type)) {
-        	WaSyncVO lastSync = null;
-        	try {
-        		 conn = ConnectionProvider.getConnection();
+            WaSyncVO lastSync = null;
+            try {
+                 conn = ConnectionProvider.getConnection();
                  WaSyncDAOImpl syncDao = new WaSyncDAOImpl(conn);
                  lastSync = syncDao.selectLatestByWatchParty(wpIdx);
-        	}finally {
-        		if (conn != null) conn.close();
-        	}
+            }finally {
+                if (conn != null) conn.close();
+            }
             if (lastSync != null) {
                 Map<String, Object> resp = new HashMap<>();
                 resp.put("type", "sync");
@@ -72,7 +72,7 @@ public class WaSyncEndpoint {
             newSync.setWatchPartyIdx(wpIdx);
             newSync.setTimeline(timeline);
             newSync.setPlay(playState);
-            
+           
             try {
                 // 1. DB 작업 직전에 커넥션을 얻습니다.
                 conn = ConnectionProvider.getConnection();
@@ -129,7 +129,9 @@ public class WaSyncEndpoint {
     // 해당 파티(wpIdx)에 있는 모든 세션에 메시지 전송
     private void broadcastToParty(int wpIdx, String message) {
         if (partySessions.containsKey(wpIdx)) {
-            for (Session s : partySessions.get(wpIdx)) {
+            // [수정] ConcurrentModificationException 방지를 위해 Set을 복사하여 순회합니다.
+            Set<Session> sessions = new HashSet<>(partySessions.get(wpIdx));
+            for (Session s : sessions) {
                 if (s.isOpen()) {
                     s.getAsyncRemote().sendText(message);
                 }

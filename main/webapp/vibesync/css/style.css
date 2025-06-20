@@ -981,7 +981,6 @@ p {
 }
 
 @media (max-width:600px) {
-  #todolist {flex-direction: column;}
   #contents_grid {grid-template-columns: repeat(1, 1fr);}
   #swiper2 .swiper-wrapper .swiper-slide {width: 100% !important}
 }

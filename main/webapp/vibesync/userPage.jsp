@@ -81,8 +81,8 @@
         .chat-input-row { display: flex; align-items: center; gap: 8px; margin: 12px; background: #fff; border-radius: 12px; border: 1.5px solid #e2e5ea; padding: 7px 12px; box-shadow: 0 1px 4px rgba(80,110,140,0.08); flex-shrink: 0; }
         #chatInput { flex: 1; border: none; font-size: 15px; color: #23272f; outline: none; padding: 8px 0; height: 38px; background: none; }
         #chatInput::placeholder { color: #b7b8bd; font-size: 14px; }
-        #sendMessageBtn { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; background: #7fa6c9; border: none; border-radius: 50%; transition: background 0.16s; cursor: pointer; padding: 0; }
-        #sendMessageBtn:hover { background: #45607d; }
+        #sendMessageBtn { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; background: #fe4f4f; border: none; border-radius: 50%; transition: background 0.16s; cursor: pointer; padding: 0; }
+        #sendMessageBtn:hover { background: #fe1717; }
         .chat-date-separator { display: inline-block; padding: 4px 12px; margin: 16px auto; font-size: 12px; color: var(--chat-date-font); background: var(--chat-date-back); border-radius: 12px; text-align: center; }
     </style>
     

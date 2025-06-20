@@ -78,8 +78,9 @@ public class SettingService {
      */
     public Map<String, Object> checkUserPasswordAndGetData(int acIdx, String inputPassword) throws Exception {
         Map<String, Object> result = new HashMap<>();
-        
-        try (Connection conn = ConnectionProvider.getConnection()) {
+        Connection conn = null;
+        try {
+           conn = ConnectionProvider.getConnection();
             UserAccountDAO dao = new UserAccountDAOImpl(conn);
             UserDetailVO user = dao.getUserAccountById(acIdx);
 
@@ -102,6 +103,8 @@ public class SettingService {
                 result.put("success", false);
                 result.put("message", "비밀번호가 일치하지 않습니다.");
             }
+        } finally {
+           if (conn != null) JdbcUtil.close(conn);
         }
         return result;
     }
@@ -116,7 +119,9 @@ public class SettingService {
     public String updateProfileImage(int acIdx, String base64Image, String rootPath) throws Exception {
         String newDbPath = null;
         String newthumbPath = null;
-        try (Connection conn = ConnectionProvider.getConnection()) {
+        Connection conn = null;
+        try {
+           conn = ConnectionProvider.getConnection();
             UserAccountDAO dao = new UserAccountDAOImpl(conn);
             
             UserDetailVO user = dao.getUserAccountById(acIdx);
@@ -174,6 +179,8 @@ public class SettingService {
             
             // 5. DB에 새 이미지 경로 업데이트
             dao.updateProfileImagePath(acIdx, newDbPath);
+        } finally {
+           if (conn != null) JdbcUtil.close(conn);
         }
         return newthumbPath;
     }
@@ -185,7 +192,9 @@ public class SettingService {
      * @return 성공 시 true, 실패 시 false
      */
     public boolean alterUserPassword(int acIdx, String newPassword) throws Exception {
-        try (Connection conn = ConnectionProvider.getConnection()) {
+       Connection conn = null;
+        try {
+           conn = ConnectionProvider.getConnection();
             // 1. 새로운 salt 생성
             String newSalt = PasswordUtil.generateSalt();
             
@@ -200,6 +209,8 @@ public class SettingService {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        } finally {
+           if (conn != null) JdbcUtil.close(conn);
         }
     }
 
@@ -252,7 +263,7 @@ public class SettingService {
         } finally {
             if (conn != null) {
                 try { conn.setAutoCommit(true); } catch (SQLException ignored) {}
-                try { conn.close(); } catch (SQLException ignored) {}
+               if (conn != null) JdbcUtil.close(conn);
             }
         }
     }

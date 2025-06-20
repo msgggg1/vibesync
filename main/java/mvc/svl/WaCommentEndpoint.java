@@ -23,7 +23,8 @@ public class WaCommentEndpoint {
     // watchPartyIdx 별 세션들
     private static Map<Integer, Set<Session>> partySessions = Collections.synchronizedMap(new HashMap<>());
 
-    private WaCommentDAO commentDao = new WaCommentDAO();
+    // DAO 객체를 멤버 변수로 생성 (DAO 내부는 상태를 가지지 않으므로 스레드에 안전)
+    private WaCommentDAO commentDao = new WaCommentDAO(); 
     private Gson gson = new Gson();
 
     @OnOpen
@@ -32,21 +33,35 @@ public class WaCommentEndpoint {
     }
 
     @OnMessage
-    public void onMessage(String message, Session session) throws NamingException, SQLException {
+    public void onMessage(String message, Session session) { // throws 절 제거
         JsonObject json = gson.fromJson(message, JsonObject.class);
         String type = json.get("type").getAsString();
         int wpIdx = json.get("watchPartyIdx").getAsInt();
 
-        // 1) initComment: 최초 접속 시 과거 채팅들을 DB에서 꺼내서 클라이언트에게 전송
+        // 1) initComment: 최초 접속
         if ("initComment".equals(type)) {
-            List<WaCommentVO> oldComments = commentDao.selectByWatchParty(wpIdx);
+            addSession(wpIdx, session);
+
+            List<WaCommentVO> oldComments;
+            try {
+                // [수정] DAO 호출부를 try-catch로 감싸 예외를 처리합니다.
+                oldComments = commentDao.selectByWatchParty(wpIdx);
+            } catch (NamingException | SQLException e) {
+                e.printStackTrace();
+                // 오류 발생 시 클라이언트에 에러 메시지를 보내거나, 여기서 처리를 중단합니다.
+                // 이 예외 처리가 없어 서버 스레드가 죽는 것이 문제의 원인이었습니다.
+                return;
+            }
+
             JsonArray arr = new JsonArray();
             for (WaCommentVO c : oldComments) {
                 JsonObject obj = new JsonObject();
                 obj.addProperty("nickname", c.getNickname());
                 obj.addProperty("chatting", c.getChatting());
                 obj.addProperty("timeline", c.getTimeline());
-                obj.addProperty("createdAt", c.getCreatedAt().toString());
+                if (c.getCreatedAt() != null) {
+                    obj.addProperty("createdAt", c.getCreatedAt().toString());
+                }
                 arr.add(obj);
             }
             JsonObject resp = new JsonObject();
@@ -54,26 +69,27 @@ public class WaCommentEndpoint {
             resp.add("comments", arr);
             session.getAsyncRemote().sendText(gson.toJson(resp));
 
-            // 세션 등록
-            addSession(wpIdx, session);
         }
-        // 2) comment: 신규 채팅이 들어오면 DB에 저장하고 브로드캐스트
+        // 2) comment: 신규 채팅
         else if ("comment".equals(type)) {
             String nickname = json.get("nickname").getAsString();
             String chatText = json.get("chatting").getAsString();
             double timeline = json.get("timeline").getAsDouble();
 
-            System.out.println("nickname : " + nickname + "/ commentText : " + chatText + " / timeline : " + timeline + "/ wpIdx : " + wpIdx);
-           
-            // DB 저장
             WaCommentVO wc = new WaCommentVO();
             wc.setWatchPartyIdx(wpIdx);
             wc.setNickname(nickname);
             wc.setChatting(chatText);
             wc.setTimeline(timeline);
-            commentDao.insert(wc);
 
-            // 모든 참가자에게 브로드캐스트
+            try {
+                // [수정] DAO 호출부를 try-catch로 감싸 예외를 처리합니다.
+                commentDao.insert(wc);
+            } catch (NamingException | SQLException e) {
+                e.printStackTrace();
+                return;
+            }
+
             JsonObject broadcastMsg = new JsonObject();
             broadcastMsg.addProperty("type", "comment");
             broadcastMsg.addProperty("nickname", nickname);
@@ -87,7 +103,8 @@ public class WaCommentEndpoint {
 
     @OnClose
     public void onClose(Session session, CloseReason reason) {
-        
+        // [수정] 연결 종료 시 반드시 세션을 제거해야 합니다.
+        removeSession(session);
     }
 
     @OnError
@@ -113,7 +130,8 @@ public class WaCommentEndpoint {
 
     private void broadcastToParty(int wpIdx, String message) {
         if (partySessions.containsKey(wpIdx)) {
-            for (Session s : partySessions.get(wpIdx)) {
+            Set<Session> sessions = new HashSet<>(partySessions.get(wpIdx));
+            for (Session s : sessions) {
                 if (s.isOpen()) {
                     s.getAsyncRemote().sendText(message);
                 }
