@@ -84,21 +84,23 @@
 
 # [2] Project Team
 
-|<img src="https://avatars.githubusercontent.com/u/147032519?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/180395275?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547917?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/186297935?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547900?v=4" width="150" height="150"/>|
-|:-:|:-:|:-:|:-:|:-:|
-|**김현수**<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management<br>UI/UX Design<br>FE/BE Development|**서재웅**<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**<br>Overall FE/BE Development|**박지웅**<br/>[@park-jiwoong](https://github.com/park-jiwoong)<br>**Team Member**|**김민선**<br/>[@msgggg1](https://github.com/msgggg1)<br>**Team Member**|**김예지**<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)<br>**Team Member**|
+## Team
+|<img src="https://avatars.githubusercontent.com/u/147032519?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/180395275?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/186297935?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/199547900?v=4" width="150" height="150"/>|
+|:-:|:-:|:-:|:-:|
+|김현수<br/>[@jejuKIM99](https://github.com/jejuKIM99)<br>**Team Leader**<br>Planning/Management<br>UI/UX Design<br>FE/BE Development|서재웅<br/>[@ungs1026](https://github.com/ungs1026)<br>**Lead Developer**<br>Overall FE/BE Development|김민선[@msgggg1](https://github.com/msgggg1)|김예지<br/>[@Yeji-Kim-Erica](https://github.com/Yeji-Kim-Erica)|
+
+<sub>[Table made by TIT](https://team-info-table.seondal.kr/)</sub>
 
 
 # [3] Usage
-*★는 해당 작업 주 작업자*<br>
-*전체 공동 개발로 구분 불가일 경우 총괄만 ★로 표시*<br><br>
+<br><br>
 
-<h2>Index Page_제작: ★김현수,서재웅</h2>
+<h2>Index Page_제작: 김현수(FE),서재웅(FE)</h2>
 
 ![usage](readme_img/index1.gif)
 
-<img src="https://img.shields.io/badge/Typed.js-5DAED7?style=for-the-badge&logoColor=white"> <img src="https://img.shields.io/badge/Swiper-5DAED7?style=for-the-badge&logoColor=white">
-- **Index Page**의 최초 로드 모습입니다. 해당 페이지는 페이지 초기 로드시 나타나며, 간단한 애니메이션을 포함하고 있습니다.<br><br>
+<img src="https://img.shields.io/badge/Typed.js-5DAED7?style=for-the-badge&logoColor=white"> <img src="https://img.shields.io/badge/Swiper-5DAED7?style=for-the-badge&logoColor=white"> <img src="https://img.shields.io/badge/Vanta.js-5DAED7?style=for-the-badge&logoColor=white">
+- **Index Page**의 최초 로드 모습입니다. 해당 페이지는 페이지 초기 로드시 나타나며, 간단한 애니메이션(타이핑, 별똥별)을 포함하고 있습니다.<br><br>
 
 ![usage](readme_img/index2.gif)
 
@@ -150,7 +152,7 @@
 
 ```
 <br><br>
-<h2>Login Page_제작: ★김민선, 김현수</h2>
+<h2>Login Page_제작: 김민선(FE/BE), 김현수(FE)</h2>
 
 ![usage](readme_img/login.gif)
 ![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
@@ -202,6 +204,54 @@
     }
 
 ```
+
+<br><br>
+<h2>Main_제작: 김현수(FE), 서재웅(FE/BE), 김예지(BE)</h2>
+
+![usage](readme_img/main.gif)
+![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
+- **Main Page**입니다. **Login Page**에서 로그인 성공치 최초로 보여지는 페이지 입니다.
+- 회원가입시 입력한 선호 카테고리에 맞는 최신글/인기글/인기유저를 출력합니다.
+- 선호 카테고리 외 글을 보기 위해 선호 카테고리 외 카테고리 포스트 리스트로 이동하는 버튼이 존재합니다.
+- 버튼 외에도 하단에 선호 카테고리 외 각 카테고리들의 인기글을 출력합니다.
+- 반응형으로 디자인 되어 일관된 경험을 제공합니다.
+- 좌측 사이드바를 통해 페이지 이동 및 테마 변경이 가능합니다. 테마 변경시 즉시 적용되어 페이지 이동 및 재접속 시에도 해당 설정이 유지됩니다.
+
+<br><br>
+<h2>Workspace_제작: 김현수(FE), 김민선(FE/BE), 김예지(BE)</h2>
+
+![usage](readme_img/workspace.jpg)
+![usage](readme_img/workspace2.jpg)
+![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
+- **Workspace**입니다. 캘린더를 통한 일정관리가 가능하며 하단 블럭을 통해 포스트 저장/ 메시지 관리/ 통계 등의 기능을 사용할 수 있습니다.
+- 캘린더의 일정은 색상을 통해 커스텀하여 구분할 수 있습니다.
+- 하단 블럭은 기본 블럭 3개( 내가 작성한 글, 좋아요한 글, 안읽은 메시지), 추가블럭 최대 5개로 구성됩니다. 기본블럭을 제외한 추가블럭은 순서를 변경하여 커스텀 할 수 있습니다.
+- 각 블럭의 데이터는 개별 새로고침 버튼으로 최신화가 가능합니다.
+- 반응형으로 디자인 되어 일관된 경험을 제공합니다.
+
+<br><br>
+<h2>Mypage_제작: 김현수(FE), 서재웅(FE/BE), 김민선(BE)</h2>
+
+![usage](readme_img/mypage.jpg)
+![usage](readme_img/mypage2.jpg)
+![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
+- **Mypage(Userpage)**입니다. 내가 올린 포스트와 메시지 워치파티등의 진입점 중 하나입니다.
+- 본인의 페이지에서는 설정 버튼이 활성화 되며, 비밀번호 변경/ 프로필 이미지 변경/ 회원탈퇴가 가능합니다.
+- 우측하단 + 버튼을 통하여 페이지를 생성하고 해당 페이지에 새 글을 포스팅 할 수 있습니다.
+- 반응형으로 디자인 되어 일관된 경험을 제공합니다.
+
+<br><br>
+<h2>Write_제작: 김현수(FE), 서재웅(FE/BE)</h2>
+
+![usage](readme_img/write.jpg)
+![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
+- **Write**폼(페이지)입니다. 자신의 페이지에서 새글쓰기를 눌러 진입합니다.
+- **Summer Note**를 이용하여 글쓰기 폼을 구현하고, 실제 페이지 위에 직접 적는 느낌을 주기위해 폼을 디자인하였습니다. 이를 통해 글 작성과 동시에 postView 페이지에서 보여질 형태를 프리뷰 할 수 있습니다.
+- 글 안에 이미지 삽입이 가능하며 사이즈 조절이 가능합니다. png이미지를 지원하여 투명 배경의 이미지 또한 삽입 가능합니다.
+- 하단 옵션은 필수 입력항목입니다. **Mypage(Userpage)**에서 출력할 썸네일 이미지 및 포스트의 분류를 위한 옵션 선택을 해야합니다.
+- 반응형으로 디자인 되어 일관된 경험을 제공합니다.
+![usage](readme_img/postview.jpg)
+
 <br><br>
 <!--Url for Badges-->
 [license-shield]: https://img.shields.io/github/license/dev-ujin/readme-template?labelColor=D8D8D8&color=04B4AE
