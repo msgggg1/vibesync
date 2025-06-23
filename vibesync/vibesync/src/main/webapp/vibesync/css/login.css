@@ -1,0 +1,51 @@
+*{box-sizing:border-box;font-family:'Cal Sans','National Park',sans-serif;}
+body{margin:0;color:#313131;background-color:#000310;overflow:scroll;}
+body::-webkit-scrollbar{display:none;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.container{display:flex;justify-content:flex-start;align-items:stretch;min-height:100vh;width:100vw;}
+#logo{text-align:center;flex-shrink:0;align-self:center;flex-basis:0;flex-grow:7;}
+#logo img{width:80%;max-width:250px;height:auto;}
+#login{background-color:#fff;flex-basis:0;flex-grow:3;text-align:left;z-index:1;}
+#findYourVibeSync{font-weight:lighter;text-align:left;font-size:2.8em;line-height:1.2;color:#313131;}
+#loginFormContainer,#signupFormContainer,#resetPasswordContainer{display:flex;flex-direction:column;width:100%;align-items:stretch;}
+#loginForm,#signupForm,#resetPasswordForm{display:flex;flex-direction:column;align-items:center;width:100%;gap:30px;}
+#login input[type="email"],#login input[type="password"],#login input[type="text"]{width:100%;padding:12px 5px;margin:0;border:none;border-bottom:2px solid #313131;background-color:transparent;font-size:1em;color:#313131;transition:border-color 0.3s ease;}
+#login input[type="email"]:focus,#login input[type="password"]:focus,#login input[type="text"]:focus{outline:none;border-bottom-color:#5DAED7;}
+#login form input::placeholder{color:#888;opacity:1;}
+.checkbox-group{display:flex;justify-content:flex-start;align-items:center;gap:20px;margin:0;font-size:0.9em;flex-wrap:wrap;}
+.checkbox-pair{display:inline-flex;align-items:center;gap:6px;}
+.checkbox-group label{margin-left:0;cursor:pointer;color:#555;}
+.checkbox-group input[type="checkbox"]{cursor:pointer;margin:0;}
+#login form button{width:100%;padding:12px;background-color:#5DAED7;color:white;border:none;border-radius:4px;cursor:pointer;font-size:1.1em;font-weight:lighter;transition:background-color 0.3s ease;}
+#login form button:hover{background-color:#4a9ac4;}
+.form-notice{display:flex;align-items:center;padding:12px 15px;width:100%;margin-bottom:20px;background-color:#f0f6fa;border-left:5px solid #5DAED7;border-radius:4px;}
+.notice-icon{width:20px;height:20px;margin-right:12px;stroke:#5DAED7;flex-shrink:0;}
+.form-notice p{font-size:1.1em;color:#334e68;line-height:1.5;margin:0;}
+.links{font-size:0.9em;text-align:center;color:#555;padding-top:10px;}
+.links a{color:#5DAED7;text-decoration:none;font-weight:bold;}
+.links a:hover{text-decoration:underline;}
+.switch-form-link{border-top:1px solid #eee;padding-top:20px;width:100%;}
+#inner_logo{display:none;}
+@media (max-width:1024px){
+.container{flex-direction:column;padding:0 2vw;align-items:center;justify-content:center;}
+#logo{display:none;}
+#inner_logo{display:flex;justify-content:center;z-index:-1;margin-bottom:20px;}
+#login{flex-basis:auto;flex-grow:0;max-width:500px;width:100%;min-width:300px;box-shadow:-10px -5px 50px #f069ff,5px 10px 50px #40c9ff;padding:20px;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+#findYourVibeSync{font-size:1.8em;text-align:left;}
+#loginForm,#signupForm{gap:2vh;align-items:stretch;}
+#login::before{display:none;}}
+#starfield{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;}
+.shooting-star{position:fixed;width:120px;height:4px;background:linear-gradient(to left,white,rgba(255,255,255,0));opacity:0.8;pointer-events:none;transform-origin:0 0;animation:shoot 1s ease-out forwards;}
+@keyframes shoot{to{transform:rotate(45deg) translate(600px,0) scale(0.5);opacity:0;}}
+#login::before{content:'';position:absolute;top:0;bottom:0;width:10px;pointer-events:none;z-index:10;background:linear-gradient(to right,#000310,rgba(255,255,255,0));}
+.login-wrapper{padding:0 20px;height:80%;width:100%;display:flex;flex-direction:column;justify-content:space-around;z-index:10;}
+.highlight{background:linear-gradient(90deg,#9b58b6,#3498db,#2ecc71);background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;padding:0 1px;font-size:1.05em;animation:highlightColorMove 6s ease-in-out infinite;}
+@keyframes highlightColorMove{0%{background-position:0% 50%;}33%{background-position:50% 50%;}66%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+#signupFormContainer select#category{width:100%;padding:12px 15px;margin-bottom:15px;border:1px solid #ddd;border-radius:8px;box-sizing:border-box;background-color:#fff;font-size:1em;color:#333;cursor:pointer;}
+#signupFormContainer select#category:focus{border-color:#007bff;box-shadow:0 0 0 0.2rem rgba(0,123,255,0.25);outline:none;}
+.form-notice.form-notice-success{background-color:#e8f5e9;border-left:5px solid #4CAF50;}
+.form-notice.form-notice-success .notice-icon{stroke:#4CAF50;}
+.form-notice.form-notice-success p{color:#2e7d32;}
+.form-notice.form-notice-error{background-color:#ffebee;border-left:5px solid #f44336;}
+.form-notice.form-notice-error .notice-icon{stroke:#f44336;}
+.form-notice.form-notice-error p{color:#c62828;}

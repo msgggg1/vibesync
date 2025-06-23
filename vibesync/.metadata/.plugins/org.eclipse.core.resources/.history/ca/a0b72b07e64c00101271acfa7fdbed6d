@@ -1,0 +1,5 @@
+package mvc.command.handler;
+
+public class watchpartyDeleteHandler {
+
+}

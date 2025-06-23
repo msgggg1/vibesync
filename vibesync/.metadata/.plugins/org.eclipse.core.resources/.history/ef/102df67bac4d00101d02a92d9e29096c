@@ -1,0 +1,5 @@
+package mvc.persistence.dao;
+
+public class WSWatchPartyDAO {
+
+}

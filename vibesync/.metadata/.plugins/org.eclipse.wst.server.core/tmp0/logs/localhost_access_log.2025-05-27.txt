@@ -1,0 +1,11 @@
+127.0.0.1 - - [27/May/2025:12:28:45 +0900] "GET / HTTP/1.1" 404 808
+0:0:0:0:0:0:0:1 - - [27/May/2025:12:28:45 +0900] "GET /vibesync/list/list.html HTTP/1.1" 200 6973
+0:0:0:0:0:0:0:1 - - [27/May/2025:12:28:45 +0900] "GET /vibesync/list/js/script.js HTTP/1.1" 200 5163
+0:0:0:0:0:0:0:1 - - [27/May/2025:12:28:45 +0900] "GET /vibesync/list/css/style.css HTTP/1.1" 200 15330
+0:0:0:0:0:0:0:1 - - [27/May/2025:12:28:45 +0900] "GET /vibesync/list/sources/icons/work.svg HTTP/1.1" 404 860
+0:0:0:0:0:0:0:1 - - [27/May/2025:12:28:45 +0900] "GET /vibesync/list/sources/icons/follow.svg HTTP/1.1" 404 862
+0:0:0:0:0:0:0:1 - - [27/May/2025:12:28:45 +0900] "GET /vibesync/list/sources/icons/home.svg HTTP/1.1" 404 860
+0:0:0:0:0:0:0:1 - - [27/May/2025:12:28:45 +0900] "GET /vibesync/list/sources/icons/search.svg HTTP/1.1" 404 862
+0:0:0:0:0:0:0:1 - - [27/May/2025:12:28:45 +0900] "GET /vibesync/list/sources/icons/arrow_back.svg HTTP/1.1" 404 866
+0:0:0:0:0:0:0:1 - - [27/May/2025:12:28:45 +0900] "GET /vibesync/list/css/back4.png HTTP/1.1" 200 3182
+0:0:0:0:0:0:0:1 - - [27/May/2025:12:28:45 +0900] "GET /favicon.ico HTTP/1.1" 404 819

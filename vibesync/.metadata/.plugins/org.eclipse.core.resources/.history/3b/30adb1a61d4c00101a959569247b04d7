@@ -1,0 +1,724 @@
+<%@page 가져오기="java.util.열거"%>
+<%@ 페이지 언어="java" 콘텐츠Type="text/html; charset=UTF-8"
+    페이지 인코딩="UTF-8"%>
+<%@ 페이지 가져오기="java.net .URLencoder"%>
+<% 문자열 contextPath = request.getContextPath() + "/vibesync"; %>
+<%@ 태그립 접두사="c" uri="http://java.sun.com/jsp/jstl/core "%>
+<%@ 태그립 접두사="fmt" uri="http://java.sun.com/jsp/jstl/fmt "%>
+
+<!DOCTYPE HTML>
+<jsp: include 페이지="/vibesync/includes/header.jsp" />
+<머리>
+    <meta charset=>UTF-8">
+    <meta 이름="viewport" 콘텐츠="width=장치 너비, 초기 스케일=1.0">
+    <title>사용자</title>
+    <link rel="icon" href="./sources/favicon.ico" />
+    <링크 rel="스타일시트" href="./css/스타일.css">
+    <링크 rel="스타일시트" href="./css/sidebar.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js "></script>
+    <스크립트 연기 src="./js/script.js"></script>
+    <링크 rel="스타일시트" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css ">
+    <스타일>
+        h3 { 마진: 0; }
+        #왼쪽 wrapper {디스플레이: 유연성; 높이: 100%; 간격: 20 px; 정당화 내용: 중심; 정렬 items: 중심;}
+  .wp_btn {배경: 선형 gradient(90 deg, rgba(138, 196, 255, 1) 0%, rgba(227, 176, 255, 1) 50%, rgba(165, 250, 120, 1) 100%);}
+        .wp_btn img{폭: 24 px; 높이: 25 px; 여백-오른쪽: 6 px;}
+        #설정Btn {배경: #6c757d; 색상: 흰색; 테두리: 없음; 글꼴 무게: 700; 커서: 포인터; 전환: 배경색 0.18s; }
+        #설정Btn img {폭: 26px; 높이: 26px;}
+        #설정Btn:호버 {배경: #5a6268; }
+        .name_함수 버튼 {경계-radius: 5px; }
+        #pageCreateBtn {위치: 고정; 하단: 20px; 오른쪽: 20px; 너비: 50px; 높이: 50px; 경계 반경: 50%; 배경: #8ac4ff; 색상: #ff; 글꼴 크기: 24px; z-인덱스: 1000; 경계: 없음; 커서: 포인터; }
+        .modal-overlay {위치: 고정; 상단: 0; 왼쪽: 0; 너비: 100%; 높이: 100%; 배경: rgba(0,0,0,0.5); 표시: 없음; 정당화 내용: 중심; 정렬 items: 중심; z-인덱스: 2000; }
+        #모달 래퍼 {폭: 100%; 높이: 100%; 디스플레이: 플렉스; 정당화 내용: 중심; 정렬 항목: 중심; }
+        .modal-콘텐츠 {디스플레이: 플렉스; 플렉스-direction: 컬럼; 정당화-콘텐츠: 스페이스-evenly; 정렬-items: 센터; 배경: #ffff; 패딩: 20px; 테두리-radius: 8px; 너비: 90%; 최대 너비: 400px; 최소 높이: 14렘; 위치: 상대적; }
+        #페이지 선택 { 너비: 100%; 높이: 2rem; 텍스트 정렬: 가운데; 테두리 반경: 10px; 글꼴 무게: 굵게; 텍스트 변환: 대문자; }
+        #btn_wrapper {디스플레이: 플렉스; 갭: 2rem; }
+        .btn_deco {배경: #8ac4ff; 테두리: 없음; 색상: 흰색; 패딩: px 12 px 4개; 테두리-radius: 6 px; }
+        .btn_deco:hover { background: #4da3f9; }
+        #pageCreateForm {디스플레이: 플렉스; 플렉스 방향: 열; }
+        .modal 닫기 {위치: 절대 위치; 상단: 10 px; 오른쪽: 10 px; 커서: 포인터; 글꼴 크기: 18 px; 테두리: 없음; 배경: 없음; }
+    </스타일>
+   
+    <style> /* 메시지 */
+        #up_msg_btn { 배경색: #fe4f4f; 색상: #ff; 테두리: 없음; 패딩: 11 px 32 px 11 px 23 px; 글꼴 무게: 700; 글꼴 크기: 1.06rem; 디스플레이: 플렉스; 정렬 items: 중앙; 간격: 13 px; 문자 spacing: 0.3 px; 커서: 포인터; 윤곽선: 없음; 전환: 배경색 0.18초 쉽게 꺼짐, 변환 0.12초; }
+        #up_msg_btn i { filter: invert(0)!중요; 글꼴 크기: 1.18em; 색상: #ff; }
+        #up_msg_btn: hover {배경: #fe1717; 색상: #ff; }
+        .modal-msglist {디스플레이: 없음; 위치: 고정; z-인덱스: 999; 왼쪽: 0; 상단: 0; 너비: 100vw; 높이: 100vh; 배경: rgba(0,0,0,0.6); 배경 필터: 블러(2.5 px); 정당화 내용: 중심; 정렬 items: 중심; }
+        .modal-msg {위치: 상대적; 배경: #f5f8fb; 경계 반경: 20px; 박스-섀도: 0 4px 32px 0 rgba(80,110,150,0.10), 0 0 0 1.5px #c7d3e8; 너비: 92%; 최대 너비: 415px; 최소 너비: 330px; 최소 높이: 390px; 최대 높이: 78vh; 디스플레이: 플렉스; 플렉스; 플렉스 방향: 열; 패딩 바텀: 13px; 경계: 없음; 애니메이션: 줌인 0.21s; }
+        @keyframes 줌{{변환: 스케일(0.97)}; 불투명도: 0; }에서 {변환: 스케일(1); 불투명도: 1; }}}까지
+        #msgRoomTitle { 글꼴 크기: 18px; 글꼴 무게: 700; 색상: var(--폰트 크기); 패딩: 18px 0 12px 0; 테두리 하단: 2px 솔리드 var(--경계 색상); 배경: 투명; 여백: 0 0 6px 0; 텍스트 정렬: 가운데; 글자 간격: 0.02em; }
+        #msgRoomTitle i { 여백 오른쪽: 9px; 색상: var(--폰트 컬러); 글꼴 크기: 20px; }
+        .긴 modal {위치: 절대적; 상단: 13 px; 오른쪽: 17 px; 색상: #bcb8ad; 글꼴 크기: 26 px; 글꼴 무게: 400; 커서: 포인터; 배경: 없음; 경계: 없음; 경계: 없음; 너비: 32 px; 높이: 32 px; 디스플레이: 플렉스; 정렬 items: 중심; 정당화 내용: 중심; 전환: 배경 0.13초, 색상 0.12초; }
+        .긴밀 modal: hover, .긴밀 modal: 초점 { 글꼴 무게: 굵게; 색상: var(--font 색상); 텍스트 장식: 없음; }
+        #msgList { 패딩: 13px 25px 10px 25px; 오버플로-y: 자동; 플렉스-성장: 1; 플렉스-방향: 열; 최소 높이: 150px; 디스플레이: 플렉스; 정렬 항목: 스트레치; 정당화 내용: 플렉스-시작; 배경: 투명; }
+        .노 message 자리 표시자 {디스플레이: 플렉스; 플렉스-direction: 컬럼; 정렬-items: 센터; 정당화-내용: 센터; 색상: #888; 텍스트-align: 센터; 패딩: 20 px; }
+        .no-message 자리 표시자 i { 글꼴 크기: 48 px; 여백 하단: 16 px; 색상: #e0e0; }
+        .노 message 자리 표시자 p { 여백: 0; 글꼴 크기: 1rem; 글꼴 무게: 500; }
+        .msg_item {디스플레이: 플렉스; 정렬 항목: 플렉스 시작; 갭: 15px; 폭: 100%; 배경: var(--카드백); 패딩: 19px 18px 17px 15px; 경계 반경: 11px; 애니메이션: fadeInUp 0.26s; 경계: 2px 솔리드 var(--경계 색상); 여백 하단: 18px; 전환: 배경색 0.14s 이지인아웃; }
+        .msg_item: 마지막 자식 {마진 바닥: 0; }
+        .msg_item: hover {background-color: #a7ffa 193; 커서: 포인터; }
+        @keyframes fadeInUp { from {opacity: 0; transform: translated}Y(20px);}에서 {불투명도: 1; 변환: Y(0);} }
+        .msg_profile img {폭: 44 px; 높이: 44 px; 객체 맞춤: 커버; 경계 radius: 50%; 측면 ratio: 1/1; 여백 왼쪽: 8 px; 여백 오른쪽: 5 px; 경계: 1.px 솔리드 라이트그레이; 배경: #faf9f6; 디스플레이: 블록; }
+        .msg_text_area { flex: 1 1 auto; 최소 너비: 0; 디스플레이: flex; flex-direction: 열; 정렬-items: flex-시작; }
+        .msg_sender_행 {디스플레이: 플렉스; 정렬 items: 중앙; 간격: 7 px; 여백 하단: 1 px; }
+        .msg_ sender { 글꼴 무게: 700; 글꼴 크기: 17 px; 색상: #2d3440; 여백 하단: 1 px; }
+        .msg_ preview { 글꼴 크기: 14 px; 글꼴 무게: 450; 색상: 검은색; 여백: 2 px 0 0 0; 단어 단절: 모두 끊어짐; 불투명도: 0.93; 텍스트 overflow: 생략; }
+        .msg_time { 글꼴 크기}: 12 px; 색상: #7890a2; 여백: 5 px; 공백: nowrap; }
+        .unread-badge {디스플레이: 플렉스; 정렬-items: 센터; 정당화-콘텐츠: 센터; 최소 너비: 20px; 높이: 20px; 패딩: 0 5px; 배경: #45607d; 색상: #ff; 글꼴 크기: 12px; 글꼴 무게: 700; 테두리-radius: 50%; 박스-shadow: 0 1px 3px rgba(175,175,160,0.10); 여백-왼쪽: 5px; 사용자 선택: 없음; }
+    </스타일>
+   
+    <style> /* 채팅 */
+        .chat-modal-슈퍼 container {디스플레이: 없음; 정당화 내용: 중심; 정렬 items: 중심; 위치: 고정; z-인덱스: 9999; 상단: 0; 왼쪽: 0; 너비: 100vw; 높이: 100vh; 배경: rgba(0,0,0,0.6); 배경 필터: 블러(4 px); }
+        .chat-modal-content {위치: 상대적; 최대 너비: 430px; 최소 너비: 350px; 너비: 90%; 배경색: #f5f8fb; 패딩: 0; 경계 반경: 16px; 색상: #223355; 박스-섀도: 0 6px 30px rgba(0, 0, 0, 0, 0.3); 애니메이션: fadeInUp 0.3s 이지아웃; 디스플레이: 플렉스; 플렉스 방향: 열; 최대 높이: 85vh; }
+        #채팅 제목 { 패딩: 18px 24px 16px 24px; 여백: 0; 텍스트 정렬: 가운데; 테두리 하단: 1.5px 솔리드 #e3ecf6; 플렉스 축소: 0; 글꼴 크기: 17px; 글꼴 무게: 700; }
+        #채팅 기록 {패딩: 10px; 오버플로우: 자동; 플렉스 성장: 1; }
+        .chat-container {디스플레이: 플렉스; 플렉스-direction: 컬럼; 갭: 12 px; }
+        .chat-bubble {최대 너비: 70%; 패딩: 10 px 14 px; 경계 radius: 18 px; 박스 shadow: 0 1 px 3 px rgba(0,0,0,0.08); 텍스트-align: 왼쪽; 단어-브레이크: 킵-올; 오버플로우-wrap: 브레이크-워드; 화이트스페이스: 정상; }
+        .bubble-me { align-self: 플렉스 엔드; 배경색: #FFBE7; 경계: 1px 솔리드 #FFEAC4; 경계-하단-우반지름: 4px; }
+        .bubble-기타 {알라인 셀프}: 플렉스 스타트; 배경색: #fff; 경계: 1px 솔리드 #eef1f5; 경계-하단-왼쪽-radius: 4px; }
+        .bubble-텍스트 { 글꼴 크기}: 14개의 px; 색상: #000; 여백: 0 4개의 px 0; 패딩: 0; }
+        .bubble 시간 { 글꼴 크기}: 11개의 px; 색상: #999; 텍스트 align: 오른쪽; }
+        .chat 입력 행 { 디스플레이: 플렉스; 정렬 items: 센터; 갭: 8 px; 여백: 12 px; 배경: #fff; 경계-radius: 12 px; 경계: 1.px 솔리드 #e2e5ea; 패딩: 7 px 12 px; 박스-shadow: 0 1 px 4 px rgba(80,110,140,0.08); 플렉스-shrink: 0; }: 0
+        #채팅 입력 { 플렉스: 1; 테두리: 없음; 글꼴 크기: 15px; 색상: #23272f; 개요: 없음; 패딩: 8px 0; 높이: 38px; 배경: 없음; }
+        #채팅 입력:: 플레이스홀더 {색상: #b7b8bd; 글꼴 크기: 14px; }
+        #sendMessageBtn {디스플레이: 플렉스; 정렬 항목: 센터; 정당화 내용: 센터; 너비: 38px; 높이: 38px; 배경: #7fa6c9; 경계: 없음; 경계 반경: 50%; 전환: 배경 0.16초; 커서: 포인터; 패딩: 0; }
+        #sendMessageBtn:hover {배경: #45607d; }
+        .chat-date-separator {디스플레이: 인라인 블록; 패딩: px 12 px; 여백: 16 px 자동; 글꼴 크기: 12 px; 색상: #666; 배경: #e9cef; 테두리-radius: 12 px; 텍스트-align: 가운데; }
+    </스타일>
+   
+    <style> /* 모달 설정 */
+        .modal 설정-container {디스플레이: 없음; 위치: 고정; z-인덱스: 3000; 왼쪽: 0; 상단: 0; 너비: 100%; 높이: 100%; 배경: rgba(0,0,0,0.65); 배경 필터: 블러(3 px); 정당화 내용: 중심; 정렬 items: 중심; }
+        .설정-모달 콘텐츠 {색상: #333; 배경: 흰색; 패딩: 25px; 경계 반경: 12px; 너비: 90%; 최대 너비: 420px; 텍스트 정렬: 중심; 위치: 상대적; 애니메이션: 확대 0.2초; }
+        .설정-modal-콘텐츠 h4 {마진 상단: 0; 마진 하단: 20 px; 글꼴 크기: 1.2rem; }
+        .설정-modal-콘텐츠 h5 {마진톱: 25px; 마진톱: 15px; 경계톱: 1px 솔리드 #ee; 패딩톱: 25px; }
+        #passwordCheckForm 입력 [type="password"], #changePasswordForm 입력 [type="password"] {폭: 계산(100% - 22 px); 패딩: 10 px; 여백: 10 px; 테두리: 1 px 솔리드 #cccc; 테두리-radius: 5 px; }
+        #passwordCheckForm 버튼, #profileImageForm 버튼, #changePasswordForm 버튼 {폭: 100%; 패딩: 10px; 테두리: 없음; 배경: #007bff; 색상: 흰색; 테두리 반경: 5px; 커서: 포인터; 글꼴 크기: 1rem; 여백 상단: 10px; }
+        .설정-modal 닫기 {위치: 절대값; 상단: 10 px; 오른쪽: 15 px; 글꼴 크기: 24 px; 테두리: 없음; 배경: 없음; 커서: 포인터; 색상: #888; }
+        .설정 오류-msg {색상: 빨간색; 글꼴 크기: 0.9em; 여백 하단: px 10개; 높이: 1em; }
+        #profileImagePreview {폭: 120px; 높이: 120px; 경계 반경: 50%; 객체 적합도: 커버; 경계: 2px 솔리드 #DD; 여백 하단: 15px; }
+        #프로필 이미지입력 { 마진: 10px 0; }
+        #btnDeleteAccount {배경색: #f8d7da; 색상: #721c24; 테두리: 1px 솔리드 #f5c6cb; 너비: 100%; 패딩: 12px; 여백-위: 25px; 테두리-반지름: 5px; 커서: 포인터; 글꼴-무게: 굵게; }
+    </스타일>
+</머리>
+<바디>
+    <div id="notion 앱">
+        <입력 유형="숨겨진" ID="모드" 값="사용자">
+        <입력 유형="숨겨진" id="profileUserAcIdx" 값="${userPageData.userProfile.ac _idx}">
+        <입력 유형="숨겨진" id="profileUserNickname" 값="${userPageData.userProfile.nickname}">
+        <입력 유형="숨겨진" id="currentPageNumber" 값="${userPageData.nextPageNumber - 1}">
+        <입력 유형="숨겨진" ID="hasMorePosts" 값="${userPageData.hasMorePosts ? 'true' : 'false'}">
+
+        <div class="notion-앱-inner">
+            <jsp:include 페이지="./includes/sidebar.jsp" flush="true"></jsp:include>
+            <div id="content_wrapper">
+                <섹션 id="content">
+                    <div id="user_wrapper">
+                        <div id="userInfo">
+                            <div class="user_profile_img">
+                                <c:선택>
+                                    <c:when test="${비어 있지 않은 userPageData.userProfile.img}">
+                                        <img id= "mainProfileImage" src="${pageContext.request.contextPath}/vibesync/${userPageData.userProfile.img}" alt="프로필">
+                                    </c:언제>
+                                    <c:otherwise>
+                                        <img id="mainProfileImage" src="%=contextPath %>/sources/default/default_user.jpg" alt="기본 프로필">
+                                    </c:otherwise>
+                                </c:선택>
+                            </div>  
+                            <div class="사용자정보_상세 정보">
+                                <div class="name_function">
+                                    <div id="왼쪽-wrapper">
+                                        <p>${userPageData.userProfile.nickname}<p>
+                                        <c:if test="${sessionScope.userInfo!= null & & sessionScope.userInfo.ac _idx!= userPageData.userProfile.ac _idx}">
+                                            <button type="button" id="profileFollowBtn" class="btn_follow_1" data-author-id="${userPageData.userProfile.ac _idx}" data-follow="${userPageData.userProfile.FollowByCurrentUser ? 'true' : 'false'}">
+                                                ${userPageData.userProfile}.팔로우커런트사용자 ? '언폴로우' : '팔로우'}
+                                            </버튼>
+                                        </c:if>
+                                        <버튼 id="up_msg_btn"><i class="fa-solid fa-paper-plane"></i> 메시지</버튼>
+                                        <c:if test="${sessionScope.userInfo!= null & & sessionScope.userInfo.ac _idx == userPageData.userProfile.ac _idx}">
+                                            <버튼 class="wp_btn" 온클릭="위치".href='waList.jsp'><img src="./소스/아이콘/워치.svg">파티 보기</버튼>
+                                     </c:if>
+                                    </div>
+                                    <c:if test="${sessionScope.userInfo!= null & & sessionScope.userInfo.ac _idx == userPageData.userProfile.ac _idx}">
+                                        <버튼 id="setBtn"><img src="./소스/아이콘/settings_gear.svg" alt="seting"></버튼>
+                                    </c:if>
+                                </div>
+                                <div class="user_count">
+                                    <p>POST <span>${userPageData.userProfile.postCount}</span></p>
+                                    <p>팔로워 <span id="profileFollowerCount">${userPageData.userProfile.팔로워 수}//span>/p>
+                                    <p>팔로우 <span>${userPageData.userProfile.다음 수}//span>/p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <div id="con_wrapper">
+                            <c:각 var="post" 항목="${userPageData.posts}">
+                                <a href="<%=contextPath %>/postView.do?nidx=$ {post.note_idx}">
+                                  <div class="con_item">
+                                    <c:선택>
+                                        <c:test="${빈 게시물이 아님].썸네일_img}">
+                                            <img src="${pageContext.request.contextPath}/${post}.썸네일_img}" alt="${post.title} 썸네일" >
+                                        </c:언제>
+                                        <c:otherwise>
+                                            <img src="${pageContext.request.contextPath}/소스/이미지/default_thumnail.png" alt="기본 썸네일">
+                                        </c:otherwise>
+                                    </c:선택>                                  
+                                  </div>
+                                </a>
+                            </c: 각각에 대하여>
+                        </div>
+                        <div id="로딩 중인디케이터 스타일="디스플레이: 없음; 텍스트 align: 센터; 패딩: 20 px;">로딩 중..."</div>
+                    </div>
+                </섹션>
+            </div>
+        </div>
+    </div>
+   
+    <c:if test="${sessionScope.userInfo!= null & & sessionScope.userInfo.ac _idx == userPageData.userProfile.ac _idx}">
+        <버튼 id="pageCreateBtn">+//버튼>
+    </c:if>
+
+    <div id="pageModalOverlay" 클래스="modal-overlay">
+        <div id="modalWrapper">
+            <div class="modal-콘텐츠" ID="pageModalContent">
+            <button class="modal 닫기" id="pageModalClose">×/button>
+            </div>
+        </div>
+    </div>
+   
+    <div id="msgListModal" 클래스="modal-msglist">
+        <div class="modal-msg" 스타일="최소 너비:350 px;최대 너비:430 px;">
+            <span class="close-modal" 클릭="closeMsgListModal()"> × </span>
+            <h3 id="msgRoomTitle"></h3>
+            <div id="msgList"></div>
+        </div>
+    </div>
+   
+    <div id="chatModal" 클래스="chat-modal-슈퍼 container">
+         <div class="채팅-modal-콘텐츠">
+            <span class="close-modal" 클릭="closeChatModal()"> × </span>
+            <h4 id="chatTitle"></h4>
+            <div id="chatHistory"></div>
+            <div class="chat-input-row">
+                <입력 유형="text" id="chatInput" 플레이스홀더="메시지를 입력하세요..." 자동 완성="off" />
+                <버튼 유형="버튼" ID="메시지 전송Btn" 제목="전송">
+                    <i class="fa-solid fa-paper-plane" 스타일="color:white; 글꼴 크기: 16 px;"></i>
+                </버튼>
+            </div>
+         </div>
+    </div>
+   
+    <div id="modal 설정-container" 클래스="modal 설정-container">
+        <div class="설정-modal-콘텐츠">
+            <버튼 클래스="설정-modal 닫기">×//버튼>
+            <div id= "콘텐츠 설정"></div>
+        </div>
+    </div>
+
+    <스크립트>
+        currentChatSenderIdx = 0이라고 합니다;
+        let currentUserData = null; // 인증 성공 시 사용자 정보를 저장할 전역 변수
+
+        /*무한스크롤 함수*/
+        var isLoading = false; // 중복 요청 방지 플래그
+       
+        $.ajaxSetup({
+          캐시: 거짓
+        });
+       
+        함수 loadMorePosts(){
+            var hasMore = ('#hasMorePosts').val() === 'true';
+            (!hasMore || isLoading) 반환하는 경우;
+            로드 중 = true;
+            $('#로딩표시기').() 표시;
+            var nextPage = parseInt($('#currentPageNumber').val() + 1;
+            var profileUserId = ('#profileUserAcIdx').val();
+           
+            $.ajax({
+                URL: '${pageContext.request.contextPath}/loadMorePosts.do ',
+                type: 'GET',
+                데이터: {userId: profileUserId, 페이지: nextPage},
+                데이터.유형: 'json',
+                성공: 함수(응답) {
+                    (응답).게시물 & 응답.게시물.길이 > 0) {
+                        var postHtml = '';
+                        var contextPath = '${pageContext.request.contextPath}';
+                        $.각 (응답).게시물, 함수(인덱스, 게시물) {
+                            var 썸네일Url = 게시물.썸네일_img ? 컨텍스트 경로 + 게시물.썸네일_img : contextPath + 'vibesync/sources/default/default_thumbnail.png';
+                            postHtml + = '<a href=' + contextPath + '/vibesync/postView.do?nidx=' + post.note_idx + '>;
+                            postHtml += '<div class="con_item">;
+                            게시물Html += '<img src=' + 썸네일Url + 'alt=' + 게시물.title + '썸네일'
+                            postHtml += '</div>;
+                            postHtml += '/a>;
+                        });
+                        $('#con_wrapper').부록(postsHtml);
+                        $('#currentPageNumber').val(다음 페이지);
+                    }
+                    만약 (!응답).하스모어) {
+                        $('#hasMorePosts').val('거짓');
+                        $('#로딩Indicator').text('더 이상 게시물이 없습니다.');
+                    } 그 외 {
+                        $('#로딩표시기').() 숨기기;
+                        setTimeout(함수(function()) {checkAndLoadIfed(); }, 100);
+                    }
+                    isLoading = false;
+                },
+                오류: 함수 () {
+                    alert('게시물을 추가로 불러오는 중 오류가 발생했습니다.');
+                    $('#로딩표시기').() 숨기기;
+                    isLoading = false;
+                }
+            });
+        }
+       
+       함수 확인AndLoadIfNeed() {
+            만약 ($(document)).높이 () <= $(window).높이 () & & ($('#hasMorePosts').val() === 'true') {
+                console.log("콘텐츠가 부족하여 새 게시물을 자동으로 로드합니다.");
+                로드모어포스트();
+            }
+       }
+   
+       $(document).준비 완료(함수 () {
+            $('#profileFollowBtn').on( '클릭', 함수() {
+                var $버튼 = $(이것);
+                var authorId = $button.data (' author-id';
+                varisLogged= ${sessionScope.userInfo!= null}에서;
+                만약 (!isLogged)인) {
+                    alert("로그인이 필요합니다.");
+                    위치.href = "${pageContext.request.contextPath}/login.jsp";
+                    반환;
+                }
+                $.ajax({
+                    URL: '${pageContext.request.contextPath}/followToggle.do ',
+                    유형: 'POST',
+                    데이터: {authorId: authorId},
+                    데이터.유형: 'json',
+                    성공: 함수(응답) {
+                        (응답).성공) {
+                            (응답).다음) {
+                                $button.data('following', true).text('UNFOLLOW');
+                            } 그 외 {
+                                $button.data ('following', false).텍스트 ('팔로우';
+                            }
+                            만약 (응답 유형.newFollowerCount!== '정의되지 않음') {
+                                $('#profileFollowerCount').text(response.newFollowerCount);
+                            }
+                        } 그 외 {
+                            alert('오류: ' + (response.message || '팔로우 처리에 실패했습니다.'));
+                        }
+                    },
+                    오류: 함수 () {
+                        alert('팔로우 요청 중 오류가 발생했습니다.');
+                    }
+                });
+            });
+
+            $(window).스크롤(함수 () {
+                만약 ($(window)).스크롤Top() + $(창).높이 () >= (document).높이 () - 200) {
+                    로드모어포스트();
+                }
+            });
+           
+            $(window.on ('resize', 함수 () {}
+                필요한 경우 확인 및 로드();
+            });
+           
+            $('#pageCreateBtn').on( '클릭', 함수() {
+                var acIdx = ('#profileUserAcIdx').val();
+                $.get('{pageContext.request.contextPath}/page/modalList.do ', {ac_idx: acIdx }, 함수(html) {
+                    ('#페이지모달콘텐츠').어린이 (':(.modal 닫기 아님).() 제거;
+                    $('#pageModalContent').부록(html);
+                    ('#pageModalOverlay').페이드인();
+                });
+            });
+
+            $('#pageModalOverlay').on('클릭', '#pageModalClose, .modal-overlay', 함수(e) {
+                e.stopPropagation();
+                ('#pageModalOverlay').페이드아웃(함수() {
+                    ('#페이지모달콘텐츠').어린이 (':(.modal 닫기 아님).() 제거;
+                });
+            });
+
+            $('#pageModalOverlay').on('클릭', '#newPageBtn', 함수() {
+                ('#페이지모달콘텐츠').어린이 (':(.modal 닫기 아님).() 제거;
+                var forHtml = ''
+                  + '<h3>새 페이지 생성</h3>'
+                  + '<form id="pageCreateForm" encytype="multipart/form-data">
+                  + '<label>제목 <입력 유형="텍스트" ID="주제" 이름="주제" 필수/></label><br/>
+                  + '<버튼 유형="submit" 클래스="btn_deco">생성</버튼>
+                  + '</form>';
+                $('#pageModalContent').부록(formHtml);
+            });
+           
+            $('#pageModalOverlay').on('클릭', '#newNoteBtn', 함수() {
+                 var selectedIdx = $('#pageSelect').val();
+                 $('#newNoteLink').attr('href', 'notecreate.do?pageidx=' + selectedIdx);
+                 창.위치.href = ('#newNoteLink').attr('href');
+            });
+
+            $('#pageModalOverlay').on('제출', '#pageCreateForm', 함수(e) {
+                e.preventDefault();
+                var formData = 새로운 formData (이것);
+                subject = document.getElementById("subject") 값;
+                $.ajax({
+                    URL: '${pageContext.request.contextPath}/페이지/create.do?subject=' + 제목,
+                    type: 'GET',
+                    데이터: 폼데이터,
+                    processData: false,
+                    내용유형: 거짓,
+                    데이터.유형: 'json',
+                    성공: 함수(res) {
+                        만약 (재성공) {
+                            ('#pageModalOverlay').페이드아웃();
+                        } 그 외 {
+                            경고 ('페이지 생성 실패: ' + (res. message || ');
+                        }
+                    },
+                    오류: 함수 () {
+                        alert('페이지 생성 중 오류가 발생했습니다.');
+                    }
+                });
+            });
+           
+            constisOwnProfile = ${sessionScope.userInfo!= null & & sessionScope.userInfo.ac _idx == userPageData.userProfile.ac _idx};
+           
+            ('#up_msg_btn').('클릭 시, 함수 () {
+                const isLogged= ${sessionScope.userInfo!= null}에서;
+                만약 (!isLogged)인) {
+                    alert("로그인이 필요합니다.");
+                    위치.href = "${pageContext.request.contextPath}/vibesync/user.do ";
+                    반환;
+                }
+                만약 (isOwnProfile) {
+                    openMessageModal();
+                } 그 외 {
+                    const profileUserId = ('#profileUserAcIdx').val();
+                    const profileUserNickname = ('#profileUserNickname').val();
+                    openChatWithUser(profileUserId, profileUserNickname);
+                }
+           });
+           
+            $('#msgList').on( '클릭', '.msg_item', 함수() {
+                const senderIdx = $(this.data ('sender-idx');
+                const 닉네임 = ($this.data ('nickname');
+                openChatWithUser(senderIdx, 닉네임);
+            });
+           
+            $("#sendMessageBtn").on("클릭", sendChatMessage);
+       
+            $("#chatInput").on("키다운"), 함수(e) {
+                만약 (예: 키 === "Enter" &!e.시프트키) {
+                    e.preventDefault();
+                    채팅 메시지 보내기();
+                }
+            });
+           
+            $('#settingBtn').on( '클릭', 함수() {
+                showPasswordCheckView();
+                ('#modal 설정-container').css(' 디스플레이, '플렉스').hide(.fadeIn(200);
+            });
+
+            ('#modal 설정-container').(' 클릭 시, '설정-modal 닫기, .modal 설정-container', 함수(e) {
+                만약 (예: 타겟 === 이것) {
+                    ('#modal 설정-container').페이드아웃(200);
+                }
+            }).('클릭 시 '.설정-modal-콘텐츠', 함수(e) {
+                e.stopPropagation();
+            });
+
+            $('#모달 설정 컨테이너').on( '제출', '#passwordCheckForm', 함수(e) {
+                e.preventDefault();
+                const 비밀번호 = (이것).('input[이름="비밀번호"]"val ()를 찾습니다;
+                $.ajax({
+                    URL: '${pageContext.request.contextPath}/설정/checkPassword.do ',
+                    유형: 'POST',
+                    데이터: {비밀번호: 비밀번호},
+                    데이터.유형: 'json',
+                    성공: 함수(응답) {
+                        (응답).성공) {
+                            현재 사용자데이터 = response.userData;
+                            showcombinedSettingsView();
+                        } 그 외 {
+                            $('#passwordCheckForm .seting-error-msg').text(response.message || '인증에 실패했습니다');
+                        }
+                    },
+                    오류: 함수(xhr) {
+                        const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : '서버 통신 중 오류가 발생했습니다.';
+                        $('#passwordCheckForm .seting-error-msg').text(errorMsg);
+                    }
+                });
+            });
+           
+            $('#모달 설정 컨테이너').on('변경', '#profileImage입력', 함수() {
+                만약 (이것은).파일 & 이것.파일[0] {
+                    const reader = new FileReader();
+                   
+                    reader.onload = 함수(e) {
+                        $('#profileImagePreview').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(이것입니다).파일[0];
+                }
+            });
+
+         // [수정됨] 프로필 이미지 변경 폼 제출 (이미지 미리 로드 기능 추가)
+            $('#모달 설정 컨테이너').on('제출'), '#profileImage형태', 함수(e) {
+                e.preventDefault();
+                const fileInput = document.getElementById('profileImage')입력';
+                만약 (!fileInput.files || fileInput.files.length === 0) {
+                    alert('이미지를 선택해주세요.');
+                    반환;
+                }
+                const 파일 = 파일Input.files[0];
+                const reader = new FileReader();
+               
+                reader.onload = 함수(이벤트) {
+                    const base64Image = event.target.result;
+                   
+                    $.ajax({
+                        URL: '${pageContext.request.contextPath}/설정/setProfile.do ',
+                        유형: 'POST',
+                        데이터: {
+                            profileImageBase64: base64Image
+                        },
+                        데이터.유형: 'json',
+                        캐시: 거짓,
+                        성공: 함수(응답) {
+                            (응답).성공) {
+                                // 1. 새 이미지 경로에 캐시 무효화를 위한 타임스탬프 추가
+                                const newImgSrc = '${pageContext.request.contextPath}/vibesync/' + response.newImagePath + '?t=' + newDate(.getTime();
+
+                                // 2. 새 이미지를 미리 로드하기 위한 임시 Image 객체 생성
+                                constempImg = new Image();
+                                tempImg.src = newImgSrc;
+
+                                // 3. 이미지 로딩이 완료되면 실행될 콜백 함수
+                                tempImg.onload = 함수 () {
+                                    // 4. 화면에 보이는 이미지들의 src를 교체 (이제 즉시 반영됨)
+                                    $('#mainProfileImage').attr('src', newImgSrc);
+                                    $('#profileImagePreview').attr('src', newImgSrc);
+                                    $('#profile-display img')attr('src', newImgSrc);
+                                    if(currentUserData) currentUserData.img = response.newImagePath;
+
+                                    // 5. 모든 시각적 업데이트가 끝난 후 사용자에게 알림
+                                    alert('프로필 이미지가 변경되었습니다.');
+
+                                };
+                               
+                                // 이미지 로딩 실패 시 에러 처리
+                                tempImg.onerror = 함수 () {
+                                    alert('새 프로필 이미지를 불러오는 데 실패했습니다.');
+                                };
+                               
+                            } 그 외 {
+                                경고 ('오류: ' + 응답.message);
+                            }
+                        },
+                        오류: 함수 () {
+                            alert('프로필 이미지 변경 중 서버 오류가 발생했습니다.');
+                        }
+                    });
+                };
+                reader.readAsDataURL(파일);
+            });
+           
+            $('#modal-seting-container').on('제출', '#changePasswordForm', 함수(e) {
+                e.preventDefault();
+                const newPassword = $(이것).find('input[name="newPassword"]).val();
+                confirmPassword = (이것입니다).find('input[name="confirmPassword"]).val();
+               
+                $('seting-error-msg').text('');
+               
+                만약 (새 비밀번호!== 확인 비밀번호) {
+                    $(이것).find('seting-error-msg').text ('비밀번호가 일치하지 않습니다.';
+                    반환;
+                }
+                만약 (newPassword.length < 8) {
+                    $(이것).find('seting-error-msg').텍스트 ('비밀번호는 8 자 이상이어야 합니다';
+                    반환;
+                }
+               
+                $.ajax({
+                    URL: '${pageContext.request.contextPath}/설정/alterPassword.do ',
+                    유형: 'POST',
+                    데이터: {newPassword: newPassword},
+                    데이터.유형: 'json',
+                    성공: 함수(응답) {
+                        (응답).성공) {
+                            alert('비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요.');
+                            위치.href = '${pageContext.request.contextPath}/main.do ';
+                        } 그 외 {
+                            $(이것).find('seting-error-msg').text(response.message || '비밀번호 변경에 실패했습니다');
+                        }
+                    },
+                    오류: 함수 () {
+                        alert('서버 오류로 비밀번호 변경에 실패했습니다.');
+                    }
+                });
+            });
+           
+            $('#modal-seting-container').on('클릭', '#btnDeleteAccount', 함수() {
+                if (confirm('정말로 탈퇴하시겠습니까? 모든 정보는 복구되지 않습니다.')) {
+                    위치.href = '${pageContext.request.contextPath}/설정/deleteAccount.do ';
+                }
+            });
+         
+           필요한 경우 확인 및 로드();
+        });
+       
+        $(window.on('load)', 함수 () {
+            만약 (window.위치).해시 === "#msg") {
+                openMessageModal();
+            }
+        });
+       
+    </script>
+   
+    <script> /* 함수 */
+   
+    함수 openMessageModal() {
+        창.위치.해시 = "msg";
+        const acIdx = ${sessionScope.userInfo.ac _idx};
+        basePath = '${pageContext.request.contextPath}/vibesync/sources/';
+        $.ajax({
+            URL: '${pageContext.request.contextPath}/message.do ',
+            type: 'GET',
+            데이터: {보기: 'LISTALL'},
+            데이터.유형: 'json',
+            성공: 함수(msgList) {
+                $('#msgListModal').css('디스플레이', '플렉스');
+                $('#msgRoomTitle')html('<i class="fa-solid fa-comment-dots"></i> 메시지 목록);
+                $('#msgList').();
+                만약 (!msgList || !Array.isArray(msgList) || msgList.length === 0) {
+                    constant placeholderHtml = '<div class="no-message-placeholder"><i class="fa-regular fa-comments"></i><p>메시지 내역이 없습니다.</p></div>;
+                    $('#msgList').html(자리 표시자Html);
+                    반환;
+                }
+                const msgContainer = ('<div class="msg-container"></div>);
+                msgList.forEach(msg => {
+                    profileImgHtml = msg.other.profile_img ? '<img src="\\${base경로}profile/\\${msg.other.profile_img}" alt="profile">' : '<img src="\\${base경로}default/default_user.jpg" alt="기본 프로필">';
+                    읽지 않은 BadgeHtml = '';
+                    만약 (msg.numOfUnreadMessages > 0) {
+                        읽지 않음BadgeHtml = '<span class="unread-badge">\\${msg.numOfUnreadMessages}</span>';
+                    }
+                    const messageHtml = '<div class="msg_item" data-sender-idx="\\${msg.other.ac _idx}" data-nickname="\\${msg.other.other.nickname}"><div class="msg_profile">\\${profileImgHtml}<div class="msg_text_area"><div class="msg_sender_row"><div class="msg_sender">\\${msg}.other.nickname}//div>\\${unreadBadgeHtml}/div><div class="msg_preview">\\${msg.최신 메시지.텍스트}</div><div class="msg_time">\\${msg.최신 메시지.상대 시간}</div></div></div></div>';
+                    msgContainer.append(messageHtml);
+                });
+                $('#msgList').append(msgContainer);
+            },
+            오류: 함수 () {알림 ('메시지 내역 불러오기 실패'}; }
+        });
+    }
+
+    함수 closeMsgListModal() {
+        창.위치.해시 = "";
+        $('#msgListModal').() 숨기기;
+    }
+   
+    openChatWithUser(userIdx, 닉네임) 기능 {
+        현재 ChatSenderIdx = userIdx;
+        $('#chatTitle').text(닉네임 + '님과의 대화');
+        $('#chatHistory').html('<p style="text-align:center; 패딩: 20 px;">대화 내역을 불러오는 중...</p>';
+        MsgListModal() 닫기;
+        $.ajax({
+            URL: '${pageContext.request.contextPath}/message.do ',
+            type: 'GET',
+            데이터: {sender_idx: userIdx, 보기: 'CHAT'},
+            데이터.유형: 'json',
+            성공: 함수 (chatList) {
+                ('#chatHistory').();
+                만약 (!chatList || !Array.isArray(chatList) || chatList.length === 0) {
+                    $('#chatHistory').html('<p style="text-align:center; 색상: grey; 패딩: 20 px;">아직 대화 내역이 없습니다.</p>';
+                } 그 외 {
+                    const chatContainer = ('<div class="chat-container"></div>);
+                    lastDate = null로 설정합니다;
+                    chatList.forEach(msg => {
+                        만약 (msg.date!== lastDate) {
+                            마지막 날짜 = msg.date;
+                            const dateLabel = $('<div class="chat-date-separator">/<div>"text(마지막 날짜);
+                            chatContainer.append(데이트 라벨);
+                        }
+                        const who = msg.isMine ? 'bubble-나' : 'bubble-기타';
+                        구성 형식텍스트 = msg.text.replace(/\n/g, '<br>);
+                        const messageHtml = '<div class="chat-bubble \\${wo}"><div class="bubble-텍스트">\\${formatted텍스트}/<div><div class="bubble-시간">\\${msg.상대 시간}</div></div>′;
+                        chatContainer.append(messageHtml);
+                    });
+                    $('#chatHistory').부록(chatContainer);
+                }
+                $('#chatModal').css('디스플레이', '플렉스');
+                $('#chatHistory').scrollTop($('#chatHistory')[0.scrollHight);
+            },
+            error: function () { alert('채팅 내역을 불러오는 데 실패했습니다.'); }
+        });
+    }
+   
+    함수 closeChatModal() {
+        ('#chatModal').() 숨기기;
+        현재 ChatSenderIdx = null;
+        만약 (${sessionScope.userInfo!= null & & sessionScope.userInfo.ac _idx == userPageData.userProfile.ac _idx}) {
+            openMessageModal();
+        }
+    }
+   
+    함수 sendChatMessage() {
+        const message = ("#chatInput").val().trim();
+        (!message || !currentChatSenderIdx)가 반환되는 경우;
+        $.ajax({
+            URL: '${pageContext.request.contextPath}/message.do ',
+            유형: 'POST',
+            데이터: JSON.stringify({ receiver_idx: currentChatSenderIdx, 텍스트: 메시지 }),
+            내용유형: "응용 프로그램/json; charset=utf-8",
+            데이터.유형: 'json',
+            성공: 함수(res) {
+                if(res.success) {
+                    $("#chatInput").val(""");
+                    채팅 기록 다시 로드();
+                } 그 외 {
+                    alert('메시지 전송에 실패했습니다.');
+                }
+            },
+            오류: 함수 () {알림 ('메시지 전송 중 오류 발생!}; }
+        });
+    }
+   
+    함수 reloadChatHistory() {
+       만약 (현재 ChatSenderIdx) {
+           constcurrentNickname = ('#chatTitle')text(.replace('님과의 대화', '');
+           openChatWithUser(현재ChatSenderIdx, 현재 닉네임);
+        }
+    }
+   
+    함수 showPasswordCheckView() {
+        const 비밀번호CheckHtml = '<h4>비밀번호 확인</h4><p style="font 크기:0.9em; 색상: #555; 여백 상단:-10 px; 여백 하단:20 px;">계정 설정을 위해 현재 비밀번호를 입력해주세요.</p><form id="passwordCheckForm"><div class="seting-error-msg"></div><입력 유형="password" name="password" 플레이스홀더="비밀번호" 필수 자동완성="현재-비밀번호"><버튼 유형="submit">확인</버튼></버튼><form>;
+        $('#content').html(passwordCheckHtml);
+    }
+
+    함수 showCombinedSettingsView() {
+        const defaultImgSrc = '<%=contextPath %>/vibesync/sources/default/default_user.jpg';
+        const currentImgSrc = currentUserData & & currentUserData.img ? '${pageContext.request.contextPath}/' + currentUserData.img : defaultImgSrc;
+       
+        const combinedHtml = '
+            <h4>계정 설정</h4>
+           
+            <h5>프로필 사진 변경</h5>
+            <form id="profileImageForm">
+                <img id="profileImagePreview" src="/vibesync\\${currentImgSrc}" alt="프로필 미리보기">
+                <입력 유형="파일" 이름="profileImage" id="profileImage입력" 수락="이미지/*"필수">
+                <버튼 유형="submit">프로필 사진 저장</button>
+            </형식>
+
+            <h5>비밀번호 변경</h5>
+            <form id="changePasswordForm">
+                <div class="설정 오류-msg"></div>
+                <입력 유형="비밀번호" 이름="새 비밀번호" 자리 표시자="새 비밀번호" 필수 자동 완성="새 비밀번호">
+                <입력 유형="비밀번호" 이름="비밀번호 확인" 자리 표시자="새 비밀번호 확인" 필수 자동 완성="새 비밀번호">
+                <버튼 유형="submit">비밀번호 변경</button>
+            </형식>
+
+            <버튼 id="btnDeleteAccount">회원 탈퇴</버튼>
+        `;
+        $('#설정 내용')html(결합된Html);
+    }
+   
+    </script>
+</body>
+<jsp: include 페이지="/vibesync/includes/footer.jsp" />
+</html>

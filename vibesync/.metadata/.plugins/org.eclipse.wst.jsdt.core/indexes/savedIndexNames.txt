@@ -1,0 +1,10 @@
+INDEX VERSION 1.4+C:\Class\vibesync\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+262329938.index
+2779328619.index
+224113221.index
+1162898468.index
+536824807.index
+1907337398.index
+2779328619.index
+787321848.index
+319349117.index

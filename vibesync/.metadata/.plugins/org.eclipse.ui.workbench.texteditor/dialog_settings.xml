@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="selection" value=".message_item:hover"/>
+		<item key="wrap" value="true"/>
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="false"/>
+		<item key="incremental" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<list key="findhistory">
+			<item value=".message_item:hover"/>
+			<item value=".message_profile img"/>
+			<item value=".message_time"/>
+			<item value=".notion-app-inner .notion-sidebar-container .notion-sidebar .menu_content .nickname"/>
+			<item value=".modal-sidebar"/>
+			<item value=".modal-btn"/>
+			<item value=".modal-nickname"/>
+			<item value=".profile img"/>
+			<item value=".follow_items.show"/>
+			<item value=".notion-sidebar .follow_items"/>
+			<item value=".notion-app-inner .notion-sidebar-container .notion-sidebar .menu_content"/>
+			<item value=".follow-list-item img"/>
+			<item value=".note-toolbar"/>
+			<item value=".follow-list-item .action-buttons .message-btn"/>
+			<item value=".close-modal"/>
+		</list>
+		<list key="replacehistory">
+			<item value=""/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="1523"/>
+		<item key="DIALOG_Y_ORIGIN" value="327"/>
+		<item key="DIALOG_WIDTH" value="322"/>
+		<item key="DIALOG_HEIGHT" value="391"/>
+		<item key="DIALOG_FONT_NAME" value="1|맑은 고딕|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|맑은 고딕"/>
+	</section>
+</section>
