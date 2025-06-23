@@ -21,7 +21,108 @@
 <link rel="stylesheet" href="./css/sidebar.css">
 <script src="./js/script.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+
+  <style>
+  .postview_ed_btn, .postview_de_btn{
+  padding: 4px 10px;
+  background-color: var(--card-back);
+  font-weight: bold;
+  border: solid 2px var(--border-color);
+  border-radius: 6px;
+  text-transform: uppercase;
+  }
+  </style>
+</head>
+<body>
+  <div id="notion-app">
+    <input type="hidden" id="mode" value="postview">
+    <div class="notion-app-inner">
+      <jsp:include page="./includes/sidebar.jsp"></jsp:include>
+      <div id="content_wrapper">
+        <section id="content">
+          <div class="back_icon">
+             <a href="javascript:void(0);" onclick="goBackSmartly()"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
+          </div>
+          <div id="postview_Wrapper">
+            <div class="title">
+              <p>${note.title}</p>
+              <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == note.upac_idx}">
+                <div>
+                  <button class="postview_ed_btn"><a href="noteedit.do?noteidx=${note.note_idx}">edit</a></button>
+                  <button class="postview_de_btn"><a href="notedelete.do?noteidx=${note.note_idx}" onclick="return confirm('정말로 삭제하시겠습니까?');">delete</a></button>
+                </div>
+              </c:if>
+            </div>
+            <div class="writer_info">
+              <div class="writer">
+                <img src="${(note.img == null or empty note.img) ? './sources/default/default_user.jpg' : note.img}" alt="writer_profile">
+                <a href="userPage.do?acIdx=${note.ac_idx}">${note.nickname}</a>
+                <c:if test="${not empty sessionScope.userInfo and sessionScope.userInfo.ac_idx != note.upac_idx}">
+                  <form id="followForm" style="display:inline; margin:0; padding:0;"><button id="followBtn" type="submit" data-user-idx="${user.ac_idx}" data-writer-idx="${note.upac_idx}" data-nidx="${note.note_idx}" style="background:#99bc85; border-radius:5px; border:none; cursor:pointer; padding:5px 10px;">${isFollowing ? "Unfollow" : "Follow"}</button></form>
+                </c:if>
+              </div>
+              <div class="like_share">
+                <div><p><span>view : </span><span>${note.view_count}</span></p></div>
+                <form id="likeForm" style="display:inline; margin:0; padding:0;"><button id="likeBtn" type="submit" data-user-idx="${user.ac_idx}" data-note-idx="${note.note_idx}" style="border:none; background:none; cursor:pointer; filter: var(--icon-filter);"><img id="likeImg" src="${isLiking ? './sources/icons/fill_heart.png' : './sources/icons/heart.svg'}" alt="heart" style="vertical-align:middle; width:2rem; height:2rem;"><span id="likeCount" style="vertical-align:middle;">${note.like_num}</span></button></form>
+              </div>
+            </div>
+            <div class="line"></div>
+            <div class="text_content">
+              <c:out value="${note.text}" escapeXml="false"/>
+            </div>
+            <div class="line" style="margin-top: 2rem; margin-bottom: 0px"></div>
+            <div id="comment-section">
+                <h4>Comments</h4>
+                <c:choose>
+                  <%-- 1. 로그인한 경우: 기존의 댓글 입력창을 보여줌 --%>
+                  <c:when test="${not empty user}">
+                      <form id="comment-form" style="margin-bottom: 1.864rem;">
+                          <input type="hidden" name="noteIdx" value="${note.note_idx}">
+                          <div class="textarea-div"
+                              style="display: flex; align-items: center;">
+                              <textarea name="text" rows="3" placeholder="댓글을 입력하세요..."
+                                  required
+                                  style="width: 100%; resize: none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none; background-color: var(--background-color); color: var(--font-color);"></textarea>
+                              <button type="submit"
+                                  style="margin: 0px; padding: 5px 10px; height: 65px; border: solid 2px var(--border-color); border-radius: 0 4px 4px 0; border-left: none; background-color: var(--card-head); color:var(--card-back); font-weight: bold;">작성</button>
+                          </div>
+                      </form>
+                  </c:when>
+                  <%-- 2. 로그인하지 않은 경우: 로그인 유도 메시지를 보여줌 --%>
+                  <c:otherwise>
+                      <div class="comment-login-prompt" 
+                          style="margin-bottom: 1.864rem; padding: 20px; border: 2px solid var(--border-color); border-radius: 4px; text-align: center; cursor: pointer;">
+                          <a href="javascript:void(0);" onclick="requireLogin()" style="text-decoration: none; color: #888; font-weight: bold;">
+                              로그인 후 댓글을 작성할 수 있습니다.
+                          </a>
+                      </div>
+                  </c:otherwise>
+                </c:choose>
+            <div id="comment-list" style="clear: both;"></div>
+         </div>
+                  <div id="edit-comment-modal"
+                     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+                     <div
+                        style="position: relative; top: 20%; margin: auto; width: 500px; background: white; padding: 20px; border-radius: 5px;">
+                        <h5>댓글 수정</h5>
+                        <form id="edit-comment-form">
+                           <input type="hidden" id="edit-comment-id" name="commentIdx">
+                           <textarea id="edit-comment-text" name="text" rows="4"
+                              style="width: 100%; resize: none; padding: 8px;"></textarea>
+                           <div style="text-align: right; margin-top: 10px;">
+                              <button type="button" id="cancel-edit-btn">취소</button>
+                              <button type="submit">저장</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </section>
+         </div>
+      </div>
+   </div>
+   
+   <script>
 //[신규] 조건부 뒤로가기 함수
 function goBackSmartly() {
     // 이전 페이지의 URL을 확인합니다.
@@ -39,9 +140,9 @@ function goBackSmartly() {
 const isLoggedIn = ${not empty user}; 
 
 function requireLogin() {
-	
-	const ctx = "${pageContext.request.contextPath}";
-	
+   
+   const ctx = "${pageContext.request.contextPath}";
+   
     if (confirm('로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?')) {
         // 1. 현재 페이지의 전체 주소를 가져옵니다. (예: .../postView.do?nidx=26)
         const currentUrl = window.location.href; 
@@ -193,98 +294,6 @@ function requireLogin() {
       $('#edit-comment-form').on('submit', function(e) { e.preventDefault(); const text = $('#edit-comment-text').val(); if(!text.trim()) { alert('수정할 내용을 입력하세요.'); return; } $.ajax({ url: commentUrl, type: 'POST', data: { action: 'update', commentIdx: $('#edit-comment-id').val(), text: text }, dataType: 'json', success: function() { $('#edit-comment-modal').hide(); loadComments(); } }); });
     });
   </script>
-  <style>
-.postview_ed_btn, .postview_de_btn{padding: 4px 10px;background-color: var(--card-back);font-weight: bold;border: solid 2px var(--border-color);border-radius: 6px;text-transform: uppercase;}
-  </style>
-</head>
-<body>
-  <div id="notion-app">
-    <input type="hidden" id="mode" value="postview">
-    <div class="notion-app-inner">
-      <jsp:include page="./includes/sidebar.jsp"></jsp:include>
-      <div id="content_wrapper">
-        <section id="content">
-          <div class="back_icon">
-             <a href="javascript:void(0);" onclick="goBackSmartly()"><img src="./sources/icons/arrow_back.svg" alt="arrow_back"></a>
-          </div>
-          <div id="postview_Wrapper">
-            <div class="title">
-              <p>${note.title}</p>
-              <c:if test="${sessionScope.userInfo != null && sessionScope.userInfo.ac_idx == note.upac_idx}">
-                <div>
-                  <button class="postview_ed_btn"><a href="noteedit.do?noteidx=${note.note_idx}">edit</a></button>
-                  <button class="postview_de_btn"><a href="notedelete.do?noteidx=${note.note_idx}" onclick="return confirm('정말로 삭제하시겠습니까?');">delete</a></button>
-                </div>
-              </c:if>
-            </div>
-            <div class="writer_info">
-              <div class="writer">
-                <img src="${(note.img == null or empty note.img) ? './sources/icons/profile.svg' : note.img}" alt="writer_profile">
-                <a href="userPage.do?acIdx=${note.ac_idx}">${note.nickname}</a>
-                <c:if test="${not empty sessionScope.userInfo and sessionScope.userInfo.ac_idx != note.upac_idx}">
-                  <form id="followForm" style="display:inline; margin:0; padding:0;"><button id="followBtn" type="submit" data-user-idx="${user.ac_idx}" data-writer-idx="${note.upac_idx}" data-nidx="${note.note_idx}" style="background:#99bc85; border-radius:5px; border:none; cursor:pointer; padding:5px 10px;">${isFollowing ? "Unfollow" : "Follow"}</button></form>
-                </c:if>
-              </div>
-              <div class="like_share">
-                <div><p><span>view : </span><span>${note.view_count}</span></p></div>
-                <form id="likeForm" style="display:inline; margin:0; padding:0;"><button id="likeBtn" type="submit" data-user-idx="${user.ac_idx}" data-note-idx="${note.note_idx}" style="border:none; background:none; cursor:pointer; filter: var(--icon-filter);"><img id="likeImg" src="${isLiking ? './sources/icons/fill_heart.png' : './sources/icons/heart.svg'}" alt="heart" style="vertical-align:middle; width:2rem; height:2rem;"><span id="likeCount" style="vertical-align:middle;">${note.like_num}</span></button></form>
-              </div>
-            </div>
-            <div class="line"></div>
-            <div class="text_content">
-              <c:out value="${note.text}" escapeXml="false"/>
-            </div>
-            <div class="line" style="margin-top: 2rem; margin-bottom: 0px"></div>
-            <div id="comment-section">
-                <h4>Comments</h4>
-                <c:choose>
-                  <%-- 1. 로그인한 경우: 기존의 댓글 입력창을 보여줌 --%>
-                  <c:when test="${not empty user}">
-                      <form id="comment-form" style="margin-bottom: 1.864rem;">
-                          <input type="hidden" name="noteIdx" value="${note.note_idx}">
-                          <div class="textarea-div"
-                              style="display: flex; align-items: center;">
-                              <textarea name="text" rows="3" placeholder="댓글을 입력하세요..."
-                                  required
-                                  style="width: 100%; resize: none; padding: 8px; border: solid 2px var(--border-color); border-radius: 4px 0 0 4px; outline: none; background-color: var(--background-color); color: var(--font-color);"></textarea>
-                              <button type="submit"
-                                  style="margin: 0px; padding: 5px 10px; height: 65px; border: solid 2px var(--border-color); border-radius: 0 4px 4px 0; border-left: none; background-color: var(--card-head); color:var(--card-back); font-weight: bold;">작성</button>
-                          </div>
-                      </form>
-                  </c:when>
-                  <%-- 2. 로그인하지 않은 경우: 로그인 유도 메시지를 보여줌 --%>
-                  <c:otherwise>
-                      <div class="comment-login-prompt" 
-                          style="margin-bottom: 1.864rem; padding: 20px; border: 2px solid var(--border-color); border-radius: 4px; text-align: center; cursor: pointer;">
-                          <a href="javascript:void(0);" onclick="requireLogin()" style="text-decoration: none; color: #888; font-weight: bold;">
-                              로그인 후 댓글을 작성할 수 있습니다.
-                          </a>
-                      </div>
-                  </c:otherwise>
-                </c:choose>
-            <div id="comment-list" style="clear: both;"></div>
-         </div>
-                  <div id="edit-comment-modal"
-                     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
-                     <div
-                        style="position: relative; top: 20%; margin: auto; width: 500px; background: white; padding: 20px; border-radius: 5px;">
-                        <h5>댓글 수정</h5>
-                        <form id="edit-comment-form">
-                           <input type="hidden" id="edit-comment-id" name="commentIdx">
-                           <textarea id="edit-comment-text" name="text" rows="4"
-                              style="width: 100%; resize: none; padding: 8px;"></textarea>
-                           <div style="text-align: right; margin-top: 10px;">
-                              <button type="button" id="cancel-edit-btn">취소</button>
-                              <button type="submit">저장</button>
-                           </div>
-                        </form>
-                     </div>
-                  </div>
-               </div>
-            </section>
-         </div>
-      </div>
-   </div>
 </body>
 <jsp:include page="/vibesync/includes/footer.jsp" />
 </html>
